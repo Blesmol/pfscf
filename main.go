@@ -13,6 +13,7 @@ import (
 )
 
 const input = "scenario1.pdf"
+const watermark = "watermark.pdf"
 const output = "test/chronicle1.pdf"
 
 func assert(cond bool, err error) {
@@ -43,6 +44,11 @@ func getPdfPageExtractionFilename(dir string, page string) (filename string) {
 	return filepath.Join(dir, localFilename)
 }
 
+func getPdfDimensionsInPixel(filename string) (x int, y int) {
+	// TODO no more static values
+	return 603, 783
+}
+
 func main() {
 	// prepare temporary working dir
 	workDir := getTempDir()
@@ -55,7 +61,9 @@ func main() {
 
 	// add demo watermark do page
 	onTop := true
-	wm, _ := pdfcpu.ParseTextWatermarkDetails("Demo", "", onTop)
-	err := pdfcpuapi.AddWatermarksFile(extractedPage, output, nil, wm, nil)
+	wm, err := pdfcpu.ParsePDFWatermarkDetails(watermark, "rot:0, sc:1", onTop)
 	assertNoError(err)
+	err = pdfcpuapi.AddWatermarksFile(extractedPage, output, nil, wm, nil)
+	assertNoError(err)
+
 }
