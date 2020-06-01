@@ -44,9 +44,14 @@ func getPdfPageExtractionFilename(dir string, page string) (filename string) {
 	return filepath.Join(dir, localFilename)
 }
 
-func getPdfDimensionsInPixel(filename string) (x int, y int) {
-	// TODO no more static values
-	return 603, 783
+func getPdfDimensionsInPoints(filename string) (x int, y int) {
+	// TODO change return type to whatever is accepted by gofpdf
+	dim, err := pdfcpuapi.PageDimsFile(filename)
+	assertNoError(err)
+	if len(dim) != 1 {
+		panic(dim)
+	}
+	return int(dim[0].Width), int(dim[0].Height)
 }
 
 func main() {
@@ -58,6 +63,8 @@ func main() {
 	chroniclePage := getLastPage(input)
 	pdfcpuapi.ExtractPagesFile(input, workDir, []string{chroniclePage}, nil)
 	extractedPage := getPdfPageExtractionFilename(workDir, chroniclePage)
+
+	getPdfDimensionsInPoints(extractedPage)
 
 	// add demo watermark do page
 	onTop := true
