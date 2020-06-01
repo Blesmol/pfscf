@@ -1,17 +1,24 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/jung-kurt/gofpdf"
 )
 
 // Stamp is a wraper for a PDF page
 type Stamp struct {
-	pdf *gofpdf.Fpdf
+	pdf  *gofpdf.Fpdf
+	dimX float64
+	dimY float64
 }
 
 // NewStamp creates a new Stamp object.
 func NewStamp(dimX float64, dimY float64) (s *Stamp) {
 	s = new(Stamp)
+
+	s.dimX = dimX
+	s.dimY = dimY
 
 	s.pdf = gofpdf.NewCustom(&gofpdf.InitType{
 		UnitStr: "pt",
@@ -32,4 +39,20 @@ func (s *Stamp) WriteToFile(filename string) (err error) {
 // Function should be finally removed
 func (s *Stamp) Pdf() (pdf *gofpdf.Fpdf) {
 	return s.pdf
+}
+
+// CreateMeasurementCoordinates overlays the stamp with a set of lines
+func (s *Stamp) CreateMeasurementCoordinates(gap float64) {
+	s.pdf.SetFont("Arial", "B", 6)
+
+	for curX := float64(0); curX < s.dimX; curX += gap {
+		s.pdf.Line(curX, 0, curX, s.dimY)
+		s.pdf.Text(curX, 8, strconv.Itoa(int(curX)))
+	}
+
+	for curY := float64(0); curY < s.dimY; curY += gap {
+		s.pdf.Line(0, curY, s.dimY, curY)
+		s.pdf.Text(2, curY-1, strconv.Itoa(int(curY)))
+	}
+
 }

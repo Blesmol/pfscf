@@ -43,6 +43,8 @@ func createPdfStampFile(targetDir string, width float64, height float64) (filena
 	pdf.SetFont("Arial", "B", 16)
 	pdf.Cell(40, 10, "Hello, world")
 
+	stamp.CreateMeasurementCoordinates(float64(25))
+
 	err := stamp.WriteToFile(filename)
 	AssertNoError(err)
 
