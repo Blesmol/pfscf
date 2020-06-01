@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -28,7 +29,12 @@ func assertNoError(err error) {
 }
 
 func getTempDir() (name string) {
-	name, err := ioutil.TempDir("", "pfsct")
+	// TODO Wait for watermarking issue to be fixed on side of pdfcpu
+	// https://github.com/pdfcpu/pdfcpu/issues/195
+	// Watermarking with pdfcpu currently does not work on Windows
+	// when absolute paths are used.
+	// So temporarily create the working dir as subdir of the local directory
+	name, err := ioutil.TempDir(".", "pfsct-")
 	assertNoError(err)
 	return name
 }
@@ -54,13 +60,7 @@ func getPdfDimensionsInPoints(filename string) (x float64, y float64) {
 }
 
 func createPdfStampFile(targetDir string, width float64, height float64) (filename string) {
-	// TODO Wait for watermarking issue to be fixed on side of pdfcpu
-	// https://github.com/pdfcpu/pdfcpu/issues/195
-	// Watermarking with pdfcpu currently does not work on Windows
-	// when absolute paths are used.
-	// So temporarily create a file in the local directory instead.
-	//filename = filepath.Join(targetDir, "stamp.pdf")
-	filename = "stamp.pdf"
+	filename = filepath.Join(targetDir, "stamp.pdf")
 
 	pdf := gofpdf.NewCustom(&gofpdf.InitType{
 		UnitStr: "pt",
@@ -78,7 +78,7 @@ func createPdfStampFile(targetDir string, width float64, height float64) (filena
 func main() {
 	// prepare temporary working dir
 	workDir := getTempDir()
-	//defer os.RemoveAll(workDir)
+	defer os.RemoveAll(workDir)
 
 	// extract chronicle page from pdf
 	chroniclePage := getLastPage(input)
