@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
+	"github.com/jung-kurt/gofpdf"
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 )
@@ -44,31 +44,53 @@ func getPdfPageExtractionFilename(dir string, page string) (filename string) {
 	return filepath.Join(dir, localFilename)
 }
 
-func getPdfDimensionsInPoints(filename string) (x int, y int) {
-	// TODO change return type to whatever is accepted by gofpdf
+func getPdfDimensionsInPoints(filename string) (x float64, y float64) {
 	dim, err := pdfcpuapi.PageDimsFile(filename)
 	assertNoError(err)
 	if len(dim) != 1 {
 		panic(dim)
 	}
-	return int(dim[0].Width), int(dim[0].Height)
+	return dim[0].Width, dim[0].Height
+}
+
+func createPdfStampFile(targetDir string, width float64, height float64) (filename string) {
+	// TODO Wait for watermarking issue to be fixed on side of pdfcpu
+	// https://github.com/pdfcpu/pdfcpu/issues/195
+	// Watermarking with pdfcpu currently does not work on Windows
+	// when absolute paths are used.
+	// So temporarily create a file in the local directory instead.
+	//filename = filepath.Join(targetDir, "stamp.pdf")
+	filename = "stamp.pdf"
+
+	pdf := gofpdf.NewCustom(&gofpdf.InitType{
+		UnitStr: "pt",
+		Size:    gofpdf.SizeType{Wd: width, Ht: height},
+	})
+
+	pdf.AddPage()
+	pdf.SetFont("Arial", "B", 16)
+	pdf.Cell(40, 10, "Hello, world")
+	err := pdf.OutputFileAndClose(filename)
+	assertNoError(err)
+	return filename
 }
 
 func main() {
 	// prepare temporary working dir
 	workDir := getTempDir()
-	defer os.RemoveAll(workDir)
+	//defer os.RemoveAll(workDir)
 
 	// extract chronicle page from pdf
 	chroniclePage := getLastPage(input)
 	pdfcpuapi.ExtractPagesFile(input, workDir, []string{chroniclePage}, nil)
 	extractedPage := getPdfPageExtractionFilename(workDir, chroniclePage)
 
-	getPdfDimensionsInPoints(extractedPage)
+	width, height := getPdfDimensionsInPoints(extractedPage)
 
-	// add demo watermark do page
+	// add demo watermark to page
 	onTop := true
-	wm, err := pdfcpu.ParsePDFWatermarkDetails(watermark, "rot:0, sc:1", onTop)
+	stampFile := createPdfStampFile(workDir, width, height)
+	wm, err := pdfcpu.ParsePDFWatermarkDetails(stampFile, "rot:0, sc:1", onTop)
 	assertNoError(err)
 	err = pdfcpuapi.AddWatermarksFile(extractedPage, output, nil, wm, nil)
 	assertNoError(err)
