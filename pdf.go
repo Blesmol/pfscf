@@ -8,16 +8,35 @@ import (
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
 )
 
-// DoesPdfFileAllowPageExtraction checks whether the permissions contained in the
-// PDF file allow to extract pages from it
-func DoesPdfFileAllowPageExtraction(filename string) bool {
-	return GetPdfPermissionBit(filename, 4) == true && GetPdfPermissionBit(filename, 11) == true
+// Pdf is a wraper for a PDF file
+type Pdf struct {
+	filename string
 }
 
-// GetPdfDimensionsInPoints returns the width and height of the first page in
+// NewPdf creates a new Pdf object.
+func NewPdf(filename string) (p *Pdf) {
+	// TODO check whether PDF file exists and is readable
+	p = new(Pdf)
+	p.filename = filename
+
+	return p
+}
+
+// File returns the filename of the given PDF
+func (p *Pdf) File() (filename string) {
+	return p.filename
+}
+
+// AllowsPageExtraction checks whether the permissions contained in the
+// PDF file allow to extract pages from it
+func (p *Pdf) AllowsPageExtraction() bool {
+	return p.GetPermissionBit(4) == true && p.GetPermissionBit(11) == true
+}
+
+// GetDimensionsInPoints returns the width and height of the first page in
 // a given PDF file
-func GetPdfDimensionsInPoints(filename string) (width float64, height float64) {
-	dim, err := pdfcpuapi.PageDimsFile(filename)
+func (p *Pdf) GetDimensionsInPoints() (width float64, height float64) {
+	dim, err := pdfcpuapi.PageDimsFile(p.filename)
 	AssertNoError(err)
 	if len(dim) != 1 {
 		panic(dim)
@@ -25,10 +44,10 @@ func GetPdfDimensionsInPoints(filename string) (width float64, height float64) {
 	return dim[0].Width, dim[0].Height
 }
 
-// GetPdfLastPageNumber returns the number of the last page
+// GetLastPageNumber returns the number of the last page
 // in the given PDF file as string.
-func GetPdfLastPageNumber(file string) (page string) {
-	numPages, err := pdfcpuapi.PageCountFile(file)
+func (p *Pdf) GetLastPageNumber() (page string) {
+	numPages, err := pdfcpuapi.PageCountFile(p.filename)
 	AssertNoError(err)
 	return strconv.Itoa(numPages)
 }
@@ -40,10 +59,10 @@ func GetPdfPageExtractionFilename(dir string, page string) (filename string) {
 	return filepath.Join(dir, localFilename)
 }
 
-// GetPdfPermissionBit checks whether the given permission bit
+// GetPermissionBit checks whether the given permission bit
 // is set for the given PDF file
-func GetPdfPermissionBit(filename string, bit int) (bitValue bool) {
-	perms, err := pdfcpuapi.ListPermissionsFile(filename, nil)
+func (p *Pdf) GetPermissionBit(bit int) (bitValue bool) {
+	perms, err := pdfcpuapi.ListPermissionsFile(p.filename, nil)
 	AssertNoError(err)
 	if len(perms) <= 1 {
 		// no permissions return => assume true/allow as default

@@ -13,15 +13,6 @@ const input = "scenario1_nr.pdf"
 const watermark = "watermark.pdf"
 const output = "test/chronicle1.pdf"
 
-func getPdfDimensionsInPoints(filename string) (width float64, height float64) {
-	dim, err := pdfcpuapi.PageDimsFile(filename)
-	AssertNoError(err)
-	if len(dim) != 1 {
-		panic(dim)
-	}
-	return dim[0].Width, dim[0].Height
-}
-
 func createPdfStampFile(targetDir string, width float64, height float64) (filename string) {
 	filename = filepath.Join(targetDir, "stamp.pdf")
 
@@ -40,7 +31,9 @@ func createPdfStampFile(targetDir string, width float64, height float64) (filena
 }
 
 func main() {
-	if !DoesPdfFileAllowPageExtraction(input) {
+	pdf := NewPdf(input)
+
+	if !pdf.AllowsPageExtraction() {
 		fmt.Printf("Error: File %v does not allow page extraction, exiting", input)
 		os.Exit(1)
 	}
@@ -50,11 +43,12 @@ func main() {
 	defer os.RemoveAll(workDir)
 
 	// extract chronicle page from pdf
-	chroniclePage := GetPdfLastPageNumber(input)
+	chroniclePage := pdf.GetLastPageNumber()
 	pdfcpuapi.ExtractPagesFile(input, workDir, []string{chroniclePage}, nil)
 	extractedPage := GetPdfPageExtractionFilename(workDir, chroniclePage)
 
-	width, height := getPdfDimensionsInPoints(extractedPage)
+	extractedPdf := NewPdf(extractedPage)
+	width, height := extractedPdf.GetDimensionsInPoints()
 
 	// add demo watermark to page
 	onTop := true
