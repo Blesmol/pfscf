@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-
-	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
-	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 )
 
 const input = "scenario1_nr.pdf"
@@ -31,6 +28,10 @@ func createPdfStampFile(targetDir string, width float64, height float64) (filena
 }
 
 func main() {
+	// prepare temporary working dir
+	workDir := GetTempDir()
+	defer os.RemoveAll(workDir)
+
 	pdf := NewPdf(input)
 
 	if !pdf.AllowsPageExtraction() {
@@ -38,24 +39,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	// prepare temporary working dir
-	workDir := GetTempDir()
-	defer os.RemoveAll(workDir)
-
 	// extract chronicle page from pdf
-	chroniclePage := pdf.GetLastPageNumber()
-	pdfcpuapi.ExtractPagesFile(input, workDir, []string{chroniclePage}, nil)
-	extractedPage := GetPdfPageExtractionFilename(workDir, chroniclePage)
+	extractedPage := pdf.ExtractPage(-1, workDir)
+	width, height := extractedPage.GetDimensionsInPoints()
 
-	extractedPdf := NewPdf(extractedPage)
-	width, height := extractedPdf.GetDimensionsInPoints()
-
-	// add demo watermark to page
-	onTop := true
 	stampFile := createPdfStampFile(workDir, width, height)
-	wm, err := pdfcpu.ParsePDFWatermarkDetails(stampFile, "rot:0, sc:1", onTop)
-	AssertNoError(err)
-	err = pdfcpuapi.AddWatermarksFile(extractedPage, output, nil, wm, nil)
-	AssertNoError(err)
 
+	// add watermark/stamp to page
+	pdf.Stamp(stampFile, output)
 }

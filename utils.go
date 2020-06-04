@@ -6,17 +6,19 @@ import (
 )
 
 // Assert duplicates C assert()
-func Assert(cond bool, err error) {
+func Assert(cond bool, message string) {
 	if cond == false {
-		fmt.Printf("Error is %v\n", err)
-		panic(err)
+		panic(message)
 	}
 }
 
 // AssertNoError is a cheap function to check for err==nil and
 // panics if condition is not met
 func AssertNoError(err error) {
-	Assert(err == nil, err)
+	if err != nil {
+		fmt.Printf("Error is %v\n", err)
+		panic(err)
+	}
 }
 
 // GetTempDir returns the location of a temporary directory in which

@@ -6,24 +6,28 @@ import (
 	"strings"
 
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
+	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 )
 
 // Pdf is a wraper for a PDF file
 type Pdf struct {
 	filename string
+	numPages int
 }
 
 // NewPdf creates a new Pdf object.
 func NewPdf(filename string) (p *Pdf) {
 	// TODO check whether PDF file exists and is readable
+	var err error
 	p = new(Pdf)
 	p.filename = filename
-
+	p.numPages, err = pdfcpuapi.PageCountFile(p.filename)
+	AssertNoError(err)
 	return p
 }
 
-// File returns the filename of the given PDF
-func (p *Pdf) File() (filename string) {
+// Filename returns the filename of the given PDF
+func (p *Pdf) Filename() (filename string) {
 	return p.filename
 }
 
@@ -31,6 +35,24 @@ func (p *Pdf) File() (filename string) {
 // PDF file allow to extract pages from it
 func (p *Pdf) AllowsPageExtraction() bool {
 	return p.GetPermissionBit(4) == true && p.GetPermissionBit(11) == true
+}
+
+// ExtractPage extracts a single page from the input file and stores
+// it under (but not necessarily in) the given output directory.
+// Provided page number can also be negative, then page is searched from the back.
+func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf) {
+	var realPageNumber int
+	if pageNumber < 0 {
+		realPageNumber = p.numPages + pageNumber
+	} else {
+		realPageNumber = pageNumber
+	}
+	Assert(realPageNumber > 0 && realPageNumber <= p.numPages, "Page number is out of range: "+strconv.Itoa(pageNumber))
+
+	realPageNumberStr := strconv.Itoa(realPageNumber)
+	pdfcpuapi.ExtractPagesFile(p.filename, outDir, []string{realPageNumberStr}, nil)
+
+	return NewPdf(getPdfPageExtractionFilename(outDir, realPageNumberStr))
 }
 
 // GetDimensionsInPoints returns the width and height of the first page in
@@ -44,17 +66,9 @@ func (p *Pdf) GetDimensionsInPoints() (width float64, height float64) {
 	return dim[0].Width, dim[0].Height
 }
 
-// GetLastPageNumber returns the number of the last page
-// in the given PDF file as string.
-func (p *Pdf) GetLastPageNumber() (page string) {
-	numPages, err := pdfcpuapi.PageCountFile(p.filename)
-	AssertNoError(err)
-	return strconv.Itoa(numPages)
-}
-
-// GetPdfPageExtractionFilename returns the path and filename of the target
+// getPdfPageExtractionFilename returns the path and filename of the target
 // file if a single page was extracted.
-func GetPdfPageExtractionFilename(dir string, page string) (filename string) {
+func getPdfPageExtractionFilename(dir string, page string) (filename string) {
 	localFilename := strings.Join([]string{"page_", page, ".pdf"}, "")
 	return filepath.Join(dir, localFilename)
 }
@@ -98,4 +112,14 @@ func (p *Pdf) GetPermissionBit(bit int) (bitValue bool) {
 	// TODO add proper permission check. As first conservatie approach assume
 	// that if permissions are present, then nothing is allowed
 	return false
+}
+
+// Stamp stamps the given PDF file with the given stamp
+func (p *Pdf) Stamp(stampFile string, outFile string) {
+	onTop := true // stamps go on top, watermarks do not
+	wm, err := pdfcpu.ParsePDFWatermarkDetails(stampFile, "rot:0, sc:1", onTop)
+	AssertNoError(err)
+	err = pdfcpuapi.AddWatermarksFile(p.filename, outFile, nil, wm, nil)
+	AssertNoError(err)
+
 }
