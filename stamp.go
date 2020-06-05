@@ -29,10 +29,17 @@ func NewStamp(dimX float64, dimY float64) (s *Stamp) {
 	return s
 }
 
+// AddText adds a portion of text at the specified coordinates
+func (s *Stamp) AddText() {
+	s.pdf.SetFont("Arial", "B", 16)
+	s.pdf.Cell(40, 10, "Hello, world")
+}
+
 // WriteToFile writes the contect of the Stamp object into a PDF file.
 // The Stamp object should not be used anymore after that.
-func (s *Stamp) WriteToFile(filename string) (err error) {
-	return s.pdf.OutputFileAndClose(filename)
+func (s *Stamp) WriteToFile(filename string) {
+	err := s.pdf.OutputFileAndClose(filename)
+	AssertNoError(err)
 }
 
 // Pdf returns the included gofpdf.Fpdf object.

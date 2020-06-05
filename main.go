@@ -10,23 +10,6 @@ const input = "scenario1_nr.pdf"
 const watermark = "watermark.pdf"
 const output = "test/chronicle1.pdf"
 
-func createPdfStampFile(targetDir string, width float64, height float64) (filename string) {
-	filename = filepath.Join(targetDir, "stamp.pdf")
-
-	stamp := NewStamp(width, height)
-
-	pdf := stamp.Pdf()
-	pdf.SetFont("Arial", "B", 16)
-	pdf.Cell(40, 10, "Hello, world")
-
-	stamp.CreateMeasurementCoordinates(float64(25))
-
-	err := stamp.WriteToFile(filename)
-	AssertNoError(err)
-
-	return filename
-}
-
 func main() {
 	// prepare temporary working dir
 	workDir := GetTempDir()
@@ -43,8 +26,12 @@ func main() {
 	extractedPage := pdf.ExtractPage(-1, workDir)
 	width, height := extractedPage.GetDimensionsInPoints()
 
-	stampFile := createPdfStampFile(workDir, width, height)
+	// create stamp
+	stamp := NewStamp(width, height)
+	stamp.AddText()
+	stampFile := filepath.Join(workDir, "stamp.pdf")
+	stamp.WriteToFile(stampFile)
 
 	// add watermark/stamp to page
-	pdf.Stamp(stampFile, output)
+	extractedPage.StampIt(stampFile, output)
 }

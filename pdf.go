@@ -43,7 +43,7 @@ func (p *Pdf) AllowsPageExtraction() bool {
 func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf) {
 	var realPageNumber int
 	if pageNumber < 0 {
-		realPageNumber = p.numPages + pageNumber
+		realPageNumber = p.numPages + /*negative*/ pageNumber + 1 // as -1 is the last page
 	} else {
 		realPageNumber = pageNumber
 	}
@@ -114,8 +114,8 @@ func (p *Pdf) GetPermissionBit(bit int) (bitValue bool) {
 	return false
 }
 
-// Stamp stamps the given PDF file with the given stamp
-func (p *Pdf) Stamp(stampFile string, outFile string) {
+// StampIt stamps the given PDF file with the given stamp
+func (p *Pdf) StampIt(stampFile string, outFile string) {
 	onTop := true // stamps go on top, watermarks do not
 	wm, err := pdfcpu.ParsePDFWatermarkDetails(stampFile, "rot:0, sc:1", onTop)
 	AssertNoError(err)
