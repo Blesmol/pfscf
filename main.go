@@ -28,7 +28,8 @@ func main() {
 
 	// create stamp
 	stamp := NewStamp(width, height)
-	stamp.AddText()
+	stamp.AddText(264, 730, "05.06.2020", "Helvetica", 14)
+	stamp.AddText(433, 107, "Grand Archive", "Helvetica", 8)
 	stampFile := filepath.Join(workDir, "stamp.pdf")
 	stamp.WriteToFile(stampFile)
 

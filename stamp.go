@@ -30,9 +30,11 @@ func NewStamp(dimX float64, dimY float64) (s *Stamp) {
 }
 
 // AddText adds a portion of text at the specified coordinates
-func (s *Stamp) AddText() {
-	s.pdf.SetFont("Arial", "B", 16)
-	s.pdf.Cell(40, 10, "Hello, world")
+func (s *Stamp) AddText(x float64, y float64, text string, fontName string, fontSize float64) {
+	s.pdf.SetFont(fontName, "", fontSize)
+	//s.pdf.SetXY(x, y)
+	//s.pdf.Cell(x, y, text)
+	s.pdf.Text(x, y, text)
 }
 
 // WriteToFile writes the contect of the Stamp object into a PDF file.
