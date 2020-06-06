@@ -59,6 +59,6 @@ func GetConfigFromFile(filename string) (c *Config) {
 func GetGlobalConfig() (c *Config) {
 	c = GetConfigFromFile("pfsct.yml")
 	//c = GetConfigFromFile(filepath.Join(GetExecutableDir(), "test.yml")
-	// TODO check environment for dir info
+	// TODO Find a way to have a working version als in the dev environment
 	return c
 }

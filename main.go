@@ -46,4 +46,10 @@ func main() {
 	config := GetGlobalConfig()
 	fmt.Printf("Config:\n%+v\n", *config)
 	fmt.Printf("Content: %+v", *config.Content)
+
+	/*
+		for _, e := range os.Environ() {
+			fmt.Println(e)
+		}
+	*/
 }
