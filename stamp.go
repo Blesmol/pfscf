@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/jung-kurt/gofpdf"
@@ -80,21 +81,41 @@ func (s *Stamp) Pdf() (pdf *gofpdf.Fpdf) {
 
 // CreateMeasurementCoordinates overlays the stamp with a set of lines
 func (s *Stamp) CreateMeasurementCoordinates(gap float64) {
-	s.pdf.SetFont("Arial", "B", 6)
+	const fontSize = float64(6)
+	const borderArea = float64(16) // do not add lines and text if that near to the page border
+	s.pdf.SetFont("Arial", "B", fontSize)
 
-	for curX := float64(0); curX < s.dimX; curX += gap {
-		textCoord := strconv.Itoa(int(curX))
-		s.pdf.Line(curX, 0, curX, s.dimY)
-		s.pdf.Text(curX, 8, textCoord)
-		s.pdf.Text(curX, s.dimY-8, textCoord)
+	for curX := float64(0); curX < (s.dimX - 16); curX += gap {
+		if curX < (0+borderArea) || curX > (s.dimX-borderArea) {
+			continue
+		}
+
+		coordString := fmt.Sprintf("x:%v", strconv.Itoa(int(curX)))
+		textWidth := s.pdf.GetStringWidth(coordString)
+		textOffset := textWidth / 2 // place in the middle of the line
+		textTopBorderMargin := fontSize + 2
+		textBottomBorderMargin := float64(2)
+		lineTopBorderMargin := textTopBorderMargin + 2
+		lineBottomBorderMargin := textBottomBorderMargin + fontSize + 2
+
+		s.pdf.Line(curX, 0+lineTopBorderMargin, curX, s.dimY-lineBottomBorderMargin)
+		s.pdf.Text(curX-textOffset, textTopBorderMargin, coordString)
+		s.pdf.Text(curX-textOffset, s.dimY-textBottomBorderMargin, coordString)
 	}
 
-	for curY := float64(0); curY < s.dimY; curY += gap {
-		textCoord := strconv.Itoa(int(curY))
-		textWidth := s.pdf.GetStringWidth(textCoord)
-		s.pdf.Line(0, curY, s.dimY, curY)
-		s.pdf.Text(2, curY-1, textCoord)
-		s.pdf.Text(s.dimX-textWidth-2, curY-1, textCoord)
+	for curY := float64(0); curY < (s.dimY - 16); curY += gap {
+		if curY < (0+borderArea) || curY > (s.dimY-borderArea) {
+			continue
+		}
+
+		coordString := fmt.Sprintf("y:%v", strconv.Itoa(int(curY)))
+		textWidth := s.pdf.GetStringWidth(coordString)
+		textPosY := curY + (fontSize / 2) - 1
+		lineBorderMargin := textWidth + 4 // enough space for the text plus a little
+
+		s.pdf.Line(0+lineBorderMargin, curY, s.dimX-lineBorderMargin, curY)
+		s.pdf.Text(2, textPosY, coordString)
+		s.pdf.Text(s.dimX-textWidth-2, textPosY, coordString)
 	}
 
 }
