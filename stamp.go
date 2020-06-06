@@ -80,12 +80,50 @@ func (s *Stamp) Pdf() (pdf *gofpdf.Fpdf) {
 }
 
 // CreateMeasurementCoordinates overlays the stamp with a set of lines
-func (s *Stamp) CreateMeasurementCoordinates(gap float64) {
+func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
+	Assert(majorGap > 0, "Provided gap should be greater than 0")
+
 	const fontSize = float64(6)
 	const borderArea = float64(16) // do not add lines and text if that near to the page border
-	s.pdf.SetFont("Arial", "B", fontSize)
+	const majorLineWidth = float64(0.5)
+	const minorLineWidth = float64(0.1)
 
-	for curX := float64(0); curX < (s.dimX - 16); curX += gap {
+	// store away old settings and reset at the end (you never know...)
+	formerR, formerB, formerG := s.pdf.GetDrawColor()
+	formerLineWidth := s.pdf.GetLineWidth()
+	defer s.pdf.SetDrawColor(formerR, formerG, formerB)
+	defer s.pdf.SetLineWidth(formerLineWidth)
+
+	// ignore minor gap if 0 or below
+	if minorGap > 0 {
+		// settings for minor gap drawing
+		s.pdf.SetDrawColor(196, 196, 196) // something lightgrayish
+		s.pdf.SetLineWidth(minorLineWidth)
+
+		// draw minor gap X lines
+		for curX := float64(0); curX < s.dimX; curX += minorGap {
+			if curX < (0+borderArea) || curX > (s.dimX-borderArea) {
+				continue
+			}
+			s.pdf.Line(curX, 0+borderArea, curX, s.dimY-borderArea)
+		}
+
+		// draw minor gap Y
+		for curY := float64(0); curY < s.dimY; curY += minorGap {
+			if curY < (0+borderArea) || curY > (s.dimY-borderArea) {
+				continue
+			}
+			s.pdf.Line(0+borderArea, curY, s.dimX-borderArea, curY)
+		}
+	}
+
+	// settings for major gap drawing
+	s.pdf.SetFont("Arial", "B", fontSize)
+	s.pdf.SetDrawColor(64, 64, 255) // something blueish
+	s.pdf.SetLineWidth(majorLineWidth)
+
+	// draw major gap X lines with labels
+	for curX := float64(0); curX < s.dimX; curX += majorGap {
 		if curX < (0+borderArea) || curX > (s.dimX-borderArea) {
 			continue
 		}
@@ -103,7 +141,8 @@ func (s *Stamp) CreateMeasurementCoordinates(gap float64) {
 		s.pdf.Text(curX-textOffset, s.dimY-textBottomBorderMargin, coordString)
 	}
 
-	for curY := float64(0); curY < (s.dimY - 16); curY += gap {
+	// draw major gap Y lines with labels
+	for curY := float64(0); curY < s.dimY; curY += majorGap {
 		if curY < (0+borderArea) || curY > (s.dimY-borderArea) {
 			continue
 		}
@@ -117,5 +156,4 @@ func (s *Stamp) CreateMeasurementCoordinates(gap float64) {
 		s.pdf.Text(2, textPosY, coordString)
 		s.pdf.Text(s.dimX-textWidth-2, textPosY, coordString)
 	}
-
 }
