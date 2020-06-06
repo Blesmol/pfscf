@@ -1,0 +1,12 @@
+defaults:
+    font: Helvetica
+    fontsize: 14
+content:
+    - type: textCell
+      id: date
+      x1: 227
+      y1: 730
+      x2: 305
+      y2: 716
+      font: Helvetica
+      fontsize: 14

@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
 // Assert duplicates C assert()
@@ -24,13 +26,20 @@ func AssertNoError(err error) {
 // GetTempDir returns the location of a temporary directory in which
 // files can be stored. The caller needs to ensure that the
 // directory is deleted afterwards.
-func GetTempDir() (name string) {
+func GetTempDir() (dirName string) {
 	// TODO Wait for watermarking issue to be fixed on side of pdfcpu
 	// https://github.com/pdfcpu/pdfcpu/issues/195
 	// Watermarking with pdfcpu currently does not work on Windows
 	// when absolute paths are used.
 	// So temporarily create the working dir as subdir of the local directory
-	name, err := ioutil.TempDir(".", "pfsct-")
+	dirName, err := ioutil.TempDir(".", "pfsct-")
 	AssertNoError(err)
-	return name
+	return dirName
+}
+
+// GetExecutableDir returns the dir in which the binary of this program is located
+func GetExecutableDir() (dirName string) {
+	dirName, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	AssertNoError(err)
+	return dirName
 }
