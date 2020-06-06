@@ -39,4 +39,9 @@ func main() {
 
 	// add watermark/stamp to page
 	extractedPage.StampIt(stampFile, output)
+
+	// Configuration test run
+	config := GetGlobalConfig()
+	fmt.Printf("Config:\n%+v\n", *config)
+	fmt.Printf("Content: %+v", *config.Content)
 }
