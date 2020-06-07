@@ -1,26 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 )
 
-// Assert duplicates C assert()
-func Assert(cond bool, message string) {
+// Assert will throw a panic if condition is false.
+// The additional parameter is provided to panic() as argument.
+func Assert(cond bool, i interface{}) {
 	if cond == false {
-		panic(message)
+		panic(i)
 	}
 }
 
 // AssertNoError is a cheap function to check for err==nil and
 // panics if condition is not met
 func AssertNoError(err error) {
-	if err != nil {
-		fmt.Printf("Error is %v\n", err)
-		panic(err)
-	}
+	Assert(err == nil, err)
 }
 
 // GetTempDir returns the location of a temporary directory in which
