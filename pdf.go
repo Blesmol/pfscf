@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -41,6 +43,13 @@ func (p *Pdf) AllowsPageExtraction() bool {
 // it under (but not necessarily in) the given output directory.
 // Provided page number can also be negative, then page is searched from the back.
 func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf) {
+	// check PDF permissions
+	if !p.AllowsPageExtraction() {
+		fmt.Printf("Error: File %v does not allow page extraction, exiting", p.filename)
+		os.Exit(1)
+	}
+
+	// Function accepts negative page numbers, thus calculate real page number
 	var realPageNumber int
 	if pageNumber < 0 {
 		realPageNumber = p.numPages + /*negative*/ pageNumber + 1 // as -1 is the last page

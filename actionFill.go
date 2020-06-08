@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -39,12 +38,6 @@ func executeFill(cmd *cobra.Command, args []string) {
 	defer os.RemoveAll(workDir)
 
 	pdf := NewPdf(inFile)
-
-	// TODO check if file has more than 1 page
-	if !pdf.AllowsPageExtraction() {
-		fmt.Printf("Error: File %v does not allow page extraction, exiting", inFile)
-		os.Exit(1)
-	}
 
 	// extract chronicle page from pdf
 	extractedPage := pdf.ExtractPage(-1, workDir)
