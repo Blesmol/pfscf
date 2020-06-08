@@ -34,8 +34,10 @@ func executeFill(cmd *cobra.Command, args []string) {
 	inFile := args[1]
 	outFile := args[2]
 
-	_, err := GetConfigByName(cfgName)
+	yCfg, err := GetConfigByName(cfgName)
 	AssertNoError(err) // TODO proper error message and exit
+
+	yCfg.GetChronicleConfig() // TODO assign to something and work with it
 
 	// prepare temporary working dir
 	workDir := GetTempDir()

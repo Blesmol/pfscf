@@ -9,8 +9,8 @@ import (
 	"github.com/go-yaml/yaml"
 )
 
-// Config represents the structure of the config yaml file
-type Config struct {
+// YamlConfig represents the structure of the config yaml file
+type YamlConfig struct {
 	Defaults ConfigDefaults
 	Content  *[]ContentEntry
 	Inherit  string // Name of the config that should be inherited
@@ -39,13 +39,28 @@ type ConfigDefaults struct {
 	Fontsize float64
 }
 
+// ChronicleConfig represents a configuration for chronicles. It contains
+// information on what to put where.
+type ChronicleConfig struct {
+	name    string
+	content map[string]ContentEntry
+}
+
+// NewChronicleConfig returns a new ChronicleConfig object
+func NewChronicleConfig(name string) (c *ChronicleConfig) {
+	c = new(ChronicleConfig)
+	c.name = name
+	c.content = make(map[string]ContentEntry)
+	return c
+}
+
 // TODO #6 generic function for checking required fields in struct
 // also output warnings for non-required fields
 
-// GetConfigFromFile reads the config file from the provided location.
-func GetConfigFromFile(filename string) (c *Config, err error) {
+// GetYamlConfigFromFile reads the config file from the provided location.
+func GetYamlConfigFromFile(filename string) (c *YamlConfig, err error) {
 	// print or log reading of config file
-	c = new(Config)
+	c = new(YamlConfig)
 
 	fileData, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -61,25 +76,37 @@ func GetConfigFromFile(filename string) (c *Config, err error) {
 	return c, nil
 }
 
-// GetGlobalConfig reads the configuration from the global config file, which
-// should be located in the same directory as the binary
-func GetGlobalConfig() (c *Config) {
-	c, err := GetConfigFromFile(filepath.Join(GetExecutableDir(), "pfsct.yml"))
-	AssertNoError(err)
-	return c
-}
-
 // GetConfigByName returns the config object for the given name, or nil and
 // an error object if no config with that name could be found. The config
 // name is case-insensitive.
-func GetConfigByName(cfgName string) (c *Config, err error) {
+func GetConfigByName(cfgName string) (c *YamlConfig, err error) {
 	// Keep it simple for the moment. Search in 'config' subdir
 	// for a file with cfgName as basename and 'yml' as file extension
 
 	cfgBaseFilename := strings.ToLower(cfgName) + ".yml"
 	cfgFilename := filepath.Join(GetExecutableDir(), "config", cfgBaseFilename)
 
-	c, err = GetConfigFromFile(cfgFilename)
+	c, err = GetYamlConfigFromFile(cfgFilename)
 
 	return c, err
+}
+
+// GetChronicleConfig extracts, processes, and prepares the config
+// information from a YamlConfig object and puts it into a form
+// that can be worked with.
+func (yCfg *YamlConfig) GetChronicleConfig() (cCfg *ChronicleConfig) {
+	cCfg = NewChronicleConfig("pfs2") // TODO remove hardcoded name
+
+	// add content entries from yamlConfig with name mapping into chronicleConfig
+	for _, val := range *yCfg.Content {
+		Assert(val.ID != "", "No ID provided!")
+		id := val.ID
+		if _, exists := cCfg.content[id]; !exists {
+			cCfg.content[id] = val
+		} else {
+			panic("Duplicate ID found: " + id)
+		}
+	}
+
+	return cCfg
 }
