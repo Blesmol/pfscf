@@ -14,11 +14,11 @@ func GetFillCommand() (cmd *cobra.Command) {
 	Assert(fillCmd == nil, "FillCmd already initialized")
 
 	fillCmd = &cobra.Command{
-		Use:   "fill [INFILE] [OUTFILE]",
+		Use:   "fill <config> <infile> <outfile>",
 		Short: "Fill a single chronicle sheet",
 		Long:  "Fill a single chronicle sheet with parameters provided on the command line.",
 
-		Args: cobra.MinimumNArgs(2),
+		Args: cobra.MinimumNArgs(3),
 
 		Run: executeFill,
 	}
@@ -28,10 +28,14 @@ func GetFillCommand() (cmd *cobra.Command) {
 }
 
 func executeFill(cmd *cobra.Command, args []string) {
-	Assert(len(args) >= 2, "Number of arguments should be guaranteed by cobra settings")
+	Assert(len(args) >= 3, "Number of arguments should be guaranteed by cobra settings")
 
-	inFile := args[0]
-	outFile := args[1]
+	cfgName := args[0]
+	inFile := args[1]
+	outFile := args[2]
+
+	_, err := GetConfigByName(cfgName)
+	AssertNoError(err) // TODO proper error message and exit
 
 	// prepare temporary working dir
 	workDir := GetTempDir()

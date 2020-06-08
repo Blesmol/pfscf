@@ -2,8 +2,6 @@ package main
 
 import (
 	"io/ioutil"
-	"os"
-	"path/filepath"
 )
 
 // Assert will throw a panic if condition is false.
@@ -36,7 +34,11 @@ func GetTempDir() (dirName string) {
 
 // GetExecutableDir returns the dir in which the binary of this program is located
 func GetExecutableDir() (dirName string) {
-	dirName, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	AssertNoError(err)
+	// TODO
+	/*
+		dirName, err := filepath.Abs(filepath.Dir(os.Args[0]))
+		AssertNoError(err)
+	*/
+	dirName = "."
 	return dirName
 }

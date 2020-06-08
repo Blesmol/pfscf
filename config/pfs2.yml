@@ -1,0 +1,16 @@
+defaults:
+    font: Helvetica
+    fontsize: 14
+content:
+    - type: textCell
+      id: date
+      desc: The date on which the game session took place
+      x1: 227
+      y1: 730
+      x2: 305
+      y2: 716
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: xp
+      desc: Experience points
