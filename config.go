@@ -11,9 +11,9 @@ import (
 
 // YamlConfig represents the structure of the config yaml file
 type YamlConfig struct {
-	Defaults ConfigDefaults
-	Content  *[]ContentEntry
-	Inherit  string // Name of the config that should be inherited
+	Default ConfigDefaults
+	Content *[]ContentEntry
+	Inherit string // Name of the config that should be inherited
 }
 
 // ContentEntry is a generic struct with lots of fields to fit all
@@ -35,8 +35,7 @@ type ContentEntry struct {
 
 // ConfigDefaults represents all settings for which a default value can be set.
 type ConfigDefaults struct {
-	Font     string
-	Fontsize float64
+	Font string
 }
 
 // ChronicleConfig represents a configuration for chronicles. It contains
