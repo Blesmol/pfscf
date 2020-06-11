@@ -7,11 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var version = "dev"
+
 func main() {
 
 	RootCmd := &cobra.Command{
 		Use:   "pfsct",
-		Short: "The Pathfinder Society Chronicle Tagger",
+		Short: "The Pathfinder Society Chronicle Tagger v" + version,
 	}
 
 	RootCmd.AddCommand(GetFillCommand())
