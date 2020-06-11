@@ -34,6 +34,8 @@ func executeFill(cmd *cobra.Command, args []string) {
 	inFile := args[1]
 	outFile := args[2]
 
+	Assert(inFile != outFile, "Input file and output file must not be identical")
+
 	yCfg, err := GetConfigByName(cfgName)
 	AssertNoError(err) // TODO proper error message and exit
 
