@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -40,6 +41,12 @@ func executeFill(cmd *cobra.Command, args []string) {
 	AssertNoError(err) // TODO proper error message and exit
 
 	yCfg.GetChronicleConfig() // TODO assign to something and work with it
+
+	// parse remaining arguments
+	as := ParseArgs(args[3:])
+	for key, value := range as {
+		fmt.Printf("Key='%v', value='%v'\n", key, *value)
+	}
 
 	// prepare temporary working dir
 	workDir := GetTempDir()
