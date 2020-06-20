@@ -40,13 +40,10 @@ func executeFill(cmd *cobra.Command, args []string) {
 	yCfg, err := GetConfigByName(cfgName)
 	AssertNoError(err) // TODO proper error message and exit
 
-	yCfg.GetChronicleConfig() // TODO assign to something and work with it
+	cCfg := yCfg.GetChronicleConfig() // TODO assign to something and work with it
 
 	// parse remaining arguments
 	as := ParseArgs(args[3:])
-	for key, value := range as {
-		fmt.Printf("Key='%v', value='%v'\n", key, *value)
-	}
 
 	// prepare temporary working dir
 	workDir := GetTempDir()
@@ -61,11 +58,22 @@ func executeFill(cmd *cobra.Command, args []string) {
 	// create stamp
 	stamp := NewStamp(width, height)
 
-	// demo text
-	stamp.AddText(433, 107, "Grand Archive", "Helvetica", 8)
-	stamp.AddCellText(227, 730, 305, 716, "05.06.2020", "Helvetica", 14)
+	// add content to stamp
+	for key, value := range as {
+		fmt.Printf("Processing Key='%v', value='%v'\n", key, *value)
 
-	//stamp.CreateMeasurementCoordinates(25, 5)
+		content, exists := cCfg.GetContent(key)
+		Assert(exists, "No content with key="+key)
+		stamp.AddContent(content, value)
+	}
+
+	// demo text
+	/*
+		stamp.AddText(433, 107, "Grand Archive", "Helvetica", 8)
+		stamp.AddCellText(227, 730, 305, 716, "05.06.2020", "Helvetica", 14)
+	*/
+
+	stamp.CreateMeasurementCoordinates(25, 5)
 
 	// write stamp
 	stampFile := filepath.Join(workDir, "stamp.pdf")

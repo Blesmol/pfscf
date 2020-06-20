@@ -38,6 +38,8 @@ func (s *Stamp) AddText(x, y float64, text string, fontName string, fontSize flo
 	s.pdf.Text(x, y, text)
 }
 
+// getXYWH transforms two sets of x/y coordinates into a single set of
+// x/y coordinates and a pair of width/height values.
 func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 	if x1 < x2 {
 		x = x1
@@ -54,6 +56,18 @@ func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 		h = y1 - y2
 	}
 	return
+}
+
+// AddContent is a generic function to add content to a stamp. It will
+// internally check the content type and call the appropriate subfunction.
+func (s *Stamp) AddContent(ce ContentEntry, value *string) {
+	switch ce.Type {
+	case "textCell":
+		Assert(value != nil, "Content type 'textCell' needs an input value")
+		s.AddCellText(ce.X1, ce.Y1, ce.X2, ce.Y2, *value, ce.Font, ce.Fontsize)
+	default:
+		panic("Unknown content type: " + ce.Type)
+	}
 }
 
 // AddCellText is a better version of AddText()

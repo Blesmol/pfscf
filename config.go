@@ -109,3 +109,10 @@ func (yCfg *YamlConfig) GetChronicleConfig() (cCfg *ChronicleConfig) {
 
 	return cCfg
 }
+
+// GetContent returns the ContentEntry matching the provided key
+// from the current ChronicleConfig
+func (cCfg *ChronicleConfig) GetContent(key string) (ce ContentEntry, exists bool) {
+	ce, exists = cCfg.content[key]
+	return
+}
