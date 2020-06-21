@@ -8,7 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var fillCmd *cobra.Command
+var (
+	fillCmd  *cobra.Command
+	drawGrid bool
+)
 
 // GetFillCommand returns the cobra command for the "fill" action.
 func GetFillCommand() (cmd *cobra.Command) {
@@ -23,7 +26,7 @@ func GetFillCommand() (cmd *cobra.Command) {
 
 		Run: executeFill,
 	}
-	//fillCmd.Flags().BoolVar(&myFlag, "varBool", false, "Do something with a bool flag.")
+	fillCmd.Flags().BoolVarP(&drawGrid, "grid", "g", false, "Draw a coordinate grid on the output file")
 
 	return fillCmd
 }
@@ -67,7 +70,9 @@ func executeFill(cmd *cobra.Command, args []string) {
 		stamp.AddContent(content, value)
 	}
 
-	//stamp.CreateMeasurementCoordinates(25, 5)
+	if drawGrid {
+		stamp.CreateMeasurementCoordinates(25, 5)
+	}
 
 	// write stamp
 	stampFile := filepath.Join(workDir, "stamp.pdf")
