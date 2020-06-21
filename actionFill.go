@@ -67,13 +67,7 @@ func executeFill(cmd *cobra.Command, args []string) {
 		stamp.AddContent(content, value)
 	}
 
-	// demo text
-	/*
-		stamp.AddText(433, 107, "Grand Archive", "Helvetica", 8)
-		stamp.AddCellText(227, 730, 305, 716, "05.06.2020", "Helvetica", 14)
-	*/
-
-	stamp.CreateMeasurementCoordinates(25, 5)
+	//stamp.CreateMeasurementCoordinates(25, 5)
 
 	// write stamp
 	stampFile := filepath.Join(workDir, "stamp.pdf")

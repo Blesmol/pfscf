@@ -3,12 +3,39 @@ defaults:
     fontsize: 14
 content:
     - type: textCell
-      id: date
-      desc: The date on which the game session took place
-      x1: 227
-      y1: 733
-      x2: 303
-      y2: 720
+      id: player
+      desc: Player name
+      x1: 42
+      y1: 124
+      x2: 142
+      y2: 108
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: char
+      desc: Char name
+      x1: 167
+      y1: 124
+      x2: 270
+      y2: 108
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: playerid
+      desc: PFS Player ID (only the first part, e.g. 123456)
+      x1: 276
+      y1: 124
+      x2: 342
+      y2: 108
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: charid
+      desc: PFS Char ID (only the latter part, e.g. 2001)
+      x1: 357
+      y1: 124
+      x2: 396
+      y2: 108
       font: Helvetica
       fontsize: 14
     - type: textCell
@@ -17,16 +44,132 @@ content:
       font: Helvetica
       fontsize: 14
       x1: 475
-      y1: 312
+      y1: 311
       x2: 565
       y2: 334
     - type: textCell
-      id: dummy
-      desc: dummy
-      x1: 1
-      y1: 1
-      x2: 1
-      y2: 1
+      id: gp
+      desc: Gold pieces
+      x1: 475
+      y1: 444
+      x2: 565
+      y2: 420
       font: Helvetica
-      Xfontsize: 14 / 8
-
+      fontsize: 14
+    - type: textCell
+      id: dj
+      desc: Dayjob
+      x1: 475
+      y1: 481
+      x2: 565
+      y2: 456
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: fame
+      desc: Fame
+      x1: 475
+      y1: 639
+      x2: 565
+      y2: 663
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: event
+      desc: Event name
+      x1: 43
+      y1: 733
+      x2: 147
+      y2: 717
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: code
+      desc: Event code
+      x1: 157
+      y1: 733
+      x2: 212
+      y2: 717
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: date
+      desc: The date on which the game session took place
+      x1: 227
+      y1: 733
+      x2: 303
+      y2: 717
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: gm
+      desc: Gamemasters name
+      x1: 323
+      y1: 733
+      x2: 446
+      y2: 717
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: gmid
+      desc: Gamemasters PFS ID
+      x1: 460
+      y1: 733
+      x2: 563
+      y2: 717
+      font: Helvetica
+      fontsize: 14
+    - type: textCell
+      id: fac1name
+      desc: Faction 1 Name
+      x1: 432
+      y1: 107
+      x2: 489
+      y2: 98
+      font: Helvetica
+      fontsize: 8
+    - type: textCell
+      id: fac1rep
+      desc: Faction 1 Reputation points
+      x1: 531
+      y1: 107
+      x2: 547
+      y2: 98
+      font: Helvetica
+      fontsize: 8
+    - type: textCell
+      id: fac2name
+      desc: Faction 2 Name
+      x1: 432
+      y1: 127
+      x2: 489
+      y2: 118
+      font: Helvetica
+      fontsize: 8
+    - type: textCell
+      id: fac2rep
+      desc: Faction 2 Reputation points
+      x1: 531
+      y1: 127
+      x2: 547
+      y2: 118
+      font: Helvetica
+      fontsize: 8
+    - type: textCell
+      id: fac3name
+      desc: Faction 3 Name
+      x1: 432
+      y1: 147
+      x2: 489
+      y2: 138
+      font: Helvetica
+      fontsize: 8
+    - type: textCell
+      id: fac3rep
+      desc: Faction 3 Reputation points
+      x1: 531
+      y1: 147
+      x2: 547
+      y2: 138
+      font: Helvetica
+      fontsize: 8
