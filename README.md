@@ -1,9 +1,6 @@
 # The Pathfinder Society Chronicle Tagger (pfsct)
 
-The "Pathfinder Society Chronicle Tagger" (or short: pfsct) is a small
-command line application available for different platforms (Windows,
-macOS, Linux) that helps filling out chronicle sheets for the
-Pathfinder Roleplaying Game.
+The "Pathfinder Society Chronicle Tagger" (or short: pfsct) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle  sheets for the Pathfinder Roleplaying Game.
 
 ## Usage
 
