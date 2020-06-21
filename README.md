@@ -26,11 +26,59 @@ Use "pfsct [command] --help" for more information about a command.
 
 ### Fill out a single chronicle
 
-Fill me
+Filling out a single Pathfinder Society chronicle sheet can be done with the `fill` subcommand.
+
+#### Example Call
+```
+$ pfsct fill pfs2 s103_chronicle.pdf s103_for_bob.pdf player=Bob char="The Bobbynator" xp=4
+```
+
+#### Proper explanation
+
+```
+$ pfsct fill -h
+Fill a single chronicle sheet with parameters provided on the command line.
+
+Usage:
+  pfsct fill <config> <infile> <outfile> [flags]
+
+Flags:
+  -c, --cellBorder   Draw the cell borders of all added fields
+  -g, --grid         Draw a coordinate grid on the output file
+  -h, --help         help for fill
+```
+
+Required arguments:
+* `<config>`: The name of the config to use. The config defines what you can put on the chronicle and where it is put. Currently the only supported config is `pfs2`, so always use that value.
+* `<infile>`: The name of the input PDF file. This should be a single-paged PDF file that contains a chronicle sheet from a Pathfinder Society scenario. And I'm currently relying on that the page in this file has the same dimensions as in the original PDFs.
+* `<outfile>`: The file to which the finished chronicle should be saved.
+
+After the required arguments, you need to provide info on what should go into the chronicle. This is done by providing key/value pairs with format `<key>=<value>`.
+
+Currently, the following keys are supported for config `pfs2`:
+* `player`: Player name
+* `char`: Character name
+* `playerid`: PFS Player ID (only the first part, e.g. `123456`)
+* `charid`: PFS Char ID (only the latter part without the leading 2, e.g. `001`)
+* `xp`: Experience Points
+* `gp`: Gold Pieces
+* `dj`: Dayjob / Income
+* `fame`: Fame
+* `event`: Name of the PFS event
+* `code`: Event code
+* `date`: The date on which the session occurred
+* `gm`: Name / Signature of the Gamemaster
+* `gmid`: PFS Player ID of the Gamemaster
+* `fac1name`: Name of faction 1
+* `fac1rep`: Reputation for faction 1
+* `fac2name`: Name of faction 2
+* `fac2rep`: Reputation for faction 2
+* `fac3name`: Name of faction 3
+* `fac3rep`: Reputation for faction 3
 
 ### Fill out multiple chronicles (e.g. for a complete group)
 
-Fill me
+Not yet supported, unless you repeat the "Fill out a single chronicle" section for each member of the group. But I want to include some batch mode in the future as well.
 
 ## FAQ
 
@@ -64,4 +112,4 @@ Fill me
 
 ## Legal stuff
 
-Pathfinder, the Pathfinder logo, Pathfinder Society, Starfinder and the Starfinder logo are registered trademarks of Paizo Inc.
+Pathfinder, the Pathfinder logo, Pathfinder Society, Starfinder, the Starfinde Society and the Starfinder logo are registered trademarks of Paizo Inc. Support their games!
