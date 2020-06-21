@@ -11,6 +11,7 @@ content:
       y2: 108
       font: Helvetica
       fontsize: 14
+      align: CB
     - type: textCell
       id: char
       desc: Char name
@@ -20,24 +21,27 @@ content:
       y2: 108
       font: Helvetica
       fontsize: 14
+      align: CB
     - type: textCell
       id: playerid
       desc: PFS Player ID (only the first part, e.g. 123456)
       x1: 276
-      y1: 124
+      y1: 123
       x2: 342
       y2: 108
       font: Helvetica
-      fontsize: 14
+      fontsize: 10
+      align: RB
     - type: textCell
       id: charid
       desc: PFS Char ID (only the latter part, e.g. 2001)
       x1: 357
-      y1: 124
+      y1: 123
       x2: 396
       y2: 108
       font: Helvetica
-      fontsize: 14
+      fontsize: 10
+      align: LB
     - type: textCell
       id: xp
       desc: Experience points
@@ -47,6 +51,7 @@ content:
       y1: 311
       x2: 565
       y2: 334
+      align: CM
     - type: textCell
       id: gp
       desc: Gold pieces
@@ -56,6 +61,7 @@ content:
       y2: 420
       font: Helvetica
       fontsize: 14
+      align: CM
     - type: textCell
       id: dj
       desc: Dayjob
@@ -65,6 +71,7 @@ content:
       y2: 456
       font: Helvetica
       fontsize: 14
+      align: CM
     - type: textCell
       id: fame
       desc: Fame
@@ -74,6 +81,7 @@ content:
       y2: 663
       font: Helvetica
       fontsize: 14
+      align: CM
     - type: textCell
       id: event
       desc: Event name
@@ -83,6 +91,7 @@ content:
       y2: 717
       font: Helvetica
       fontsize: 14
+      align: CB
     - type: textCell
       id: code
       desc: Event code
@@ -92,6 +101,7 @@ content:
       y2: 717
       font: Helvetica
       fontsize: 14
+      align: CB
     - type: textCell
       id: date
       desc: The date on which the game session took place
@@ -101,6 +111,7 @@ content:
       y2: 717
       font: Helvetica
       fontsize: 14
+      align: CB
     - type: textCell
       id: gm
       desc: Gamemasters name
@@ -110,6 +121,7 @@ content:
       y2: 717
       font: Helvetica
       fontsize: 14
+      align: CB
     - type: textCell
       id: gmid
       desc: Gamemasters PFS ID
@@ -119,6 +131,7 @@ content:
       y2: 717
       font: Helvetica
       fontsize: 14
+      align: CB
     - type: textCell
       id: fac1name
       desc: Faction 1 Name
@@ -128,6 +141,7 @@ content:
       y2: 98
       font: Helvetica
       fontsize: 8
+      align: CB
     - type: textCell
       id: fac1rep
       desc: Faction 1 Reputation points
@@ -137,6 +151,7 @@ content:
       y2: 98
       font: Helvetica
       fontsize: 8
+      align: CB
     - type: textCell
       id: fac2name
       desc: Faction 2 Name
@@ -146,6 +161,7 @@ content:
       y2: 118
       font: Helvetica
       fontsize: 8
+      align: CB
     - type: textCell
       id: fac2rep
       desc: Faction 2 Reputation points
@@ -155,6 +171,7 @@ content:
       y2: 118
       font: Helvetica
       fontsize: 8
+      align: CB
     - type: textCell
       id: fac3name
       desc: Faction 3 Name
@@ -164,6 +181,7 @@ content:
       y2: 138
       font: Helvetica
       fontsize: 8
+      align: CB
     - type: textCell
       id: fac3rep
       desc: Faction 3 Reputation points
@@ -173,3 +191,4 @@ content:
       y2: 138
       font: Helvetica
       fontsize: 8
+      align: CB

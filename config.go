@@ -21,16 +21,16 @@ type YamlConfig struct {
 // fields. So basically only field "Type" always has to be provided,
 // everything else depends on the concrete type.
 type ContentEntry struct {
-	Type      string  // the type which this entry represents
-	ID        string  // the ID or name of that concrete content entry
-	Desc      string  // Description of this parameter
-	X1, Y1    float64 // first set of coordinates
-	X2, Y2    float64 // second set of coordinates
-	Font      string  // the name of the font (if any) that should be used to display the content
-	Fontsize  float64 // size of the font in points
-	Alignment string
-	Default   string
-	Flags     []string
+	Type     string  // the type which this entry represents
+	ID       string  // the ID or name of that concrete content entry
+	Desc     string  // Description of this parameter
+	X1, Y1   float64 // first set of coordinates
+	X2, Y2   float64 // second set of coordinates
+	Font     string  // the name of the font (if any) that should be used to display the content
+	Fontsize float64 // size of the font in points
+	Align    string  // Alignment of the content: L/C/R + T/M/B
+	Default  string
+	Flags    []string
 }
 
 // ConfigDefaults represents all settings for which a default value can be set.

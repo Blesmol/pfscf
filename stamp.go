@@ -76,20 +76,20 @@ func (s *Stamp) AddContent(ce ContentEntry, value *string) {
 	switch ce.Type {
 	case "textCell":
 		Assert(value != nil, "Content type 'textCell' needs an input value")
-		s.AddCellText(ce.X1, ce.Y1, ce.X2, ce.Y2, *value, ce.Font, ce.Fontsize)
+		s.AddCellText(ce.X1, ce.Y1, ce.X2, ce.Y2, *value, ce.Font, ce.Fontsize, ce.Align)
 	default:
 		panic("Unknown content type: " + ce.Type)
 	}
 }
 
 // AddCellText is a better version of AddText()
-func (s *Stamp) AddCellText(x1, y1, x2, y2 float64, text string, fontName string, fontSize float64) {
+func (s *Stamp) AddCellText(x1, y1, x2, y2 float64, text string, fontName string, fontSize float64, alignString string) {
 	x, y, w, h := getXYWH(x1, y1, x2, y2)
 
 	s.pdf.SetFont(fontName, "", fontSize)
 	s.pdf.SetXY(x, y)
 	s.pdf.SetCellMargin(0)
-	s.pdf.CellFormat(w, h, text, s.cellBorder, 0, "CB", false, 0, "")
+	s.pdf.CellFormat(w, h, text, s.cellBorder, 0, alignString, false, 0, "")
 }
 
 // WriteToFile writes the contect of the Stamp object into a PDF file.
