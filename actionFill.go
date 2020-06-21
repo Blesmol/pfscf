@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -9,8 +8,9 @@ import (
 )
 
 var (
-	fillCmd  *cobra.Command
-	drawGrid bool
+	fillCmd        *cobra.Command
+	drawGrid       bool
+	drawCellBorder bool
 )
 
 // GetFillCommand returns the cobra command for the "fill" action.
@@ -27,6 +27,7 @@ func GetFillCommand() (cmd *cobra.Command) {
 		Run: executeFill,
 	}
 	fillCmd.Flags().BoolVarP(&drawGrid, "grid", "g", false, "Draw a coordinate grid on the output file")
+	fillCmd.Flags().BoolVarP(&drawCellBorder, "cellBorder", "c", false, "Draw the cell borders of all added fields")
 
 	return fillCmd
 }
@@ -61,9 +62,13 @@ func executeFill(cmd *cobra.Command, args []string) {
 	// create stamp
 	stamp := NewStamp(width, height)
 
+	if drawCellBorder {
+		stamp.SetCellBorder(true)
+	}
+
 	// add content to stamp
 	for key, value := range as {
-		fmt.Printf("Processing Key='%v', value='%v'\n", key, *value)
+		//fmt.Printf("Processing Key='%v', value='%v'\n", key, *value)
 
 		content, exists := cCfg.GetContent(key)
 		Assert(exists, "No content with key="+key)

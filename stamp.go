@@ -9,9 +9,10 @@ import (
 
 // Stamp is a wraper for a PDF page
 type Stamp struct {
-	pdf  *gofpdf.Fpdf
-	dimX float64
-	dimY float64
+	pdf        *gofpdf.Fpdf
+	dimX       float64
+	dimY       float64
+	cellBorder string
 }
 
 // NewStamp creates a new Stamp object.
@@ -20,6 +21,8 @@ func NewStamp(dimX float64, dimY float64) (s *Stamp) {
 
 	s.dimX = dimX
 	s.dimY = dimY
+
+	s.SetCellBorder(false)
 
 	s.pdf = gofpdf.NewCustom(&gofpdf.InitType{
 		UnitStr: "pt",
@@ -30,6 +33,15 @@ func NewStamp(dimX float64, dimY float64) (s *Stamp) {
 	s.pdf.AddPage() // 0,0 is top-left. To change use AddPageFormat() instead
 
 	return s
+}
+
+// SetCellBorder sets whether the border around cells should be drawn.
+func (s *Stamp) SetCellBorder(shouldDrawBorder bool) {
+	if shouldDrawBorder {
+		s.cellBorder = "1"
+	} else {
+		s.cellBorder = "0"
+	}
 }
 
 // AddText adds a portion of text at the specified coordinates
@@ -77,7 +89,7 @@ func (s *Stamp) AddCellText(x1, y1, x2, y2 float64, text string, fontName string
 	s.pdf.SetFont(fontName, "", fontSize)
 	s.pdf.SetXY(x, y)
 	s.pdf.SetCellMargin(0)
-	s.pdf.CellFormat(w, h, text, "1" /*border*/, 0, "CB", false, 0, "")
+	s.pdf.CellFormat(w, h, text, s.cellBorder, 0, "CB", false, 0, "")
 }
 
 // WriteToFile writes the contect of the Stamp object into a PDF file.
