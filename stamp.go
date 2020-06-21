@@ -87,12 +87,6 @@ func (s *Stamp) WriteToFile(filename string) {
 	AssertNoError(err)
 }
 
-// Pdf returns the included gofpdf.Fpdf object.
-// Function should be finally removed
-func (s *Stamp) Pdf() (pdf *gofpdf.Fpdf) {
-	return s.pdf
-}
-
 // CreateMeasurementCoordinates overlays the stamp with a set of lines
 func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 	Assert(majorGap > 0, "Provided gap should be greater than 0")
