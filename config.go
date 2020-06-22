@@ -9,8 +9,8 @@ import (
 	"github.com/go-yaml/yaml"
 )
 
-// YamlConfig represents the structure of the config yaml file
-type YamlConfig struct {
+// YamlFile represents the structure of the config yaml file
+type YamlFile struct {
 	Default ConfigDefaults
 	Content *[]ContentEntry
 	Inherit string // Name of the config that should be inherited
@@ -56,10 +56,10 @@ func NewChronicleConfig(name string) (c *ChronicleConfig) {
 // TODO #6 generic function for checking required fields in struct
 // also output warnings for non-required fields
 
-// GetYamlConfigFromFile reads the config file from the provided location.
-func GetYamlConfigFromFile(filename string) (c *YamlConfig, err error) {
-	// print or log reading of config file
-	c = new(YamlConfig)
+// GetYamlFile reads the yaml file from the provided location.
+func GetYamlFile(filename string) (c *YamlFile, err error) {
+	// TODO print or log reading of yaml file
+	c = new(YamlFile)
 
 	fileData, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -68,7 +68,7 @@ func GetYamlConfigFromFile(filename string) (c *YamlConfig, err error) {
 
 	err = yaml.Unmarshal(fileData, c)
 	if err != nil {
-		log.Fatalf("Error parsing config file %v: %v\n", filename, err)
+		log.Fatalf("Error parsing yaml file %v: %v\n", filename, err)
 		return nil, err
 	}
 
@@ -78,25 +78,25 @@ func GetYamlConfigFromFile(filename string) (c *YamlConfig, err error) {
 // GetConfigByName returns the config object for the given name, or nil and
 // an error object if no config with that name could be found. The config
 // name is case-insensitive.
-func GetConfigByName(cfgName string) (c *YamlConfig, err error) {
+func GetConfigByName(cfgName string) (c *YamlFile, err error) {
 	// Keep it simple for the moment. Search in 'config' subdir
 	// for a file with cfgName as basename and 'yml' as file extension
 
 	cfgBaseFilename := strings.ToLower(cfgName) + ".yml"
 	cfgFilename := filepath.Join(GetExecutableDir(), "config", cfgBaseFilename)
 
-	c, err = GetYamlConfigFromFile(cfgFilename)
+	c, err = GetYamlFile(cfgFilename)
 
 	return c, err
 }
 
 // GetChronicleConfig extracts, processes, and prepares the config
-// information from a YamlConfig object and puts it into a form
+// information from a YamlFile object and puts it into a form
 // that can be worked with.
-func (yCfg *YamlConfig) GetChronicleConfig() (cCfg *ChronicleConfig) {
+func (yCfg *YamlFile) GetChronicleConfig() (cCfg *ChronicleConfig) {
 	cCfg = NewChronicleConfig("pfs2") // TODO remove hardcoded name
 
-	// add content entries from yamlConfig with name mapping into chronicleConfig
+	// add content entries from yamlFile with name mapping into chronicleConfig
 	for _, val := range *yCfg.Content {
 		Assert(val.ID != "", "No ID provided!")
 		id := val.ID
