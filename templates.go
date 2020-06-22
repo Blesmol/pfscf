@@ -2,7 +2,6 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 	"path/filepath"
 	"strings"
 
@@ -28,7 +27,7 @@ type ContentEntry struct {
 // YamlFile represents the structure of a yaml template file
 type YamlFile struct {
 	Default *ContentEntry
-	Content *[]ContentEntry
+	Content []ContentEntry
 	//Inherit *string // Name of the template that should be inherited
 }
 
@@ -62,7 +61,6 @@ func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 
 	err = yaml.Unmarshal(fileData, yFile)
 	if err != nil {
-		log.Fatalf("Error parsing yaml file %v: %v\n", filename, err)
 		return nil, err
 	}
 
@@ -91,7 +89,7 @@ func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate) {
 	cTmpl = NewChronicleTemplate("pfs2") // TODO remove hardcoded name
 
 	// add content entries from yamlFile with name mapping into chronicleTemplate
-	for _, val := range *yFile.Content {
+	for _, val := range yFile.Content {
 		Assert(val.ID != "", "No ID provided!")
 		id := val.ID
 		if _, exists := cTmpl.content[id]; !exists {
