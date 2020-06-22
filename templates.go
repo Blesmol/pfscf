@@ -9,13 +9,6 @@ import (
 	"github.com/go-yaml/yaml"
 )
 
-// YamlFile represents the structure of the config yaml file
-type YamlFile struct {
-	Default ConfigDefaults
-	Content *[]ContentEntry
-	Inherit string // Name of the config that should be inherited
-}
-
 // ContentEntry is a generic struct with lots of fields to fit all
 // supported types of Content. Each type will only check its required
 // fields. So basically only field "Type" always has to be provided,
@@ -29,25 +22,26 @@ type ContentEntry struct {
 	Font     string  // the name of the font (if any) that should be used to display the content
 	Fontsize float64 // size of the font in points
 	Align    string  // Alignment of the content: L/C/R + T/M/B
-	Default  string
-	Flags    []string
+	//Flags    []string
 }
 
-// ConfigDefaults represents all settings for which a default value can be set.
-type ConfigDefaults struct {
-	Font string
+// YamlFile represents the structure of a yaml template file
+type YamlFile struct {
+	Default *ContentEntry
+	Content *[]ContentEntry
+	//Inherit *string // Name of the template that should be inherited
 }
 
-// ChronicleConfig represents a configuration for chronicles. It contains
+// ChronicleTemplate represents a template configuration for chronicles. It contains
 // information on what to put where.
-type ChronicleConfig struct {
+type ChronicleTemplate struct {
 	name    string
 	content map[string]ContentEntry
 }
 
-// NewChronicleConfig returns a new ChronicleConfig object
-func NewChronicleConfig(name string) (c *ChronicleConfig) {
-	c = new(ChronicleConfig)
+// NewChronicleTemplate returns a new ChronicleTemplate object
+func NewChronicleTemplate(name string) (c *ChronicleTemplate) {
+	c = new(ChronicleTemplate)
 	c.name = name
 	c.content = make(map[string]ContentEntry)
 	return c
@@ -57,62 +51,62 @@ func NewChronicleConfig(name string) (c *ChronicleConfig) {
 // also output warnings for non-required fields
 
 // GetYamlFile reads the yaml file from the provided location.
-func GetYamlFile(filename string) (c *YamlFile, err error) {
+func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 	// TODO print or log reading of yaml file
-	c = new(YamlFile)
+	yFile = new(YamlFile)
 
 	fileData, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
-	err = yaml.Unmarshal(fileData, c)
+	err = yaml.Unmarshal(fileData, yFile)
 	if err != nil {
 		log.Fatalf("Error parsing yaml file %v: %v\n", filename, err)
 		return nil, err
 	}
 
-	return c, nil
+	return yFile, nil
 }
 
-// GetConfigByName returns the config object for the given name, or nil and
-// an error object if no config with that name could be found. The config
+// GetTemplateByName returns the template object for the given name, or nil and
+// an error object if no template with that name could be found. The template
 // name is case-insensitive.
-func GetConfigByName(cfgName string) (c *YamlFile, err error) {
-	// Keep it simple for the moment. Search in 'config' subdir
+func GetTemplateByName(tmplName string) (yFile *YamlFile, err error) {
+	// Keep it simple for the moment. Search in 'templates' subdir
 	// for a file with cfgName as basename and 'yml' as file extension
 
-	cfgBaseFilename := strings.ToLower(cfgName) + ".yml"
-	cfgFilename := filepath.Join(GetExecutableDir(), "config", cfgBaseFilename)
+	tmplBaseFilename := strings.ToLower(tmplName) + ".yml"
+	tmplFilename := filepath.Join(GetExecutableDir(), "templates", tmplBaseFilename)
 
-	c, err = GetYamlFile(cfgFilename)
+	yFile, err = GetYamlFile(tmplFilename)
 
-	return c, err
+	return yFile, err
 }
 
-// GetChronicleConfig extracts, processes, and prepares the config
+// GetChronicleTemplate extracts, processes, and prepares the template
 // information from a YamlFile object and puts it into a form
 // that can be worked with.
-func (yCfg *YamlFile) GetChronicleConfig() (cCfg *ChronicleConfig) {
-	cCfg = NewChronicleConfig("pfs2") // TODO remove hardcoded name
+func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate) {
+	cTmpl = NewChronicleTemplate("pfs2") // TODO remove hardcoded name
 
-	// add content entries from yamlFile with name mapping into chronicleConfig
-	for _, val := range *yCfg.Content {
+	// add content entries from yamlFile with name mapping into chronicleTemplate
+	for _, val := range *yFile.Content {
 		Assert(val.ID != "", "No ID provided!")
 		id := val.ID
-		if _, exists := cCfg.content[id]; !exists {
-			cCfg.content[id] = val
+		if _, exists := cTmpl.content[id]; !exists {
+			cTmpl.content[id] = val
 		} else {
 			panic("Duplicate ID found: " + id)
 		}
 	}
 
-	return cCfg
+	return cTmpl
 }
 
 // GetContent returns the ContentEntry matching the provided key
-// from the current ChronicleConfig
-func (cCfg *ChronicleConfig) GetContent(key string) (ce ContentEntry, exists bool) {
-	ce, exists = cCfg.content[key]
+// from the current ChronicleTemplate
+func (cTmpl *ChronicleTemplate) GetContent(key string) (ce ContentEntry, exists bool) {
+	ce, exists = cTmpl.content[key]
 	return
 }

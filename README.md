@@ -37,7 +37,7 @@ $ pfsct fill -h
 Fill a single chronicle sheet with parameters provided on the command line.
 
 Usage:
-  pfsct fill <config> <infile> <outfile> [flags]
+  pfsct fill <template> <infile> <outfile> [flags]
 
 Flags:
   -c, --cellBorder   Draw the cell borders of all added fields
@@ -46,7 +46,7 @@ Flags:
 ```
 
 Required arguments:
-* `<config>`: The name of the config to use. The config defines what you can put on the chronicle and where it is put. Currently the only supported config is `pfs2`, so always use that value.
+* `<template>`: The name of the template to use. The template defines what you can put on the chronicle and where it is put. Currently the only supported template is `pfs2`, so always use that value.
 * `<infile>`: The name of the input PDF file. This should be a single-paged PDF file that contains a chronicle sheet from a Pathfinder Society scenario. And I'm currently relying on that the page in this file has the same dimensions as in the original PDFs.
 * `<outfile>`: The file to which the finished chronicle should be saved.
 

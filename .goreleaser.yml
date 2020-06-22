@@ -27,7 +27,7 @@ archives:
     - goos: windows
       format: zip
   files:
-    - config/*
+    - templates/*
 checksum:
   name_template: 'checksums.txt'
 snapshot:
