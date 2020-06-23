@@ -1,4 +1,4 @@
-defaults:
+default:
     font: Helvetica
     fontsize: 14
 content:

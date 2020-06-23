@@ -131,3 +131,19 @@ func TestGetYamlFile_EmptyContentEntry(t *testing.T) {
 	expectEqual(t, "", content0.Desc)
 	expectEqual(t, 0.0, content0.X1)
 }
+
+func TestGetYamlFile_UnknownFields(t *testing.T) {
+	fileToTest := filepath.Join(templateTestDir, "unknownFields.yml")
+	yFile, err := GetYamlFile(fileToTest)
+
+	expectNil(t, yFile)
+	expectError(t, err)
+}
+
+func TestGetYamlFile_FieldTypeMismatch(t *testing.T) {
+	fileToTest := filepath.Join(templateTestDir, "fieldTypeMismatch.yml")
+	yFile, err := GetYamlFile(fileToTest)
+
+	expectNil(t, yFile)
+	expectError(t, err)
+}

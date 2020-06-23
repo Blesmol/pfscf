@@ -59,7 +59,7 @@ func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 		return nil, err
 	}
 
-	err = yaml.Unmarshal(fileData, yFile)
+	err = yaml.UnmarshalStrict(fileData, yFile)
 	if err != nil {
 		return nil, err
 	}
