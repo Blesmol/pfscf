@@ -4,6 +4,8 @@ import (
 	"io/ioutil"
 	"path/filepath"
 	"strings"
+	"reflect"
+	"fmt"
 
 	"github.com/go-yaml/yaml"
 )
@@ -102,9 +104,66 @@ func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate) {
 	return cTmpl
 }
 
+// checkThatValuesArePresent takes a list of field names from the ContentEntry struct and checks
+// that these fields neither point to a nil ptr nor that the values behind the pointers contain the
+// corresponding types zero value.
+func (ce ContentEntry) checkThatValuesArePresent(names ...string) (isValid bool, err error) {
+	r := reflect.ValueOf(ce)
+
+	for _, name := range names {
+		field := r.FieldByName(name)
+		Assert(field.IsValid(), fmt.Sprintf("ContentEntry does not contain a field with name '%v'", name))
+		Assert(field.Kind() == reflect.Ptr, fmt.Sprintf("Kind of field '%v' should be a pointer", name))
+
+		// check ptr!=nil
+		if field.IsNil() {
+			return false, fmt.Errorf("ContentEntry object does not contain a value for field '%v'", name)
+		}
+
+		// check value behind ptr and ensure that this is not the zero value of that type
+		if reflect.Indirect(field).IsZero() {
+			return false, fmt.Errorf("ContentEntry object contains an empty value for field '%v'", name)
+		}
+	}
+	return true, nil
+}
+
+// IsValid checks whether a ContentEntry is valid. This means that it
+// must contain type information, and depending on the type information
+// a certain set of other fields must be set.
+func (ce ContentEntry) IsValid() (isValid bool, err error) {
+	// Type must be checked first, as we decide by that value on which fields to check
+	isValid, err = ce.checkThatValuesArePresent("Type")
+	if !isValid {
+		return isValid, err
+	}
+
+	switch *ce.Type {
+	case "textCell":
+		return ce.checkThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
+	default:
+		return false, fmt.Errorf("ContentEntry object contains unknown content type '%v'", *ce.Type)
+	}
+}
+
 // GetContent returns the ContentEntry matching the provided key
 // from the current ChronicleTemplate
 func (cTmpl *ChronicleTemplate) GetContent(key string) (ce ContentEntry, exists bool) {
 	ce, exists = cTmpl.content[key]
 	return
+}
+
+// CheckValuesArePresent assumes that all provided arguments are pointers and
+// checks that all of them have a value, i.e. do not equal nil. It will return
+// an error for each nil argument.
+func CheckValuesArePresent(args ...interface{}) (err error) {
+	for _, arg := range args {
+		Assert(reflect.TypeOf(arg).Kind() == reflect.Ptr, "Argument should be a pointer")
+
+		if reflect.ValueOf(arg).IsNil() {
+			return fmt.Errorf("Missing ")
+		}
+	}
+
+	return nil
 }

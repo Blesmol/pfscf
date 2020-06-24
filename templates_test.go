@@ -159,3 +159,77 @@ func TestGetYamlFile_FieldTypeMismatch(t *testing.T) {
 	expectNil(t, yFile)
 	expectError(t, err)
 }
+
+func getContentEntryWithDummyData(ceType *string, ceId *string) (ce ContentEntry) {
+	ce.Type = ceType
+	ce.ID = ceId
+	ce.Desc = new(string); *ce.Desc = "Some Description"
+	ce.X1 = new(float64); *ce.X1 = 12.0
+	ce.Y1 = new(float64); *ce.Y1 = 12.0
+	ce.X2 = new(float64); *ce.X2 = 24.0
+	ce.Y2 = new(float64); *ce.Y2 = 24.0
+	ce.Font = new(string); *ce.Font = "Helvetica"
+	ce.Fontsize = new(float64); *ce.Fontsize = 14.0
+	ce.Align = new(string); *ce.Align = "LB"
+	return ce
+}
+
+func TestContentEntryIsValid_emptyType(t *testing.T) {
+	ceId := "foo"
+
+	ce := getContentEntryWithDummyData(nil, &ceId)
+	isValid, err := ce.IsValid()
+
+	expectEqual(t, false, isValid)
+	expectError(t, err)
+}
+
+func TestContentEntryIsValid_invalidType(t *testing.T) {
+	ceType := "textCellX"
+	ceId := "foo"
+
+	ce := getContentEntryWithDummyData(&ceType, &ceId)
+	isValid, err := ce.IsValid()
+
+	expectEqual(t, false, isValid)
+	expectError(t, err)
+}
+
+func TestContentEntryIsValid_validTextCell(t *testing.T) {
+	ceType := "textCell"
+	ceId := "foo"
+
+	ce := getContentEntryWithDummyData(&ceType, &ceId)
+	isValid, err := ce.IsValid()
+
+	expectEqual(t, true, isValid)
+	expectNoError(t, err)
+}
+
+func TestContentEntryIsValid_textCellWithMissingValues(t *testing.T) {
+	ceType := "textCell"
+	ceId := "foo"
+
+	ce := getContentEntryWithDummyData(&ceType, &ceId)
+	ce.Font = nil
+
+	isValid, err := ce.IsValid()
+
+	expectEqual(t, false, isValid)
+	expectError(t, err)
+}
+
+func TestContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
+	ceType := "textCell"
+	ceId := "foo"
+
+	ce := getContentEntryWithDummyData(&ceType, &ceId)
+	emptyString := ""
+	ce.Font = &emptyString
+
+	isValid, err := ce.IsValid()
+
+	expectEqual(t, false, isValid)
+	expectError(t, err)
+}
+
