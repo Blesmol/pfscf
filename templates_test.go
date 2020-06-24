@@ -160,24 +160,32 @@ func TestGetYamlFile_FieldTypeMismatch(t *testing.T) {
 	expectError(t, err)
 }
 
-func getContentEntryWithDummyData(ceType *string, ceId *string) (ce ContentEntry) {
+func getContentEntryWithDummyData(ceType *string, ceID *string) (ce ContentEntry) {
 	ce.Type = ceType
-	ce.ID = ceId
-	ce.Desc = new(string); *ce.Desc = "Some Description"
-	ce.X1 = new(float64); *ce.X1 = 12.0
-	ce.Y1 = new(float64); *ce.Y1 = 12.0
-	ce.X2 = new(float64); *ce.X2 = 24.0
-	ce.Y2 = new(float64); *ce.Y2 = 24.0
-	ce.Font = new(string); *ce.Font = "Helvetica"
-	ce.Fontsize = new(float64); *ce.Fontsize = 14.0
-	ce.Align = new(string); *ce.Align = "LB"
+	ce.ID = ceID
+	ce.Desc = new(string)
+	*ce.Desc = "Some Description"
+	ce.X1 = new(float64)
+	*ce.X1 = 12.0
+	ce.Y1 = new(float64)
+	*ce.Y1 = 12.0
+	ce.X2 = new(float64)
+	*ce.X2 = 24.0
+	ce.Y2 = new(float64)
+	*ce.Y2 = 24.0
+	ce.Font = new(string)
+	*ce.Font = "Helvetica"
+	ce.Fontsize = new(float64)
+	*ce.Fontsize = 14.0
+	ce.Align = new(string)
+	*ce.Align = "LB"
 	return ce
 }
 
 func TestContentEntryIsValid_emptyType(t *testing.T) {
-	ceId := "foo"
+	ceID := "foo"
 
-	ce := getContentEntryWithDummyData(nil, &ceId)
+	ce := getContentEntryWithDummyData(nil, &ceID)
 	isValid, err := ce.IsValid()
 
 	expectEqual(t, false, isValid)
@@ -186,9 +194,9 @@ func TestContentEntryIsValid_emptyType(t *testing.T) {
 
 func TestContentEntryIsValid_invalidType(t *testing.T) {
 	ceType := "textCellX"
-	ceId := "foo"
+	ceID := "foo"
 
-	ce := getContentEntryWithDummyData(&ceType, &ceId)
+	ce := getContentEntryWithDummyData(&ceType, &ceID)
 	isValid, err := ce.IsValid()
 
 	expectEqual(t, false, isValid)
@@ -197,9 +205,9 @@ func TestContentEntryIsValid_invalidType(t *testing.T) {
 
 func TestContentEntryIsValid_validTextCell(t *testing.T) {
 	ceType := "textCell"
-	ceId := "foo"
+	ceID := "foo"
 
-	ce := getContentEntryWithDummyData(&ceType, &ceId)
+	ce := getContentEntryWithDummyData(&ceType, &ceID)
 	isValid, err := ce.IsValid()
 
 	expectEqual(t, true, isValid)
@@ -208,9 +216,9 @@ func TestContentEntryIsValid_validTextCell(t *testing.T) {
 
 func TestContentEntryIsValid_textCellWithMissingValues(t *testing.T) {
 	ceType := "textCell"
-	ceId := "foo"
+	ceID := "foo"
 
-	ce := getContentEntryWithDummyData(&ceType, &ceId)
+	ce := getContentEntryWithDummyData(&ceType, &ceID)
 	ce.Font = nil
 
 	isValid, err := ce.IsValid()
@@ -221,9 +229,9 @@ func TestContentEntryIsValid_textCellWithMissingValues(t *testing.T) {
 
 func TestContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
 	ceType := "textCell"
-	ceId := "foo"
+	ceID := "foo"
 
-	ce := getContentEntryWithDummyData(&ceType, &ceId)
+	ce := getContentEntryWithDummyData(&ceType, &ceID)
 	emptyString := ""
 	ce.Font = &emptyString
 
@@ -235,16 +243,22 @@ func TestContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
 
 func TestApplyDefaults(t *testing.T) {
 	var ce ContentEntry
-	ce.Type = new(string); *ce.Type = "Foo"
-	ce.Fontsize = new(float64); *ce.Fontsize = 10.0
+	ce.Type = new(string)
+	*ce.Type = "Foo"
+	ce.Fontsize = new(float64)
+	*ce.Fontsize = 10.0
 	ce.Font = new(string) // intentionally left empty
 
 	var defaults ContentEntry
-	defaults.Type = new(string); *defaults.Type = "Bar"
-	defaults.X1 = new(float64); *defaults.X1 = 5.0
-	defaults.Y1 = new(float64); // intentionally left empty
-	defaults.Font = new(string); *defaults.Font = "Dingbats"
-	defaults.Fontsize = new(float64); *defaults.Fontsize = 20.0
+	defaults.Type = new(string)
+	*defaults.Type = "Bar"
+	defaults.X1 = new(float64)
+	*defaults.X1 = 5.0
+	defaults.Y1 = new(float64) // intentionally left empty
+	defaults.Font = new(string)
+	*defaults.Font = "Dingbats"
+	defaults.Fontsize = new(float64)
+	*defaults.Fontsize = 20.0
 
 	ce.applyDefaults(&defaults)
 

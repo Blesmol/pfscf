@@ -51,8 +51,6 @@ func IsSet(val interface{}) (result bool) {
 	x := reflect.ValueOf(val)
 	if x.Kind() == reflect.Ptr {
 		return !(x.IsNil() || reflect.Indirect(x).IsZero())
-	} else {
-		return !x.IsZero()
 	}
+	return !x.IsZero()
 }
-
