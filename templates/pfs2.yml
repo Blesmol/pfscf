@@ -9,8 +9,6 @@ content:
       y1: 124
       x2: 142
       y2: 108
-      font: Helvetica
-      fontsize: 14
       align: CB
     - type: textCell
       id: char
@@ -19,8 +17,6 @@ content:
       y1: 124
       x2: 270
       y2: 108
-      font: Helvetica
-      fontsize: 14
       align: CB
     - type: textCell
       id: playerid
@@ -29,7 +25,6 @@ content:
       y1: 123
       x2: 342
       y2: 108
-      font: Helvetica
       fontsize: 10
       align: RB
     - type: textCell
@@ -39,14 +34,11 @@ content:
       y1: 123
       x2: 396
       y2: 108
-      font: Helvetica
       fontsize: 10
       align: LB
     - type: textCell
       id: xp
       desc: Experience points
-      font: Helvetica
-      fontsize: 14
       x1: 475
       y1: 311
       x2: 565
@@ -59,8 +51,6 @@ content:
       y1: 444
       x2: 565
       y2: 420
-      font: Helvetica
-      fontsize: 14
       align: CM
     - type: textCell
       id: dj
@@ -69,8 +59,6 @@ content:
       y1: 481
       x2: 565
       y2: 456
-      font: Helvetica
-      fontsize: 14
       align: CM
     - type: textCell
       id: fame
@@ -79,8 +67,6 @@ content:
       y1: 639
       x2: 565
       y2: 663
-      font: Helvetica
-      fontsize: 14
       align: CM
     - type: textCell
       id: event
@@ -89,8 +75,6 @@ content:
       y1: 733
       x2: 147
       y2: 717
-      font: Helvetica
-      fontsize: 14
       align: CB
     - type: textCell
       id: code
@@ -99,8 +83,6 @@ content:
       y1: 733
       x2: 212
       y2: 717
-      font: Helvetica
-      fontsize: 14
       align: CB
     - type: textCell
       id: date
@@ -109,8 +91,6 @@ content:
       y1: 733
       x2: 303
       y2: 717
-      font: Helvetica
-      fontsize: 14
       align: CB
     - type: textCell
       id: gm
@@ -119,8 +99,6 @@ content:
       y1: 733
       x2: 446
       y2: 717
-      font: Helvetica
-      fontsize: 14
       align: CB
     - type: textCell
       id: gmid
@@ -129,8 +107,6 @@ content:
       y1: 733
       x2: 563
       y2: 717
-      font: Helvetica
-      fontsize: 14
       align: CB
     - type: textCell
       id: fac1name
@@ -139,7 +115,6 @@ content:
       y1: 107
       x2: 489
       y2: 98
-      font: Helvetica
       fontsize: 8
       align: CB
     - type: textCell
@@ -149,7 +124,6 @@ content:
       y1: 107
       x2: 547
       y2: 98
-      font: Helvetica
       fontsize: 8
       align: CB
     - type: textCell
@@ -159,7 +133,6 @@ content:
       y1: 127
       x2: 489
       y2: 118
-      font: Helvetica
       fontsize: 8
       align: CB
     - type: textCell
@@ -169,7 +142,6 @@ content:
       y1: 127
       x2: 547
       y2: 118
-      font: Helvetica
       fontsize: 8
       align: CB
     - type: textCell
@@ -179,7 +151,6 @@ content:
       y1: 147
       x2: 489
       y2: 138
-      font: Helvetica
       fontsize: 8
       align: CB
     - type: textCell
@@ -189,6 +160,5 @@ content:
       y1: 147
       x2: 547
       y2: 138
-      font: Helvetica
       fontsize: 8
       align: CB
