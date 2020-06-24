@@ -2,6 +2,7 @@ package main
 
 import (
 	"io/ioutil"
+	"reflect"
 )
 
 // Assert will throw a panic if condition is false.
@@ -42,3 +43,16 @@ func GetExecutableDir() (dirName string) {
 	dirName = "."
 	return dirName
 }
+
+// IsSet checks whether the provided value is different from its zero value and
+// in case of a non-nil pointer it also checks whether the referenced value is
+// not the zero value
+func IsSet(val interface{}) (result bool) {
+	x := reflect.ValueOf(val)
+	if x.Kind() == reflect.Ptr {
+		return !(x.IsNil() || reflect.Indirect(x).IsZero())
+	} else {
+		return !x.IsZero()
+	}
+}
+

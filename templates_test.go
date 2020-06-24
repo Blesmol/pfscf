@@ -233,3 +233,29 @@ func TestContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
 	expectError(t, err)
 }
 
+func TestApplyDefaults(t *testing.T) {
+	var ce ContentEntry
+	ce.Type = new(string); *ce.Type = "Foo"
+	ce.Fontsize = new(float64); *ce.Fontsize = 10.0
+	ce.Font = new(string) // intentionally left empty
+
+	var defaults ContentEntry
+	defaults.Type = new(string); *defaults.Type = "Bar"
+	defaults.X1 = new(float64); *defaults.X1 = 5.0
+	defaults.Y1 = new(float64); // intentionally left empty
+	defaults.Font = new(string); *defaults.Font = "Dingbats"
+	defaults.Fontsize = new(float64); *defaults.Fontsize = 20.0
+
+	ce.applyDefaults(&defaults)
+
+	expectEqual(t, *ce.Type, "Foo")
+	expectNil(t, ce.ID)
+	expectNil(t, ce.Desc)
+	expectEqual(t, *ce.X1, 5.0)
+	expectNil(t, ce.Y1)
+	expectNil(t, ce.X2)
+	expectNil(t, ce.Y2)
+	expectEqual(t, *ce.Font, "Dingbats")
+	expectEqual(t, *ce.Fontsize, 10.0)
+	expectNil(t, ce.Align)
+}

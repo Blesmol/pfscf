@@ -44,7 +44,8 @@ func executeFill(cmd *cobra.Command, args []string) {
 	yFile, err := GetTemplateByName(tmplName)
 	AssertNoError(err) // TODO proper error message and exit
 
-	cTmpl := yFile.GetChronicleTemplate()
+	cTmpl, err := yFile.GetChronicleTemplate()
+	AssertNoError(err)
 
 	// parse remaining arguments
 	as := ParseArgs(args[3:])

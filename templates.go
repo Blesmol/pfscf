@@ -87,21 +87,48 @@ func GetTemplateByName(tmplName string) (yFile *YamlFile, err error) {
 // GetChronicleTemplate extracts, processes, and prepares the template
 // information from a YamlFile object and puts it into a form
 // that can be worked with.
-func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate) {
+func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate, err error) {
 	cTmpl = NewChronicleTemplate("pfs2") // TODO remove hardcoded name
 
 	// add content entries from yamlFile with name mapping into chronicleTemplate
 	for _, val := range yFile.Content {
-		Assert(val.ID != nil && *val.ID != "", "No ID provided!")
+		Assert(IsSet(val.ID), "No ID provided!")
 		id := *val.ID
-		if _, exists := cTmpl.content[id]; !exists {
-			cTmpl.content[id] = val
-		} else {
-			panic("Duplicate ID found: " + id)
+		if _, exists := cTmpl.content[id]; exists {
+			return nil, fmt.Errorf("Duplicate ID found: '%v'", id)
 		}
+
+		val.applyDefaults(yFile.Default)
+		cTmpl.content[id] = val
 	}
 
-	return cTmpl
+	return cTmpl, nil
+}
+
+// applyDefaults takes another ContentEntry object and then sets each field in the first
+// CE object that is nil or zero to the value that is provided in the second CE object.
+func (ce *ContentEntry) applyDefaults(defaults *ContentEntry) {
+	// Would be better to have a generic version here using reflection that just
+	// checks each field for being nil / zero and then copies over the corresponding
+	// value from the defaults object. Until this is in place, instead add a cheap
+	// check regarding the number of fields in ContentEntry
+
+	if defaults == nil {
+		return
+	}
+
+	Assert(reflect.ValueOf(*ce).NumField()==10, "Number of fields in type ContentEntry has changed, update function 'applyDefaults'")
+
+	if !IsSet(ce.Type) && IsSet(defaults.Type) { ce.Type = defaults.Type }
+	if !IsSet(ce.ID) && IsSet(defaults.ID){ ce.ID = defaults.ID }
+	if !IsSet(ce.Desc) && IsSet(defaults.Desc) { ce.Desc = defaults.Desc }
+	if !IsSet(ce.X1) && IsSet(defaults.X1) { ce.X1 = defaults.X1 }
+	if !IsSet(ce.Y1) && IsSet(defaults.Y1) { ce.Y1 = defaults.Y1 }
+	if !IsSet(ce.X2) && IsSet(defaults.X2) { ce.X2 = defaults.X2 }
+	if !IsSet(ce.Y2) && IsSet(defaults.Y2) { ce.Y2 = defaults.Y2 }
+	if !IsSet(ce.Font) && IsSet(defaults.Font) {ce.Font = defaults.Font}
+	if !IsSet(ce.Fontsize) && IsSet(defaults.Fontsize) { ce.Fontsize = defaults.Fontsize }
+	if !IsSet(ce.Align) && IsSet(defaults.Align) { ce.Align = defaults.Align }
 }
 
 // checkThatValuesArePresent takes a list of field names from the ContentEntry struct and checks
