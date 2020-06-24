@@ -1,11 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
-	"strings"
 	"reflect"
-	"fmt"
+	"strings"
 
 	"github.com/go-yaml/yaml"
 )
@@ -15,20 +15,20 @@ import (
 // fields. So basically only field "Type" always has to be provided,
 // everything else depends on the concrete type.
 type ContentEntry struct {
-	Type     *string  // the type which this entry represents
-	ID       *string  // the ID or name of that concrete content entry
-	Desc     *string  // Description of this parameter
-	X1, Y1   *float64 // first set of coordinates
-	X2, Y2   *float64 // second set of coordinates
-	Font     *string  // the name of the font (if any) that should be used to display the content
-	Fontsize *float64 // size of the font in points
-	Align    *string  // Alignment of the content: L/C/R + T/M/B
+	Type     string  // the type which this entry represents
+	ID       string  // the ID or name of that concrete content entry
+	Desc     string  // Description of this parameter
+	X1, Y1   float64 // first set of coordinates
+	X2, Y2   float64 // second set of coordinates
+	Font     string  // the name of the font (if any) that should be used to display the content
+	Fontsize float64 // size of the font in points
+	Align    string  // Alignment of the content: L/C/R + T/M/B
 	//Flags    *[]string
 }
 
 // YamlFile represents the structure of a yaml template file
 type YamlFile struct {
-	Default *ContentEntry
+	Default ContentEntry
 	Content []ContentEntry
 	//Inherit *string // Name of the template that should be inherited
 }
@@ -93,7 +93,7 @@ func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate, err err
 	// add content entries from yamlFile with name mapping into chronicleTemplate
 	for _, val := range yFile.Content {
 		Assert(IsSet(val.ID), "No ID provided!")
-		id := *val.ID
+		id := val.ID
 		if _, exists := cTmpl.content[id]; exists {
 			return nil, fmt.Errorf("Duplicate ID found: '%v'", id)
 		}
@@ -107,28 +107,43 @@ func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate, err err
 
 // applyDefaults takes another ContentEntry object and then sets each field in the first
 // CE object that is nil or zero to the value that is provided in the second CE object.
-func (ce *ContentEntry) applyDefaults(defaults *ContentEntry) {
+func (ce *ContentEntry) applyDefaults(defaults ContentEntry) {
 	// Would be better to have a generic version here using reflection that just
 	// checks each field for being nil / zero and then copies over the corresponding
 	// value from the defaults object. Until this is in place, instead add a cheap
 	// check regarding the number of fields in ContentEntry
+	Assert(reflect.ValueOf(*ce).NumField() == 10, "Number of fields in type ContentEntry has changed, update function 'applyDefaults'")
 
-	if defaults == nil {
-		return
+	if !IsSet(ce.Type) && IsSet(defaults.Type) {
+		ce.Type = defaults.Type
 	}
-
-	Assert(reflect.ValueOf(*ce).NumField()==10, "Number of fields in type ContentEntry has changed, update function 'applyDefaults'")
-
-	if !IsSet(ce.Type) && IsSet(defaults.Type) { ce.Type = defaults.Type }
-	if !IsSet(ce.ID) && IsSet(defaults.ID){ ce.ID = defaults.ID }
-	if !IsSet(ce.Desc) && IsSet(defaults.Desc) { ce.Desc = defaults.Desc }
-	if !IsSet(ce.X1) && IsSet(defaults.X1) { ce.X1 = defaults.X1 }
-	if !IsSet(ce.Y1) && IsSet(defaults.Y1) { ce.Y1 = defaults.Y1 }
-	if !IsSet(ce.X2) && IsSet(defaults.X2) { ce.X2 = defaults.X2 }
-	if !IsSet(ce.Y2) && IsSet(defaults.Y2) { ce.Y2 = defaults.Y2 }
-	if !IsSet(ce.Font) && IsSet(defaults.Font) {ce.Font = defaults.Font}
-	if !IsSet(ce.Fontsize) && IsSet(defaults.Fontsize) { ce.Fontsize = defaults.Fontsize }
-	if !IsSet(ce.Align) && IsSet(defaults.Align) { ce.Align = defaults.Align }
+	if !IsSet(ce.ID) && IsSet(defaults.ID) {
+		ce.ID = defaults.ID
+	}
+	if !IsSet(ce.Desc) && IsSet(defaults.Desc) {
+		ce.Desc = defaults.Desc
+	}
+	if !IsSet(ce.X1) && IsSet(defaults.X1) {
+		ce.X1 = defaults.X1
+	}
+	if !IsSet(ce.Y1) && IsSet(defaults.Y1) {
+		ce.Y1 = defaults.Y1
+	}
+	if !IsSet(ce.X2) && IsSet(defaults.X2) {
+		ce.X2 = defaults.X2
+	}
+	if !IsSet(ce.Y2) && IsSet(defaults.Y2) {
+		ce.Y2 = defaults.Y2
+	}
+	if !IsSet(ce.Font) && IsSet(defaults.Font) {
+		ce.Font = defaults.Font
+	}
+	if !IsSet(ce.Fontsize) && IsSet(defaults.Fontsize) {
+		ce.Fontsize = defaults.Fontsize
+	}
+	if !IsSet(ce.Align) && IsSet(defaults.Align) {
+		ce.Align = defaults.Align
+	}
 }
 
 // checkThatValuesArePresent takes a list of field names from the ContentEntry struct and checks
@@ -140,16 +155,9 @@ func (ce ContentEntry) checkThatValuesArePresent(names ...string) (isValid bool,
 	for _, name := range names {
 		field := r.FieldByName(name)
 		Assert(field.IsValid(), fmt.Sprintf("ContentEntry does not contain a field with name '%v'", name))
-		Assert(field.Kind() == reflect.Ptr, fmt.Sprintf("Kind of field '%v' should be a pointer", name))
 
-		// check ptr!=nil
-		if field.IsNil() {
+		if !IsSet(field.Interface()) {
 			return false, fmt.Errorf("ContentEntry object does not contain a value for field '%v'", name)
-		}
-
-		// check value behind ptr and ensure that this is not the zero value of that type
-		if reflect.Indirect(field).IsZero() {
-			return false, fmt.Errorf("ContentEntry object contains an empty value for field '%v'", name)
 		}
 	}
 	return true, nil
@@ -165,11 +173,11 @@ func (ce ContentEntry) IsValid() (isValid bool, err error) {
 		return isValid, err
 	}
 
-	switch *ce.Type {
+	switch ce.Type {
 	case "textCell":
 		return ce.checkThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
 	default:
-		return false, fmt.Errorf("ContentEntry object contains unknown content type '%v'", *ce.Type)
+		return false, fmt.Errorf("ContentEntry object contains unknown content type '%v'", ce.Type)
 	}
 }
 

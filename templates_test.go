@@ -69,6 +69,13 @@ func expectNoError(t *testing.T, err error) {
 	}
 }
 
+func expectNotSet(t *testing.T, got interface{}) {
+	if IsSet(got) {
+		debug.PrintStack()
+		t.Errorf("Expected not set, got '%v'", got)
+	}
+}
+
 func TestGetYamlFile_NonExistantFile(t *testing.T) {
 	fileToTest := filepath.Join(templateTestDir, "nonExistantFile.yml")
 	yFile, err := GetYamlFile(fileToTest)
@@ -93,17 +100,17 @@ func TestGetYamlFile_ValidFile(t *testing.T) {
 	expectNoError(t, err)
 
 	// test values contained in the yaml file
-	expectEqual(t, "Helvetica", *yFile.Default.Font)
-	expectEqual(t, 14.0, *yFile.Default.Fontsize)
+	expectEqual(t, "Helvetica", yFile.Default.Font)
+	expectEqual(t, 14.0, yFile.Default.Fontsize)
 	expectEqual(t, 2, len(yFile.Content))
 
 	content0 := &(yFile.Content[0])
-	expectEqual(t, "foo", *content0.ID)
-	expectEqual(t, "textCell", *content0.Type)
+	expectEqual(t, "foo", content0.ID)
+	expectEqual(t, "textCell", content0.Type)
 
 	content1 := &(yFile.Content[1])
-	expectEqual(t, "bar", *content1.ID)
-	expectEqual(t, "textCell", *content1.Type)
+	expectEqual(t, "bar", content1.ID)
+	expectEqual(t, "textCell", content1.Type)
 }
 
 func TestGetYamlFile_EmptyFile(t *testing.T) {
@@ -114,7 +121,7 @@ func TestGetYamlFile_EmptyFile(t *testing.T) {
 	expectNoError(t, err)
 
 	// empty file => no default section and no content
-	expectNil(t, yFile.Default)
+	expectNotSet(t, yFile.Default)
 	expectEqual(t, 0, len(yFile.Content))
 }
 
@@ -128,18 +135,12 @@ func TestGetYamlFile_EmptyContentEntry(t *testing.T) {
 	expectEqual(t, 1, len(yFile.Content)) // one empty entry is included
 	content0 := &(yFile.Content[0])
 
-	// check that all fields in the empty content entry are nil ptrs
+	// check that all fields in the empty content entry are not set
 	refStruct := reflect.ValueOf(content0).Elem()
 	for i := 0; i < refStruct.NumField(); i++ {
 		refField := refStruct.Field(i)
-
-		if refField.Kind() != reflect.Ptr {
-			t.Errorf("Expected ContentEntry field '%v' to be a Ptr, but has kind '%v' instead", refStruct.Type().Field(i).Name, refField.Kind())
-		} else {
-			// is Ptr, check for nil
-			if !refField.IsNil() {
-				t.Errorf("Expected ContentEntry field '%v' to be a nil ptr, but points to value '%v' instead", refStruct.Type().Field(i).Name, reflect.Indirect(refField.Elem()))
-			}
+		if IsSet(refField.Interface()) {
+			t.Errorf("Expected ContentEntry field '%v' to be not set, but has value '%v' instead", refStruct.Type().Field(i).Name, refField.Interface())
 		}
 	}
 }
@@ -160,32 +161,22 @@ func TestGetYamlFile_FieldTypeMismatch(t *testing.T) {
 	expectError(t, err)
 }
 
-func getContentEntryWithDummyData(ceType *string, ceID *string) (ce ContentEntry) {
+func getContentEntryWithDummyData(ceType string, ceID string) (ce ContentEntry) {
 	ce.Type = ceType
 	ce.ID = ceID
-	ce.Desc = new(string)
-	*ce.Desc = "Some Description"
-	ce.X1 = new(float64)
-	*ce.X1 = 12.0
-	ce.Y1 = new(float64)
-	*ce.Y1 = 12.0
-	ce.X2 = new(float64)
-	*ce.X2 = 24.0
-	ce.Y2 = new(float64)
-	*ce.Y2 = 24.0
-	ce.Font = new(string)
-	*ce.Font = "Helvetica"
-	ce.Fontsize = new(float64)
-	*ce.Fontsize = 14.0
-	ce.Align = new(string)
-	*ce.Align = "LB"
+	ce.Desc = "Some Description"
+	ce.X1 = 12.0
+	ce.Y1 = 12.0
+	ce.X2 = 24.0
+	ce.Y2 = 24.0
+	ce.Font = "Helvetica"
+	ce.Fontsize = 14.0
+	ce.Align = "LB"
 	return ce
 }
 
 func TestContentEntryIsValid_emptyType(t *testing.T) {
-	ceID := "foo"
-
-	ce := getContentEntryWithDummyData(nil, &ceID)
+	ce := getContentEntryWithDummyData("", "foo")
 	isValid, err := ce.IsValid()
 
 	expectEqual(t, false, isValid)
@@ -193,10 +184,7 @@ func TestContentEntryIsValid_emptyType(t *testing.T) {
 }
 
 func TestContentEntryIsValid_invalidType(t *testing.T) {
-	ceType := "textCellX"
-	ceID := "foo"
-
-	ce := getContentEntryWithDummyData(&ceType, &ceID)
+	ce := getContentEntryWithDummyData("textCellX", "foo")
 	isValid, err := ce.IsValid()
 
 	expectEqual(t, false, isValid)
@@ -204,36 +192,16 @@ func TestContentEntryIsValid_invalidType(t *testing.T) {
 }
 
 func TestContentEntryIsValid_validTextCell(t *testing.T) {
-	ceType := "textCell"
-	ceID := "foo"
-
-	ce := getContentEntryWithDummyData(&ceType, &ceID)
+	ce := getContentEntryWithDummyData("textCell", "foo")
 	isValid, err := ce.IsValid()
 
 	expectEqual(t, true, isValid)
 	expectNoError(t, err)
 }
 
-func TestContentEntryIsValid_textCellWithMissingValues(t *testing.T) {
-	ceType := "textCell"
-	ceID := "foo"
-
-	ce := getContentEntryWithDummyData(&ceType, &ceID)
-	ce.Font = nil
-
-	isValid, err := ce.IsValid()
-
-	expectEqual(t, false, isValid)
-	expectError(t, err)
-}
-
 func TestContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
-	ceType := "textCell"
-	ceID := "foo"
-
-	ce := getContentEntryWithDummyData(&ceType, &ceID)
-	emptyString := ""
-	ce.Font = &emptyString
+	ce := getContentEntryWithDummyData("textCell", "foo")
+	ce.Font = ""
 
 	isValid, err := ce.IsValid()
 
@@ -243,33 +211,27 @@ func TestContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
 
 func TestApplyDefaults(t *testing.T) {
 	var ce ContentEntry
-	ce.Type = new(string)
-	*ce.Type = "Foo"
-	ce.Fontsize = new(float64)
-	*ce.Fontsize = 10.0
-	ce.Font = new(string) // intentionally left empty
+	ce.Type = "Foo"
+	ce.Fontsize = 10.0
+	ce.Font = ""
 
 	var defaults ContentEntry
-	defaults.Type = new(string)
-	*defaults.Type = "Bar"
-	defaults.X1 = new(float64)
-	*defaults.X1 = 5.0
-	defaults.Y1 = new(float64) // intentionally left empty
-	defaults.Font = new(string)
-	*defaults.Font = "Dingbats"
-	defaults.Fontsize = new(float64)
-	*defaults.Fontsize = 20.0
+	defaults.Type = "Bar"
+	defaults.X1 = 5.0
+	defaults.Y1 = 0.0
+	defaults.Font = "Dingbats"
+	defaults.Fontsize = 20.0
 
-	ce.applyDefaults(&defaults)
+	ce.applyDefaults(defaults)
 
-	expectEqual(t, *ce.Type, "Foo")
-	expectNil(t, ce.ID)
-	expectNil(t, ce.Desc)
-	expectEqual(t, *ce.X1, 5.0)
-	expectNil(t, ce.Y1)
-	expectNil(t, ce.X2)
-	expectNil(t, ce.Y2)
-	expectEqual(t, *ce.Font, "Dingbats")
-	expectEqual(t, *ce.Fontsize, 10.0)
-	expectNil(t, ce.Align)
+	expectEqual(t, ce.Type, "Foo")
+	expectNotSet(t, ce.ID)
+	expectNotSet(t, ce.Desc)
+	expectEqual(t, ce.X1, 5.0)
+	expectNotSet(t, ce.Y1)
+	expectNotSet(t, ce.X2)
+	expectNotSet(t, ce.Y2)
+	expectEqual(t, ce.Font, "Dingbats")
+	expectEqual(t, ce.Fontsize, 10.0)
+	expectNotSet(t, ce.Align)
 }
