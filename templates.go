@@ -13,15 +13,15 @@ import (
 // fields. So basically only field "Type" always has to be provided,
 // everything else depends on the concrete type.
 type ContentEntry struct {
-	Type     string  // the type which this entry represents
-	ID       string  // the ID or name of that concrete content entry
-	Desc     string  // Description of this parameter
-	X1, Y1   float64 // first set of coordinates
-	X2, Y2   float64 // second set of coordinates
-	Font     string  // the name of the font (if any) that should be used to display the content
-	Fontsize float64 // size of the font in points
-	Align    string  // Alignment of the content: L/C/R + T/M/B
-	//Flags    []string
+	Type     *string  // the type which this entry represents
+	ID       *string  // the ID or name of that concrete content entry
+	Desc     *string  // Description of this parameter
+	X1, Y1   *float64 // first set of coordinates
+	X2, Y2   *float64 // second set of coordinates
+	Font     *string  // the name of the font (if any) that should be used to display the content
+	Fontsize *float64 // size of the font in points
+	Align    *string  // Alignment of the content: L/C/R + T/M/B
+	//Flags    *[]string
 }
 
 // YamlFile represents the structure of a yaml template file
@@ -90,8 +90,8 @@ func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate) {
 
 	// add content entries from yamlFile with name mapping into chronicleTemplate
 	for _, val := range yFile.Content {
-		Assert(val.ID != "", "No ID provided!")
-		id := val.ID
+		Assert(val.ID != nil && *val.ID != "", "No ID provided!")
+		id := *val.ID
 		if _, exists := cTmpl.content[id]; !exists {
 			cTmpl.content[id] = val
 		} else {

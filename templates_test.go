@@ -93,17 +93,17 @@ func TestGetYamlFile_ValidFile(t *testing.T) {
 	expectNoError(t, err)
 
 	// test values contained in the yaml file
-	expectEqual(t, "Helvetica", yFile.Default.Font)
-	expectEqual(t, 14.0, yFile.Default.Fontsize)
+	expectEqual(t, "Helvetica", *yFile.Default.Font)
+	expectEqual(t, 14.0, *yFile.Default.Fontsize)
 	expectEqual(t, 2, len(yFile.Content))
 
 	content0 := &(yFile.Content[0])
-	expectEqual(t, "foo", content0.ID)
-	expectEqual(t, "textCell", content0.Type)
+	expectEqual(t, "foo", *content0.ID)
+	expectEqual(t, "textCell", *content0.Type)
 
 	content1 := &(yFile.Content[1])
-	expectEqual(t, "bar", content1.ID)
-	expectEqual(t, "textCell", content1.Type)
+	expectEqual(t, "bar", *content1.ID)
+	expectEqual(t, "textCell", *content1.Type)
 }
 
 func TestGetYamlFile_EmptyFile(t *testing.T) {
@@ -128,8 +128,20 @@ func TestGetYamlFile_EmptyContentEntry(t *testing.T) {
 	expectEqual(t, 1, len(yFile.Content)) // one empty entry is included
 	content0 := &(yFile.Content[0])
 
-	expectEqual(t, "", content0.Desc)
-	expectEqual(t, 0.0, content0.X1)
+	// check that all fields in the empty content entry are nil ptrs
+	refStruct := reflect.ValueOf(content0).Elem()
+	for i := 0; i < refStruct.NumField(); i++ {
+		refField := refStruct.Field(i)
+
+		if refField.Kind() != reflect.Ptr {
+			t.Errorf("Expected ContentEntry field '%v' to be a Ptr, but has kind '%v' instead", refStruct.Type().Field(i).Name, refField.Kind())
+		} else {
+			// is Ptr, check for nil
+			if !refField.IsNil() {
+				t.Errorf("Expected ContentEntry field '%v' to be a nil ptr, but points to value '%v' instead", refStruct.Type().Field(i).Name, reflect.Indirect(refField.Elem()))
+			}
+		}
+	}
 }
 
 func TestGetYamlFile_UnknownFields(t *testing.T) {
