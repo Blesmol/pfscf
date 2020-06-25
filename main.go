@@ -17,6 +17,7 @@ func main() {
 	}
 
 	RootCmd.AddCommand(GetFillCommand())
+	RootCmd.AddCommand(GetTemplateCommand())
 
 	err := RootCmd.Execute()
 	if err != nil {

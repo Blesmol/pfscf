@@ -8,16 +8,13 @@ import (
 )
 
 var (
-	fillCmd        *cobra.Command
 	drawGrid       bool
 	drawCellBorder bool
 )
 
 // GetFillCommand returns the cobra command for the "fill" action.
 func GetFillCommand() (cmd *cobra.Command) {
-	Assert(fillCmd == nil, "FillCmd already initialized")
-
-	fillCmd = &cobra.Command{
+	fillCmd := &cobra.Command{
 		Use:   "fill <template> <infile> <outfile>",
 		Short: "Fill a single chronicle sheet",
 		Long:  "Fill a single chronicle sheet with parameters provided on the command line.",
