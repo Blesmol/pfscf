@@ -7,34 +7,46 @@ import (
 	"testing"
 )
 
-var templateTestDir string
+const (
+	printCallStackOnFailingTest = false
+)
+
+var (
+	yamlTestDir string
+)
 
 func init() {
-	templateTestDir = filepath.Join(GetExecutableDir(), "testdata", "templates")
+	yamlTestDir = filepath.Join(GetExecutableDir(), "testdata", "yaml")
 }
 
-func expectEqual(t *testing.T, exp interface{}, got interface{}) {
+func callStack() {
+	if printCallStackOnFailingTest {
+		debug.PrintStack()
+	}
+}
+
+func expectEqual(t *testing.T, got interface{}, exp interface{}) {
 	if exp == got {
 		return
 	}
-	debug.PrintStack()
+	callStack()
 	t.Errorf("Expected '%v' (type %v), got '%v' (type %v)", exp, reflect.TypeOf(exp), got, reflect.TypeOf(got))
 }
 
-func expectNotEqual(t *testing.T, notExp interface{}, got interface{}) {
+func expectNotEqual(t *testing.T, got interface{}, notExp interface{}) {
 	typeNotExp := reflect.TypeOf(notExp)
 	typeGot := reflect.TypeOf(got)
 
 	// we always require that both types are identical.
 	// Without that, testing can be a real pain
 	if typeNotExp != typeGot {
-		debug.PrintStack()
+		callStack()
 		t.Errorf("Types do not match! Expected '%v', got '%v'", typeNotExp, typeGot)
 		return
 	}
 
 	if notExp == got {
-		debug.PrintStack()
+		callStack()
 		t.Errorf("Expected something different than '%v' (type %v)", notExp, typeNotExp)
 	}
 }
@@ -42,7 +54,7 @@ func expectNotEqual(t *testing.T, notExp interface{}, got interface{}) {
 func expectNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
 	if !reflect.ValueOf(got).IsNil() {
-		debug.PrintStack()
+		callStack()
 		t.Errorf("Expected nil, got '%v' (Type %v)", got, reflect.TypeOf(got))
 	}
 }
@@ -50,34 +62,58 @@ func expectNil(t *testing.T, got interface{}) {
 func expectNotNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
 	if reflect.ValueOf(got).IsNil() {
-		debug.PrintStack()
+		callStack()
 		t.Errorf("Expected not nil, got '%v' (Type %v)", got, reflect.TypeOf(got))
 	}
 }
 
 func expectError(t *testing.T, err error) {
 	if err == nil {
-		debug.PrintStack()
+		callStack()
 		t.Error("Expected an error, got nil")
 	}
 }
 
 func expectNoError(t *testing.T, err error) {
 	if err != nil {
-		debug.PrintStack()
+		callStack()
 		t.Errorf("Expected no error, got '%v'", err)
 	}
 }
 
 func expectNotSet(t *testing.T, got interface{}) {
 	if IsSet(got) {
-		debug.PrintStack()
+		callStack()
 		t.Errorf("Expected not set, got '%v'", got)
 	}
 }
 
+func expectAllSet(t *testing.T, got interface{}) {
+	vGot := reflect.ValueOf(got)
+
+	switch vGot.Kind() {
+	case reflect.Struct:
+		for i := 0; i < vGot.NumField(); i++ {
+			field := vGot.Field(i)
+			expectAllSet(t, field.Interface())
+		}
+	case reflect.Ptr:
+		if IsSet(got) {
+			expectAllSet(t, vGot.Elem().Interface())
+		} else {
+			callStack()
+			t.Errorf("Expected to be set, but was not: %v / %v", vGot.Type(), vGot.Kind())
+		}
+	default:
+		if !IsSet(got) {
+			callStack()
+			t.Errorf("Expected to be set, but was not: %v / %v", vGot.Type(), vGot.Kind())
+		}
+	}
+}
+
 func TestGetYamlFile_NonExistantFile(t *testing.T) {
-	fileToTest := filepath.Join(templateTestDir, "nonExistantFile.yml")
+	fileToTest := filepath.Join(yamlTestDir, "nonExistantFile.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
 	expectNil(t, yFile)
@@ -85,7 +121,7 @@ func TestGetYamlFile_NonExistantFile(t *testing.T) {
 }
 
 func TestGetYamlFile_MalformedFile(t *testing.T) {
-	fileToTest := filepath.Join(templateTestDir, "malformed.yml")
+	fileToTest := filepath.Join(yamlTestDir, "malformed.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
 	expectNil(t, yFile)
@@ -93,28 +129,58 @@ func TestGetYamlFile_MalformedFile(t *testing.T) {
 }
 
 func TestGetYamlFile_ValidFile(t *testing.T) {
-	fileToTest := filepath.Join(templateTestDir, "valid.yml")
+	fileToTest := filepath.Join(yamlTestDir, "valid.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
 	expectNotNil(t, yFile)
 	expectNoError(t, err)
 
-	// test values contained in the yaml file
-	expectEqual(t, "Helvetica", yFile.Default.Font)
-	expectEqual(t, 14.0, yFile.Default.Fontsize)
-	expectEqual(t, 2, len(yFile.Content))
+	// default values
+	def := &(yFile.Default)
+	expectAllSet(t, def)
+	expectEqual(t, def.Type, "my default Type")
+	expectEqual(t, def.ID, "my default Id")
+	expectEqual(t, def.Desc, "my default Desc")
+	expectEqual(t, def.X1, 91.0)
+	expectEqual(t, def.Y1, 92.0)
+	expectEqual(t, def.X2, 93.0)
+	expectEqual(t, def.Y2, 94.0)
+	expectEqual(t, def.Font, "my default Font")
+	expectEqual(t, def.Fontsize, 95.0)
+	expectEqual(t, def.Align, "my default Align")
 
-	content0 := &(yFile.Content[0])
-	expectEqual(t, "foo", content0.ID)
-	expectEqual(t, "textCell", content0.Type)
+	// number of entries in content array
+	expectEqual(t, len(yFile.Content), 2)
 
-	content1 := &(yFile.Content[1])
-	expectEqual(t, "bar", content1.ID)
-	expectEqual(t, "textCell", content1.Type)
+	c0 := &(yFile.Content[0])
+	expectAllSet(t, c0)
+	expectEqual(t, c0.Type, "my Type")
+	expectEqual(t, c0.ID, "my Id")
+	expectEqual(t, c0.Desc, "my Desc")
+	expectEqual(t, c0.X1, 11.0)
+	expectEqual(t, c0.Y1, 12.0)
+	expectEqual(t, c0.X2, 13.0)
+	expectEqual(t, c0.Y2, 14.0)
+	expectEqual(t, c0.Font, "my Font")
+	expectEqual(t, c0.Fontsize, 15.0)
+	expectEqual(t, c0.Align, "my Align")
+
+	c1 := &(yFile.Content[1])
+	expectAllSet(t, c1)
+	expectEqual(t, c1.Type, "my other type")
+	expectEqual(t, c1.ID, "my other id")
+	expectEqual(t, c1.Desc, "my other desc")
+	expectEqual(t, c1.X1, 21.0)
+	expectEqual(t, c1.Y1, 22.0)
+	expectEqual(t, c1.X2, 23.0)
+	expectEqual(t, c1.Y2, 24.0)
+	expectEqual(t, c1.Font, "my other font")
+	expectEqual(t, c1.Fontsize, 25.0)
+	expectEqual(t, c1.Align, "my other align")
 }
 
 func TestGetYamlFile_EmptyFile(t *testing.T) {
-	fileToTest := filepath.Join(templateTestDir, "empty.yml")
+	fileToTest := filepath.Join(yamlTestDir, "empty.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
 	expectNotNil(t, yFile)
@@ -122,11 +188,11 @@ func TestGetYamlFile_EmptyFile(t *testing.T) {
 
 	// empty file => no default section and no content
 	expectNotSet(t, yFile.Default)
-	expectEqual(t, 0, len(yFile.Content))
+	expectEqual(t, len(yFile.Content), 0)
 }
 
 func TestGetYamlFile_EmptyContentEntry(t *testing.T) {
-	fileToTest := filepath.Join(templateTestDir, "emptyContentEntry.yml")
+	fileToTest := filepath.Join(yamlTestDir, "emptyContentEntry.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
 	expectNotNil(t, yFile)
@@ -146,7 +212,7 @@ func TestGetYamlFile_EmptyContentEntry(t *testing.T) {
 }
 
 func TestGetYamlFile_UnknownFields(t *testing.T) {
-	fileToTest := filepath.Join(templateTestDir, "unknownFields.yml")
+	fileToTest := filepath.Join(yamlTestDir, "unknownFields.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
 	expectNil(t, yFile)
@@ -154,7 +220,7 @@ func TestGetYamlFile_UnknownFields(t *testing.T) {
 }
 
 func TestGetYamlFile_FieldTypeMismatch(t *testing.T) {
-	fileToTest := filepath.Join(templateTestDir, "fieldTypeMismatch.yml")
+	fileToTest := filepath.Join(yamlTestDir, "fieldTypeMismatch.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
 	expectNil(t, yFile)
@@ -179,7 +245,7 @@ func TestContentEntryIsValid_emptyType(t *testing.T) {
 	ce := getContentEntryWithDummyData("", "foo")
 	isValid, err := ce.IsValid()
 
-	expectEqual(t, false, isValid)
+	expectEqual(t, isValid, false)
 	expectError(t, err)
 }
 
@@ -187,7 +253,7 @@ func TestContentEntryIsValid_invalidType(t *testing.T) {
 	ce := getContentEntryWithDummyData("textCellX", "foo")
 	isValid, err := ce.IsValid()
 
-	expectEqual(t, false, isValid)
+	expectEqual(t, isValid, false)
 	expectError(t, err)
 }
 
@@ -195,7 +261,7 @@ func TestContentEntryIsValid_validTextCell(t *testing.T) {
 	ce := getContentEntryWithDummyData("textCell", "foo")
 	isValid, err := ce.IsValid()
 
-	expectEqual(t, true, isValid)
+	expectEqual(t, isValid, true)
 	expectNoError(t, err)
 }
 
@@ -205,7 +271,7 @@ func TestContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
 
 	isValid, err := ce.IsValid()
 
-	expectEqual(t, false, isValid)
+	expectEqual(t, isValid, false)
 	expectError(t, err)
 }
 

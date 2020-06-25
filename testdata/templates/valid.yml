@@ -1,8 +1,0 @@
-default:
-  font: Helvetica
-  fontsize: 14
-content:
-  - type: textCell
-    id: foo
-  - type: textCell
-    id: bar
