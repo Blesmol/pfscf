@@ -108,41 +108,27 @@ func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate, err err
 // applyDefaults takes another ContentEntry object and then sets each field in the first
 // CE object that is nil or zero to the value that is provided in the second CE object.
 func (ce *ContentEntry) applyDefaults(defaults ContentEntry) {
-	// Would be better to have a generic version here using reflection that just
-	// checks each field for being nil / zero and then copies over the corresponding
-	// value from the defaults object. Until this is in place, instead add a cheap
-	// check regarding the number of fields in ContentEntry
-	Assert(reflect.ValueOf(*ce).NumField() == 10, "Number of fields in type ContentEntry has changed, update function 'applyDefaults'")
+	// function has to be called on ptr, as we modify the original object
+	Assert(ce != nil, "Provided ContentEntry object should always be valid")
 
-	if !IsSet(ce.Type) && IsSet(defaults.Type) {
-		ce.Type = defaults.Type
-	}
-	if !IsSet(ce.ID) && IsSet(defaults.ID) {
-		ce.ID = defaults.ID
-	}
-	if !IsSet(ce.Desc) && IsSet(defaults.Desc) {
-		ce.Desc = defaults.Desc
-	}
-	if !IsSet(ce.X1) && IsSet(defaults.X1) {
-		ce.X1 = defaults.X1
-	}
-	if !IsSet(ce.Y1) && IsSet(defaults.Y1) {
-		ce.Y1 = defaults.Y1
-	}
-	if !IsSet(ce.X2) && IsSet(defaults.X2) {
-		ce.X2 = defaults.X2
-	}
-	if !IsSet(ce.Y2) && IsSet(defaults.Y2) {
-		ce.Y2 = defaults.Y2
-	}
-	if !IsSet(ce.Font) && IsSet(defaults.Font) {
-		ce.Font = defaults.Font
-	}
-	if !IsSet(ce.Fontsize) && IsSet(defaults.Fontsize) {
-		ce.Fontsize = defaults.Fontsize
-	}
-	if !IsSet(ce.Align) && IsSet(defaults.Align) {
-		ce.Align = defaults.Align
+	vCE := reflect.ValueOf(ce).Elem()
+	vDef := reflect.ValueOf(defaults)
+	for i := 0; i < vCE.NumField(); i++ {
+		fieldCE := vCE.Field(i)
+		fieldDef := vDef.Field(i)
+
+		// only proceed with current field if there is a need to use the default value
+		if !IsSet(fieldCE.Interface()) && IsSet(fieldDef.Interface()) {
+			Assert(fieldCE.CanSet(), fmt.Sprintf("Field with index %v must be settable", i))
+			switch fieldCE.Kind() {
+			case reflect.String:
+				fallthrough
+			case reflect.Float64:
+				fieldCE.Set(fieldDef)
+			default:
+				panic(fmt.Sprintf("Unsupported struct type '%v', update function", fieldCE.Kind()))
+			}
+		}
 	}
 }
 

@@ -50,7 +50,7 @@ func GetExecutableDir() (dirName string) {
 func IsSet(val interface{}) (result bool) {
 	x := reflect.ValueOf(val)
 	if x.Kind() == reflect.Ptr {
-		return !(x.IsNil() || reflect.Indirect(x).IsZero())
+		return !(x.IsNil() || x.Elem().IsZero())
 	}
 	return !x.IsZero()
 }
