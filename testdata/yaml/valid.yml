@@ -1,3 +1,5 @@
+id: myID
+description: my Description
 default:
   type: my default Type
   id: my default Id

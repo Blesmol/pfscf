@@ -37,6 +37,9 @@ func TestGetYamlFile_ValidFile(t *testing.T) {
 	expectNotNil(t, yFile)
 	expectNoError(t, err)
 
+	expectEqual(t, yFile.ID, "myID")
+	expectEqual(t, yFile.Description, "my Description")
+
 	// default values
 	def := &(yFile.Default)
 	expectAllSet(t, def)
@@ -89,6 +92,8 @@ func TestGetYamlFile_EmptyFile(t *testing.T) {
 	expectNoError(t, err)
 
 	// empty file => no default section and no content
+	expectNotSet(t, yFile.ID)
+	expectNotSet(t, yFile.Description)
 	expectNotSet(t, yFile.Default)
 	expectEqual(t, len(yFile.Content), 0)
 }

@@ -8,14 +8,15 @@ import (
 
 // YamlFile represents the structure of a yaml template file
 type YamlFile struct {
-	Default ContentEntry
-	Content []ContentEntry
-	//Inherit *string // Name of the template that should be inherited
+	ID          string       // Name by which this template should be identified
+	Description string       // The description of this template
+	Default     ContentEntry // default values for the Content entries
+	Content     []ContentEntry
+	//Inherit string // Name of the template that should be inherited
 }
 
 // GetYamlFile reads the yaml file from the provided location.
 func GetYamlFile(filename string) (yFile *YamlFile, err error) {
-	// TODO print or log reading of yaml file
 	yFile = new(YamlFile)
 
 	fileData, err := ioutil.ReadFile(filename)
