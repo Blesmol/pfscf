@@ -16,7 +16,7 @@ func init() {
 	yamlTestDir = filepath.Join(GetExecutableDir(), "testdata", "yaml")
 }
 
-func TestGetYamlFile_NonExistantFile(t *testing.T) {
+func Test_GetYamlFile_NonExistantFile(t *testing.T) {
 	fileToTest := filepath.Join(yamlTestDir, "nonExistantFile.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
@@ -24,7 +24,7 @@ func TestGetYamlFile_NonExistantFile(t *testing.T) {
 	expectError(t, err)
 }
 
-func TestGetYamlFile_MalformedFile(t *testing.T) {
+func Test_GetYamlFile_MalformedFile(t *testing.T) {
 	fileToTest := filepath.Join(yamlTestDir, "malformed.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
@@ -32,7 +32,7 @@ func TestGetYamlFile_MalformedFile(t *testing.T) {
 	expectError(t, err)
 }
 
-func TestGetYamlFile_ValidFile(t *testing.T) {
+func Test_GetYamlFile_ValidFile(t *testing.T) {
 	fileToTest := filepath.Join(yamlTestDir, "valid.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
@@ -86,7 +86,7 @@ func TestGetYamlFile_ValidFile(t *testing.T) {
 	expectEqual(t, c1.Align, "my other align")
 }
 
-func TestGetYamlFile_EmptyFile(t *testing.T) {
+func Test_GetYamlFile_EmptyFile(t *testing.T) {
 	fileToTest := filepath.Join(yamlTestDir, "empty.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
@@ -100,7 +100,7 @@ func TestGetYamlFile_EmptyFile(t *testing.T) {
 	expectEqual(t, len(yFile.Content), 0)
 }
 
-func TestGetYamlFile_EmptyContentEntry(t *testing.T) {
+func Test_GetYamlFile_EmptyContentEntry(t *testing.T) {
 	fileToTest := filepath.Join(yamlTestDir, "emptyContentEntry.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
@@ -120,7 +120,7 @@ func TestGetYamlFile_EmptyContentEntry(t *testing.T) {
 	}
 }
 
-func TestGetYamlFile_UnknownFields(t *testing.T) {
+func Test_GetYamlFile_UnknownFields(t *testing.T) {
 	fileToTest := filepath.Join(yamlTestDir, "unknownFields.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
@@ -128,7 +128,7 @@ func TestGetYamlFile_UnknownFields(t *testing.T) {
 	expectError(t, err)
 }
 
-func TestGetYamlFile_FieldTypeMismatch(t *testing.T) {
+func Test_GetYamlFile_FieldTypeMismatch(t *testing.T) {
 	fileToTest := filepath.Join(yamlTestDir, "fieldTypeMismatch.yml")
 	yFile, err := GetYamlFile(fileToTest)
 
@@ -136,7 +136,7 @@ func TestGetYamlFile_FieldTypeMismatch(t *testing.T) {
 	expectError(t, err)
 }
 
-func TestGetTemplateFilenamesFromDir_ValidDir(t *testing.T) {
+func Test_GetTemplateFilenamesFromDir_ValidDir(t *testing.T) {
 	dirToTest := filepath.Join(yamlTestDir, "nested")
 	fileNames, err := GetTemplateFilenamesFromDir(dirToTest)
 
@@ -152,7 +152,7 @@ func TestGetTemplateFilenamesFromDir_ValidDir(t *testing.T) {
 	expectEqual(t, fileNames[4], filepath.Join(dirToTest, "foo.yml"))
 }
 
-func TestGetTemplateFilenamesFromDir_NonExistantDir(t *testing.T) {
+func Test_GetTemplateFilenamesFromDir_NonExistantDir(t *testing.T) {
 	dirToTest := filepath.Join(yamlTestDir, "doesNotExist")
 	fileNames, err := GetTemplateFilenamesFromDir(dirToTest)
 

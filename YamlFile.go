@@ -42,12 +42,12 @@ func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 // GetTemplateFilenamesFromDir takes a directory name as input and returns a list of names
 // of all template files within that dir and its subdirectories. All returned paths are
 // prefixed with the provided path argument.
-func GetTemplateFilenamesFromDir(dirName string) (tmplFiles []string, err error) {
+func GetTemplateFilenamesFromDir(dirName string) (yamlFilenames []string, err error) {
 	tmplFileRegex := regexp.MustCompile(templateFilePattern)
 
 	files, err := ioutil.ReadDir(dirName)
 	if err != nil {
-		return tmplFiles, err
+		return yamlFilenames, err
 	}
 
 	for _, file := range files {
@@ -56,10 +56,10 @@ func GetTemplateFilenamesFromDir(dirName string) (tmplFiles []string, err error)
 			if err != nil {
 				return nil, err
 			}
-			tmplFiles = append(tmplFiles, tmplFilesInSubDir...)
+			yamlFilenames = append(yamlFilenames, tmplFilesInSubDir...)
 		} else if tmplFileRegex.MatchString(strings.ToLower(file.Name())) {
 			fileName := filepath.Join(dirName, file.Name())
-			tmplFiles = append(tmplFiles, fileName)
+			yamlFilenames = append(yamlFilenames, fileName)
 		}
 	}
 	return

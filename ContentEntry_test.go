@@ -20,7 +20,7 @@ func getContentEntryWithDummyData(ceType string, ceID string) (ce ContentEntry) 
 	return ce
 }
 
-func TestApplyDefaults(t *testing.T) {
+func Test_ApplyDefaults(t *testing.T) {
 	var ce ContentEntry
 	ce.Type = "Foo"
 	ce.Fontsize = 10.0
@@ -47,7 +47,7 @@ func TestApplyDefaults(t *testing.T) {
 	expectNotSet(t, ce.Align)
 }
 
-func TestContentEntryIsValid_emptyType(t *testing.T) {
+func Test_ContentEntryIsValid_emptyType(t *testing.T) {
 	ce := getContentEntryWithDummyData("", "foo")
 	isValid, err := ce.IsValid()
 
@@ -55,7 +55,7 @@ func TestContentEntryIsValid_emptyType(t *testing.T) {
 	expectError(t, err)
 }
 
-func TestContentEntryIsValid_invalidType(t *testing.T) {
+func Test_ContentEntryIsValid_invalidType(t *testing.T) {
 	ce := getContentEntryWithDummyData("textCellX", "foo")
 	isValid, err := ce.IsValid()
 
@@ -63,7 +63,7 @@ func TestContentEntryIsValid_invalidType(t *testing.T) {
 	expectError(t, err)
 }
 
-func TestContentEntryIsValid_validTextCell(t *testing.T) {
+func Test_ContentEntryIsValid_validTextCell(t *testing.T) {
 	ce := getContentEntryWithDummyData("textCell", "foo")
 	isValid, err := ce.IsValid()
 
@@ -71,7 +71,7 @@ func TestContentEntryIsValid_validTextCell(t *testing.T) {
 	expectNoError(t, err)
 }
 
-func TestContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
+func Test_ContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
 	ce := getContentEntryWithDummyData("textCell", "foo")
 	ce.Font = ""
 
