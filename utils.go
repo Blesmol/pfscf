@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -20,6 +21,26 @@ func Assert(cond bool, i interface{}) {
 // panics if condition is not met
 func AssertNoError(err error) {
 	Assert(err == nil, err)
+}
+
+// ExitOnError exits the program with rc=1 if err!=nil. The following
+// Message and all additional arguments will be passed to fmt.Printf()
+func ExitOnError(err error, errMsg string, v ...interface{}) {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, errMsg+": ", v...)
+		fmt.Fprintln(os.Stderr, err)
+		// TODO add flag somewhere that will exit with panic() instead
+		os.Exit(1)
+	}
+}
+
+// InformOnError provides an error message on stdErr if an error
+// occurs, but continues with the program
+func InformOnError(err error, errMsg string, v ...interface{}) {
+	if err != nil {
+		fmt.Fprintf(os.Stderr, errMsg+":\n", v...)
+		fmt.Fprintln(os.Stderr, err)
+	}
 }
 
 // GetTempDir returns the location of a temporary directory in which
