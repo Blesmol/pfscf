@@ -2,7 +2,10 @@ package main
 
 import (
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"reflect"
+	"strings"
 )
 
 // Assert will throw a panic if condition is false.
@@ -35,12 +38,14 @@ func GetTempDir() (dirName string) {
 
 // GetExecutableDir returns the dir in which the binary of this program is located
 func GetExecutableDir() (dirName string) {
-	// TODO
-	/*
-		dirName, err := filepath.Abs(filepath.Dir(os.Args[0]))
-		AssertNoError(err)
-	*/
-	dirName = "."
+	if IsInTests() {
+		// during test runs the executable will be run from some temporary
+		// directory, so instead return the local directory for that case.
+		return "."
+	}
+
+	dirName, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	AssertNoError(err)
 	return dirName
 }
 
@@ -53,4 +58,14 @@ func IsSet(val interface{}) (result bool) {
 		return !(x.IsNil() || x.Elem().IsZero())
 	}
 	return !x.IsZero()
+}
+
+// IsInTests should recognize whether the current run is a test run.
+func IsInTests() bool {
+	for _, arg := range os.Args {
+		if strings.HasPrefix(arg, "-test.v=") {
+			return true
+		}
+	}
+	return false
 }

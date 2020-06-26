@@ -18,7 +18,7 @@ func GetTemplateByName(tmplName string) (yFile *YamlFile, err error) {
 	// for a file with cfgName as basename and 'yml' as file extension
 
 	tmplBaseFilename := strings.ToLower(tmplName) + ".yml"
-	tmplFilename := filepath.Join(GetExecutableDir(), "templates", tmplBaseFilename)
+	tmplFilename := filepath.Join(GetTemplatesDir(), tmplBaseFilename)
 
 	yFile, err = GetYamlFile(tmplFilename)
 
