@@ -38,6 +38,17 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 	}
 	templateCmd.AddCommand(templateDescribeCmd)
 
+	templateValidateCmd := &cobra.Command{
+		Use:   "validate <template>",
+		Short: "Validate a specific template",
+		Long:  "Validate a specific template",
+
+		Args: cobra.ExactArgs(1),
+
+		Run: executeTemplateValidate,
+	}
+	templateCmd.AddCommand(templateValidateCmd)
+
 	templateUpdateCmd := &cobra.Command{
 		Use:   "update",
 		Short: "Update the locally available templates",
@@ -75,7 +86,12 @@ func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 		fmt.Printf("- %v: %v\n", id, ce.Desc)
 		// TODO add example input to output. Example should contain the id
 		// and a CE-specific example value that needs to be included in the yaml file
+		// TODO add aliases
 	}
+}
+
+func executeTemplateValidate(cmd *cobra.Command, args []string) {
+	fmt.Println("Not yet implemented")
 }
 
 func executeTemplateUpdate(cmd *cobra.Command, args []string) {
