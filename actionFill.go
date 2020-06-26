@@ -38,11 +38,11 @@ func executeFill(cmd *cobra.Command, args []string) {
 
 	Assert(inFile != outFile, "Input file and output file must not be identical")
 
-	yFile, err := GetTemplateByName(tmplName)
-	AssertNoError(err) // TODO proper error message and exit
+	ts, err := GetTemplateStore()
+	ExitOnError(err, "Could not read templates")
 
-	cTmpl, err := yFile.GetChronicleTemplate()
-	AssertNoError(err)
+	cTmpl, err := ts.GetTemplate(tmplName)
+	ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
 	as := ParseArgs(args[3:])
@@ -83,5 +83,4 @@ func executeFill(cmd *cobra.Command, args []string) {
 
 	// add watermark/stamp to page
 	extractedPage.StampIt(stampFile, outFile)
-
 }

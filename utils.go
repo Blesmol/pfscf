@@ -35,6 +35,13 @@ func ExitOnError(err error, errMsg string, v ...interface{}) {
 	}
 }
 
+// ExitWithMessage prints out a message on StdErr and then exits the
+// program with rc=1
+func ExitWithMessage(errMsg string, v ...interface{}) {
+	fmt.Fprintf(os.Stderr, errMsg, v...)
+	os.Exit(1)
+}
+
 // InformOnError provides an error message on stdErr if an error
 // occurs, but continues with the program
 func InformOnError(err error, errMsg string, v ...interface{}) {

@@ -25,25 +25,6 @@ func GetTemplateByName(tmplName string) (yFile *YamlFile, err error) {
 	return yFile, err
 }
 
-// GetChronicleTemplate extracts, processes, and prepares the template
-// information from a YamlFile object and puts it into a form
-// that can be worked with.
-func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate, err error) {
-	cTmpl = NewChronicleTemplate("pfs2") // TODO remove hardcoded name
-
-	// add content entries from yamlFile with name mapping into chronicleTemplate
-	for id, val := range yFile.Content {
-		if _, exists := cTmpl.content[id]; exists {
-			return nil, fmt.Errorf("Duplicate ID found: '%v'", id)
-		}
-
-		val.applyDefaults(yFile.Default)
-		cTmpl.content[id] = val
-	}
-
-	return cTmpl, nil
-}
-
 // CheckValuesArePresent assumes that all provided arguments are pointers and
 // checks that all of them have a value, i.e. do not equal nil. It will return
 // an error for each nil argument.
