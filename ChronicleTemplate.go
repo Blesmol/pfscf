@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 // ChronicleTemplate represents a template configuration for chronicles. It contains
 // information on what to put where.
@@ -68,4 +71,14 @@ func checkValidityForChronicleTemplate(yFile YamlFile) (err error) {
 	}
 
 	return nil
+}
+
+// GetContentIDs returns a sorted list of content IDs contained in this chronicle template
+func (ct *ChronicleTemplate) GetContentIDs() (idList []string) {
+	idList = make([]string, 0, len(ct.yFile.Content))
+	for id := range ct.yFile.Content {
+		idList = append(idList, id)
+	}
+	sort.Strings(idList)
+	return idList
 }

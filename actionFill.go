@@ -38,10 +38,7 @@ func executeFill(cmd *cobra.Command, args []string) {
 
 	Assert(inFile != outFile, "Input file and output file must not be identical")
 
-	ts, err := GetTemplateStore()
-	ExitOnError(err, "Could not read templates")
-
-	cTmpl, err := ts.GetTemplate(tmplName)
+	cTmpl, err := GetTemplate(tmplName)
 	ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments

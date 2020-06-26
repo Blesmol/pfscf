@@ -44,8 +44,8 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 	return ts, nil
 }
 
-// GetKeys returns a sorted list of keys contained in this TemplateStore
-func (ts *TemplateStore) GetKeys() (keyList []string) {
+// GetTemplateNames returns a sorted list of keys contained in this TemplateStore
+func (ts *TemplateStore) GetTemplateNames() (keyList []string) {
 	keyList = make([]string, 0, len(ts.templates))
 	for key := range ts.templates {
 		keyList = append(keyList, key)
@@ -63,4 +63,17 @@ func (ts *TemplateStore) GetTemplate(templateID string) (ct *ChronicleTemplate, 
 		return nil, fmt.Errorf("Could not find template with ID '%v'", templateID)
 	}
 	return ct, nil
+}
+
+// GetTemplate returns the template with the specified name, or
+// an error if no template with that name exists. This is merely a
+// convenience wrapper to avoid the need to create a TemplateStore
+// object just for receiving a single template.
+func GetTemplate(templateID string) (ct *ChronicleTemplate, err error) {
+	ts, err := GetTemplateStore()
+	if err != nil {
+		return nil, err
+	}
+
+	return ts.GetTemplate(templateID)
 }
