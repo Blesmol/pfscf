@@ -39,7 +39,7 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	expectNotNil(t, yFile)
 	expectNoError(t, err)
 
-	expectEqual(t, yFile.fileName, fileToTest)
+	expectEqual(t, yFile.GetFilename(), fileToTest)
 
 	expectEqual(t, yFile.ID, "myID")
 	expectEqual(t, yFile.Description, "my Description")
@@ -173,7 +173,7 @@ func Test_GetTemplateFilesFromDir_ValidDir(t *testing.T) {
 	// extract filenames for checking completeness
 	var fileNames []string
 	for _, yFile := range yFiles {
-		fileNames = append(fileNames, yFile.fileName)
+		fileNames = append(fileNames, yFile.GetFilename())
 	}
 	sort.Strings(fileNames)
 
@@ -186,7 +186,7 @@ func Test_GetTemplateFilesFromDir_ValidDir(t *testing.T) {
 	// basic check of the contents of one file
 	foundTestFile := false
 	for _, yFile := range yFiles {
-		if yFile.fileName == filepath.Join(dirToTest, "foo.yml") {
+		if yFile.GetFilename() == filepath.Join(dirToTest, "foo.yml") {
 			expectEqual(t, yFile.ID, "test")
 			foundTestFile = true
 		}

@@ -1,4 +1,5 @@
 id: pfs2
+description: Pathfinder 2 Society Chronicle
 default:
   font: Helvetica
   fontsize: 14

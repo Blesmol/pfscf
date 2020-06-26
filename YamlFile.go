@@ -88,3 +88,8 @@ func GetTemplateFilesFromDir(dirName string) (yamlFiles []*YamlFile, err error) 
 
 	return yamlFiles, nil
 }
+
+// GetFilename returns the filename from which this YamlFile was read
+func (yFile *YamlFile) GetFilename() (filename string) {
+	return yFile.fileName
+}

@@ -61,8 +61,8 @@ func executeTemplateList(cmd *cobra.Command, args []string) {
 	templateNames := ts.GetKeys()
 	fmt.Printf("List of templates:\n")
 	for _, templateName := range templateNames {
-		fmt.Printf("- %v\n", templateName)
-		// add Description if present
+		template, _ := ts.GetTemplate(templateName)
+		fmt.Printf("- %v: %v\n", template.Name(), template.Description())
 	}
 }
 

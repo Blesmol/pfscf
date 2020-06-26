@@ -30,7 +30,7 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 	ts.templates = make(map[string]*ChronicleTemplate)
 
 	for _, yFile := range yFiles {
-		ct, err := NewChronicleTemplate(yFile)
+		ct, err := NewChronicleTemplate(*yFile)
 		if err != nil {
 			return nil, err
 		}
