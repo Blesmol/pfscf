@@ -2,6 +2,10 @@ package main
 
 import "testing"
 
+func init() {
+	SetIsTestEnvironment()
+}
+
 func getContentEntryWithDummyData(ceType string, ceID string) (ce ContentEntry) {
 	ce.Type = ceType
 	ce.ID = ceID

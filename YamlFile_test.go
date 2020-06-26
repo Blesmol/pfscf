@@ -3,6 +3,7 @@ package main
 import (
 	"path/filepath"
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -11,6 +12,7 @@ var (
 )
 
 func init() {
+	SetIsTestEnvironment()
 	yamlTestDir = filepath.Join(GetExecutableDir(), "testdata", "yaml")
 }
 
@@ -132,4 +134,28 @@ func TestGetYamlFile_FieldTypeMismatch(t *testing.T) {
 
 	expectNil(t, yFile)
 	expectError(t, err)
+}
+
+func TestGetTemplateFilenamesFromDir_ValidDir(t *testing.T) {
+	dirToTest := filepath.Join(yamlTestDir, "nested")
+	fileNames, err := GetTemplateFilenamesFromDir(dirToTest)
+
+	expectNoError(t, err)
+	expectEqual(t, len(fileNames), 5)
+
+	sort.Strings(fileNames) // for testing purposes, lets sort that list for easier comparison
+
+	expectEqual(t, fileNames[0], filepath.Join(dirToTest, "BaR.YmL"))
+	expectEqual(t, fileNames[1], filepath.Join(dirToTest, "dir1", "foo.yml"))
+	expectEqual(t, fileNames[2], filepath.Join(dirToTest, "dir2", "bar.yml"))
+	expectEqual(t, fileNames[3], filepath.Join(dirToTest, "dir3.yml", "foobar.yml"))
+	expectEqual(t, fileNames[4], filepath.Join(dirToTest, "foo.yml"))
+}
+
+func TestGetTemplateFilenamesFromDir_NonExistantDir(t *testing.T) {
+	dirToTest := filepath.Join(yamlTestDir, "doesNotExist")
+	fileNames, err := GetTemplateFilenamesFromDir(dirToTest)
+
+	expectError(t, err)
+	expectNil(t, fileNames)
 }

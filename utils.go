@@ -6,8 +6,9 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"strings"
 )
+
+var isTestEnvironment = false
 
 // Assert will throw a panic if condition is false.
 // The additional parameter is provided to panic() as argument.
@@ -59,7 +60,7 @@ func GetTempDir() (dirName string) {
 
 // GetExecutableDir returns the dir in which the binary of this program is located
 func GetExecutableDir() (dirName string) {
-	if IsInTests() {
+	if IsTestEnvironment() {
 		// during test runs the executable will be run from some temporary
 		// directory, so instead return the local directory for that case.
 		return "."
@@ -81,12 +82,13 @@ func IsSet(val interface{}) (result bool) {
 	return !x.IsZero()
 }
 
-// IsInTests should recognize whether the current run is a test run.
-func IsInTests() bool {
-	for _, arg := range os.Args {
-		if strings.HasPrefix(arg, "-test.v=") {
-			return true
-		}
-	}
-	return false
+// IsTestEnvironment should recognize whether the current run is a test run.
+func IsTestEnvironment() bool {
+	return isTestEnvironment
+}
+
+// SetIsTestEnvironment sets a flag that indicates that we are currently in
+// a test environment.
+func SetIsTestEnvironment() {
+	isTestEnvironment = true
 }
