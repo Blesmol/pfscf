@@ -7,21 +7,6 @@ import (
 	"strings"
 )
 
-// ChronicleTemplate represents a template configuration for chronicles. It contains
-// information on what to put where.
-type ChronicleTemplate struct {
-	name    string
-	content map[string]ContentEntry
-}
-
-// NewChronicleTemplate returns a new ChronicleTemplate object
-func NewChronicleTemplate(name string) (c *ChronicleTemplate) {
-	c = new(ChronicleTemplate)
-	c.name = name
-	c.content = make(map[string]ContentEntry)
-	return c
-}
-
 // TODO #6 generic function for checking required fields in struct
 // also output warnings for non-required fields
 
@@ -59,13 +44,6 @@ func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate, err err
 	}
 
 	return cTmpl, nil
-}
-
-// GetContent returns the ContentEntry matching the provided key
-// from the current ChronicleTemplate
-func (cTmpl *ChronicleTemplate) GetContent(key string) (ce ContentEntry, exists bool) {
-	ce, exists = cTmpl.content[key]
-	return
 }
 
 // CheckValuesArePresent assumes that all provided arguments are pointers and
