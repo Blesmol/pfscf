@@ -1,6 +1,6 @@
 # The Pathfinder Society Chronicle Tagger (pfsct)
 
-The "Pathfinder Society Chronicle Tagger" (or short: pfsct) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle  sheets for the Pathfinder Roleplaying Game.
+The "Pathfinder Society Chronicle Tagger" (or short: pfsct) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle sheets for the Pathfinder Roleplaying Game.
 
 ## Usage
 
@@ -14,6 +14,7 @@ Usage:
 Available Commands:
   fill        Fill a single chronicle sheet
   help        Help about any command
+  template    Various actions on templates: list, describe, etc
 
 Flags:
   -h, --help   help for pfsct
@@ -72,6 +73,8 @@ Currently, the following keys are supported for config `pfs2`:
 * `fac2rep`: Reputation for faction 2
 * `fac3name`: Name of faction 3
 * `fac3rep`: Reputation for faction 3
+
+You can always get the complete list for a template by calling `pfsct template describe <template>`
 
 ### Fill out multiple chronicles (e.g. for a complete group)
 

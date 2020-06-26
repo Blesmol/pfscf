@@ -16,8 +16,8 @@ var (
 func GetFillCommand() (cmd *cobra.Command) {
 	fillCmd := &cobra.Command{
 		Use:   "fill <template> <infile> <outfile>",
-		Short: "Fill a single chronicle sheet",
-		Long:  "Fill a single chronicle sheet with parameters provided on the command line.",
+		Short: "Fill out a single chronicle sheet",
+		Long:  "Fill out a single chronicle sheet with parameters provided on the command line.",
 
 		Args: cobra.MinimumNArgs(3),
 
