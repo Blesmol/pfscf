@@ -15,18 +15,19 @@ const (
 
 // YamlFile represents the structure of a yaml template file
 type YamlFile struct {
-	ID          string       // Name by which this template should be identified
-	Description string       // The description of this template
-	Default     ContentEntry // default values for the Content entries
-	Content     []ContentEntry
+	ID          string         // Name by which this template should be identified
+	Description string         // The description of this template
+	Default     ContentEntry   // default values for the Content entries
+	Content     []ContentEntry // The Content.
+	fileName    string         // not exported, as this field should not be set via the yaml file
 	//Inherit string // Name of the template that should be inherited
 }
 
 // GetYamlFile reads the yaml file from the provided location.
-func GetYamlFile(filename string) (yFile *YamlFile, err error) {
+func GetYamlFile(fileName string) (yFile *YamlFile, err error) {
 	yFile = new(YamlFile)
 
-	fileData, err := ioutil.ReadFile(filename)
+	fileData, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		return nil, err
 	}
@@ -35,6 +36,8 @@ func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 	if err != nil {
 		return nil, err
 	}
+
+	yFile.fileName = fileName
 
 	return yFile, nil
 }
@@ -62,5 +65,26 @@ func GetTemplateFilenamesFromDir(dirName string) (yamlFilenames []string, err er
 			yamlFilenames = append(yamlFilenames, fileName)
 		}
 	}
-	return
+	return yamlFilenames, nil
+}
+
+// GetTemplateFilesFromDir takes a directory name as input and returns a list of
+// YamlFile objects that hold the contents of all yaml files contained in that
+// directory and its subdirectories.
+func GetTemplateFilesFromDir(dirName string) (yamlFiles []*YamlFile, err error) {
+	fileList, err := GetTemplateFilenamesFromDir(dirName)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, fileName := range fileList {
+		yFile, err := GetYamlFile(fileName)
+		if err != nil {
+			return nil, err
+		}
+
+		yamlFiles = append(yamlFiles, yFile)
+	}
+
+	return yamlFiles, nil
 }
