@@ -2,7 +2,6 @@ id: myID
 description: my Description
 default:
   type: my default Type
-  id: my default Id
   desc: my default Desc
   x1: 91.0
   y1: 92.0
@@ -12,8 +11,8 @@ default:
   fontsize: 95.0
   align: my default Align
 content:
-  - type: my Type
-    id: my Id
+  myId:
+    type: my Type
     desc: my Desc
     x1: 11.0
     y1: 12.0
@@ -22,7 +21,8 @@ content:
     font: my Font
     fontsize: 15.0
     align: my Align
-  - align: my other align
+  myOtherId:
+    align: my other align
     fontsize: 25.0
     font: my other font
     y2: 24.0
@@ -30,5 +30,4 @@ content:
     y1: 22.0
     x1: 21.0
     desc: my other desc
-    id: my other id
     type: my other type

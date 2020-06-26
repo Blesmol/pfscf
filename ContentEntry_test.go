@@ -6,9 +6,8 @@ func init() {
 	SetIsTestEnvironment()
 }
 
-func getContentEntryWithDummyData(ceType string, ceID string) (ce ContentEntry) {
+func getContentEntryWithDummyData(ceType string) (ce ContentEntry) {
 	ce.Type = ceType
-	ce.ID = ceID
 	ce.Desc = "Some Description"
 	ce.X1 = 12.0
 	ce.Y1 = 12.0
@@ -36,7 +35,6 @@ func Test_ApplyDefaults(t *testing.T) {
 	ce.applyDefaults(defaults)
 
 	expectEqual(t, ce.Type, "Foo")
-	expectNotSet(t, ce.ID)
 	expectNotSet(t, ce.Desc)
 	expectEqual(t, ce.X1, 5.0)
 	expectNotSet(t, ce.Y1)
@@ -48,7 +46,7 @@ func Test_ApplyDefaults(t *testing.T) {
 }
 
 func Test_ContentEntryIsValid_emptyType(t *testing.T) {
-	ce := getContentEntryWithDummyData("", "foo")
+	ce := getContentEntryWithDummyData("")
 	isValid, err := ce.IsValid()
 
 	expectEqual(t, isValid, false)
@@ -56,7 +54,7 @@ func Test_ContentEntryIsValid_emptyType(t *testing.T) {
 }
 
 func Test_ContentEntryIsValid_invalidType(t *testing.T) {
-	ce := getContentEntryWithDummyData("textCellX", "foo")
+	ce := getContentEntryWithDummyData("textCellX")
 	isValid, err := ce.IsValid()
 
 	expectEqual(t, isValid, false)
@@ -64,7 +62,7 @@ func Test_ContentEntryIsValid_invalidType(t *testing.T) {
 }
 
 func Test_ContentEntryIsValid_validTextCell(t *testing.T) {
-	ce := getContentEntryWithDummyData("textCell", "foo")
+	ce := getContentEntryWithDummyData("textCell")
 	isValid, err := ce.IsValid()
 
 	expectEqual(t, isValid, true)
@@ -72,7 +70,7 @@ func Test_ContentEntryIsValid_validTextCell(t *testing.T) {
 }
 
 func Test_ContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
-	ce := getContentEntryWithDummyData("textCell", "foo")
+	ce := getContentEntryWithDummyData("textCell")
 	ce.Font = ""
 
 	isValid, err := ce.IsValid()

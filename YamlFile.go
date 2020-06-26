@@ -15,11 +15,11 @@ const (
 
 // YamlFile represents the structure of a yaml template file
 type YamlFile struct {
-	ID          string         // Name by which this template should be identified
-	Description string         // The description of this template
-	Default     ContentEntry   // default values for the Content entries
-	Content     []ContentEntry // The Content.
-	fileName    string         // not exported, as this field should not be set via the yaml file
+	ID          string                  // Name by which this template should be identified
+	Description string                  // The description of this template
+	Default     ContentEntry            // default values for the Content entries
+	Content     map[string]ContentEntry // The Content.
+	fileName    string                  // not exported, as this field should not be set via the yaml file
 	//Inherit string // Name of the template that should be inherited
 }
 

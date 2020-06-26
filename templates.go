@@ -32,9 +32,7 @@ func (yFile *YamlFile) GetChronicleTemplate() (cTmpl *ChronicleTemplate, err err
 	cTmpl = NewChronicleTemplate("pfs2") // TODO remove hardcoded name
 
 	// add content entries from yamlFile with name mapping into chronicleTemplate
-	for _, val := range yFile.Content {
-		Assert(IsSet(val.ID), "No ID provided!")
-		id := val.ID
+	for id, val := range yFile.Content {
 		if _, exists := cTmpl.content[id]; exists {
 			return nil, fmt.Errorf("Duplicate ID found: '%v'", id)
 		}

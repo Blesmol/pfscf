@@ -48,7 +48,6 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	def := &(yFile.Default)
 	expectAllSet(t, def)
 	expectEqual(t, def.Type, "my default Type")
-	expectEqual(t, def.ID, "my default Id")
 	expectEqual(t, def.Desc, "my default Desc")
 	expectEqual(t, def.X1, 91.0)
 	expectEqual(t, def.Y1, 92.0)
@@ -61,10 +60,10 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	// number of entries in content array
 	expectEqual(t, len(yFile.Content), 2)
 
-	c0 := &(yFile.Content[0])
+	expectKeyExists(t, yFile.Content, "myId")
+	c0 := yFile.Content["myId"]
 	expectAllSet(t, c0)
 	expectEqual(t, c0.Type, "my Type")
-	expectEqual(t, c0.ID, "my Id")
 	expectEqual(t, c0.Desc, "my Desc")
 	expectEqual(t, c0.X1, 11.0)
 	expectEqual(t, c0.Y1, 12.0)
@@ -74,10 +73,10 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	expectEqual(t, c0.Fontsize, 15.0)
 	expectEqual(t, c0.Align, "my Align")
 
-	c1 := &(yFile.Content[1])
+	expectKeyExists(t, yFile.Content, "myOtherId")
+	c1 := yFile.Content["myOtherId"]
 	expectAllSet(t, c1)
 	expectEqual(t, c1.Type, "my other type")
-	expectEqual(t, c1.ID, "my other id")
 	expectEqual(t, c1.Desc, "my other desc")
 	expectEqual(t, c1.X1, 21.0)
 	expectEqual(t, c1.Y1, 22.0)
@@ -110,10 +109,12 @@ func Test_GetYamlFile_EmptyContentEntry(t *testing.T) {
 	expectNoError(t, err)
 
 	expectEqual(t, 1, len(yFile.Content)) // one empty entry is included
-	content0 := &(yFile.Content[0])
+	expectKeyExists(t, yFile.Content, "myId")
+	content0 := yFile.Content["myId"]
+	//content0 := &(yFile.Content[0])
 
 	// check that all fields in the empty content entry are not set
-	refStruct := reflect.ValueOf(content0).Elem()
+	refStruct := reflect.ValueOf(content0)
 	for i := 0; i < refStruct.NumField(); i++ {
 		refField := refStruct.Field(i)
 		if IsSet(refField.Interface()) {

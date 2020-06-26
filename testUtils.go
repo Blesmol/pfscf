@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	printCallStackOnFailingTest = false
+	printCallStackOnFailingTest = true
 )
 
 func callStack() {
@@ -101,4 +101,8 @@ func expectAllSet(t *testing.T, got interface{}) {
 			t.Errorf("Expected to be set, but was not: %v / %v", vGot.Type(), vGot.Kind())
 		}
 	}
+}
+
+func expectKeyExists(t *testing.T, tmap interface{}, key interface{}) {
+
 }

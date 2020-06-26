@@ -11,7 +11,6 @@ import (
 // everything else depends on the concrete type.
 type ContentEntry struct {
 	Type     string  // the type which this entry represents
-	ID       string  // the ID or name of that concrete content entry
 	Desc     string  // Description of this parameter
 	X1, Y1   float64 // first set of coordinates
 	X2, Y2   float64 // second set of coordinates
