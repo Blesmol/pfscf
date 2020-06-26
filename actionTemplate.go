@@ -51,7 +51,19 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 }
 
 func executeTemplateList(cmd *cobra.Command, args []string) {
-	fmt.Println("Not yet implemented")
+	if len(args) > 0 {
+		ExitWithMessage("Unrecognized command line arguments: %v", args)
+	}
+
+	ts, err := GetTemplateStore()
+	ExitOnError(err, "Could not read templates")
+
+	templateNames := ts.GetKeys()
+	fmt.Printf("List of templates:\n")
+	for _, templateName := range templateNames {
+		fmt.Printf("- %v\n", templateName)
+		// add Description if present
+	}
 }
 
 func executeTemplateDescribe(cmd *cobra.Command, args []string) {
