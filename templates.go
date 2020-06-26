@@ -2,12 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"path/filepath"
 	"reflect"
 	"strings"
-
-	"github.com/go-yaml/yaml"
 )
 
 // ContentEntry is a generic struct with lots of fields to fit all
@@ -24,13 +21,6 @@ type ContentEntry struct {
 	Fontsize float64 // size of the font in points
 	Align    string  // Alignment of the content: L/C/R + T/M/B
 	//Flags    *[]string
-}
-
-// YamlFile represents the structure of a yaml template file
-type YamlFile struct {
-	Default ContentEntry
-	Content []ContentEntry
-	//Inherit *string // Name of the template that should be inherited
 }
 
 // ChronicleTemplate represents a template configuration for chronicles. It contains
@@ -50,24 +40,6 @@ func NewChronicleTemplate(name string) (c *ChronicleTemplate) {
 
 // TODO #6 generic function for checking required fields in struct
 // also output warnings for non-required fields
-
-// GetYamlFile reads the yaml file from the provided location.
-func GetYamlFile(filename string) (yFile *YamlFile, err error) {
-	// TODO print or log reading of yaml file
-	yFile = new(YamlFile)
-
-	fileData, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-
-	err = yaml.UnmarshalStrict(fileData, yFile)
-	if err != nil {
-		return nil, err
-	}
-
-	return yFile, nil
-}
 
 // GetTemplateByName returns the template object for the given name, or nil and
 // an error object if no template with that name could be found. The template
