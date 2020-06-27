@@ -145,7 +145,7 @@ func Test_GetYamlFile_FieldTypeMismatch(t *testing.T) {
 }
 
 func Test_GetTemplateFilenamesFromDir_ValidDir(t *testing.T) {
-	dirToTest := filepath.Join(yamlTestDir, "nested")
+	dirToTest := filepath.Join(yamlTestDir, "nestedDirs")
 	fileNames, err := GetTemplateFilenamesFromDir(dirToTest)
 
 	expectNoError(t, err)
@@ -169,7 +169,7 @@ func Test_GetTemplateFilenamesFromDir_NonExistantDir(t *testing.T) {
 }
 
 func Test_GetTemplateFilesFromDir_ValidDir(t *testing.T) {
-	dirToTest := filepath.Join(yamlTestDir, "nested")
+	dirToTest := filepath.Join(yamlTestDir, "nestedDirs")
 	yFiles, err := GetTemplateFilesFromDir(dirToTest)
 
 	expectNoError(t, err)
