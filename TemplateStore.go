@@ -35,10 +35,10 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 			return nil, err
 		}
 
-		if otherEntry, exists := ts.templates[ct.Name()]; exists {
-			return nil, fmt.Errorf("Found multiple templates with ID '%v':\n- %v\n- %v", ct.Name(), otherEntry.Filename(), ct.Filename())
+		if otherEntry, exists := ts.templates[ct.ID()]; exists {
+			return nil, fmt.Errorf("Found multiple templates with ID '%v':\n- %v\n- %v", ct.ID(), otherEntry.Filename(), ct.Filename())
 		}
-		ts.templates[ct.Name()] = ct
+		ts.templates[ct.ID()] = ct
 	}
 
 	return ts, nil

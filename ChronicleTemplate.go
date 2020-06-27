@@ -9,7 +9,7 @@ import (
 // ChronicleTemplate represents a template configuration for chronicles. It contains
 // information on what to put where.
 type ChronicleTemplate struct {
-	name  string
+	id    string
 	yFile *YamlFile
 }
 
@@ -23,7 +23,7 @@ func NewChronicleTemplate(yFile YamlFile) (ct *ChronicleTemplate, err error) {
 	}
 
 	ct = new(ChronicleTemplate)
-	ct.name = yFile.ID
+	ct.id = yFile.ID
 	ct.yFile = &yFile
 
 	// applying default values
@@ -42,9 +42,9 @@ func (ct *ChronicleTemplate) GetContent(key string) (ce ContentEntry, exists boo
 	return
 }
 
-// Name returns the name of the chronicle template
-func (ct *ChronicleTemplate) Name() string {
-	return ct.name
+// ID returns the ID of the chronicle template
+func (ct *ChronicleTemplate) ID() string {
+	return ct.id
 }
 
 // Filename returns the file name of the chronicle template
@@ -90,12 +90,12 @@ func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	if !verbose {
-		fmt.Fprintf(&sb, "- %v", ct.Name())
+		fmt.Fprintf(&sb, "- %v", ct.ID())
 		if IsSet(ct.Description()) {
 			fmt.Fprintf(&sb, ": %v", ct.Description())
 		}
 	} else {
-		fmt.Fprintf(&sb, "- %v\n", ct.Name())
+		fmt.Fprintf(&sb, "- %v\n", ct.ID())
 		fmt.Fprintf(&sb, "\tDesc: %v\n", ct.Description())
 		fmt.Fprintf(&sb, "\tFile: %v", ct.Filename())
 	}
