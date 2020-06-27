@@ -18,6 +18,7 @@ type YamlFile struct {
 	ID          string                  // Name by which this template should be identified
 	Description string                  // The description of this template
 	Default     ContentEntry            // default values for the Content entries
+	Presets     map[string]ContentEntry // Named preset sections
 	Content     map[string]ContentEntry // The Content.
 	fileName    string                  // not exported, as this field should not be set via the yaml file
 	//Inherit string // Name of the template that should be inherited
@@ -39,6 +40,13 @@ func GetYamlFile(fileName string) (yFile *YamlFile, err error) {
 
 	Assert(!IsSet(yFile.fileName), "YamlFile filename should not be already set")
 	yFile.fileName = fileName
+
+	// set content id inside presets entries
+	for id, entry := range yFile.Presets {
+		Assert(!IsSet(entry.id), "ContentEnty id should not be already set")
+		entry.id = id
+		yFile.Presets[id] = entry
+	}
 
 	// set content id inside content entries
 	for id, entry := range yFile.Content {

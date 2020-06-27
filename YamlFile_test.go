@@ -58,6 +58,21 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	expectEqual(t, def.Align, "my default Align")
 	expectEqual(t, def.Example, "my default Example")
 
+	// presets
+	expectEqual(t, len(yFile.Presets), 2)
+
+	expectKeyExists(t, yFile.Presets, "preset0")
+	p0 := yFile.Presets["preset0"]
+	expectEqual(t, p0.id, "preset0")
+	expectEqual(t, p0.Y1, 150.0)
+	expectEqual(t, p0.Y2, 200.0)
+
+	expectKeyExists(t, yFile.Presets, "preset1")
+	p1 := yFile.Presets["preset1"]
+	expectEqual(t, p1.id, "preset1")
+	expectEqual(t, p1.Font, "my font")
+	expectEqual(t, p1.Fontsize, 10.0)
+
 	// number of entries in content array
 	expectEqual(t, len(yFile.Content), 2)
 

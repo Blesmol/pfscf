@@ -11,6 +11,13 @@ default:
   fontsize: 95.0
   align: my default Align
   example: my default Example
+presets:
+  preset0:
+    y1: 150.0
+    y2: 200.0
+  preset1:
+    font: my font
+    fontsize: 10.0
 content:
   myId:
     type: my Type
