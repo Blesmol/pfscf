@@ -6,7 +6,7 @@ import (
 )
 
 // ArgStore holds a mapping between argument keys and values
-type ArgStore map[string]*string
+type ArgStore map[string]string
 
 const (
 	// TODOs:
@@ -23,10 +23,10 @@ func init() {
 	argRegex = regexp.MustCompile(argPattern)
 }
 
-// ParseArgs takes a list of provided arguments and checks
+// ArgStoreFromArgs takes a list of provided arguments and checks
 // that they are in format "<key>=<value>". It will return
 // an error on duplicate keys.
-func ParseArgs(args []string) (as ArgStore) {
+func ArgStoreFromArgs(args []string) (as ArgStore) {
 	as = make(ArgStore, len(args))
 
 	for _, arg := range args {
@@ -39,9 +39,25 @@ func ParseArgs(args []string) (as ArgStore) {
 		value := arg[(splitIdx + 1):]
 
 		if _, exists := as[key]; !exists {
-			as[key] = &value
+			as[key] = value
 		} else {
 			panic("Duplicate key found: " + key)
+		}
+	}
+
+	return as
+}
+
+// ArgStoreFromTemplateExamples returns an ArgStore that is filled with
+// all the example texts contained in the provided template
+func ArgStoreFromTemplateExamples(ct *ChronicleTemplate) (as ArgStore) {
+	contentIDs := ct.GetContentIDs(false)
+	as = make(ArgStore, len(contentIDs))
+
+	for _, id := range contentIDs {
+		ce, _ := ct.GetContent(id)
+		if IsSet(ce.Example) {
+			as[id] = ce.Example
 		}
 	}
 

@@ -10,6 +10,7 @@ import (
 var (
 	drawGrid       bool
 	drawCellBorder bool
+	useDummyValues bool
 )
 
 // GetFillCommand returns the cobra command for the "fill" action.
@@ -27,6 +28,7 @@ func GetFillCommand() (cmd *cobra.Command) {
 	}
 	fillCmd.Flags().BoolVarP(&drawGrid, "grid", "g", false, "Draw a coordinate grid on the output file")
 	fillCmd.Flags().BoolVarP(&drawCellBorder, "cellBorder", "c", false, "Draw the cell borders of all added fields")
+	fillCmd.Flags().BoolVarP(&useDummyValues, "dummyValues", "d", false, "Use dummy values to fill out the chronicle.")
 
 	return fillCmd
 }
@@ -44,7 +46,12 @@ func executeFill(cmd *cobra.Command, args []string) {
 	ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
-	as := ParseArgs(args[3:])
+	var argStore ArgStore
+	if !useDummyValues {
+		argStore = ArgStoreFromArgs(args[3:])
+	} else {
+		argStore = ArgStoreFromTemplateExamples(cTmpl)
+	}
 
 	// prepare temporary working dir
 	workDir := GetTempDir()
@@ -64,12 +71,12 @@ func executeFill(cmd *cobra.Command, args []string) {
 	}
 
 	// add content to stamp
-	for key, value := range as {
+	for key, value := range argStore {
 		//fmt.Printf("Processing Key='%v', value='%v'\n", key, *value)
 
 		content, exists := cTmpl.GetContent(key)
 		Assert(exists, "No content with key="+key)
-		stamp.AddContent(content, value)
+		stamp.AddContent(content, &value)
 	}
 
 	if drawGrid {
