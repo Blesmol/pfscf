@@ -75,10 +75,12 @@ func checkValidityForChronicleTemplate(yFile YamlFile) (err error) {
 }
 
 // GetContentIDs returns a sorted list of content IDs contained in this chronicle template
-func (ct *ChronicleTemplate) GetContentIDs() (idList []string) {
+func (ct *ChronicleTemplate) GetContentIDs(includeAliases bool) (idList []string) {
 	idList = make([]string, 0, len(ct.yFile.Content))
-	for id := range ct.yFile.Content {
-		idList = append(idList, id)
+	for id, entry := range ct.yFile.Content {
+		if includeAliases || id == entry.id {
+			idList = append(idList, id)
+		}
 	}
 	sort.Strings(idList)
 	return idList

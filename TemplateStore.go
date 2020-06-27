@@ -44,11 +44,13 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 	return ts, nil
 }
 
-// GetTemplateNames returns a sorted list of keys contained in this TemplateStore
-func (ts *TemplateStore) GetTemplateNames() (keyList []string) {
+// GetTemplateIDs returns a sorted list of keys contained in this TemplateStore
+func (ts *TemplateStore) GetTemplateIDs(includeAliases bool) (keyList []string) {
 	keyList = make([]string, 0, len(ts.templates))
-	for key := range ts.templates {
-		keyList = append(keyList, key)
+	for key, entry := range ts.templates {
+		if includeAliases || key == entry.ID() {
+			keyList = append(keyList, key)
+		}
 	}
 	sort.Strings(keyList)
 	return keyList

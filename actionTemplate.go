@@ -75,7 +75,7 @@ func executeTemplateList(cmd *cobra.Command, args []string) {
 	ts, err := GetTemplateStore()
 	ExitOnError(err, "Could not read templates")
 
-	templateNames := ts.GetTemplateNames()
+	templateNames := ts.GetTemplateIDs(false)
 	fmt.Printf("\n")
 	fmt.Printf("List of available templates:\n\n")
 	for _, templateName := range templateNames {
@@ -91,11 +91,10 @@ func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 	ExitOnError(err, "Could not get template '%v'", templateName)
 
 	fmt.Printf("Template '%v'\n\n", templateName)
-	idList := ct.GetContentIDs() // TODO only display non-alias IDs
+	idList := ct.GetContentIDs(false)
 	for _, id := range idList {
 		ce, _ := ct.GetContent(id)
 		fmt.Println(ce.Describe(flags.verbose))
-		// TODO add aliases
 	}
 }
 
