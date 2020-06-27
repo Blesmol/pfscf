@@ -10,6 +10,7 @@ default:
   font: my default Font
   fontsize: 95.0
   align: my default Align
+  example: my default Example
 content:
   myId:
     type: my Type
@@ -21,6 +22,7 @@ content:
     font: my Font
     fontsize: 15.0
     align: my Align
+    example: my Example
   myOtherId:
     align: my other align
     fontsize: 25.0
@@ -31,3 +33,4 @@ content:
     x1: 21.0
     desc: my other desc
     type: my other type
+    example: my other example

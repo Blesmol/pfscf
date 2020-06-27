@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 // ContentEntry is a generic struct with lots of fields to fit all
@@ -17,6 +18,7 @@ type ContentEntry struct {
 	Font     string  // the name of the font (if any) that should be used to display the content
 	Fontsize float64 // size of the font in points
 	Align    string  // Alignment of the content: L/C/R + T/M/B
+	Example  string  // Example value to be displayed to users
 	//Flags    *[]string
 }
 
@@ -79,5 +81,41 @@ func (ce ContentEntry) IsValid() (isValid bool, err error) {
 		return ce.checkThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
 	default:
 		return false, fmt.Errorf("ContentEntry object contains unknown content type '%v'", ce.Type)
+	}
+}
+
+// Describe describes a single content entry. It returns the
+// description as a multi-line string
+func (ce *ContentEntry) Describe(id string, verbose bool) (result string) {
+	var sb strings.Builder
+
+	if !verbose {
+		fmt.Fprintf(&sb, "- %v", id)
+		if IsSet(ce.Desc) {
+			fmt.Fprintf(&sb, ": %v", ce.Desc)
+		}
+	} else {
+		fmt.Fprintf(&sb, "- %v\n", id)
+		fmt.Fprintf(&sb, "\tDesc: %v\n", ce.Desc)
+		fmt.Fprintf(&sb, "\tType: %v\n", ce.Type)
+		fmt.Fprintf(&sb, "\tExample: %v", ce.getExample(id))
+	}
+
+	return sb.String()
+}
+
+// getExample returns an example call for the current content entry object.
+// If this is not possible, e.g because no example value is included or
+// this is in general not possible for the given type, then a string
+// containing "Not available" is returned instead.
+func (ce *ContentEntry) getExample(id string) (result string) {
+	switch ce.Type {
+	case "textCell":
+		if !IsSet(ce.Example) {
+			return fmt.Sprintf("Not available")
+		}
+		return fmt.Sprintf("%v=%v", id, QuoteStringIfRequired(ce.Example))
+	default:
+		panic("Unknown ContentEntry type")
 	}
 }

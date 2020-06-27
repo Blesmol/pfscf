@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 // ChronicleTemplate represents a template configuration for chronicles. It contains
@@ -81,4 +82,23 @@ func (ct *ChronicleTemplate) GetContentIDs() (idList []string) {
 	}
 	sort.Strings(idList)
 	return idList
+}
+
+// Describe describes a single chronicle template. It returns the
+// description as a multi-line string
+func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
+	var sb strings.Builder
+
+	if !verbose {
+		fmt.Fprintf(&sb, "- %v", ct.Name())
+		if IsSet(ct.Description()) {
+			fmt.Fprintf(&sb, ": %v", ct.Description())
+		}
+	} else {
+		fmt.Fprintf(&sb, "- %v\n", ct.Name())
+		fmt.Fprintf(&sb, "\tDesc: %v\n", ct.Description())
+		fmt.Fprintf(&sb, "\tFile: %v", ct.Filename())
+	}
+
+	return sb.String()
 }
