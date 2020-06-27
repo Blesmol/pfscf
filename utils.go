@@ -6,9 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 )
-
-var isTestEnvironment = false
 
 // Assert will throw a panic if condition is false.
 // The additional parameter is provided to panic() as argument.
@@ -89,13 +88,16 @@ func IsSet(val interface{}) (result bool) {
 	return !x.IsZero()
 }
 
-// IsTestEnvironment should recognize whether the current run is a test run.
-func IsTestEnvironment() bool {
-	return isTestEnvironment
+// HasWhitespace checks if a string includes at least one whitespace character
+func HasWhitespace(s string) bool {
+	return strings.Index(s, " ") > -1
 }
 
-// SetIsTestEnvironment sets a flag that indicates that we are currently in
-// a test environment.
-func SetIsTestEnvironment() {
-	isTestEnvironment = true
+// QuoteStringIfRequired takes a string as input. If the string contains whitespace,
+// then it is returned enclosed by quotation marks, else it is returned as-is
+func QuoteStringIfRequired(s string) string {
+	if HasWhitespace(s) {
+		return fmt.Sprintf("\"%v\"", s)
+	}
+	return s
 }

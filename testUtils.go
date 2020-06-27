@@ -7,13 +7,28 @@ import (
 )
 
 const (
-	printCallStackOnFailingTest = true
+	printCallStackOnFailingTest = false
+)
+
+var (
+	isTestEnvironment = false
 )
 
 func callStack() {
 	if printCallStackOnFailingTest {
 		debug.PrintStack()
 	}
+}
+
+// IsTestEnvironment should indicate whether the current run is a test run.
+func IsTestEnvironment() bool {
+	return isTestEnvironment
+}
+
+// SetIsTestEnvironment sets a flag that indicates that we are currently in
+// a test environment.
+func SetIsTestEnvironment() {
+	isTestEnvironment = true
 }
 
 func expectEqual(t *testing.T, got interface{}, exp interface{}) {

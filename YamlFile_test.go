@@ -56,6 +56,7 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	expectEqual(t, def.Font, "my default Font")
 	expectEqual(t, def.Fontsize, 95.0)
 	expectEqual(t, def.Align, "my default Align")
+	expectEqual(t, def.Example, "my default Example")
 
 	// number of entries in content array
 	expectEqual(t, len(yFile.Content), 2)
@@ -72,6 +73,7 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	expectEqual(t, c0.Font, "my Font")
 	expectEqual(t, c0.Fontsize, 15.0)
 	expectEqual(t, c0.Align, "my Align")
+	expectEqual(t, c0.Example, "my Example")
 
 	expectKeyExists(t, yFile.Content, "myOtherId")
 	c1 := yFile.Content["myOtherId"]
@@ -85,6 +87,7 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	expectEqual(t, c1.Font, "my other font")
 	expectEqual(t, c1.Fontsize, 25.0)
 	expectEqual(t, c1.Align, "my other align")
+	expectEqual(t, c1.Example, "my other example")
 }
 
 func Test_GetYamlFile_EmptyFile(t *testing.T) {

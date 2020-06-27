@@ -12,14 +12,16 @@ content:
     x2: 142
     y2: 108
     align: CB
+    example: Bob
   char:
     type: textCell
-    desc: Char name
+    desc: Character name
     x1: 167
     y1: 124
     x2: 270
     y2: 108
     align: CB
+    example: The Bobbynator
   playerid:
     type: textCell
     desc: PFS Player ID (only the first part, e.g. 123456)
@@ -29,6 +31,7 @@ content:
     y2: 108
     fontsize: 10
     align: RB
+    example: 123456
   charid:
     type: textCell
     desc: PFS Char ID (only the latter part, e.g. 2001)
@@ -38,6 +41,7 @@ content:
     y2: 108
     fontsize: 10
     align: LB
+    example: 2001
   xp:
     type: textCell
     desc: Experience points
@@ -46,6 +50,7 @@ content:
     x2: 565
     y2: 334
     align: CM
+    example: 4
   gp:
     type: textCell
     desc: Gold pieces
@@ -54,6 +59,7 @@ content:
     x2: 565
     y2: 420
     align: CM
+    example: 4gp 2sp
   dj:
     type: textCell
     desc: Dayjob
@@ -62,6 +68,7 @@ content:
     x2: 565
     y2: 456
     align: CM
+    example: 8cp
   fame:
     type: textCell
     desc: Fame
@@ -70,6 +77,7 @@ content:
     x2: 565
     y2: 663
     align: CM
+    example: 4
   event:
     type: textCell
     desc: Event name
@@ -78,6 +86,7 @@ content:
     x2: 147
     y2: 717
     align: CB
+    example: PaizoCon
   code:
     type: textCell
     desc: Event code
@@ -86,6 +95,7 @@ content:
     x2: 212
     y2: 717
     align: CB
+    example: 1234
   date:
     type: textCell
     desc: The date on which the game session took place
@@ -94,6 +104,7 @@ content:
     x2: 303
     y2: 717
     align: CB
+    example: 27.06.2020
   gm:
     type: textCell
     desc: Gamemasters name
@@ -102,6 +113,7 @@ content:
     x2: 446
     y2: 717
     align: CB
+    example: John Doe
   gmid:
     type: textCell
     desc: Gamemasters PFS ID
@@ -110,6 +122,7 @@ content:
     x2: 563
     y2: 717
     align: CB
+    example: 654321
   fac1name:
     type: textCell
     desc: Faction 1 Name
@@ -119,6 +132,7 @@ content:
     y2: 98
     fontsize: 8
     align: CB
+    example: Grand Archive
   fac1rep:
     type: textCell
     desc: Faction 1 Reputation points
@@ -128,6 +142,7 @@ content:
     y2: 98
     fontsize: 8
     align: CB
+    example: 4
   fac2name:
     type: textCell
     desc: Faction 2 Name
@@ -137,6 +152,7 @@ content:
     y2: 118
     fontsize: 8
     align: CB
+    example: Grand Archive
   fac2rep:
     type: textCell
     desc: Faction 2 Reputation points
@@ -146,6 +162,7 @@ content:
     y2: 118
     fontsize: 8
     align: CB
+    example: 4
   fac3name:
     type: textCell
     desc: Faction 3 Name
@@ -155,6 +172,7 @@ content:
     y2: 138
     fontsize: 8
     align: CB
+    example: Grand Archive
   fac3rep:
     type: textCell
     desc: Faction 3 Reputation points
@@ -164,3 +182,4 @@ content:
     y2: 138
     fontsize: 8
     align: CB
+    example: 4

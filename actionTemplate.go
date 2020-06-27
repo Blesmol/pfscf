@@ -10,7 +10,7 @@ import (
 func GetTemplateCommand() (cmd *cobra.Command) {
 	templateCmd := &cobra.Command{
 		Use:     "template",
-		Aliases: []string{"t"},
+		Aliases: []string{"t", "templates"},
 
 		Short: "Various actions on templates: list, describe, etc",
 		Long:  "Long description of actions on templates.",
@@ -76,10 +76,11 @@ func executeTemplateList(cmd *cobra.Command, args []string) {
 	ExitOnError(err, "Could not read templates")
 
 	templateNames := ts.GetTemplateNames()
-	fmt.Printf("List of templates:\n")
+	fmt.Printf("\n")
+	fmt.Printf("List of available templates:\n\n")
 	for _, templateName := range templateNames {
 		template, _ := ts.GetTemplate(templateName)
-		fmt.Printf("- %v: %v\n", template.Name(), template.Description())
+		fmt.Println(template.Describe(flags.verbose))
 	}
 }
 
@@ -89,13 +90,11 @@ func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 	ct, err := GetTemplate(templateName)
 	ExitOnError(err, "Could not get template '%v'", templateName)
 
-	fmt.Printf("Template '%v'\n", templateName)
-	idList := ct.GetContentIDs()
+	fmt.Printf("Template '%v'\n\n", templateName)
+	idList := ct.GetContentIDs() // TODO only display non-alias IDs
 	for _, id := range idList {
 		ce, _ := ct.GetContent(id)
-		fmt.Printf("- %v: %v\n", id, ce.Desc)
-		// TODO add example input to output. Example should contain the id
-		// and a CE-specific example value that needs to be included in the yaml file
+		fmt.Println(ce.Describe(id, flags.verbose))
 		// TODO add aliases
 	}
 }
