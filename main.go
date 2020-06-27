@@ -7,7 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var version = "dev"
+var (
+	version = "dev"
+
+	flags struct {
+		verbose bool
+	}
+)
 
 func main() {
 
@@ -15,6 +21,8 @@ func main() {
 		Use:   "pfsct",
 		Short: "The Pathfinder Society Chronicle Tagger v" + version,
 	}
+
+	RootCmd.PersistentFlags().BoolVarP(&flags.verbose, "verbose", "v", false, "verbose output")
 
 	RootCmd.AddCommand(GetFillCommand())
 	RootCmd.AddCommand(GetTemplateCommand())
