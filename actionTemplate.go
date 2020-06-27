@@ -9,7 +9,9 @@ import (
 // GetTemplateCommand returns the cobra command for the "fill" action.
 func GetTemplateCommand() (cmd *cobra.Command) {
 	templateCmd := &cobra.Command{
-		Use:   "template",
+		Use:     "template",
+		Aliases: []string{"t"},
+
 		Short: "Various actions on templates: list, describe, etc",
 		Long:  "Long description of actions on templates.",
 
@@ -17,7 +19,9 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 	}
 
 	templateListCmd := &cobra.Command{
-		Use:   "list",
+		Use:     "list",
+		Aliases: []string{"l"},
+
 		Short: "List available templates",
 		Long:  "Provide a list of all locally available templates",
 
@@ -28,7 +32,9 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 	templateCmd.AddCommand(templateListCmd)
 
 	templateDescribeCmd := &cobra.Command{
-		Use:   "describe <template>",
+		Use:     "describe <template>",
+		Aliases: []string{"d", "desc"},
+
 		Short: "Describe a specific template",
 		Long:  "Describe a specific template by listing all available fields from this template along with their description",
 
@@ -39,7 +45,9 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 	templateCmd.AddCommand(templateDescribeCmd)
 
 	templateValidateCmd := &cobra.Command{
-		Use:   "validate <template>",
+		Use:     "validate <template>",
+		Aliases: []string{"v"},
+
 		Short: "Validate a specific template",
 		Long:  "Validate a specific template",
 
@@ -50,7 +58,9 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 	templateCmd.AddCommand(templateValidateCmd)
 
 	templateUpdateCmd := &cobra.Command{
-		Use:   "update",
+		Use:     "update",
+		Aliases: []string{"u"},
+
 		Short: "Update the locally available templates",
 		Long:  "Update the locally available templates with the latest templates from the central github repository",
 
