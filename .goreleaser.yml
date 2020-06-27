@@ -28,6 +28,7 @@ archives:
       format: zip
   files:
     - templates/*
+    - CHANGELOG.md
 checksum:
   name_template: 'checksums.txt'
 snapshot:
