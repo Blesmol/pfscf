@@ -13,7 +13,7 @@ var (
 
 func init() {
 	SetIsTestEnvironment()
-	yamlTestDir = filepath.Join(GetExecutableDir(), "testdata", "yaml")
+	yamlTestDir = filepath.Join(GetExecutableDir(), "testdata", "YamlFile")
 }
 
 func Test_GetYamlFile_NonExistantFile(t *testing.T) {
