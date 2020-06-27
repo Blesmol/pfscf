@@ -46,7 +46,7 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 
 	// default values
 	def := &(yFile.Default)
-	expectAllSet(t, def)
+	expectAllExportedSet(t, def)
 	expectEqual(t, def.Type, "my default Type")
 	expectEqual(t, def.Desc, "my default Desc")
 	expectEqual(t, def.X1, 91.0)
@@ -63,7 +63,8 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 
 	expectKeyExists(t, yFile.Content, "myId")
 	c0 := yFile.Content["myId"]
-	expectAllSet(t, c0)
+	expectAllExportedSet(t, c0)
+	expectEqual(t, c0.id, "myId")
 	expectEqual(t, c0.Type, "my Type")
 	expectEqual(t, c0.Desc, "my Desc")
 	expectEqual(t, c0.X1, 11.0)
@@ -77,7 +78,8 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 
 	expectKeyExists(t, yFile.Content, "myOtherId")
 	c1 := yFile.Content["myOtherId"]
-	expectAllSet(t, c1)
+	expectAllExportedSet(t, c1)
+	expectEqual(t, c1.id, "myOtherId")
 	expectEqual(t, c1.Type, "my other type")
 	expectEqual(t, c1.Desc, "my other desc")
 	expectEqual(t, c1.X1, 21.0)
@@ -113,14 +115,14 @@ func Test_GetYamlFile_EmptyContentEntry(t *testing.T) {
 
 	expectEqual(t, 1, len(yFile.Content)) // one empty entry is included
 	expectKeyExists(t, yFile.Content, "myId")
-	content0 := yFile.Content["myId"]
-	//content0 := &(yFile.Content[0])
+	c0 := yFile.Content["myId"]
+	expectEqual(t, c0.id, "myId")
 
-	// check that all fields in the empty content entry are not set
-	refStruct := reflect.ValueOf(content0)
+	// check that all exported fields in the empty content entry are not set
+	refStruct := reflect.ValueOf(c0)
 	for i := 0; i < refStruct.NumField(); i++ {
 		refField := refStruct.Field(i)
-		if IsSet(refField.Interface()) {
+		if refField.CanAddr() && IsSet(refField.Interface()) {
 			t.Errorf("Expected ContentEntry field '%v' to be not set, but has value '%v' instead", refStruct.Type().Field(i).Name, refField.Interface())
 		}
 	}

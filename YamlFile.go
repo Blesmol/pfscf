@@ -37,7 +37,15 @@ func GetYamlFile(fileName string) (yFile *YamlFile, err error) {
 		return nil, err
 	}
 
+	Assert(!IsSet(yFile.fileName), "YamlFile filename should not be already set")
 	yFile.fileName = fileName
+
+	// set content id inside content entries
+	for id, entry := range yFile.Content {
+		Assert(!IsSet(entry.id), "ContentEnty id should not be already set")
+		entry.id = id
+		yFile.Content[id] = entry
+	}
 
 	return yFile, nil
 }

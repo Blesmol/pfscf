@@ -94,7 +94,7 @@ func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 	idList := ct.GetContentIDs() // TODO only display non-alias IDs
 	for _, id := range idList {
 		ce, _ := ct.GetContent(id)
-		fmt.Println(ce.Describe(id, flags.verbose))
+		fmt.Println(ce.Describe(flags.verbose))
 		// TODO add aliases
 	}
 }

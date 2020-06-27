@@ -94,18 +94,20 @@ func expectNotSet(t *testing.T, got interface{}) {
 	}
 }
 
-func expectAllSet(t *testing.T, got interface{}) {
+func expectAllExportedSet(t *testing.T, got interface{}) {
 	vGot := reflect.ValueOf(got)
 
 	switch vGot.Kind() {
 	case reflect.Struct:
 		for i := 0; i < vGot.NumField(); i++ {
 			field := vGot.Field(i)
-			expectAllSet(t, field.Interface())
+			if field.CanAddr() {
+				expectAllExportedSet(t, field.Interface())
+			}
 		}
 	case reflect.Ptr:
 		if IsSet(got) {
-			expectAllSet(t, vGot.Elem().Interface())
+			expectAllExportedSet(t, vGot.Elem().Interface())
 		} else {
 			callStack()
 			t.Errorf("Expected to be set, but was not: %v / %v", vGot.Type(), vGot.Kind())

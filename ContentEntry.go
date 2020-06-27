@@ -20,6 +20,7 @@ type ContentEntry struct {
 	Align    string  // Alignment of the content: L/C/R + T/M/B
 	Example  string  // Example value to be displayed to users
 	//Flags    *[]string
+	id string // not read directly from the yaml file
 }
 
 // applyDefaults takes another ContentEntry object and then sets each field in the first
@@ -33,6 +34,11 @@ func (ce *ContentEntry) applyDefaults(other ContentEntry) {
 	for i := 0; i < vCE.NumField(); i++ {
 		fieldCE := vCE.Field(i)
 		fieldOther := vOther.Field(i)
+
+		// private fields cannot be set, so skip in such cases
+		if !fieldCE.CanSet() {
+			continue
+		}
 
 		// only proceed with current field if there is a need to use the default value
 		if !IsSet(fieldCE.Interface()) && IsSet(fieldOther.Interface()) {
@@ -86,19 +92,19 @@ func (ce ContentEntry) IsValid() (isValid bool, err error) {
 
 // Describe describes a single content entry. It returns the
 // description as a multi-line string
-func (ce *ContentEntry) Describe(id string, verbose bool) (result string) {
+func (ce *ContentEntry) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	if !verbose {
-		fmt.Fprintf(&sb, "- %v", id)
+		fmt.Fprintf(&sb, "- %v", ce.id)
 		if IsSet(ce.Desc) {
 			fmt.Fprintf(&sb, ": %v", ce.Desc)
 		}
 	} else {
-		fmt.Fprintf(&sb, "- %v\n", id)
+		fmt.Fprintf(&sb, "- %v\n", ce.id)
 		fmt.Fprintf(&sb, "\tDesc: %v\n", ce.Desc)
 		fmt.Fprintf(&sb, "\tType: %v\n", ce.Type)
-		fmt.Fprintf(&sb, "\tExample: %v", ce.getExample(id))
+		fmt.Fprintf(&sb, "\tExample: %v", ce.getExample())
 	}
 
 	return sb.String()
@@ -108,13 +114,13 @@ func (ce *ContentEntry) Describe(id string, verbose bool) (result string) {
 // If this is not possible, e.g because no example value is included or
 // this is in general not possible for the given type, then a string
 // containing "Not available" is returned instead.
-func (ce *ContentEntry) getExample(id string) (result string) {
+func (ce *ContentEntry) getExample() (result string) {
 	switch ce.Type {
 	case "textCell":
 		if !IsSet(ce.Example) {
 			return fmt.Sprintf("Not available")
 		}
-		return fmt.Sprintf("%v=%v", id, QuoteStringIfRequired(ce.Example))
+		return fmt.Sprintf("%v=%v", ce.id, QuoteStringIfRequired(ce.Example))
 	default:
 		panic("Unknown ContentEntry type")
 	}
