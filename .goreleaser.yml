@@ -39,3 +39,5 @@ changelog:
     - '^docs:'
     - '^test:'
     - '^tests:'
+    - '^minor:'
+    - '^infra:'
