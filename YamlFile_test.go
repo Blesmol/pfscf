@@ -39,8 +39,6 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	expectNotNil(t, yFile)
 	expectNoError(t, err)
 
-	expectEqual(t, yFile.GetFilename(), fileToTest)
-
 	expectEqual(t, yFile.ID, "myID")
 	expectEqual(t, yFile.Description, "my Description")
 
@@ -194,22 +192,22 @@ func Test_GetTemplateFilesFromDir_ValidDir(t *testing.T) {
 	expectEqual(t, len(yFiles), 5)
 
 	// extract filenames for checking completeness
-	var fileNames []string
-	for _, yFile := range yFiles {
-		fileNames = append(fileNames, yFile.GetFilename())
+	var yFilenames []string
+	for yFilename := range yFiles {
+		yFilenames = append(yFilenames, yFilename)
 	}
-	sort.Strings(fileNames)
+	sort.Strings(yFilenames)
 
-	expectEqual(t, fileNames[0], filepath.Join(dirToTest, "BaR.YmL"))
-	expectEqual(t, fileNames[1], filepath.Join(dirToTest, "dir1", "foo.yml"))
-	expectEqual(t, fileNames[2], filepath.Join(dirToTest, "dir2", "bar.yml"))
-	expectEqual(t, fileNames[3], filepath.Join(dirToTest, "dir3.yml", "foobar.yml"))
-	expectEqual(t, fileNames[4], filepath.Join(dirToTest, "foo.yml"))
+	expectEqual(t, yFilenames[0], filepath.Join(dirToTest, "BaR.YmL"))
+	expectEqual(t, yFilenames[1], filepath.Join(dirToTest, "dir1", "foo.yml"))
+	expectEqual(t, yFilenames[2], filepath.Join(dirToTest, "dir2", "bar.yml"))
+	expectEqual(t, yFilenames[3], filepath.Join(dirToTest, "dir3.yml", "foobar.yml"))
+	expectEqual(t, yFilenames[4], filepath.Join(dirToTest, "foo.yml"))
 
 	// basic check of the contents of one file
 	foundTestFile := false
-	for _, yFile := range yFiles {
-		if yFile.GetFilename() == filepath.Join(dirToTest, "foo.yml") {
+	for yFilename, yFile := range yFiles {
+		if yFilename == filepath.Join(dirToTest, "foo.yml") {
 			expectEqual(t, yFile.ID, "test")
 			foundTestFile = true
 		}

@@ -9,22 +9,24 @@ import (
 // ChronicleTemplate represents a template configuration for chronicles. It contains
 // information on what to put where.
 type ChronicleTemplate struct {
-	id    string
-	yFile *YamlFile
+	id        string
+	yFile     *YamlFile
+	yFilename string // filename of the originating yaml file
 }
 
 // NewChronicleTemplate converts a YamlFile into a ChronicleTemplate. It returns
 // an error if the YamlFile cannot be converted to a ChronicleTemplate, e.g. because
 // it is missing required entries.
-func NewChronicleTemplate(yFile YamlFile) (ct *ChronicleTemplate, err error) {
-	err = checkValidityForChronicleTemplate(yFile)
+func NewChronicleTemplate(yFilename string, yFile *YamlFile) (ct *ChronicleTemplate, err error) {
+	err = checkValidityForChronicleTemplate(yFilename, yFile)
 	if err != nil {
 		return nil, err
 	}
 
 	ct = new(ChronicleTemplate)
 	ct.id = yFile.ID
-	ct.yFile = &yFile
+	ct.yFile = yFile
+	ct.yFilename = yFilename
 
 	// applying default values
 	for key, value := range yFile.Content {
@@ -49,7 +51,7 @@ func (ct *ChronicleTemplate) ID() string {
 
 // Filename returns the file name of the chronicle template
 func (ct *ChronicleTemplate) Filename() string {
-	return ct.yFile.GetFilename()
+	return ct.yFilename
 }
 
 // Description returns the description of the chronicle template
@@ -58,17 +60,16 @@ func (ct *ChronicleTemplate) Description() string {
 }
 
 // checkYamlFileValidity checks
-func checkValidityForChronicleTemplate(yFile YamlFile) (err error) {
-	if !IsSet(yFile.GetFilename()) {
-		return fmt.Errorf("No filename included in YamlFile object")
+func checkValidityForChronicleTemplate(yFilename string, yFile *YamlFile) (err error) {
+	if yFile == nil {
+		return fmt.Errorf("Provided YamlFile object is nil")
 	}
-
 	if !IsSet(yFile.ID) {
-		return fmt.Errorf("Template file '%v' does not contain an ID", yFile.GetFilename())
+		return fmt.Errorf("Template file '%v' does not contain an ID", yFilename)
 	}
 
 	if !IsSet(yFile.Description) {
-		return fmt.Errorf("Template file '%v' does not contain a description", yFile.GetFilename())
+		return fmt.Errorf("Template file '%v' does not contain a description", yFilename)
 	}
 
 	return nil

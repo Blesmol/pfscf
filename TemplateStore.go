@@ -29,8 +29,8 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 	ts = new(TemplateStore)
 	ts.templates = make(map[string]*ChronicleTemplate)
 
-	for _, yFile := range yFiles {
-		ct, err := NewChronicleTemplate(*yFile)
+	for yFilename, yFile := range yFiles {
+		ct, err := NewChronicleTemplate(yFilename, yFile)
 		if err != nil {
 			return nil, err
 		}

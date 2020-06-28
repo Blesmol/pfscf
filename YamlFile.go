@@ -21,7 +21,6 @@ type YamlFile struct {
 	Default     ContentEntry            // default values for the Content entries
 	Presets     map[string]ContentEntry // Named preset sections
 	Content     map[string]ContentEntry // The Content.
-	fileName    string                  // not exported, as this field should not be set via the yaml file
 	//Inherit string // Name of the template that should be inherited
 }
 
@@ -38,9 +37,6 @@ func GetYamlFile(fileName string) (yFile *YamlFile, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("Parsing file '%v': %w", fileName, err)
 	}
-
-	Assert(!IsSet(yFile.fileName), "YamlFile filename should not be already set")
-	yFile.fileName = fileName
 
 	// set content id inside presets entries
 	for id, entry := range yFile.Presets {
@@ -88,25 +84,21 @@ func GetTemplateFilenamesFromDir(dirName string) (yamlFilenames []string, err er
 // GetTemplateFilesFromDir takes a directory name as input and returns a list of
 // YamlFile objects that hold the contents of all yaml files contained in that
 // directory and its subdirectories.
-func GetTemplateFilesFromDir(dirName string) (yamlFiles []*YamlFile, err error) {
+func GetTemplateFilesFromDir(dirName string) (yamlFiles map[string]*YamlFile, err error) {
 	fileList, err := GetTemplateFilenamesFromDir(dirName)
 	if err != nil {
 		return nil, err
 	}
 
+	yamlFiles = make(map[string]*YamlFile, len(fileList))
 	for _, fileName := range fileList {
 		yFile, err := GetYamlFile(fileName)
 		if err != nil {
 			return nil, err
 		}
 
-		yamlFiles = append(yamlFiles, yFile)
+		yamlFiles[fileName] = yFile
 	}
 
 	return yamlFiles, nil
-}
-
-// GetFilename returns the filename from which this YamlFile was read
-func (yFile *YamlFile) GetFilename() (filename string) {
-	return yFile.fileName
 }
