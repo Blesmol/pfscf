@@ -104,7 +104,7 @@ func expectAllExportedSet(t *testing.T, got interface{}) {
 	case reflect.Struct:
 		for i := 0; i < vGot.NumField(); i++ {
 			field := vGot.Field(i)
-			if field.CanAddr() {
+			if field.CanInterface() {
 				expectAllExportedSet(t, field.Interface())
 			}
 		}
