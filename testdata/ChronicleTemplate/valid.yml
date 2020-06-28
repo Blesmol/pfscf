@@ -1,0 +1,14 @@
+id: simpleId
+description: simpleDescription
+content:
+  c0:
+    type: textCell
+    x1: 1
+  c1:
+    type: textCell
+    x1: 2
+presets:
+  p0:
+    y1: 10
+  p1:
+    y1: 11

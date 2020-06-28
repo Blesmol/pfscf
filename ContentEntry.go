@@ -6,6 +6,9 @@ import (
 	"strings"
 )
 
+// ContentData is a generic data-holding struct with lots of fields
+// to fit all the supported tpyes of Content
+
 // ContentData is a generic struct with lots of fields to fit all
 // supported types of Content. Each type will only check its required
 // fields. So basically only field "Type" always has to be provided,
@@ -21,39 +24,82 @@ type ContentData struct {
 	Align    string  // Alignment of the content: L/C/R + T/M/B
 	Example  string  // Example value to be displayed to users
 	//Flags    *[]string
-	id string // not read directly from the yaml file
 }
 
-// applyDefaults takes another ContentData object and then sets each field in the first
-// CD object that is nil or zero to the value that is provided in the second CD object.
-func (cd *ContentData) applyDefaults(other ContentData) {
-	// function has to be called on ptr, as we modify the original object
-	Assert(cd != nil, "Provided ContentData object should always be valid")
+// ContentEntry wraps a ContentData object and adds some additional data.
+// It also provides a bunch of functions to validate and access the data
+// and to perform operations on it.
+type ContentEntry struct {
+	id   string
+	data ContentData
+}
 
-	vCD := reflect.ValueOf(cd).Elem()
-	vOther := reflect.ValueOf(other)
-	for i := 0; i < vCD.NumField(); i++ {
-		fieldCD := vCD.Field(i)
-		fieldOther := vOther.Field(i)
+// NewContentEntry creates a new ContentEntry object.
+func NewContentEntry(id string, data ContentData) (ce ContentEntry) {
+	Assert(IsSet(id), "ID should always be present here")
+	ce.id = id
+	ce.data = data
+	return
+}
 
-		// private fields cannot be set, so skip in such cases
-		if !fieldCD.CanSet() {
-			continue
-		}
+// ID returns the id of this ContentEntry object
+func (ce *ContentEntry) ID() (result string) {
+	return ce.id
+}
 
-		// only proceed with current field if there is a need to use the default value
-		if !IsSet(fieldCD.Interface()) && IsSet(fieldOther.Interface()) {
-			Assert(fieldCD.CanSet(), fmt.Sprintf("Field with index %v must be settable", i))
-			switch fieldCD.Kind() {
-			case reflect.String:
-				fallthrough
-			case reflect.Float64:
-				fieldCD.Set(fieldOther)
-			default:
-				panic(fmt.Sprintf("Unsupported struct type '%v', update function", fieldCD.Kind()))
-			}
-		}
-	}
+// Type returns the type value this ContentEntry object
+func (ce *ContentEntry) Type() (result string) {
+	return ce.data.Type
+}
+
+// Description returns the description of this ContentEntry object
+func (ce *ContentEntry) Description() (result string) {
+	return ce.data.Desc
+}
+
+// X1 returns the x1 value of this ContentEntry object
+func (ce *ContentEntry) X1() (result float64) {
+	return ce.data.X1
+}
+
+// Y1 returns the y1 value of this ContentEntry object
+func (ce *ContentEntry) Y1() (result float64) {
+	return ce.data.Y1
+}
+
+// X2 returns the x2 value of this ContentEntry object
+func (ce *ContentEntry) X2() (result float64) {
+	return ce.data.X2
+}
+
+// Y2 returns the y2 value of this ContentEntry object
+func (ce *ContentEntry) Y2() (result float64) {
+	return ce.data.Y2
+}
+
+// XPivot returns the xpivot of this ContentEntry object
+func (ce *ContentEntry) XPivot() (result float64) {
+	return ce.data.XPivot
+}
+
+// Font returns the font of this ContentEntry object
+func (ce *ContentEntry) Font() (result string) {
+	return ce.data.Font
+}
+
+// Fontsize returns of this ContentEntry object
+func (ce *ContentEntry) Fontsize() (result float64) {
+	return ce.data.Fontsize
+}
+
+// Align returns the alignment string of this ContentEntry object
+func (ce *ContentEntry) Align() (result string) {
+	return ce.data.Align
+}
+
+// Example returns the example of this ContentEntry object
+func (ce *ContentEntry) Example() (result string) {
+	return ce.data.Example
 }
 
 // checkThatValuesArePresent takes a list of field names from the ContentData struct and checks
@@ -73,56 +119,103 @@ func (cd ContentData) checkThatValuesArePresent(names ...string) (isValid bool, 
 	return true, nil
 }
 
-// IsValid checks whether a ContentData object is valid. This means that it
+// IsValid checks whether a ContentEntry object is valid. This means that it
 // must contain type information, and depending on the type information
 // a certain set of other fields must be set.
-func (cd ContentData) IsValid() (isValid bool, err error) {
+func (ce ContentEntry) IsValid() (isValid bool, err error) {
 	// Type must be checked first, as we decide by that value on which fields to check
-	isValid, err = cd.checkThatValuesArePresent("Type")
+	isValid, err = ce.data.checkThatValuesArePresent("Type")
 	if !isValid {
 		return isValid, err
 	}
 
-	switch cd.Type {
+	switch ce.Type() {
 	case "textCell":
-		return cd.checkThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
+		return ce.data.checkThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
 	default:
-		return false, fmt.Errorf("ContentData object contains unknown content type '%v'", cd.Type)
+		return false, fmt.Errorf("ContentData object contains unknown content type '%v'", ce.Type())
 	}
 }
 
-// Describe describes a single ContentData object. It returns the
+// Describe describes a single ContentEntry object. It returns the
 // description as a multi-line string
-func (cd *ContentData) Describe(verbose bool) (result string) {
+func (ce *ContentEntry) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	if !verbose {
-		fmt.Fprintf(&sb, "- %v", cd.id)
-		if IsSet(cd.Desc) {
-			fmt.Fprintf(&sb, ": %v", cd.Desc)
+		fmt.Fprintf(&sb, "- %v", ce.ID())
+		if IsSet(ce.Description()) {
+			fmt.Fprintf(&sb, ": %v", ce.Description())
 		}
 	} else {
-		fmt.Fprintf(&sb, "- %v\n", cd.id)
-		fmt.Fprintf(&sb, "\tDesc: %v\n", cd.Desc)
-		fmt.Fprintf(&sb, "\tType: %v\n", cd.Type)
-		fmt.Fprintf(&sb, "\tExample: %v", cd.getExample())
+		fmt.Fprintf(&sb, "- %v\n", ce.ID())
+		fmt.Fprintf(&sb, "\tDesc: %v\n", ce.Description())
+		fmt.Fprintf(&sb, "\tType: %v\n", ce.Type())
+		fmt.Fprintf(&sb, "\tExample: %v", ce.UsageExample())
 	}
 
 	return sb.String()
 }
 
-// getExample returns an example call for the current ContentData object.
+// UsageExample returns an example call for the current ContentEntry object.
 // If this is not possible, e.g because no example value is included or
 // this is in general not possible for the given type, then a string
 // containing "Not available" is returned instead.
-func (cd *ContentData) getExample() (result string) {
-	switch cd.Type {
+func (ce *ContentEntry) UsageExample() (result string) {
+	switch ce.Type() {
 	case "textCell":
-		if !IsSet(cd.Example) {
+		if !IsSet(ce.Example) {
 			return fmt.Sprintf("Not available")
 		}
-		return fmt.Sprintf("%v=%v", cd.id, QuoteStringIfRequired(cd.Example))
+		return fmt.Sprintf("%v=%v", ce.id, QuoteStringIfRequired(ce.Example()))
 	default:
-		panic("Unknown ContentData type")
+		panic("Unknown ContentEntry type")
+	}
+}
+
+// EntriesAreNotContradicting checks if the provided ContentEntry objects are
+// contradicting or not. They are not contradicting all values that are set
+// (i.e. contain a non-zero value) within the objects contain the same value.
+func EntriesAreNotContradicting(left, right *ContentEntry) (err error) {
+	vLeft := reflect.ValueOf(left.data)
+	vRight := reflect.ValueOf(right.data)
+
+	for i := 0; i < vLeft.NumField(); i++ {
+		fieldLeft := vLeft.Field(i)
+		fieldRight := vRight.Field(i)
+		fieldName := vLeft.Type().Field(i).Name
+
+		if fieldLeft.IsZero() || fieldRight.IsZero() {
+			continue
+		}
+		if fieldLeft.Interface() != fieldRight.Interface() {
+			return fmt.Errorf("Contradicting data for field '%v':\n- '%v': %v\n- '%v': %v", fieldName, left.ID(), fieldLeft.Interface(), right.ID(), fieldRight.Interface())
+		}
+	}
+
+	return nil
+}
+
+// AddMissingValuesFrom wants to have a documentation
+func (ce *ContentEntry) AddMissingValuesFrom(other *ContentEntry) {
+	vSrc := reflect.ValueOf(other.data)
+	vDst := reflect.ValueOf(&ce.data).Elem() // go over pointer instead of value as we want to modify
+
+	for i := 0; i < vDst.NumField(); i++ {
+		fieldDst := vDst.Field(i)
+		fieldSrc := vSrc.Field(i)
+
+		if fieldDst.IsZero() && !fieldSrc.IsZero() {
+			Assert(fieldDst.CanSet(), fmt.Sprintf("Field with index %v must be settable", i))
+
+			switch fieldDst.Kind() {
+			case reflect.String:
+				fallthrough
+			case reflect.Float64:
+				fieldDst.Set(fieldSrc)
+			default:
+				panic(fmt.Sprintf("Unsupported struct type '%v', update function", fieldDst.Kind()))
+			}
+		}
 	}
 }

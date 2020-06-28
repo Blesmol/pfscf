@@ -38,20 +38,6 @@ func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 		return nil, fmt.Errorf("Parsing file '%v': %w", filename, err)
 	}
 
-	// set content id inside presets entries
-	for id, entry := range yFile.Presets {
-		Assert(!IsSet(entry.id), "ContentEnty id should not be already set")
-		entry.id = id
-		yFile.Presets[id] = entry
-	}
-
-	// set content id inside content entries
-	for id, entry := range yFile.Content {
-		Assert(!IsSet(entry.id), "ContentEnty id should not be already set")
-		entry.id = id
-		yFile.Content[id] = entry
-	}
-
 	return yFile, nil
 }
 

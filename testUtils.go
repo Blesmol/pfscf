@@ -166,3 +166,17 @@ func expectKeyExists(t *testing.T, tMap interface{}, key interface{}) {
 	callStack()
 	t.Errorf("Key '%v' was not found in map '%v'", key, tMap)
 }
+
+func expectTrue(t *testing.T, v bool) {
+	if !v {
+		callStack()
+		t.Errorf("Expected true, but was false")
+	}
+}
+
+func expectFalse(t *testing.T, v bool) {
+	if v {
+		callStack()
+		t.Errorf("Expected false, but was true")
+	}
+}

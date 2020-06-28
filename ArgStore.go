@@ -56,8 +56,8 @@ func ArgStoreFromTemplateExamples(ct *ChronicleTemplate) (as ArgStore) {
 
 	for _, id := range contentIDs {
 		ce, _ := ct.GetContent(id)
-		if IsSet(ce.Example) {
-			as[id] = ce.Example
+		if IsSet(ce.Example()) {
+			as[id] = ce.Example()
 		}
 	}
 
