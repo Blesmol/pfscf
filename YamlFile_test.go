@@ -41,6 +41,7 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 
 	expectEqual(t, yFile.ID, "myID")
 	expectEqual(t, yFile.Description, "my Description")
+	expectEqual(t, yFile.Inherit, "myInheritId")
 
 	// default values
 	def := &(yFile.Default)

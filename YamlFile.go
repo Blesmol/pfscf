@@ -18,24 +18,24 @@ const (
 type YamlFile struct {
 	ID          string                  // Name by which this template should be identified
 	Description string                  // The description of this template
+	Inherit     string                  // ID of the template that should be inherited
 	Default     ContentEntry            // default values for the Content entries
 	Presets     map[string]ContentEntry // Named preset sections
 	Content     map[string]ContentEntry // The Content.
-	//Inherit string // Name of the template that should be inherited
 }
 
 // GetYamlFile reads the yaml file from the provided location.
-func GetYamlFile(fileName string) (yFile *YamlFile, err error) {
+func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 	yFile = new(YamlFile)
 
-	fileData, err := ioutil.ReadFile(fileName)
+	fileData, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, fmt.Errorf("Reading file '%v': %w", fileName, err)
+		return nil, fmt.Errorf("Reading file '%v': %w", filename, err)
 	}
 
 	err = yaml.UnmarshalStrict(fileData, yFile)
 	if err != nil {
-		return nil, fmt.Errorf("Parsing file '%v': %w", fileName, err)
+		return nil, fmt.Errorf("Parsing file '%v': %w", filename, err)
 	}
 
 	// set content id inside presets entries
@@ -74,8 +74,8 @@ func GetTemplateFilenamesFromDir(dirName string) (yamlFilenames []string, err er
 			}
 			yamlFilenames = append(yamlFilenames, tmplFilesInSubDir...)
 		} else if tmplFileRegex.MatchString(strings.ToLower(file.Name())) {
-			fileName := filepath.Join(dirName, file.Name())
-			yamlFilenames = append(yamlFilenames, fileName)
+			filename := filepath.Join(dirName, file.Name())
+			yamlFilenames = append(yamlFilenames, filename)
 		}
 	}
 	return yamlFilenames, nil
@@ -91,13 +91,13 @@ func GetTemplateFilesFromDir(dirName string) (yamlFiles map[string]*YamlFile, er
 	}
 
 	yamlFiles = make(map[string]*YamlFile, len(fileList))
-	for _, fileName := range fileList {
-		yFile, err := GetYamlFile(fileName)
+	for _, filename := range fileList {
+		yFile, err := GetYamlFile(filename)
 		if err != nil {
 			return nil, err
 		}
 
-		yamlFiles[fileName] = yFile
+		yamlFiles[filename] = yFile
 	}
 
 	return yamlFiles, nil

@@ -1,5 +1,6 @@
 id: myID
 description: my Description
+inherit: myInheritId
 default:
   type: my default Type
   desc: my default Desc
