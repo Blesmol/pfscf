@@ -144,6 +144,25 @@ func expectFileExists(t *testing.T, filename string) {
 	}
 }
 
-func expectKeyExists(t *testing.T, tmap interface{}, key interface{}) {
+func expectKeyExists(t *testing.T, tMap interface{}, key interface{}) {
+	vMap := reflect.ValueOf(tMap)
+	if vMap.Kind() != reflect.Map {
+		panic("Only maps should be provided here")
+	}
 
+	keyKind := reflect.ValueOf(key).Kind()
+
+	mapVKeys := vMap.MapKeys()
+	for _, vKey := range mapVKeys {
+		if keyKind != vKey.Kind() {
+			t.Errorf("Key kinds do not match! '%v' vs '%v'", keyKind, vKey.Kind())
+			return
+		}
+		if key == vKey.Interface() {
+			return
+		}
+	}
+
+	callStack()
+	t.Errorf("Key '%v' was not found in map '%v'", key, tMap)
 }
