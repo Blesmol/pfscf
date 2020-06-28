@@ -7,8 +7,9 @@ default:
   y1: 92.0
   x2: 93.0
   y2: 94.0
+  xpivot: 95.0
   font: my default Font
-  fontsize: 95.0
+  fontsize: 96.0
   align: my default Align
   example: my default Example
 presets:
@@ -26,14 +27,16 @@ content:
     y1: 12.0
     x2: 13.0
     y2: 14.0
+    xpivot: 15.0
     font: my Font
-    fontsize: 15.0
+    fontsize: 16.0
     align: my Align
     example: my Example
   myOtherId:
     align: my other align
-    fontsize: 25.0
+    fontsize: 26.0
     font: my other font
+    xpivot: 25.0
     y2: 24.0
     x2: 23.0
     y1: 22.0
