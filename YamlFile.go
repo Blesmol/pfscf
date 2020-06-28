@@ -16,12 +16,12 @@ const (
 
 // YamlFile represents the structure of a yaml template file
 type YamlFile struct {
-	ID          string                  // Name by which this template should be identified
-	Description string                  // The description of this template
-	Inherit     string                  // ID of the template that should be inherited
-	Default     ContentEntry            // default values for the Content entries
-	Presets     map[string]ContentEntry // Named preset sections
-	Content     map[string]ContentEntry // The Content.
+	ID          string                 // Name by which this template should be identified
+	Description string                 // The description of this template
+	Inherit     string                 // ID of the template that should be inherited
+	Default     ContentData            // default values for the Content entries
+	Presets     map[string]ContentData // Named preset sections
+	Content     map[string]ContentData // The Content.
 }
 
 // GetYamlFile reads the yaml file from the provided location.

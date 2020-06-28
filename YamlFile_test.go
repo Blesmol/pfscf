@@ -119,6 +119,7 @@ func Test_GetYamlFile_EmptyFile(t *testing.T) {
 	// empty file => no default section and no content
 	expectNotSet(t, yFile.ID)
 	expectNotSet(t, yFile.Description)
+	expectNotSet(t, yFile.Inherit)
 	expectNotSet(t, yFile.Default)
 	expectEqual(t, len(yFile.Content), 0)
 }
@@ -140,7 +141,7 @@ func Test_GetYamlFile_EmptyContentEntry(t *testing.T) {
 	for i := 0; i < refStruct.NumField(); i++ {
 		refField := refStruct.Field(i)
 		if refField.CanAddr() && IsSet(refField.Interface()) {
-			t.Errorf("Expected ContentEntry field '%v' to be not set, but has value '%v' instead", refStruct.Type().Field(i).Name, refField.Interface())
+			t.Errorf("Expected ContentData field '%v' to be not set, but has value '%v' instead", refStruct.Type().Field(i).Name, refField.Interface())
 		}
 	}
 }

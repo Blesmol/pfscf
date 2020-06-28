@@ -37,9 +37,9 @@ func NewChronicleTemplate(yFilename string, yFile *YamlFile) (ct *ChronicleTempl
 	return ct, nil
 }
 
-// GetContent returns the ContentEntry matching the provided key
+// GetContent returns the ContentData object matching the provided key
 // from the current ChronicleTemplate
-func (ct *ChronicleTemplate) GetContent(key string) (ce ContentEntry, exists bool) {
+func (ct *ChronicleTemplate) GetContent(key string) (ce ContentData, exists bool) {
 	ce, exists = ct.yFile.Content[key]
 	return
 }

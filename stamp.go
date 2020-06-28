@@ -72,7 +72,7 @@ func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 
 // AddContent is a generic function to add content to a stamp. It will
 // internally check the content type and call the appropriate subfunction.
-func (s *Stamp) AddContent(ce ContentEntry, value *string) {
+func (s *Stamp) AddContent(ce ContentData, value *string) {
 	switch ce.Type {
 	case "textCell":
 		Assert(value != nil, "Content type 'textCell' needs an input value")
