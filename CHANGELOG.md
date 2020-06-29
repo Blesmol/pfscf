@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 - Align wording: An 'ID' is no longer sometimes called 'Name'
 - Allow to fill out chronicles with dummy/example values
 
+## Changed
+- Updated pdfcpu from v0.3.3 to v0.3.4
+
 ### Fixed
 - Now printing filename if an error occurs during reading a yaml file
 

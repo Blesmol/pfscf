@@ -72,7 +72,7 @@ func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf, er
 		return nil, fmt.Errorf("Error extracting page %v from file %v: %w", realPageNumber, p.filename, err)
 	}
 
-	extractedPdf, err := NewPdf(getPdfPageExtractionFilename(outDir, realPageNumberStr))
+	extractedPdf, err := NewPdf(getPdfPageExtractionFilename(outDir, p.filename, realPageNumberStr))
 	if err != nil {
 		return nil, fmt.Errorf("Error extracting page %v from file %v: %w", realPageNumber, p.filename, err)
 	}
@@ -93,9 +93,11 @@ func (p *Pdf) GetDimensionsInPoints() (width float64, height float64) {
 
 // getPdfPageExtractionFilename returns the path and filename of the target
 // file if a single page was extracted.
-func getPdfPageExtractionFilename(dir string, page string) (filename string) {
-	localFilename := strings.Join([]string{"page_", page, ".pdf"}, "")
-	return filepath.Join(dir, localFilename)
+func getPdfPageExtractionFilename(dirname, inFile, page string) (outFile string) {
+	inFileWithoutDir := filepath.Base(inFile)
+	inFileBase := strings.TrimSuffix(inFileWithoutDir, filepath.Ext(inFileWithoutDir))
+	localFilename := strings.Join([]string{inFileBase, "_", page, ".pdf"}, "")
+	return filepath.Join(dirname, localFilename)
 }
 
 // GetPermissionBit checks whether the given permission bit
