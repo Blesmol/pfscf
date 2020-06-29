@@ -1,18 +1,6 @@
 id: myID
 description: my Description
 inherit: myInheritId
-default:
-  type: my default Type
-  desc: my default Desc
-  x1: 91.0
-  y1: 92.0
-  x2: 93.0
-  y2: 94.0
-  xpivot: 95.0
-  font: my default Font
-  fontsize: 96.0
-  align: my default Align
-  example: my default Example
 presets:
   preset0:
     y1: 150.0

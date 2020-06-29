@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ## Changed
 - Updated pdfcpu from v0.3.3 to v0.3.4
 - Use global temp dir now for storing intermediate files
+- The "default" section in yaml files was replaced with the section "default" in "presets"
 
 ### Fixed
 - Now printing filename if an error occurs during reading a yaml file

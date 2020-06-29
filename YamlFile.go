@@ -19,7 +19,6 @@ type YamlFile struct {
 	ID          string                 // Name by which this template should be identified
 	Description string                 // The description of this template
 	Inherit     string                 // ID of the template that should be inherited
-	Default     ContentData            // default values for the Content entries
 	Presets     map[string]ContentData // Named preset sections
 	Content     map[string]ContentData // The Content.
 }

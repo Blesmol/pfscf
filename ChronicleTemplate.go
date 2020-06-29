@@ -52,14 +52,13 @@ func NewChronicleTemplate(yFilename string, yFile *YamlFile) (ct *ChronicleTempl
 		ct.presets[id] = NewContentEntry(id, entry)
 	}
 
-	// TODO remove this again
-	// workaround until presets are working correctly:
-	// Consider the "default" section an implicit preset
-	// that is here applied to all content sections
-	tmpDefault := NewContentEntry("default", yFile.Default)
-	for id, entry := range ct.content {
-		entry.AddMissingValuesFrom(&tmpDefault)
-		ct.content[id] = entry
+	// TODO temporary workaround until presets are working properly
+	// TODO remove
+	if defPreset, exists := ct.presets["default"]; exists {
+		for id, entry := range ct.content {
+			entry.AddMissingValuesFrom(&defPreset)
+			ct.content[id] = entry
+		}
 	}
 
 	return ct, nil

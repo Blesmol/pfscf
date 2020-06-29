@@ -43,21 +43,6 @@ func Test_GetYamlFile_ValidFile(t *testing.T) {
 	expectEqual(t, yFile.Description, "my Description")
 	expectEqual(t, yFile.Inherit, "myInheritId")
 
-	// default values
-	def := &(yFile.Default)
-	expectAllExportedSet(t, def)
-	expectEqual(t, def.Type, "my default Type")
-	expectEqual(t, def.Desc, "my default Desc")
-	expectEqual(t, def.X1, 91.0)
-	expectEqual(t, def.Y1, 92.0)
-	expectEqual(t, def.X2, 93.0)
-	expectEqual(t, def.Y2, 94.0)
-	expectEqual(t, def.XPivot, 95.0)
-	expectEqual(t, def.Font, "my default Font")
-	expectEqual(t, def.Fontsize, 96.0)
-	expectEqual(t, def.Align, "my default Align")
-	expectEqual(t, def.Example, "my default Example")
-
 	// presets
 	expectEqual(t, len(yFile.Presets), 2)
 
@@ -116,7 +101,7 @@ func Test_GetYamlFile_EmptyFile(t *testing.T) {
 	expectNotSet(t, yFile.ID)
 	expectNotSet(t, yFile.Description)
 	expectNotSet(t, yFile.Inherit)
-	expectNotSet(t, yFile.Default)
+	expectEqual(t, len(yFile.Presets), 0)
 	expectEqual(t, len(yFile.Content), 0)
 }
 
