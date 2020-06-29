@@ -57,10 +57,12 @@ func executeFill(cmd *cobra.Command, args []string) {
 	workDir := GetTempDir()
 	defer os.RemoveAll(workDir)
 
-	pdf := NewPdf(inFile)
+	pdf, err := NewPdf(inFile)
+	AssertNoError(err)
 
 	// extract chronicle page from pdf
-	extractedPage := pdf.ExtractPage(-1, workDir)
+	extractedPage, err := pdf.ExtractPage(-1, workDir)
+	ExitOnError(err, "Error extracing page from %v", pdf.filename)
 	width, height := extractedPage.GetDimensionsInPoints()
 
 	// create stamp

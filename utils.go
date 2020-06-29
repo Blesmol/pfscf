@@ -54,27 +54,50 @@ func InformOnError(err error, errMsg string, v ...interface{}) {
 // files can be stored. The caller needs to ensure that the
 // directory is deleted afterwards.
 func GetTempDir() (dirName string) {
-	// TODO Wait for watermarking issue to be fixed on side of pdfcpu
-	// https://github.com/pdfcpu/pdfcpu/issues/195
-	// Watermarking with pdfcpu currently does not work on Windows
-	// when absolute paths are used.
-	// So temporarily create the working dir as subdir of the local directory
-	dirName, err := ioutil.TempDir(".", "pfsct-")
+	dirName, err := ioutil.TempDir("", "pfsct-")
 	AssertNoError(err)
 	return dirName
 }
 
 // GetExecutableDir returns the dir in which the binary of this program is located
 func GetExecutableDir() (dirName string) {
+	var baseDir string
+
 	if IsTestEnvironment() {
 		// during test runs the executable will be run from some temporary
 		// directory, so instead return the local directory for that case.
-		return "."
+		baseDir = "."
+	} else {
+		baseDir = filepath.Dir(os.Args[0])
 	}
 
-	dirName, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	dirName, err := filepath.Abs(baseDir)
 	AssertNoError(err)
 	return dirName
+}
+
+// IsFile checks wether a file exists and is not a directory.
+func IsFile(filename string) (exists bool, err error) {
+	info, err := os.Stat(filename)
+	if err != nil {
+		return false, err
+	}
+	if info.IsDir() {
+		return false, fmt.Errorf("Path %v is a directory", filename)
+	}
+	return true, nil
+}
+
+// IsDir checks wether a directory exists.
+func IsDir(dirname string) (exists bool, err error) {
+	info, err := os.Stat(dirname)
+	if err != nil {
+		return false, err
+	}
+	if !info.IsDir() {
+		return false, fmt.Errorf("Path %v is not a directory", dirname)
+	}
+	return true, nil
 }
 
 // IsSet checks whether the provided value is different from its zero value and

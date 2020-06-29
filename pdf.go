@@ -2,13 +2,11 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
-	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 )
 
 // Pdf is a wraper for a PDF file
@@ -18,14 +16,17 @@ type Pdf struct {
 }
 
 // NewPdf creates a new Pdf object.
-func NewPdf(filename string) (p *Pdf) {
-	// TODO check whether PDF file exists and is readable
-	var err error
+func NewPdf(filename string) (p *Pdf, err error) {
+	if exists, err := IsFile(filename); !exists {
+		return nil, err
+	}
 	p = new(Pdf)
 	p.filename = filename
 	p.numPages, err = pdfcpuapi.PageCountFile(p.filename)
-	AssertNoError(err)
-	return p
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
 }
 
 // Filename returns the filename of the given PDF
@@ -42,11 +43,15 @@ func (p *Pdf) AllowsPageExtraction() bool {
 // ExtractPage extracts a single page from the input file and stores
 // it under (but not necessarily in) the given output directory.
 // Provided page number can also be negative, then page is searched from the back.
-func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf) {
+func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf, err error) {
+	isDir, err := IsDir(outDir)
+	if !isDir || err != nil {
+		return nil, fmt.Errorf("Error extracting page from file %v: %w", p.filename, err)
+	}
+
 	// check PDF permissions
 	if !p.AllowsPageExtraction() {
-		fmt.Printf("Error: File %v does not allow page extraction, exiting", p.filename)
-		os.Exit(1)
+		return nil, fmt.Errorf("File %v does not allow page extraction", p.filename)
 	}
 
 	// Function accepts negative page numbers, thus calculate real page number
@@ -56,12 +61,22 @@ func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf) {
 	} else {
 		realPageNumber = pageNumber
 	}
-	Assert(realPageNumber > 0 && realPageNumber <= p.numPages, "Page number is out of range: "+strconv.Itoa(pageNumber))
+	if realPageNumber <= 0 || realPageNumber > p.numPages {
+		return nil, fmt.Errorf("Page number %v is out of bounds for file %v", realPageNumber, p.filename)
+	}
 
 	realPageNumberStr := strconv.Itoa(realPageNumber)
-	pdfcpuapi.ExtractPagesFile(p.filename, outDir, []string{realPageNumberStr}, nil)
+	err = pdfcpuapi.ExtractPagesFile(p.filename, outDir, []string{realPageNumberStr}, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %w", realPageNumber, p.filename, err)
+	}
 
-	return NewPdf(getPdfPageExtractionFilename(outDir, realPageNumberStr))
+	extractedPdf, err := NewPdf(getPdfPageExtractionFilename(outDir, p.filename, realPageNumberStr))
+	if err != nil {
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %w", realPageNumber, p.filename, err)
+	}
+
+	return extractedPdf, nil
 }
 
 // GetDimensionsInPoints returns the width and height of the first page in
@@ -77,9 +92,11 @@ func (p *Pdf) GetDimensionsInPoints() (width float64, height float64) {
 
 // getPdfPageExtractionFilename returns the path and filename of the target
 // file if a single page was extracted.
-func getPdfPageExtractionFilename(dir string, page string) (filename string) {
-	localFilename := strings.Join([]string{"page_", page, ".pdf"}, "")
-	return filepath.Join(dir, localFilename)
+func getPdfPageExtractionFilename(dirname, inFile, page string) (outFile string) {
+	inFileWithoutDir := filepath.Base(inFile)
+	inFileBase := strings.TrimSuffix(inFileWithoutDir, filepath.Ext(inFileWithoutDir))
+	localFilename := strings.Join([]string{inFileBase, "_", page, ".pdf"}, "")
+	return filepath.Join(dirname, localFilename)
 }
 
 // GetPermissionBit checks whether the given permission bit
@@ -125,9 +142,12 @@ func (p *Pdf) GetPermissionBit(bit int) (bitValue bool) {
 
 // StampIt stamps the given PDF file with the given stamp
 func (p *Pdf) StampIt(stampFile string, outFile string) {
-	onTop := true // stamps go on top, watermarks do not
-	wm, err := pdfcpu.ParsePDFWatermarkDetails(stampFile, "rot:0, sc:1", onTop)
+	onTop := true     // stamps go on top, watermarks do not
+	updateWM := false // should the new watermark be added or an existing one updated?
+
+	wm, err := pdfcpuapi.PDFWatermark(stampFile, "rot:0, sc:1", onTop, updateWM)
 	AssertNoError(err)
+
 	err = pdfcpuapi.AddWatermarksFile(p.filename, outFile, nil, wm, nil)
 	AssertNoError(err)
 

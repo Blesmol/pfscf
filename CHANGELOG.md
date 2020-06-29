@@ -8,6 +8,13 @@ All notable changes to this project will be documented in this file.
 - Align wording: An 'ID' is no longer sometimes called 'Name'
 - Allow to fill out chronicles with dummy/example values
 
+## Changed
+- Updated pdfcpu from v0.3.3 to v0.3.4
+- Use global temp dir now for storing intermediate files
+
+### Fixed
+- Now printing filename if an error occurs during reading a yaml file
+
 ## [0.3.2] - 2020-06-27
 
 ### Added

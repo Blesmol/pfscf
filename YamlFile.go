@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"regexp"
@@ -30,12 +31,12 @@ func GetYamlFile(fileName string) (yFile *YamlFile, err error) {
 
 	fileData, err := ioutil.ReadFile(fileName)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Reading file '%v': %w", fileName, err)
 	}
 
 	err = yaml.UnmarshalStrict(fileData, yFile)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Parsing file '%v': %w", fileName, err)
 	}
 
 	Assert(!IsSet(yFile.fileName), "YamlFile filename should not be already set")
