@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
-	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 )
 
 // Pdf is a wraper for a PDF file
@@ -143,9 +142,12 @@ func (p *Pdf) GetPermissionBit(bit int) (bitValue bool) {
 
 // StampIt stamps the given PDF file with the given stamp
 func (p *Pdf) StampIt(stampFile string, outFile string) {
-	onTop := true // stamps go on top, watermarks do not
-	wm, err := pdfcpu.ParsePDFWatermarkDetails(stampFile, "rot:0, sc:1", onTop)
+	onTop := true     // stamps go on top, watermarks do not
+	updateWM := false // should the new watermark be added or an existing one updated?
+
+	wm, err := pdfcpuapi.PDFWatermark(stampFile, "rot:0, sc:1", onTop, updateWM)
 	AssertNoError(err)
+
 	err = pdfcpuapi.AddWatermarksFile(p.filename, outFile, nil, wm, nil)
 	AssertNoError(err)
 
