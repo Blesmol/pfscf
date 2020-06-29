@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -18,14 +17,17 @@ type Pdf struct {
 }
 
 // NewPdf creates a new Pdf object.
-func NewPdf(filename string) (p *Pdf) {
-	// TODO check whether PDF file exists and is readable
-	var err error
+func NewPdf(filename string) (p *Pdf, err error) {
+	if exists, err := IsFile(filename); !exists {
+		return nil, err
+	}
 	p = new(Pdf)
 	p.filename = filename
 	p.numPages, err = pdfcpuapi.PageCountFile(p.filename)
-	AssertNoError(err)
-	return p
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
 }
 
 // Filename returns the filename of the given PDF
@@ -42,11 +44,15 @@ func (p *Pdf) AllowsPageExtraction() bool {
 // ExtractPage extracts a single page from the input file and stores
 // it under (but not necessarily in) the given output directory.
 // Provided page number can also be negative, then page is searched from the back.
-func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf) {
+func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf, err error) {
+	isDir, err := IsDir(outDir)
+	if !isDir || err != nil {
+		return nil, fmt.Errorf("Error extracting page from file %v: %w", p.filename, err)
+	}
+
 	// check PDF permissions
 	if !p.AllowsPageExtraction() {
-		fmt.Printf("Error: File %v does not allow page extraction, exiting", p.filename)
-		os.Exit(1)
+		return nil, fmt.Errorf("File %v does not allow page extraction", p.filename)
 	}
 
 	// Function accepts negative page numbers, thus calculate real page number
@@ -56,12 +62,22 @@ func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf) {
 	} else {
 		realPageNumber = pageNumber
 	}
-	Assert(realPageNumber > 0 && realPageNumber <= p.numPages, "Page number is out of range: "+strconv.Itoa(pageNumber))
+	if realPageNumber <= 0 || realPageNumber > p.numPages {
+		return nil, fmt.Errorf("Page number %v is out of bounds for file %v", realPageNumber, p.filename)
+	}
 
 	realPageNumberStr := strconv.Itoa(realPageNumber)
-	pdfcpuapi.ExtractPagesFile(p.filename, outDir, []string{realPageNumberStr}, nil)
+	err = pdfcpuapi.ExtractPagesFile(p.filename, outDir, []string{realPageNumberStr}, nil)
+	if err != nil {
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %w", realPageNumber, p.filename, err)
+	}
 
-	return NewPdf(getPdfPageExtractionFilename(outDir, realPageNumberStr))
+	extractedPdf, err := NewPdf(getPdfPageExtractionFilename(outDir, realPageNumberStr))
+	if err != nil {
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %w", realPageNumber, p.filename, err)
+	}
+
+	return extractedPdf, nil
 }
 
 // GetDimensionsInPoints returns the width and height of the first page in

@@ -1,6 +1,9 @@
 package main
 
 import (
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"reflect"
 	"runtime/debug"
 	"testing"
@@ -117,6 +120,27 @@ func expectAllExportedSet(t *testing.T, got interface{}) {
 			callStack()
 			t.Errorf("Expected to be set, but was not: %v / %v", vGot.Type(), vGot.Kind())
 		}
+	}
+}
+
+func expectFileExists(t *testing.T, filename string) {
+	info, err := os.Stat(filename)
+	if err != nil {
+		t.Errorf("Expected file '%v' is missing: %v", filename, err)
+
+		// for debugging reasons, provide all filenames from the containing directory as well
+		dirname := filepath.Dir(filename)
+		files, errDir := ioutil.ReadDir(dirname)
+		if errDir != nil {
+			t.Logf("Cannot read dir '%v' to analyze issue: %v", dirname, errDir)
+			return
+		}
+		t.Logf("Files in directory %v:", dirname)
+		for _, file := range files {
+			t.Logf("- %v\n", file.Name())
+		}
+	} else if info.IsDir() {
+		t.Errorf("Expected file '%v' is a directory", filename)
 	}
 }
 

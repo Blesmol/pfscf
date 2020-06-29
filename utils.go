@@ -77,6 +77,30 @@ func GetExecutableDir() (dirName string) {
 	return dirName
 }
 
+// IsFile checks wether a file exists and is not a directory.
+func IsFile(filename string) (exists bool, err error) {
+	info, err := os.Stat(filename)
+	if err != nil {
+		return false, err
+	}
+	if info.IsDir() {
+		return false, fmt.Errorf("Path %v is a directory", filename)
+	}
+	return true, nil
+}
+
+// IsDir checks wether a directory exists.
+func IsDir(dirname string) (exists bool, err error) {
+	info, err := os.Stat(dirname)
+	if err != nil {
+		return false, err
+	}
+	if !info.IsDir() {
+		return false, fmt.Errorf("Path %v is not a directory", dirname)
+	}
+	return true, nil
+}
+
 // IsSet checks whether the provided value is different from its zero value and
 // in case of a non-nil pointer it also checks whether the referenced value is
 // not the zero value
