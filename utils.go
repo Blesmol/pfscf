@@ -54,12 +54,7 @@ func InformOnError(err error, errMsg string, v ...interface{}) {
 // files can be stored. The caller needs to ensure that the
 // directory is deleted afterwards.
 func GetTempDir() (dirName string) {
-	// TODO Wait for watermarking issue to be fixed on side of pdfcpu
-	// https://github.com/pdfcpu/pdfcpu/issues/195
-	// Watermarking with pdfcpu currently does not work on Windows
-	// when absolute paths are used.
-	// So temporarily create the working dir as subdir of the local directory
-	dirName, err := ioutil.TempDir(".", "pfsct-")
+	dirName, err := ioutil.TempDir("", "pfsct-")
 	AssertNoError(err)
 	return dirName
 }
