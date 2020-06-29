@@ -61,13 +61,17 @@ func GetTempDir() (dirName string) {
 
 // GetExecutableDir returns the dir in which the binary of this program is located
 func GetExecutableDir() (dirName string) {
+	var baseDir string
+
 	if IsTestEnvironment() {
 		// during test runs the executable will be run from some temporary
 		// directory, so instead return the local directory for that case.
-		return "."
+		baseDir = "."
+	} else {
+		baseDir = filepath.Dir(os.Args[0])
 	}
 
-	dirName, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	dirName, err := filepath.Abs(baseDir)
 	AssertNoError(err)
 	return dirName
 }
