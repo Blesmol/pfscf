@@ -35,14 +35,19 @@ func SetIsTestEnvironment() {
 }
 
 func expectEqual(t *testing.T, got interface{}, exp interface{}) {
+	t.Helper()
+
 	if exp == got {
 		return
 	}
+
 	callStack()
 	t.Errorf("Expected '%v' (type %v), got '%v' (type %v)", exp, reflect.TypeOf(exp), got, reflect.TypeOf(got))
 }
 
 func expectNotEqual(t *testing.T, got interface{}, notExp interface{}) {
+	t.Helper()
+
 	typeNotExp := reflect.TypeOf(notExp)
 	typeGot := reflect.TypeOf(got)
 
@@ -62,6 +67,8 @@ func expectNotEqual(t *testing.T, got interface{}, notExp interface{}) {
 
 func expectNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
+	t.Helper()
+
 	if !reflect.ValueOf(got).IsNil() {
 		callStack()
 		t.Errorf("Expected nil, got '%v' (Type %v)", got, reflect.TypeOf(got))
@@ -70,6 +77,8 @@ func expectNil(t *testing.T, got interface{}) {
 
 func expectNotNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
+	t.Helper()
+
 	if reflect.ValueOf(got).IsNil() {
 		callStack()
 		t.Errorf("Expected not nil, got '%v' (Type %v)", got, reflect.TypeOf(got))
@@ -77,6 +86,8 @@ func expectNotNil(t *testing.T, got interface{}) {
 }
 
 func expectError(t *testing.T, err error) {
+	t.Helper()
+
 	if err == nil {
 		callStack()
 		t.Error("Expected an error, got nil")
@@ -84,6 +95,8 @@ func expectError(t *testing.T, err error) {
 }
 
 func expectNoError(t *testing.T, err error) {
+	t.Helper()
+
 	if err != nil {
 		callStack()
 		t.Errorf("Expected no error, got '%v'", err)
@@ -91,6 +104,8 @@ func expectNoError(t *testing.T, err error) {
 }
 
 func expectNotSet(t *testing.T, got interface{}) {
+	t.Helper()
+
 	if IsSet(got) {
 		callStack()
 		t.Errorf("Expected not set, got '%v'", got)
@@ -98,8 +113,9 @@ func expectNotSet(t *testing.T, got interface{}) {
 }
 
 func expectAllExportedSet(t *testing.T, got interface{}) {
-	vGot := reflect.ValueOf(got)
+	t.Helper()
 
+	vGot := reflect.ValueOf(got)
 	switch vGot.Kind() {
 	case reflect.Struct:
 		for i := 0; i < vGot.NumField(); i++ {
@@ -124,6 +140,8 @@ func expectAllExportedSet(t *testing.T, got interface{}) {
 }
 
 func expectFileExists(t *testing.T, filename string) {
+	t.Helper()
+
 	info, err := os.Stat(filename)
 	if err != nil {
 		t.Errorf("Expected file '%v' is missing: %v", filename, err)
@@ -145,6 +163,8 @@ func expectFileExists(t *testing.T, filename string) {
 }
 
 func expectKeyExists(t *testing.T, tMap interface{}, key interface{}) {
+	t.Helper()
+
 	vMap := reflect.ValueOf(tMap)
 	if vMap.Kind() != reflect.Map {
 		panic("Only maps should be provided here")
@@ -168,6 +188,8 @@ func expectKeyExists(t *testing.T, tMap interface{}, key interface{}) {
 }
 
 func expectTrue(t *testing.T, v bool) {
+	t.Helper()
+
 	if !v {
 		callStack()
 		t.Errorf("Expected true, but was false")
@@ -175,6 +197,8 @@ func expectTrue(t *testing.T, v bool) {
 }
 
 func expectFalse(t *testing.T, v bool) {
+	t.Helper()
+
 	if v {
 		callStack()
 		t.Errorf("Expected false, but was true")
