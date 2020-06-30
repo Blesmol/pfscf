@@ -11,7 +11,7 @@ var (
 )
 
 func init() {
-	SetIsTestEnvironment()
+	SetIsTestEnvironment(true)
 	chronicleTemplateTestDir = filepath.Join(GetExecutableDir(), "testdata", "ChronicleTemplate")
 }
 

@@ -12,7 +12,7 @@ var (
 )
 
 func init() {
-	SetIsTestEnvironment()
+	SetIsTestEnvironment(true)
 	yamlTestDir = filepath.Join(GetExecutableDir(), "testdata", "YamlFile")
 }
 

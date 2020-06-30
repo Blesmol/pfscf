@@ -3,7 +3,7 @@ package main
 import "testing"
 
 func init() {
-	SetIsTestEnvironment()
+	SetIsTestEnvironment(true)
 }
 
 func getContentDataWithDummyData(t *testing.T, cdType string) (cd ContentData) {

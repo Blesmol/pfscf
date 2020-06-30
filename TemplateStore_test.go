@@ -10,7 +10,7 @@ var (
 )
 
 func init() {
-	SetIsTestEnvironment()
+	SetIsTestEnvironment(true)
 	templateStoreTestDir = filepath.Join(GetExecutableDir(), "testdata", "TemplateStore")
 }
 
@@ -84,6 +84,7 @@ func Test_getTemplateStoreForDir_Valid(t *testing.T) {
 }
 
 func Test_GetTemplateStore(t *testing.T) {
+	SetTestingTemplatesDir(filepath.Join(templateStoreTestDir, "valid"))
 	ts, err := GetTemplateStore()
 
 	expectNotNil(t, ts)
@@ -91,7 +92,7 @@ func Test_GetTemplateStore(t *testing.T) {
 	if ts != nil {
 		expectTrue(t, len(ts.GetTemplateIDs(false)) > 0)
 
-		ct, err := ts.GetTemplate("pfs2")
+		ct, err := ts.GetTemplate("parent")
 		expectNotNil(t, ct)
 		expectNoError(t, err)
 	}
@@ -118,11 +119,13 @@ func Test_TemplateStoreGetTemplate(t *testing.T) {
 }
 
 func Test_GetTemplate(t *testing.T) {
+	SetTestingTemplatesDir(filepath.Join(templateStoreTestDir, "valid"))
+
 	ct, err := GetTemplate("non-existant")
 	expectNil(t, ct)
 	expectError(t, err)
 
-	ct, err = GetTemplate("pfs2")
+	ct, err = GetTemplate("parent")
 	expectNotNil(t, ct)
 	expectNoError(t, err)
 }

@@ -12,7 +12,7 @@ var (
 )
 
 func init() {
-	SetIsTestEnvironment()
+	SetIsTestEnvironment(true)
 	pdfTestDir = filepath.Join(GetExecutableDir(), "testdata", "pdf")
 }
 

@@ -30,8 +30,8 @@ func IsTestEnvironment() bool {
 
 // SetIsTestEnvironment sets a flag that indicates that we are currently in
 // a test environment.
-func SetIsTestEnvironment() {
-	isTestEnvironment = true
+func SetIsTestEnvironment(isTestEnv bool) {
+	isTestEnvironment = isTestEnv
 }
 
 func expectEqual(t *testing.T, got interface{}, exp interface{}) {
