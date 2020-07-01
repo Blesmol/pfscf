@@ -1,0 +1,13 @@
+id: id_c
+description: foo
+inherit: id_a
+content:
+  content_c1:
+    type: testType
+  content_c2:
+    type: testType
+presets:
+  preset_c1:
+    type: testType
+  preset_c2:
+    type: testType

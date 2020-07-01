@@ -1,0 +1,4 @@
+id: file2
+description: bar
+inherit: file3
+

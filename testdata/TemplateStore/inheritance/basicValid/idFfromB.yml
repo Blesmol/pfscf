@@ -1,0 +1,4 @@
+id: id_f
+description: foo
+inherit: id_b
+

@@ -1,0 +1,3 @@
+id: file1
+description: foo
+inherit: file2

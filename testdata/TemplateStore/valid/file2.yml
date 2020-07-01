@@ -1,6 +1,5 @@
 id: child
 description: desc
-inherit: parent
 presets:
   p0:
     x1: 10

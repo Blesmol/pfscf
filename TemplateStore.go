@@ -29,6 +29,7 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 	ts = new(TemplateStore)
 	ts.templates = make(map[string]*ChronicleTemplate)
 
+	// put basic yaml files as ChronicleTemplates into the store
 	for yFilename, yFile := range yFiles {
 		ct, err := NewChronicleTemplate(yFilename, yFile)
 		if err != nil {
@@ -41,7 +42,66 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 		ts.templates[ct.ID()] = ct
 	}
 
+	// resolve inheritance
+	resolvedIDs := make(map[string]bool, 0) // stores IDs of all entries that are already resolved
+	inheritChain := make([]string, 0)       // store current inheritance chain to recognize cycles
+	for _, entry := range ts.templates {
+		err := resolveInheritance(ts, entry, &resolvedIDs, inheritChain)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// resolve presets
+	// TODO
+
 	return ts, nil
+}
+
+// resolveInheritance is responsible for resolving template inheritance by copying entries
+// from the content and the presets section to other templates.
+func resolveInheritance(ts *TemplateStore, ct *ChronicleTemplate, resolvedIDs *map[string]bool, inheritChain []string) (err error) {
+	// check if we have already seen that entry
+	if _, exists := (*resolvedIDs)[ct.ID()]; exists {
+		return nil
+	}
+
+	// check if we have a cyclic dependency
+	for idx, inheritedID := range inheritChain {
+		if inheritedID == ct.ID() {
+			inheritChain = append(inheritChain, inheritedID) // add entry before printing to have complete cycle in output
+			return fmt.Errorf("Error resolving dependencies of template '%v'. Inheritance chain is %v", ct.ID(), inheritChain[idx:])
+		}
+	}
+
+	// entries without inheritance information can simply be added to the list of resolved IDs
+	if ct.Inherit() == "" {
+		(*resolvedIDs)[ct.ID()] = true
+		return nil
+	}
+
+	inheritedID := ct.Inherit()
+	inheritedCe, err := ts.GetTemplate(inheritedID)
+	if err != nil {
+		return err
+	}
+
+	// add current id to inheritance list for recursive call
+	inheritChain = append(inheritChain, ct.ID())
+	err = resolveInheritance(ts, inheritedCe, resolvedIDs, inheritChain)
+	if err != nil {
+		return err
+	}
+
+	// now resolve content
+	err = ct.InheritFrom(inheritedCe)
+	if err != nil {
+		return err
+	}
+
+	// add to list of resolved entries
+	(*resolvedIDs)[ct.ID()] = true
+	return nil
 }
 
 // GetTemplateIDs returns a sorted list of keys contained in this TemplateStore

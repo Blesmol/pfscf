@@ -1,0 +1,3 @@
+id: id_a
+description: foo
+inherit: id_a
