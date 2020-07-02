@@ -15,6 +15,20 @@ func init() {
 	chronicleTemplateTestDir = filepath.Join(GetExecutableDir(), "testdata", "ChronicleTemplate")
 }
 
+func getCTfromYamlFile(t *testing.T, filename string) (ct *ChronicleTemplate) {
+	t.Helper()
+
+	fileToTest := filepath.Join(chronicleTemplateTestDir, filename)
+	yFile, err := GetYamlFile(fileToTest)
+	expectNotNil(t, yFile)
+	expectNoError(t, err)
+
+	ct, err = NewChronicleTemplate(filename, yFile)
+	expectNotNil(t, ct)
+	expectNoError(t, err)
+	return ct
+}
+
 func Test_NewChronicleTemplate_NoFilename(t *testing.T) {
 	fileToTest := filepath.Join(chronicleTemplateTestDir, "basic.yml")
 	yFile, err := GetYamlFile(fileToTest)
@@ -107,9 +121,7 @@ func Test_NewChronicleTemplate_FileWithContent(t *testing.T) {
 }
 
 func Test_GetContentIDs(t *testing.T) {
-	fileToTest := filepath.Join(chronicleTemplateTestDir, "valid.yml")
-	yFile, _ := GetYamlFile(fileToTest)
-	ct, _ := NewChronicleTemplate("valid.yml", yFile)
+	ct := getCTfromYamlFile(t, "valid.yml")
 
 	idList := ct.GetContentIDs(true)
 
@@ -131,9 +143,7 @@ func Test_GetContentIDs(t *testing.T) {
 }
 
 func Test_GetPresetIDs(t *testing.T) {
-	fileToTest := filepath.Join(chronicleTemplateTestDir, "valid.yml")
-	yFile, _ := GetYamlFile(fileToTest)
-	ct, _ := NewChronicleTemplate("valid.yml", yFile)
+	ct := getCTfromYamlFile(t, "valid.yml")
 
 	idList := ct.GetPresetIDs()
 
@@ -149,4 +159,40 @@ func Test_GetPresetIDs(t *testing.T) {
 	expectEqual(t, idList[0], "p0")
 	expectEqual(t, idList[1], "p1")
 	expectEqual(t, idList[2], "p2")
+}
+
+func Test_InheritFrom(t *testing.T) {
+
+	t.Run("inherit from valid", func(t *testing.T) {
+		ctTo := getCTfromYamlFile(t, "inheritTo.yml")
+		ctFrom := getCTfromYamlFile(t, "inheritFromValid.yml")
+
+		err := ctTo.InheritFrom(ctFrom)
+		expectNoError(t, err)
+
+		expectEqual(t, len(ctTo.GetPresetIDs()), 2)
+		p0, exists := ctTo.GetPreset("p0")
+		expectTrue(t, exists)
+		expectEqual(t, p0.Type(), "base")
+		p1, exists := ctTo.GetPreset("p1")
+		expectTrue(t, exists)
+		expectEqual(t, p1.Type(), "inherited")
+
+		expectEqual(t, len(ctTo.GetContentIDs(false)), 2)
+		c0, exists := ctTo.GetContent("c0")
+		expectTrue(t, exists)
+		expectEqual(t, c0.Type(), "base")
+		c1, exists := ctTo.GetContent("c1")
+		expectTrue(t, exists)
+		expectEqual(t, c1.Type(), "inherited")
+	})
+
+	t.Run("inherit from duplicate content", func(t *testing.T) {
+		ctTo := getCTfromYamlFile(t, "inheritTo.yml")
+		ctFrom := getCTfromYamlFile(t, "inheritFromDuplicateContent.yml")
+
+		err := ctTo.InheritFrom(ctFrom)
+		expectError(t, err)
+	})
+
 }

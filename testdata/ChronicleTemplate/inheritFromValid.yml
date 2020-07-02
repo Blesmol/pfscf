@@ -1,0 +1,10 @@
+id: inheritFromValid
+description: simpleDescription
+presets:
+  p0:
+    type: inherited
+  p1:
+    type: inherited
+content:
+  c1:
+    type: inherited

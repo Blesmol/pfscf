@@ -1,0 +1,9 @@
+id: inheritTo
+description: simpleDescription
+presets:
+  p0:
+    type: base
+content:
+  c0:
+    type: base
+

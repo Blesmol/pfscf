@@ -138,3 +138,26 @@ func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
 
 	return sb.String()
 }
+
+// InheritFrom inherits the content and preset entries from another
+// ChronicleTemplate object. An error is returned in case a content
+// entry exists in both objects. In case a preset object exists in
+// both objects, then the one from the original object takes precedence.
+func (ct *ChronicleTemplate) InheritFrom(ctOther *ChronicleTemplate) (err error) {
+	// get content from other object and throw error on duplicates
+	for id, otherEntry := range ctOther.content {
+		if _, exists := ct.content[id]; exists {
+			return fmt.Errorf("Inheritance error: Content ID '%v' cannot be inherited from '%v', because it already exists in '%v'", id, ctOther.ID(), ct.ID())
+		}
+		ct.content[id] = otherEntry
+	}
+
+	// get presets from other object and intentionally ignore duplicates
+	for id, otherEntry := range ctOther.presets {
+		if _, exists := ct.presets[id]; !exists {
+			ct.presets[id] = otherEntry
+		}
+	}
+
+	return nil
+}
