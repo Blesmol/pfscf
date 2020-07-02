@@ -1,6 +1,10 @@
 id: simpleId
 description: simpleDescription
+inherit: otherId
 content:
+  c2:
+    type: textCell
+    x1: 3
   c0:
     type: textCell
     x1: 1
@@ -8,6 +12,8 @@ content:
     type: textCell
     x1: 2
 presets:
+  p2:
+    y1: 12
   p0:
     y1: 10
   p1:

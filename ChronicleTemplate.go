@@ -91,6 +91,16 @@ func (ct *ChronicleTemplate) GetPreset(id string) (ce ContentEntry, exists bool)
 	return
 }
 
+// GetPresetIDs returns a sorted list of preset IDs contained in this chronicle template.
+func (ct *ChronicleTemplate) GetPresetIDs() (idList []string) {
+	idList = make([]string, 0, len(ct.presets))
+	for id := range ct.presets {
+		idList = append(idList, id)
+	}
+	sort.Strings(idList)
+	return idList
+}
+
 // GetContent returns the ContentEntry object matching the provided id
 // from the current ChronicleTemplate
 func (ct *ChronicleTemplate) GetContent(id string) (ce ContentEntry, exists bool) {

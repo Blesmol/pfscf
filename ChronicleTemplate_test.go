@@ -79,10 +79,10 @@ func Test_NewChronicleTemplate_FileWithContent(t *testing.T) {
 	expectNotNil(t, ct)
 	expectNoError(t, err)
 
-	expectNotSet(t, ct.Inherit()) // will sooner or later be filled...
+	expectEqual(t, ct.Inherit(), "otherId")
 
 	// content
-	expectEqual(t, len(ct.content), 2)
+	expectEqual(t, len(ct.content), 3)
 	c0, exists := ct.GetContent("c0")
 	expectTrue(t, exists)
 	expectEqual(t, c0.Type(), "textCell")
@@ -95,7 +95,7 @@ func Test_NewChronicleTemplate_FileWithContent(t *testing.T) {
 	expectFalse(t, exists)
 
 	// presets
-	expectEqual(t, len(ct.presets), 2)
+	expectEqual(t, len(ct.presets), 3)
 	p0, exists := ct.GetPreset("p0")
 	expectTrue(t, exists)
 	expectEqual(t, p0.Y1(), 10.0)
@@ -104,4 +104,49 @@ func Test_NewChronicleTemplate_FileWithContent(t *testing.T) {
 	expectEqual(t, p1.Y1(), 11.0)
 	_, exists = ct.GetPreset("c0")
 	expectFalse(t, exists)
+}
+
+func Test_GetContentIDs(t *testing.T) {
+	fileToTest := filepath.Join(chronicleTemplateTestDir, "valid.yml")
+	yFile, _ := GetYamlFile(fileToTest)
+	ct, _ := NewChronicleTemplate("valid.yml", yFile)
+
+	idList := ct.GetContentIDs(true)
+
+	expectEqual(t, len(idList), 3)
+
+	// as we do not yet have aliases, number of elements should be identical
+	expectEqual(t, len(ct.GetContentIDs(false)), len(ct.GetContentIDs(true)))
+
+	// check that all elements returned by list actually exist in the content list
+	for _, entry := range idList {
+		_, exists := ct.GetContent(entry)
+		expectTrue(t, exists)
+	}
+
+	// check that elements are in expected order (as the result should be sorted)
+	expectEqual(t, idList[0], "c0")
+	expectEqual(t, idList[1], "c1")
+	expectEqual(t, idList[2], "c2")
+}
+
+func Test_GetPresetIDs(t *testing.T) {
+	fileToTest := filepath.Join(chronicleTemplateTestDir, "valid.yml")
+	yFile, _ := GetYamlFile(fileToTest)
+	ct, _ := NewChronicleTemplate("valid.yml", yFile)
+
+	idList := ct.GetPresetIDs()
+
+	expectEqual(t, len(idList), 3)
+
+	// check that all elements returned by list actually exist
+	for _, entry := range idList {
+		_, exists := ct.GetPreset(entry)
+		expectTrue(t, exists)
+	}
+
+	// check that elements are in expected order (as the result should be sorted)
+	expectEqual(t, idList[0], "p0")
+	expectEqual(t, idList[1], "p1")
+	expectEqual(t, idList[2], "p2")
 }
