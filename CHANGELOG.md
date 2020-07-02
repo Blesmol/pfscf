@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- Template inheritance mechanism
+
 ## [0.4.0] - 2020-07-02
 
 ### Added
