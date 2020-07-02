@@ -44,6 +44,20 @@ func Test_getTemplateStoreForDir_Errors(t *testing.T) {
 		expectNil(t, ts)
 		expectError(t, err)
 	}
+
+	// dir with file that has invalid presets
+	{
+		ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "invalidPresets"))
+		expectNil(t, ts)
+		expectError(t, err)
+	}
+
+	// dir with file that has invalid content
+	{
+		ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "invalidContent"))
+		expectNil(t, ts)
+		expectError(t, err)
+	}
 }
 
 func Test_getTemplateStoreForDir_Valid(t *testing.T) {

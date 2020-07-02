@@ -1,0 +1,10 @@
+id: invalidContent
+description: some description
+presets:
+  p1:
+    x1: 1
+  p2:
+    x1: 2
+content:
+  c1:
+    presets: [p1, p2]

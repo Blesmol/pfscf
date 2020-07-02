@@ -14,15 +14,16 @@ import (
 // fields. So basically only field "Type" always has to be provided,
 // everything else depends on the concrete type.
 type ContentData struct {
-	Type     string  // the type which this entry represents
-	Desc     string  // Description of this parameter
-	X1, Y1   float64 // first set of coordinates
-	X2, Y2   float64 // second set of coordinates
-	XPivot   float64 // pivot point on X axis
-	Font     string  // the name of the font (if any) that should be used to display the content
-	Fontsize float64 // size of the font in points
-	Align    string  // Alignment of the content: L/C/R + T/M/B
-	Example  string  // Example value to be displayed to users
+	Type     string   // the type which this entry represents
+	Desc     string   // Description of this parameter
+	X1, Y1   float64  // first set of coordinates
+	X2, Y2   float64  // second set of coordinates
+	XPivot   float64  // pivot point on X axis
+	Font     string   // the name of the font (if any) that should be used to display the content
+	Fontsize float64  // size of the font in points
+	Align    string   // Alignment of the content: L/C/R + T/M/B
+	Example  string   // Example value to be displayed to users
+	Presets  []string // List of presets that should be applied on this ContentData / ContentEntry
 	//Flags    *[]string
 }
 
@@ -102,6 +103,11 @@ func (ce *ContentEntry) Example() (result string) {
 	return ce.data.Example
 }
 
+// Presets returns the list of presets set for this ContentEntry object
+func (ce *ContentEntry) Presets() (result []string) {
+	return ce.data.Presets
+}
+
 // checkThatValuesArePresent takes a list of field names from the ContentData struct and checks
 // that these fields neither point to a nil ptr nor that the values behind the pointers contain the
 // corresponding types zero value.
@@ -173,23 +179,31 @@ func (ce *ContentEntry) UsageExample() (result string) {
 	}
 }
 
-// EntriesAreNotContradicting checks if the provided ContentEntry objects are
+// IsNotContradictingWith checks if the provided ContentEntry objects are
 // contradicting or not. They are not contradicting all values that are set
 // (i.e. contain a non-zero value) within the objects contain the same value.
-func EntriesAreNotContradicting(left, right *ContentEntry) (err error) {
-	vLeft := reflect.ValueOf(left.data)
-	vRight := reflect.ValueOf(right.data)
+// One exception to this is the "Presets" list, which is ignored here.
+func (ce ContentEntry) IsNotContradictingWith(other ContentEntry) (err error) {
+	vLeft := reflect.ValueOf(ce.data)
+	vRight := reflect.ValueOf(other.data)
 
 	for i := 0; i < vLeft.NumField(); i++ {
 		fieldLeft := vLeft.Field(i)
 		fieldRight := vRight.Field(i)
 		fieldName := vLeft.Type().Field(i).Name
 
+		// Ignore the Presets field, as differences here are acceptable.
+		// To be on the safe side wrt future changes, check the name instead of checking
+		// whether this field is of kind struct.
+		if fieldName == "Presets" {
+			continue
+		}
+
 		if fieldLeft.IsZero() || fieldRight.IsZero() {
 			continue
 		}
 		if fieldLeft.Interface() != fieldRight.Interface() {
-			return fmt.Errorf("Contradicting data for field '%v':\n- '%v': %v\n- '%v': %v", fieldName, left.ID(), fieldLeft.Interface(), right.ID(), fieldRight.Interface())
+			return fmt.Errorf("Contradicting data for field '%v':\n- '%v': %v\n- '%v': %v", fieldName, ce.ID(), fieldLeft.Interface(), other.ID(), fieldRight.Interface())
 		}
 	}
 
@@ -198,12 +212,19 @@ func EntriesAreNotContradicting(left, right *ContentEntry) (err error) {
 
 // AddMissingValuesFrom wants to have a documentation
 func (ce *ContentEntry) AddMissingValuesFrom(other *ContentEntry) {
+	// TODO convert arg from ptr to value?
 	vSrc := reflect.ValueOf(other.data)
 	vDst := reflect.ValueOf(&ce.data).Elem() // go over pointer instead of value as we want to modify
 
 	for i := 0; i < vDst.NumField(); i++ {
 		fieldDst := vDst.Field(i)
 		fieldSrc := vSrc.Field(i)
+		fieldName := vSrc.Type().Field(i).Name
+
+		// Ignore the Presets field, as we do not want to take over values for this.
+		if fieldName == "Presets" {
+			continue
+		}
 
 		if fieldDst.IsZero() && !fieldSrc.IsZero() {
 			Assert(fieldDst.CanSet(), fmt.Sprintf("Field with index %v must be settable", i))
@@ -214,7 +235,7 @@ func (ce *ContentEntry) AddMissingValuesFrom(other *ContentEntry) {
 			case reflect.Float64:
 				fieldDst.Set(fieldSrc)
 			default:
-				panic(fmt.Sprintf("Unsupported struct type '%v', update function", fieldDst.Kind()))
+				panic(fmt.Sprintf("Unsupported struct type '%v', update function 'AddMissingValuesFrom()'", fieldDst.Kind()))
 			}
 		}
 	}

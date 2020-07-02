@@ -42,35 +42,44 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 		ts.templates[ct.ID()] = ct
 	}
 
-	// resolve inheritance
+	// resolve inheritance between templates
 	resolvedIDs := make(map[string]bool, 0) // stores IDs of all entries that are already resolved
-	inheritChain := make([]string, 0)       // store current inheritance chain to recognize cycles
 	for _, entry := range ts.templates {
-		err := resolveInheritance(ts, entry, &resolvedIDs, inheritChain)
+		err := resolveInheritance(ts, entry, &resolvedIDs)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	// resolve presets
-	// TODO
+	// resolve presets and content
+	for _, templateID := range ts.GetTemplateIDs(false) {
+		// TODO test resolving above
+
+		template, _ := ts.GetTemplate(templateID)
+		if err = template.ResolvePresets(); err != nil {
+			return nil, err
+		}
+		if err = template.ResolveContent(); err != nil {
+			return nil, err
+		}
+	}
 
 	return ts, nil
 }
 
 // resolveInheritance is responsible for resolving template inheritance by copying entries
 // from the content and the presets section to other templates.
-func resolveInheritance(ts *TemplateStore, ct *ChronicleTemplate, resolvedIDs *map[string]bool, inheritChain []string) (err error) {
+func resolveInheritance(ts *TemplateStore, ct *ChronicleTemplate, resolvedIDs *map[string]bool, resolveChain ...string) (err error) {
 	// check if we have already seen that entry
 	if _, exists := (*resolvedIDs)[ct.ID()]; exists {
 		return nil
 	}
 
 	// check if we have a cyclic dependency
-	for idx, inheritedID := range inheritChain {
+	for idx, inheritedID := range resolveChain {
 		if inheritedID == ct.ID() {
-			inheritChain = append(inheritChain, inheritedID) // add entry before printing to have complete cycle in output
-			return fmt.Errorf("Error resolving dependencies of template '%v'. Inheritance chain is %v", ct.ID(), inheritChain[idx:])
+			resolveChain = append(resolveChain, inheritedID) // add entry before printing to have complete cycle in output
+			return fmt.Errorf("Error resolving dependencies of template '%v'. Inheritance chain is %v", ct.ID(), resolveChain[idx:])
 		}
 	}
 
@@ -87,13 +96,13 @@ func resolveInheritance(ts *TemplateStore, ct *ChronicleTemplate, resolvedIDs *m
 	}
 
 	// add current id to inheritance list for recursive call
-	inheritChain = append(inheritChain, ct.ID())
-	err = resolveInheritance(ts, inheritedCe, resolvedIDs, inheritChain)
+	resolveChain = append(resolveChain, ct.ID())
+	err = resolveInheritance(ts, inheritedCe, resolvedIDs, resolveChain...)
 	if err != nil {
 		return err
 	}
 
-	// now resolve content
+	// now resolve chronicle inheritance
 	err = ct.InheritFrom(inheritedCe)
 	if err != nil {
 		return err

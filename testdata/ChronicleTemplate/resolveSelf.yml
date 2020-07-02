@@ -1,0 +1,6 @@
+id: resolveSelf
+description: not tested
+presets:
+  p1:
+    presets: [p1]
+content:

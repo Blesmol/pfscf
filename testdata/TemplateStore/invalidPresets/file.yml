@@ -1,0 +1,7 @@
+id: invalidPresets
+description: some description
+presets:
+  p1:
+    presets: [p2]
+  p2:
+    presets: [p1]

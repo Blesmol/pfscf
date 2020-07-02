@@ -196,3 +196,64 @@ func Test_InheritFrom(t *testing.T) {
 	})
 
 }
+
+func TestResolvePresets(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		ct := getCTfromYamlFile(t, "resolveValid.yml")
+
+		err := ct.ResolvePresets()
+		expectNoError(t, err)
+
+		p2, _ := ct.GetPreset("p2")
+		expectEqual(t, p2.X1(), 1.0)
+		expectEqual(t, p2.X2(), 23.0)
+		expectEqual(t, p2.Y1(), 2.0)
+		expectNotSet(t, p2.Y2())
+		expectEqual(t, p2.XPivot(), 1.0)
+
+		p3, _ := ct.GetPreset("p3")
+		expectEqual(t, p3.X1(), 1.0)
+		expectEqual(t, p3.X2(), 23.0)
+		expectNotSet(t, p3.Y1())
+		expectEqual(t, p3.Y2(), 3.0)
+		expectEqual(t, p3.XPivot(), 1.0)
+
+		p4, _ := ct.GetPreset("p4")
+		expectEqual(t, p4.X1(), 1.0)
+		expectEqual(t, p4.X2(), 23.0)
+		expectEqual(t, p4.Y1(), 2.0)
+		expectEqual(t, p4.Y2(), 3.0)
+		expectEqual(t, p4.XPivot(), 4.0)
+
+		p5, _ := ct.GetPreset("p5")
+		expectEqual(t, p5.X1(), 1.0)
+		expectEqual(t, p5.X2(), 23.0)
+		expectEqual(t, p5.Y1(), 2.0)
+		expectNotSet(t, p5.Y2())
+		expectEqual(t, p5.XPivot(), 1.0)
+	})
+
+	t.Run("cyclic presets", func(t *testing.T) {
+		ct := getCTfromYamlFile(t, "resolveCyclic.yml")
+		err := ct.ResolvePresets()
+		expectError(t, err)
+	})
+
+	t.Run("self-dependency", func(t *testing.T) {
+		ct := getCTfromYamlFile(t, "resolveSelf.yml")
+		err := ct.ResolvePresets()
+		expectError(t, err)
+	})
+
+	t.Run("non-existing dependency", func(t *testing.T) {
+		ct := getCTfromYamlFile(t, "resolveNonExisting.yml")
+		err := ct.ResolvePresets()
+		expectError(t, err)
+	})
+
+	t.Run("contradicting values", func(t *testing.T) {
+		ct := getCTfromYamlFile(t, "resolveContradicting.yml")
+		err := ct.ResolvePresets()
+		expectError(t, err)
+	})
+}

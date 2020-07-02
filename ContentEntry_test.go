@@ -18,6 +18,7 @@ func getContentDataWithDummyData(t *testing.T, cdType string) (cd ContentData) {
 	cd.Fontsize = 14.0
 	cd.Align = "LB"
 	cd.Example = "Some Example"
+	cd.Presets = []string{"Some Preset"}
 
 	expectAllExportedSet(t, cd) // to be sure that we also get all new fields
 
@@ -75,7 +76,7 @@ func TestContentEntry_IsValid(t *testing.T) {
 	})
 }
 
-func TestEntriesAreNotContradicting(t *testing.T) {
+func TestContentEntry_IsNotContradictingWith(t *testing.T) {
 	var err error
 
 	cdEmpty := ContentData{}
@@ -86,17 +87,17 @@ func TestEntriesAreNotContradicting(t *testing.T) {
 
 	t.Run("no self-contradiction", func(t *testing.T) {
 		// a given CE with values should not contradict itself
-		err = EntriesAreNotContradicting(&ceAllSet, &ceAllSet)
+		err = ceAllSet.IsNotContradictingWith(ceAllSet)
 		expectNoError(t, err)
 	})
 
 	t.Run("empty contradicts nothing", func(t *testing.T) {
 		// a given CE with no values should contradict nothing
-		err = EntriesAreNotContradicting(&ceEmpty, &ceEmpty)
+		err = ceEmpty.IsNotContradictingWith(ceEmpty)
 		expectNoError(t, err)
-		err = EntriesAreNotContradicting(&ceAllSet, &ceEmpty)
+		err = ceAllSet.IsNotContradictingWith(ceEmpty)
 		expectNoError(t, err)
-		err = EntriesAreNotContradicting(&ceEmpty, &ceAllSet)
+		err = ceEmpty.IsNotContradictingWith(ceAllSet)
 		expectNoError(t, err)
 	})
 
@@ -106,7 +107,7 @@ func TestEntriesAreNotContradicting(t *testing.T) {
 		ceLeft := NewContentEntry("idLeft", cdLeft)
 		cdRight := ContentData{X2: 2.0, Font: "font"}
 		ceRight := NewContentEntry("idRight", cdRight)
-		err = EntriesAreNotContradicting(&ceLeft, &ceRight)
+		err = ceLeft.IsNotContradictingWith(ceRight)
 		expectNoError(t, err)
 	})
 
@@ -117,7 +118,7 @@ func TestEntriesAreNotContradicting(t *testing.T) {
 		cdRight := getContentDataWithDummyData(t, "type")
 		ceRight := NewContentEntry("idRight", cdRight)
 
-		err = EntriesAreNotContradicting(&ceLeft, &ceRight)
+		err = ceLeft.IsNotContradictingWith(ceRight)
 		expectError(t, err)
 	})
 
@@ -128,7 +129,7 @@ func TestEntriesAreNotContradicting(t *testing.T) {
 		cdRight := getContentDataWithDummyData(t, "type")
 		ceRight := NewContentEntry("idRight", cdRight)
 
-		err = EntriesAreNotContradicting(&ceLeft, &ceRight)
+		err = ceLeft.IsNotContradictingWith(ceRight)
 		expectError(t, err)
 	})
 }

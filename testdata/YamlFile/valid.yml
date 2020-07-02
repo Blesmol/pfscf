@@ -21,6 +21,7 @@ content:
     fontsize: 16.0
     align: my Align
     example: my Example
+    presets: [foo]
   myOtherId:
     align: my other align
     fontsize: 26.0
@@ -33,3 +34,4 @@ content:
     desc: my other desc
     type: my other type
     example: my other example
+    presets: [foo, bar]

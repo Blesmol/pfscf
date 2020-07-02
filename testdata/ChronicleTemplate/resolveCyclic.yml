@@ -1,0 +1,10 @@
+id: resolveCyclic
+description: not tested
+presets:
+  p1:
+    presets: [p3]
+  p2:
+    presets: [p1]
+  p3:
+    presets: [p2]
+content:
