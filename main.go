@@ -18,7 +18,7 @@ var (
 func main() {
 
 	RootCmd := &cobra.Command{
-		Use:   "pfsct",
+		Use:   "pfscf",
 		Short: "The Pathfinder Society Chronicle Tagger v" + version,
 	}
 

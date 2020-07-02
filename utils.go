@@ -54,7 +54,7 @@ func InformOnError(err error, errMsg string, v ...interface{}) {
 // files can be stored. The caller needs to ensure that the
 // directory is deleted afterwards.
 func GetTempDir() (dirName string) {
-	dirName, err := ioutil.TempDir("", "pfsct-")
+	dirName, err := ioutil.TempDir("", "pfscf-")
 	AssertNoError(err)
 	return dirName
 }

@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.4.0] - 2020-07-02
+
 ### Added
 - Align wording: An 'ID' is no longer sometimes called 'Name'
 - Allow to fill out chronicles with dummy/example values
 
 ## Changed
+- pfsct is now called pfscf
 - Updated pdfcpu from v0.3.3 to v0.3.4
 - Use global temp dir now for storing intermediate files
 - The "default" section in yaml files was replaced with the section "default" in "presets"
