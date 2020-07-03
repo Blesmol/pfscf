@@ -24,7 +24,7 @@ func getContentDataWithDummyData(t *testing.T, cdType string) (cd ContentData) {
 	return cd
 }
 
-func Test_NewContentEntry(t *testing.T) {
+func TestNewContentEntry(t *testing.T) {
 	cd := getContentDataWithDummyData(t, "myType")
 	ce := NewContentEntry("myId", cd)
 
@@ -42,68 +42,75 @@ func Test_NewContentEntry(t *testing.T) {
 	expectEqual(t, ce.Example(), "Some Example")
 }
 
-func Test_ContentEntryIsValid_invalidType(t *testing.T) {
-	cd := getContentDataWithDummyData(t, "textCellX")
-	ce := NewContentEntry("id", cd)
-	isValid, err := ce.IsValid()
+func TestContentEntry_IsValid(t *testing.T) {
 
-	expectEqual(t, isValid, false)
-	expectError(t, err)
+	t.Run("valid type", func(t *testing.T) {
+		cd := getContentDataWithDummyData(t, "textCell")
+		ce := NewContentEntry("id", cd)
+		isValid, err := ce.IsValid()
+
+		expectEqual(t, isValid, true)
+		expectNoError(t, err)
+
+	})
+
+	t.Run("invalid type", func(t *testing.T) {
+		cd := getContentDataWithDummyData(t, "textCellX")
+		ce := NewContentEntry("id", cd)
+		isValid, err := ce.IsValid()
+
+		expectEqual(t, isValid, false)
+		expectError(t, err)
+	})
+
+	t.Run("textCell with missing values", func(t *testing.T) {
+		cd := getContentDataWithDummyData(t, "textCell")
+		cd.Font = ""
+		ce := NewContentEntry("id", cd)
+
+		isValid, err := ce.IsValid()
+
+		expectEqual(t, isValid, false)
+		expectError(t, err)
+	})
 }
 
-func Test_ContentEntryIsValid_validTextCell(t *testing.T) {
-	cd := getContentDataWithDummyData(t, "textCell")
-	ce := NewContentEntry("id", cd)
-	isValid, err := ce.IsValid()
-
-	expectEqual(t, isValid, true)
-	expectNoError(t, err)
-}
-
-func Test_ContentEntryIsValid_textCellWithZeroedValues(t *testing.T) {
-	cd := getContentDataWithDummyData(t, "textCell")
-	cd.Font = ""
-	ce := NewContentEntry("id", cd)
-
-	isValid, err := ce.IsValid()
-
-	expectEqual(t, isValid, false)
-	expectError(t, err)
-}
-
-func Test_EntriesAreNotContradicting(t *testing.T) {
+func TestEntriesAreNotContradicting(t *testing.T) {
 	var err error
 
 	cdEmpty := ContentData{}
-	cdAllSet := getContentDataWithDummyData(t, "type")
-
 	ceEmpty := NewContentEntry("idEmpty", cdEmpty)
+
+	cdAllSet := getContentDataWithDummyData(t, "type")
 	ceAllSet := NewContentEntry("idAllSet", cdAllSet)
 
-	// a given CE with values should not contradict itself
-	err = EntriesAreNotContradicting(&ceAllSet, &ceAllSet)
-	expectNoError(t, err)
+	t.Run("no self-contradiction", func(t *testing.T) {
+		// a given CE with values should not contradict itself
+		err = EntriesAreNotContradicting(&ceAllSet, &ceAllSet)
+		expectNoError(t, err)
+	})
 
-	// a given CE with no values should contradict nothing
-	err = EntriesAreNotContradicting(&ceEmpty, &ceEmpty)
-	expectNoError(t, err)
-	err = EntriesAreNotContradicting(&ceAllSet, &ceEmpty)
-	expectNoError(t, err)
-	err = EntriesAreNotContradicting(&ceEmpty, &ceAllSet)
-	expectNoError(t, err)
+	t.Run("empty contradicts nothing", func(t *testing.T) {
+		// a given CE with no values should contradict nothing
+		err = EntriesAreNotContradicting(&ceEmpty, &ceEmpty)
+		expectNoError(t, err)
+		err = EntriesAreNotContradicting(&ceAllSet, &ceEmpty)
+		expectNoError(t, err)
+		err = EntriesAreNotContradicting(&ceEmpty, &ceAllSet)
+		expectNoError(t, err)
+	})
 
-	// Have to partly-set objects with non-overlapping content
-	{
+	t.Run("non-overlapping", func(t *testing.T) {
+		// Have two partly-set objects with non-overlapping content
 		cdLeft := ContentData{X1: 1.0, Desc: "desc"}
 		ceLeft := NewContentEntry("idLeft", cdLeft)
 		cdRight := ContentData{X2: 2.0, Font: "font"}
 		ceRight := NewContentEntry("idRight", cdRight)
 		err = EntriesAreNotContradicting(&ceLeft, &ceRight)
 		expectNoError(t, err)
-	}
+	})
 
-	// produce some conflict in a string attribute
-	{
+	t.Run("conflicting string attribute", func(t *testing.T) {
 		cdLeft := getContentDataWithDummyData(t, "type")
 		cdLeft.Font = cdLeft.Font + "foo" // <= conflicting data
 		ceLeft := NewContentEntry("idLeft", cdLeft)
@@ -112,10 +119,9 @@ func Test_EntriesAreNotContradicting(t *testing.T) {
 
 		err = EntriesAreNotContradicting(&ceLeft, &ceRight)
 		expectError(t, err)
-	}
+	})
 
-	// produce some conflict in a float64 attribute
-	{
+	t.Run("conflicting float64 attribute", func(t *testing.T) {
 		cdLeft := getContentDataWithDummyData(t, "type")
 		cdLeft.Fontsize = cdLeft.Fontsize + 1.0 // <= conflicting data
 		ceLeft := NewContentEntry("idLeft", cdLeft)
@@ -124,26 +130,24 @@ func Test_EntriesAreNotContradicting(t *testing.T) {
 
 		err = EntriesAreNotContradicting(&ceLeft, &ceRight)
 		expectError(t, err)
-	}
+	})
 }
 
-func Test_ContentEntryAddMissingValuesFromOther(t *testing.T) {
-	//var err error
+func TestContentEntry_AddMissingValuesFromOther(t *testing.T) {
 
 	cdEmpty := ContentData{}
 	cdAllSet := getContentDataWithDummyData(t, "type")
 
-	// set empty from full
-	{
+	t.Run("fill empty set from full set", func(t *testing.T) {
 		ceSrc := NewContentEntry("idAllSet", cdAllSet)
 		ceDst := NewContentEntry("idEmpty", cdEmpty)
 
 		ceDst.AddMissingValuesFrom(&ceSrc)
 		expectAllExportedSet(t, ceDst)
-	}
 
-	// do not overwrite existing data
-	{
+	})
+
+	t.Run("do not overwrite existing data", func(t *testing.T) {
 		ceSrc := NewContentEntry("src", ContentData{Desc: "srcDesc", Font: "srcFont", X1: 1.0, Y1: 2.0})
 		ceDst := NewContentEntry("dst", ContentData{Desc: "dstDesc", X1: 3.0, X2: 4.0})
 		ceDst.AddMissingValuesFrom(&ceSrc)
@@ -153,6 +157,5 @@ func Test_ContentEntryAddMissingValuesFromOther(t *testing.T) {
 		expectEqual(t, ceDst.X1(), 3.0)
 		expectEqual(t, ceDst.Y1(), 2.0)
 		expectEqual(t, ceDst.X2(), 4.0)
-	}
-
+	})
 }
