@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Template inheritance mechanism
+- Mechanism for preset values
 
 ## [0.4.0] - 2020-07-02
 
