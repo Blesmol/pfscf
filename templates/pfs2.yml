@@ -1,31 +1,80 @@
 id: pfs2
 description: Pathfinder 2 Society Chronicle
 presets:
-  default:
+  defaultfont:
     font: Helvetica
     fontsize: 14
+
+  topline:
+    presets: [defaultfont]
+    y1: 124
+    y2: 108
+    align: CB
+
+  rightbar:
+    presets: [defaultfont]
+    x1: 475
+    x2: 565
+    align: CM
+
+  bottomline:
+    presets: [defaultfont]
+    y1: 733
+    y2: 717
+    align: CB
+
+  factions:
+    presets: [defaultfont]
+    fontsize: 8
+
+  facname:
+    presets: [factions]
+    x1: 432
+    x2: 489
+    align: CB
+
+  facrep:
+    presets: [factions]
+    x1: 531
+    x2: 547
+    align: CB
+
+  facline1:
+    presets: [factions]
+    y1: 107
+    y2: 98
+
+  facline2:
+    presets: [factions]
+    y1: 127
+    y2: 118
+
+  facline3:
+    presets: [factions]
+    y1: 147
+    y2: 138
+
 content:
   player:
     type: textCell
     desc: Player name
+    presets: [topline]
     x1: 42
-    y1: 124
     x2: 142
-    y2: 108
-    align: CB
     example: Bob
+
   char:
     type: textCell
-    desc: Character name
+    desc: Players character name
+    presets: [topline]
     x1: 167
-    y1: 124
     x2: 270
-    y2: 108
-    align: CB
-    example: The Bobbynator
+    example: Stormageddon
+
   playerid:
     type: textCell
     desc: PFS Player ID (only the first part, e.g. 123456)
+    presets: [defaultfont]
     x1: 276
     y1: 123
     x2: 342
@@ -35,7 +84,8 @@ content:
     example: 123456
   charid:
     type: textCell
-    desc: PFS Char ID (only the latter part, e.g. 2001)
+    desc: PFS Player Char ID (only the latter part, e.g. 2001)
+    presets: [defaultfont]
     x1: 357
     y1: 123
     x2: 396
@@ -43,144 +93,111 @@ content:
     fontsize: 10
     align: LB
     example: 2001
+
   xp:
     type: textCell
     desc: Experience points
-    x1: 475
+    presets: [rightbar]
     y1: 311
-    x2: 565
     y2: 334
-    align: CM
     example: 4
+
   gp:
     type: textCell
     desc: Gold pieces
-    x1: 475
+    presets: [rightbar]
     y1: 444
-    x2: 565
     y2: 420
-    align: CM
     example: 4gp 2sp
+
   dj:
     type: textCell
     desc: Dayjob
-    x1: 475
+    presets: [rightbar]
     y1: 481
-    x2: 565
     y2: 456
-    align: CM
     example: 8cp
+
   fame:
     type: textCell
     desc: Fame
-    x1: 475
+    presets: [rightbar]
     y1: 639
-    x2: 565
     y2: 663
-    align: CM
     example: 4
+
   event:
     type: textCell
     desc: Event name
+    presets: [bottomline]
     x1: 43
-    y1: 733
     x2: 147
-    y2: 717
-    align: CB
     example: PaizoCon
+
   code:
     type: textCell
     desc: Event code
+    presets: [bottomline]
     x1: 157
-    y1: 733
     x2: 212
-    y2: 717
-    align: CB
     example: 1234
+
   date:
     type: textCell
     desc: The date on which the game session took place
+    presets: [bottomline]
     x1: 227
-    y1: 733
     x2: 303
-    y2: 717
-    align: CB
     example: 27.06.2020
+
   gm:
     type: textCell
     desc: Gamemasters name
+    presets: [bottomline]
     x1: 323
-    y1: 733
     x2: 446
-    y2: 717
-    align: CB
     example: John Doe
+
   gmid:
     type: textCell
     desc: Gamemasters PFS ID
+    presets: [bottomline]
     x1: 460
-    y1: 733
     x2: 563
-    y2: 717
-    align: CB
     example: 654321
+
   fac1name:
     type: textCell
     desc: Faction 1 Name
-    x1: 432
-    y1: 107
-    x2: 489
-    y2: 98
-    fontsize: 8
-    align: CB
+    presets: [facname, facline1]
     example: Grand Archive
+
   fac1rep:
     type: textCell
     desc: Faction 1 Reputation points
-    x1: 531
-    y1: 107
-    x2: 547
-    y2: 98
-    fontsize: 8
-    align: CB
+    presets: [facrep, facline1]
     example: 4
+
   fac2name:
     type: textCell
     desc: Faction 2 Name
-    x1: 432
-    y1: 127
-    x2: 489
-    y2: 118
-    fontsize: 8
-    align: CB
+    presets: [facname, facline2]
     example: Grand Archive
+
   fac2rep:
     type: textCell
     desc: Faction 2 Reputation points
-    x1: 531
-    y1: 127
-    x2: 547
-    y2: 118
-    fontsize: 8
-    align: CB
+    presets: [facrep, facline2]
     example: 4
+
   fac3name:
     type: textCell
     desc: Faction 3 Name
-    x1: 432
-    y1: 147
-    x2: 489
-    y2: 138
-    fontsize: 8
-    align: CB
+    presets: [facname, facline3]
     example: Grand Archive
+
   fac3rep:
     type: textCell
     desc: Faction 3 Reputation points
-    x1: 531
-    y1: 147
-    x2: 547
-    y2: 138
-    fontsize: 8
-    align: CB
+    presets: [facrep, facline3]
     example: 4
