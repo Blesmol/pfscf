@@ -164,8 +164,15 @@ func (ct *ChronicleTemplate) InheritFrom(ctOther *ChronicleTemplate) (err error)
 
 // presetsAreNotContradicting takes an arbitrary number of preset IDs and
 // checks each combination of them on whether they are contradicting or not.
-// This code assumes that the provided preset IDs are valid.
 func (ct *ChronicleTemplate) presetsAreNotContradicting(IDs ...string) (err error) {
+	// ensure that all provided IDs exist. Even before checking the number of arguments
+	for _, id := range IDs {
+		_, exists := ct.GetPreset(id)
+		if !exists {
+			return fmt.Errorf("Preset '%v' does not exist", id)
+		}
+	}
+
 	// with 0 or 1 entries, no contradictions are possible
 	if len(IDs) <= 1 {
 		return nil
@@ -174,14 +181,11 @@ func (ct *ChronicleTemplate) presetsAreNotContradicting(IDs ...string) (err erro
 	firstID := IDs[0]
 	remainingIDs := IDs[1:]
 
-	firstEntry, exists := ct.GetPreset(firstID)
-	Assert(exists, "Function relies on valid preset IDs")
+	firstEntry, _ := ct.GetPreset(firstID)
 
 	// check first versus other elements
 	for _, otherID := range remainingIDs {
-		otherEntry, exists := ct.GetPreset(otherID)
-		Assert(exists, "Function relies on valid preset IDs")
-
+		otherEntry, _ := ct.GetPreset(otherID)
 		err = firstEntry.IsNotContradictingWith(otherEntry)
 		if err != nil {
 			return err

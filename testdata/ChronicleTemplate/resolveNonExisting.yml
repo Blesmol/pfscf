@@ -4,3 +4,5 @@ presets:
   p1:
     presets: [p2]
 content:
+  c1:
+    presets: [p2]

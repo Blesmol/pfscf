@@ -8,3 +8,5 @@ presets:
   p3:
     presets: [p1, p2]
 content:
+  c1:
+    presets: [p1, p2]

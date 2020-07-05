@@ -20,3 +20,16 @@ presets:
   p5:
     presets: [p2, p2, p2]
 content:
+  c1:
+    presets: []
+    x1: 1
+  c2:
+    presets: [p1]
+    x1: 2
+  c3:
+    presets: [p2, p3]
+    xpivot: 4
+  c4:
+    presets: [p2, p2, p2]
+    x1: 1
+    x2: 1
