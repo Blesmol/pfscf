@@ -76,8 +76,8 @@ func (s *Stamp) AddContent(ce ContentEntry, value *string) {
 	switch ce.Type() {
 	case "textCell":
 		Assert(value != nil, "Content type 'textCell' needs an input value")
-		isValid, err := ce.IsValid()
-		Assert(isValid, fmt.Sprintf("Received error: %v\n", err))
+		err := ce.IsValid()
+		Assert(err == nil, fmt.Sprintf("Received error: %v\n", err))
 		s.AddCellText(ce.X1(), ce.Y1(), ce.X2(), ce.Y2(), *value, ce.Font(), ce.Fontsize(), ce.Align())
 	default:
 		panic("Unknown content type: " + ce.Type())

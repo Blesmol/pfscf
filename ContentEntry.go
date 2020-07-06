@@ -111,7 +111,7 @@ func (ce *ContentEntry) Presets() (result []string) {
 // checkThatValuesArePresent takes a list of field names from the ContentData struct and checks
 // that these fields neither point to a nil ptr nor that the values behind the pointers contain the
 // corresponding types zero value.
-func (cd ContentData) checkThatValuesArePresent(names ...string) (isValid bool, err error) {
+func (cd ContentData) checkThatValuesArePresent(names ...string) (err error) {
 	r := reflect.ValueOf(cd)
 
 	for _, name := range names {
@@ -119,28 +119,32 @@ func (cd ContentData) checkThatValuesArePresent(names ...string) (isValid bool, 
 		Assert(field.IsValid(), fmt.Sprintf("ContentData does not contain a field with name '%v'", name))
 
 		if !IsSet(field.Interface()) {
-			return false, fmt.Errorf("ContentData object does not contain a value for field '%v'", name)
+			return fmt.Errorf("ContentData object does not contain a value for field '%v'", name)
 		}
 	}
-	return true, nil
+	return nil
 }
 
 // IsValid checks whether a ContentEntry object is valid. This means that it
 // must contain type information, and depending on the type information
 // a certain set of other fields must be set.
-func (ce ContentEntry) IsValid() (isValid bool, err error) {
+func (ce ContentEntry) IsValid() (err error) {
 	// Type must be checked first, as we decide by that value on which fields to check
-	isValid, err = ce.data.checkThatValuesArePresent("Type")
-	if !isValid {
-		return isValid, err
+	err = ce.data.checkThatValuesArePresent("Type")
+
+	if err == nil {
+		switch ce.Type() {
+		case "textCell":
+			err = ce.data.checkThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
+		default:
+			err = fmt.Errorf("ContentData object contains unknown content type '%v'", ce.Type())
+		}
 	}
 
-	switch ce.Type() {
-	case "textCell":
-		return ce.data.checkThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
-	default:
-		return false, fmt.Errorf("ContentData object contains unknown content type '%v'", ce.Type())
+	if err != nil {
+		return fmt.Errorf("Error checking ContentEntry '%v' for validity: %w", ce.ID(), err)
 	}
+	return nil
 }
 
 // Describe describes a single ContentEntry object. It returns the

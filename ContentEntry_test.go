@@ -48,19 +48,14 @@ func TestContentEntry_IsValid(t *testing.T) {
 	t.Run("valid type", func(t *testing.T) {
 		cd := getContentDataWithDummyData(t, "textCell")
 		ce := NewContentEntry("id", cd)
-		isValid, err := ce.IsValid()
-
-		expectEqual(t, isValid, true)
+		err := ce.IsValid()
 		expectNoError(t, err)
-
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		cd := getContentDataWithDummyData(t, "textCellX")
 		ce := NewContentEntry("id", cd)
-		isValid, err := ce.IsValid()
-
-		expectEqual(t, isValid, false)
+		err := ce.IsValid()
 		expectError(t, err)
 	})
 
@@ -68,10 +63,7 @@ func TestContentEntry_IsValid(t *testing.T) {
 		cd := getContentDataWithDummyData(t, "textCell")
 		cd.Font = ""
 		ce := NewContentEntry("id", cd)
-
-		isValid, err := ce.IsValid()
-
-		expectEqual(t, isValid, false)
+		err := ce.IsValid()
 		expectError(t, err)
 	})
 }
