@@ -45,27 +45,40 @@ func TestNewContentEntry(t *testing.T) {
 
 func TestContentEntry_IsValid(t *testing.T) {
 
-	t.Run("valid type", func(t *testing.T) {
-		cd := getContentDataWithDummyData(t, "textCell")
-		ce := NewContentEntry("id", cd)
-		err := ce.IsValid()
-		expectNoError(t, err)
+	t.Run("general", func(t *testing.T) {
+		t.Run("missing type", func(t *testing.T) {
+			cd := getContentDataWithDummyData(t, "willBeRemovedOneLineLater")
+			cd.Type = ""
+			ce := NewContentEntry("id", cd)
+			err := ce.IsValid()
+			expectError(t, err)
+		})
+
+		t.Run("invalid type", func(t *testing.T) {
+			cd := getContentDataWithDummyData(t, "textCellX")
+			ce := NewContentEntry("id", cd)
+			err := ce.IsValid()
+			expectError(t, err)
+		})
 	})
 
-	t.Run("invalid type", func(t *testing.T) {
-		cd := getContentDataWithDummyData(t, "textCellX")
-		ce := NewContentEntry("id", cd)
-		err := ce.IsValid()
-		expectError(t, err)
+	t.Run("textCell", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			cd := getContentDataWithDummyData(t, "textCell")
+			ce := NewContentEntry("id", cd)
+			err := ce.IsValid()
+			expectNoError(t, err)
+		})
+
+		t.Run("missing value", func(t *testing.T) {
+			cd := getContentDataWithDummyData(t, "textCell")
+			cd.Font = ""
+			ce := NewContentEntry("id", cd)
+			err := ce.IsValid()
+			expectError(t, err)
+		})
 	})
 
-	t.Run("textCell with missing values", func(t *testing.T) {
-		cd := getContentDataWithDummyData(t, "textCell")
-		cd.Font = ""
-		ce := NewContentEntry("id", cd)
-		err := ce.IsValid()
-		expectError(t, err)
-	})
 }
 
 func TestContentEntry_IsNotContradictingWith(t *testing.T) {
