@@ -79,7 +79,7 @@ func executeFill(cmd *cobra.Command, args []string) {
 		content, exists := cTmpl.GetContent(key)
 		Assert(exists, "No content with key="+key)
 		err := stamp.AddContent(content, &value)
-		ExitOnError(err, "Eror adding content: %w", err)
+		ExitOnError(err, "Error adding content")
 	}
 
 	if drawGrid {

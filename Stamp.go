@@ -80,7 +80,7 @@ func (s *Stamp) AddContent(ce ContentEntry, value *string) (err error) {
 	}
 
 	if err != nil {
-		return fmt.Errorf("Error adding content '%v': %w", ce.ID(), err)
+		return fmt.Errorf("Error adding content '%v': %v", ce.ID(), err)
 	}
 	return nil
 }

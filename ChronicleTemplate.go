@@ -198,7 +198,7 @@ func (ct *ChronicleTemplate) ResolveContent() (err error) {
 
 		// check that required presets are not contradicting each other
 		if err = ct.presetsAreNotContradicting(ce.Presets()...); err != nil {
-			return fmt.Errorf("Error resolving content '%v.%v': %w", ct.ID(), ce.ID(), err)
+			return fmt.Errorf("Error resolving content '%v.%v': %v", ct.ID(), ce.ID(), err)
 		}
 
 		for _, presetID := range ce.Presets() {
@@ -253,7 +253,7 @@ func (ct *ChronicleTemplate) resolvePresetsInternal(ce ContentEntry, resolved *m
 
 	// check that required presets are not contradicting each other
 	if err = ct.presetsAreNotContradicting(ce.Presets()...); err != nil {
-		return fmt.Errorf("Error resolving preset '%v.%v': %w", ct.ID(), ce.ID(), err)
+		return fmt.Errorf("Error resolving preset '%v.%v': %v", ct.ID(), ce.ID(), err)
 	}
 
 	// now finally include values from presets into current entry

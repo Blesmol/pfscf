@@ -29,12 +29,12 @@ func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 
 	fileData, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, fmt.Errorf("Reading file '%v': %w", filename, err)
+		return nil, fmt.Errorf("Reading file '%v': %v", filename, err)
 	}
 
 	err = yaml.UnmarshalStrict(fileData, yFile)
 	if err != nil {
-		return nil, fmt.Errorf("Parsing file '%v': %w", filename, err)
+		return nil, fmt.Errorf("Parsing file '%v': %v", filename, err)
 	}
 
 	return yFile, nil

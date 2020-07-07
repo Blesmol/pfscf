@@ -46,7 +46,7 @@ func (p *Pdf) AllowsPageExtraction() bool {
 func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf, err error) {
 	isDir, err := IsDir(outDir)
 	if !isDir || err != nil {
-		return nil, fmt.Errorf("Error extracting page from file %v: %w", p.filename, err)
+		return nil, fmt.Errorf("Error extracting page from file %v: %v", p.filename, err)
 	}
 
 	// check PDF permissions
@@ -68,12 +68,12 @@ func (p *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf, er
 	realPageNumberStr := strconv.Itoa(realPageNumber)
 	err = pdfcpuapi.ExtractPagesFile(p.filename, outDir, []string{realPageNumberStr}, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Error extracting page %v from file %v: %w", realPageNumber, p.filename, err)
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, p.filename, err)
 	}
 
 	extractedPdf, err := NewPdf(getPdfPageExtractionFilename(outDir, p.filename, realPageNumberStr))
 	if err != nil {
-		return nil, fmt.Errorf("Error extracting page %v from file %v: %w", realPageNumber, p.filename, err)
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, p.filename, err)
 	}
 
 	return extractedPdf, nil

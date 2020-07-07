@@ -143,7 +143,7 @@ func (ce ContentEntry) IsValid() (err error) {
 	}
 
 	if err != nil {
-		return fmt.Errorf("Error checking ContentEntry '%v' for validity: %w", ce.ID(), err)
+		return fmt.Errorf("Error validating content '%v': %v", ce.ID(), err)
 	}
 	return nil
 }
