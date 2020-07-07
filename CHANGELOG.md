@@ -4,9 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.5.0] - 2020-07-07
+
 ### Added
 - Template inheritance mechanism
 - Mechanism for preset values
+
+### Changed
+- Template 'pfs2' now uses presets instead of defaults
+- Improved error texts
+
+### Removed
+- The 'default' section is no longer supported
 
 ## [0.4.0] - 2020-07-02
 
@@ -14,7 +23,7 @@ All notable changes to this project will be documented in this file.
 - Align wording: An 'ID' is no longer sometimes called 'Name'
 - Allow to fill out chronicles with dummy/example values
 
-## Changed
+### Changed
 - pfsct is now called pfscf
 - Updated pdfcpu from v0.3.3 to v0.3.4
 - Use global temp dir now for storing intermediate files
