@@ -108,18 +108,19 @@ func (ce *ContentEntry) Presets() (result []string) {
 	return ce.data.Presets
 }
 
-// checkThatValuesArePresent takes a list of field names from the ContentData struct and checks
+// CheckThatValuesArePresent takes a list of field names from the included ContentData struct and checks
 // that these fields neither point to a nil ptr nor that the values behind the pointers contain the
 // corresponding types zero value.
-func (cd ContentData) checkThatValuesArePresent(names ...string) (err error) {
-	r := reflect.ValueOf(cd)
+func (ce ContentEntry) CheckThatValuesArePresent(names ...string) (err error) {
+	// TODO name all missing entries in error message
+	r := reflect.ValueOf(ce.data)
 
-	for _, name := range names {
-		field := r.FieldByName(name)
-		Assert(field.IsValid(), fmt.Sprintf("ContentData does not contain a field with name '%v'", name))
+	for _, fieldName := range names {
+		field := r.FieldByName(fieldName)
+		Assert(field.IsValid(), fmt.Sprintf("ContentData does not contain a field with name '%v'", fieldName))
 
 		if !IsSet(field.Interface()) {
-			return fmt.Errorf("ContentData object does not contain a value for field '%v'", name)
+			return fmt.Errorf("ContentEntry '%v' does not contain a value for field '%v'", ce.ID(), fieldName)
 		}
 	}
 	return nil
@@ -130,14 +131,14 @@ func (cd ContentData) checkThatValuesArePresent(names ...string) (err error) {
 // a certain set of other fields must be set.
 func (ce ContentEntry) IsValid() (err error) {
 	// Type must be checked first, as we decide by that value on which fields to check
-	err = ce.data.checkThatValuesArePresent("Type")
+	err = ce.CheckThatValuesArePresent("Type")
 
 	if err == nil {
 		switch ce.Type() {
 		case "textCell":
-			err = ce.data.checkThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
+			err = ce.CheckThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
 		default:
-			err = fmt.Errorf("ContentData object contains unknown content type '%v'", ce.Type())
+			err = fmt.Errorf("Content has unknown type '%v'", ce.Type())
 		}
 	}
 

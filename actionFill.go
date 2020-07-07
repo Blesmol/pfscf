@@ -78,7 +78,8 @@ func executeFill(cmd *cobra.Command, args []string) {
 
 		content, exists := cTmpl.GetContent(key)
 		Assert(exists, "No content with key="+key)
-		stamp.AddContent(content, &value)
+		err := stamp.AddContent(content, &value)
+		ExitOnError(err, "Eror adding content: %w", err)
 	}
 
 	if drawGrid {
@@ -87,7 +88,8 @@ func executeFill(cmd *cobra.Command, args []string) {
 
 	// write stamp
 	stampFile := filepath.Join(workDir, "stamp.pdf")
-	stamp.WriteToFile(stampFile)
+	err = stamp.WriteToFile(stampFile)
+	ExitOnError(err, "Error while writing to file %v", stampFile)
 
 	// add watermark/stamp to page
 	extractedPage.StampIt(stampFile, outFile)

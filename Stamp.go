@@ -44,12 +44,6 @@ func (s *Stamp) SetCellBorder(shouldDrawBorder bool) {
 	}
 }
 
-// AddText adds a portion of text at the specified coordinates
-func (s *Stamp) AddText(x, y float64, text string, fontName string, fontSize float64) {
-	s.pdf.SetFont(fontName, "", fontSize)
-	s.pdf.Text(x, y, text)
-}
-
 // getXYWH transforms two sets of x/y coordinates into a single set of
 // x/y coordinates and a pair of width/height values.
 func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
@@ -72,33 +66,56 @@ func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 
 // AddContent is a generic function to add content to a stamp. It will
 // internally check the content type and call the appropriate subfunction.
-func (s *Stamp) AddContent(ce ContentEntry, value *string) {
-	switch ce.Type() {
-	case "textCell":
-		Assert(value != nil, "Content type 'textCell' needs an input value")
-		err := ce.IsValid()
-		Assert(err == nil, fmt.Sprintf("Received error: %v\n", err))
-		s.AddCellText(ce.X1(), ce.Y1(), ce.X2(), ce.Y2(), *value, ce.Font(), ce.Fontsize(), ce.Align())
-	default:
-		panic("Unknown content type: " + ce.Type())
+func (s *Stamp) AddContent(ce ContentEntry, value *string) (err error) {
+	// TODO make description mandatory and check here?
+
+	err = ce.IsValid()
+	if err == nil {
+		switch ce.Type() {
+		case "textCell":
+			err = s.addTextCell(ce, value)
+		default:
+			panic("Valid type should have been checked by call to IsValid()")
+		}
 	}
+
+	if err != nil {
+		return fmt.Errorf("Error adding content '%v': %w", ce.ID(), err)
+	}
+	return nil
 }
 
-// AddCellText is a better version of AddText()
-func (s *Stamp) AddCellText(x1, y1, x2, y2 float64, text string, fontName string, fontSize float64, alignString string) {
-	x, y, w, h := getXYWH(x1, y1, x2, y2)
+// addTextCell adds a text cell to the current stamp. It requires a ContentEntry
+// object of type "textCell" and a value.
+func (s *Stamp) addTextCell(ce ContentEntry, value *string) (err error) {
+	Assert(ce.Type() == "textCell", "Provided ContentEntry object has wrong type")
 
-	s.pdf.SetFont(fontName, "", fontSize)
+	if value == nil {
+		return fmt.Errorf("No input value provided")
+	}
+
+	err = ce.IsValid()
+	if err != nil {
+		return err
+	}
+
+	x, y, w, h := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
+
+	s.pdf.SetFont(ce.Font(), "", ce.Fontsize())
 	s.pdf.SetXY(x, y)
 	s.pdf.SetCellMargin(0)
-	s.pdf.CellFormat(w, h, text, s.cellBorder, 0, alignString, false, 0, "")
+	s.pdf.CellFormat(w, h, *value, s.cellBorder, 0, ce.Align(), false, 0, "")
+
+	return nil
 }
 
-// WriteToFile writes the contect of the Stamp object into a PDF file.
+// WriteToFile writes the content of the Stamp object into a PDF file.
 // The Stamp object should not be used anymore after that.
-func (s *Stamp) WriteToFile(filename string) {
-	err := s.pdf.OutputFileAndClose(filename)
-	AssertNoError(err)
+func (s *Stamp) WriteToFile(filename string) (err error) {
+	if !IsSet(filename) {
+		return fmt.Errorf("No filename provided")
+	}
+	return s.pdf.OutputFileAndClose(filename)
 }
 
 // CreateMeasurementCoordinates overlays the stamp with a set of lines

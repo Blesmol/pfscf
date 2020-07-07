@@ -43,6 +43,36 @@ func TestNewContentEntry(t *testing.T) {
 	expectEqual(t, ce.Example(), "Some Example")
 }
 
+func TestCheckThatValuesArePresent(t *testing.T) {
+	t.Run("errors", func(t *testing.T) {
+		t.Run("missing value", func(t *testing.T) {
+			cd := getContentDataWithDummyData(t, "some type")
+			cd.Font = ""
+			ce := NewContentEntry("id", cd)
+			err := ce.CheckThatValuesArePresent("Font")
+			expectError(t, err)
+		})
+	})
+
+	t.Run("valid", func(t *testing.T) {
+		t.Run("all values set", func(t *testing.T) {
+			cd := getContentDataWithDummyData(t, "some type")
+			ce := NewContentEntry("id", cd)
+			err := ce.CheckThatValuesArePresent("Type", "Desc", "X1", "X2", "Y1", "Y2", "XPivot", "Font", "Fontsize", "Align", "Example")
+			expectNoError(t, err)
+		})
+
+		t.Run("only check existing values", func(t *testing.T) {
+			cd := getContentDataWithDummyData(t, "some type")
+			cd.X2 = 0.0
+			cd.Font = ""
+			ce := NewContentEntry("id", cd)
+			err := ce.CheckThatValuesArePresent("X1", "Y2", "Desc")
+			expectNoError(t, err)
+		})
+	})
+}
+
 func TestContentEntry_IsValid(t *testing.T) {
 
 	t.Run("general", func(t *testing.T) {
