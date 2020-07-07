@@ -137,6 +137,8 @@ func (ce ContentEntry) IsValid() (err error) {
 		switch ce.Type() {
 		case "textCell":
 			err = ce.CheckThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
+		case "societyid":
+			err = ce.CheckThatValuesArePresent("X1", "Y1", "X2", "Y2", "XPivot", "Font", "Fontsize")
 		default:
 			err = fmt.Errorf("Content has unknown type '%v'", ce.Type())
 		}

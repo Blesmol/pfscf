@@ -109,6 +109,23 @@ func TestContentEntry_IsValid(t *testing.T) {
 		})
 	})
 
+	t.Run("societyid", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			cd := getContentDataWithDummyData(t, "societyid")
+			ce := NewContentEntry("id", cd)
+			err := ce.IsValid()
+			expectNoError(t, err)
+		})
+
+		t.Run("missing value", func(t *testing.T) {
+			cd := getContentDataWithDummyData(t, "societyid")
+			cd.Font = ""
+			ce := NewContentEntry("id", cd)
+			err := ce.IsValid()
+			expectError(t, err)
+		})
+	})
+
 }
 
 func TestContentEntry_IsNotContradictingWith(t *testing.T) {

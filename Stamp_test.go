@@ -19,6 +19,19 @@ func getTextCellWithDummyData() (cd ContentData) {
 	return cd
 }
 
+func getSocietyIDWithDummyData() (cd ContentData) {
+	cd.Type = "societyid"
+	cd.X1 = 12.0
+	cd.Y1 = 12.0
+	cd.XPivot = 16.0
+	cd.X2 = 24.0
+	cd.Y2 = 24.0
+	cd.Font = "Helvetica"
+	cd.Fontsize = 14.0
+
+	return cd
+}
+
 func TestNewStamp(t *testing.T) {
 	s := NewStamp(1.0, 2.0)
 	expectNotNil(t, s)
@@ -98,6 +111,13 @@ func TestAddContent(t *testing.T) {
 			err := s.AddContent(ce, &text)
 			expectNoError(t, err)
 		})
+		t.Run("societyid", func(t *testing.T) {
+			societyid := "123456-789"
+			cd := getSocietyIDWithDummyData()
+			ce := NewContentEntry("myId", cd)
+			err := s.AddContent(ce, &societyid)
+			expectNoError(t, err)
+		})
 	})
 }
 
@@ -107,14 +127,14 @@ func TestAddTextCell(t *testing.T) {
 	text := "foo"
 
 	t.Run("error", func(t *testing.T) {
-		t.Run("no input value", func(t *testing.T) {
+		t.Run("missing input value", func(t *testing.T) {
 			cd := getTextCellWithDummyData()
 			ce := NewContentEntry("myId", cd)
 			err := s.addTextCell(ce, nil)
 			expectError(t, err)
 		})
 
-		t.Run("invalid content", func(t *testing.T) {
+		t.Run("missing content", func(t *testing.T) {
 			cd := getTextCellWithDummyData()
 			cd.Font = ""
 			ce := NewContentEntry("myId", cd)
@@ -129,6 +149,67 @@ func TestAddTextCell(t *testing.T) {
 			ce := NewContentEntry("myId", cd)
 			err := s.addTextCell(ce, &text)
 			expectNoError(t, err)
+		})
+	})
+}
+
+func TestAddSocietyID(t *testing.T) {
+	s := NewStamp(400.0, 400.0)
+	expectNotNil(t, s)
+	text := "123456-789"
+
+	t.Run("error", func(t *testing.T) {
+		t.Run("missing input value", func(t *testing.T) {
+			cd := getSocietyIDWithDummyData()
+			ce := NewContentEntry("myId", cd)
+			err := s.addSocietyID(ce, nil)
+			expectError(t, err)
+		})
+
+		t.Run("missing content content", func(t *testing.T) {
+			cd := getSocietyIDWithDummyData()
+			cd.Font = ""
+			ce := NewContentEntry("myId", cd)
+			err := s.addSocietyID(ce, &text)
+			expectError(t, err)
+		})
+
+		t.Run("xpivot left-outside boundaries", func(t *testing.T) {
+			cd := getSocietyIDWithDummyData()
+			cd.XPivot = cd.X1 - 1.0
+			ce := NewContentEntry("myId", cd)
+			err := s.addSocietyID(ce, &text)
+			expectError(t, err)
+		})
+
+		t.Run("xpivot right-outside boundaries", func(t *testing.T) {
+			cd := getSocietyIDWithDummyData()
+			cd.XPivot = cd.X2 + 1.0
+			ce := NewContentEntry("myId", cd)
+			err := s.addSocietyID(ce, &text)
+			expectError(t, err)
+		})
+
+		t.Run("societyid with wrong format", func(t *testing.T) {
+			for _, societyid := range []string{"", "foo", "a123-456", "123-456b", "1"} {
+				cd := getSocietyIDWithDummyData()
+				ce := NewContentEntry("myId", cd)
+				t.Logf("Testing society id '%v'", societyid)
+				err := s.addSocietyID(ce, &societyid)
+				expectError(t, err)
+			}
+		})
+	})
+
+	t.Run("valid", func(t *testing.T) {
+		t.Run("societyid", func(t *testing.T) {
+			for _, societyid := range []string{"-", "1-", "-2", "123-456"} {
+				cd := getSocietyIDWithDummyData()
+				ce := NewContentEntry("myId", cd)
+				t.Logf("Testing society id '%v'", societyid)
+				err := s.addSocietyID(ce, &societyid)
+				expectNoError(t, err)
+			}
 		})
 	})
 }
