@@ -7,8 +7,8 @@ presets:
 
   topline:
     presets: [defaultfont]
-    y1: 124
-    y2: 108
+    y1: 126
+    y2: 110
     align: CB
 
   rightbar:
@@ -71,28 +71,14 @@ content:
     x2: 270
     example: Stormageddon
 
-  playerid:
-    type: textCell
-    desc: PFS Player ID (only the first part, e.g. 123456)
-    presets: [defaultfont]
+  societyid:
+    type: societyid
+    desc: PFS Player ID
+    presets: [topline]
     x1: 276
-    y1: 123
-    x2: 342
-    y2: 108
-    fontsize: 10
-    align: RB
-    example: 123456
-  charid:
-    type: textCell
-    desc: PFS Player Char ID (only the latter part, e.g. 2001)
-    presets: [defaultfont]
-    x1: 357
-    y1: 123
+    xpivot: 348
     x2: 396
-    y2: 108
-    fontsize: 10
-    align: LB
-    example: 2001
+    example: 123456-2001
 
   xp:
     type: textCell
