@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.6.0] - 2020-07-08
+
+### Added
+- New content type `societyid`. This is specifically meant for printing a PFS society id following the pattern `<player_id>-<char_id>`, e.g. 123456-789. This is easier to use than providing both values separately, and also allows better formatting / placement.
+
+### Changed
+- Template `pfs2` now provide a `societyid` entry instead of separate `playerid` and `charid` entries. These were removed.
+
 ## [0.5.0] - 2020-07-07
 
 ### Added
@@ -11,23 +19,23 @@ All notable changes to this project will be documented in this file.
 - Mechanism for preset values
 
 ### Changed
-- Template 'pfs2' now uses presets instead of defaults
+- Template `pfs2` now uses presets instead of defaults
 - Improved error texts
 
 ### Removed
-- The 'default' section is no longer supported
+- The `default` section is no longer supported / usable
 
 ## [0.4.0] - 2020-07-02
 
 ### Added
-- Align wording: An 'ID' is no longer sometimes called 'Name'
+- Align wording: An  `ID` is no longer sometimes called `Name`
 - Allow to fill out chronicles with dummy/example values
 
 ### Changed
 - pfsct is now called pfscf
 - Updated pdfcpu from v0.3.3 to v0.3.4
 - Use global temp dir now for storing intermediate files
-- The "default" section in yaml files was replaced with the section "default" in "presets"
+- The `default` section in yaml files was replaced with the section `default` in `presets`
 
 ### Fixed
 - Now printing filename if an error occurs during reading a yaml file
@@ -61,7 +69,7 @@ All notable changes to this project will be documented in this file.
 - Mechanism for default values in templates
 
 ### Changed
-- Configs are now named templates, and thus the 'config' subdir was renamed to 'template' as well
+- Configs are now named templates, and thus the `config` subdir was renamed to `template` as well
 - Yaml unmarshalling now set to strict
 
 ## [0.1] - 2020-06-20
