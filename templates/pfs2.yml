@@ -13,14 +13,14 @@ presets:
 
   rightbar:
     presets: [defaultfont]
-    x1: 475
-    x2: 565
+    x1: 472
+    x2: 567
     align: CM
 
   bottomline:
     presets: [defaultfont]
-    y1: 733
-    y2: 717
+    y1: 735
+    y2: 719
     align: CB
 
   factions:
@@ -41,18 +41,18 @@ presets:
 
   facline1:
     presets: [factions]
-    y1: 107
-    y2: 98
+    y1: 108
+    y2: 99
 
   facline2:
     presets: [factions]
-    y1: 127
-    y2: 118
+    y1: 128
+    y2: 119
 
   facline3:
     presets: [factions]
-    y1: 147
-    y2: 138
+    y1: 148
+    y2: 139
 
 content:
   player:
