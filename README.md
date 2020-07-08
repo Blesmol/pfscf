@@ -58,8 +58,7 @@ After the required arguments, you need to provide info on what should go into th
 Currently, the following keys are supported for config `pfs2`:
 * `player`: Player name
 * `char`: Character name
-* `playerid`: PFS Player ID (only the first part, e.g. `123456`)
-* `charid`: PFS Char ID (only the latter part without the leading 2, e.g. `001`)
+* `societyid`: Pathfinder Society ID, e.g. `123456-2001`
 * `xp`: Experience Points
 * `gp`: Gold Pieces
 * `dj`: Dayjob / Income
