@@ -1,6 +1,6 @@
 # The Pathfinder Society Chronicle Filler (pfscf)
 
-The "Pathfinder Society Chronicle Filler" (or short: pfscf) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle sheets for the Pathfinder Roleplaying Game.
+The "Pathfinder Society Chronicle Filler" (or short: pfscf) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle sheets for the Pathfinder Roleplaying Game from [Paizo Inc](https://paizo.com).
 
 You can download the program in the [Releases section](https://github.com/Blesmol/pfscf/releases).
 
@@ -111,6 +111,8 @@ Not yet supported, unless you repeat the "Fill out a single chronicle" section f
 
   **A:** It produces standalone executables for all major platforms (Windows, macOS, Linux) and users do not have to install any additional software to use pfscf. Also I wanted to give golang a try anyways (first go project for me), and then it's always good to have something that you plan to use yourself.
 
-## Legal stuff
+## Legal disclaimer
 
-Pathfinder, the Pathfinder logo, Pathfinder Society, Starfinder, the Starfinde Society and the Starfinder logo are registered trademarks of Paizo Inc. Support their games!
+Pathfinder, the Pathfinder logo, the Pathfinder Society, Starfinder, the Starfinder Society and the Starfinder logo are registered trademarks of Paizo Inc. Their games use the [Open Gaming License](https://paizo.com/pathfinder/compatibility/ogl) and are pretty cool. Support their games!
+
+This program is being developed as private hobby. Although this program is intended to be used with chronicles for organized play from Paizo, I am in no way associated with Paizo Inc. Also, you're using this program at your own risk. I won't take any responsibility or liability for any direct or indirect damage, data loss, data corruption and the like done by using this program. I cannot guarantee that the program is free of bugs (on the contrary, I am pretty sure that there is a sufficient number of bugs still included), and if I am made aware of a problem, I won't guarantee on a timeline until when that bug will be fixed.
