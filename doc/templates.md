@@ -71,12 +71,19 @@ presets:
     y2: 200
   bottomline:
     y1: 400
-	y2: 500
+    y2: 500
 
 content:
   name:
     type: textCell
-	presets: [ topline ]
+    presets: [ topline ]
+    x1: 50
+    x2: 150
+  date:
+    type: textCell
+    presets: [ bottomline ]
+    x1: 200
+    x2: 230
 ```
 </details>
 
@@ -84,10 +91,75 @@ The only mandatory top-level field in such a template is the `id`, all other top
 Of course, a template that only consists of an `id`  does not make much sense.
 But who am I to judge?
 
-#### Example
-
-### Preset Mechanism
+Each entry below `content` and `presets` must have an ID that is unique within that section.
+That means, no two entries in the `content` section may have the same ID, and no two entries in the `presets` section may have the same ID.
+The description on what may be included in a `content` or `presets` entry is described below.
 
 ### Content Types
+
+The pfsct app supports different types of content entries.
+Each content entry requires a mandatory field `type` where the type of the content entry must be added.
+
+#### `textCell`
+
+A `textCell` describes a rectangular cell on the PDF file where user-provided text is added.
+
+It has a couple of mandatory and some optional fields:
+| Field      | Description                                                       | Input type | Required? |
+|:-----------|:------------------------------------------------------------------|:----------:|:---------:|
+| `desc`     | Gives a short description of what this is                         | Text       | TODO      |
+| `x1`       | First coordinate for the cell on the X axis                       | Number     | Mandatory |
+| `y1`       | First coordinate for the cell on the Y axis                       | Number     | Mandatory |
+| `x2`       | Second coordinate for the cell on the X axis                      | Number     | Mandatory |
+| `y2`       | Second coordinate for the cell on the Y axis                      | Number     | Mandatory |
+| `font`     | Name of the font to use. See [here](#fonts)                       | Text       | Mandatory |
+| `fontsize` | Fontsize in points                                                | Number     | Mandatory |
+| `align`    | Text alignment inside the rectangle. See [here](#text-alignment). | Text       | TODO      |
+| `example`  | An example input value                                            | Text       | Optional  |
+
+
+Regarding the coordinates: It does not matter whether `x1` is smaller than `x2` or vice versa.
+Same goes for `y1` and `y2`.
+
+<details>
+  <summary>Example</summary>
+
+```yaml
+playername:
+  type: textCell
+  desc: Player name
+  x1: 40
+  y1: 125
+  x2: 140
+  y2: 110
+  font: Helvetica
+  fontsize: 14
+  align: CB
+  example: Bob
+```
+</details>
+
+#### `societyId`
+
+### Misc
+
+#### Text Alignment
+
+##### Horizontal Alignment
+
+* `L`: Left-bound
+* `C`: Centered
+* `R`: Right-bound
+
+##### Vertical Alignment
+
+* `T`: Top
+* `M`: Middle
+* `B`: Bottom
+* `A`: Baseline
+
+#### Fonts
+
+### Preset Mechanism
 
 ## Template Inheritance
