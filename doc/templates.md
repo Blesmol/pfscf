@@ -100,7 +100,7 @@ The description on what may be included in a `content` or `presets` entry is des
 The pfsct app supports different types of content entries.
 Each content entry requires a mandatory field `type` where the type of the content entry must be added.
 
-#### `textCell`
+#### Type `textCell`
 
 A `textCell` describes a rectangular cell on the PDF file where user-provided text is added.
 
@@ -139,7 +139,7 @@ playername:
 ```
 </details>
 
-#### `societyId`
+#### Type `societyId`
 
 ### Misc
 
@@ -159,6 +159,25 @@ playername:
 * `A`: Baseline
 
 #### Fonts
+
+Currently `pfscf` supports only the list of 14 standard PDF fonts.
+At the moment there is no check included to filter out wrong or unsupported font names.
+
+The list of fonts that can be used is as follows:
+* Times-Roman
+* Times-Bold
+* Times-Italic
+* Times-BoldItalic
+* Courier
+* Courier-Bold
+* Courier-Oblique
+* Courier-BoldOblique
+* Helvetica
+* Helvetica-Bold
+* Helvetica-Oblique
+* Helvetica-BoldOblique
+* Symbol
+* ZapfDingbats
 
 ### Preset Mechanism
 
