@@ -8,7 +8,8 @@ All notable changes to this project will be documented in this file.
 - Documentation on how to write templates
 
 ### Changed
-- Replaced `x1` and `y1` with `x` and `y`.
+- Renamed `x1` and `y1` to `x` and `y`.
+- Renamed content `societyid` to `societyId`
 
 ### Removed
 

@@ -109,16 +109,16 @@ func TestContentEntry_IsValid(t *testing.T) {
 		})
 	})
 
-	t.Run("societyid", func(t *testing.T) {
+	t.Run("societyId", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			cd := getContentDataWithDummyData(t, "societyid")
+			cd := getContentDataWithDummyData(t, "societyId")
 			ce := NewContentEntry("id", cd)
 			err := ce.IsValid()
 			expectNoError(t, err)
 		})
 
 		t.Run("missing value", func(t *testing.T) {
-			cd := getContentDataWithDummyData(t, "societyid")
+			cd := getContentDataWithDummyData(t, "societyId")
 			cd.Font = ""
 			ce := NewContentEntry("id", cd)
 			err := ce.IsValid()

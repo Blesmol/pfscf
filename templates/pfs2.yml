@@ -72,7 +72,7 @@ content:
     example: Stormageddon
 
   societyid:
-    type: societyid
+    type: societyId
     desc: PFS Player ID
     presets: [topline]
     x:  276

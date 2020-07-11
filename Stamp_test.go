@@ -20,7 +20,7 @@ func getTextCellWithDummyData() (cd ContentData) {
 }
 
 func getSocietyIDWithDummyData() (cd ContentData) {
-	cd.Type = "societyid"
+	cd.Type = "societyId"
 	cd.X1 = 12.0
 	cd.Y1 = 12.0
 	cd.XPivot = 16.0
@@ -111,11 +111,11 @@ func TestAddContent(t *testing.T) {
 			err := s.AddContent(ce, &text)
 			expectNoError(t, err)
 		})
-		t.Run("societyid", func(t *testing.T) {
-			societyid := "123456-789"
+		t.Run("societyId", func(t *testing.T) {
+			societyID := "123456-789"
 			cd := getSocietyIDWithDummyData()
 			ce := NewContentEntry("myId", cd)
-			err := s.AddContent(ce, &societyid)
+			err := s.AddContent(ce, &societyID)
 			expectNoError(t, err)
 		})
 	})
@@ -190,24 +190,24 @@ func TestAddSocietyID(t *testing.T) {
 			expectError(t, err)
 		})
 
-		t.Run("societyid with wrong format", func(t *testing.T) {
-			for _, societyid := range []string{"", "foo", "a123-456", "123-456b", "1"} {
+		t.Run("societyId with wrong format", func(t *testing.T) {
+			for _, societyID := range []string{"", "foo", "a123-456", "123-456b", "1"} {
 				cd := getSocietyIDWithDummyData()
 				ce := NewContentEntry("myId", cd)
-				t.Logf("Testing society id '%v'", societyid)
-				err := s.addSocietyID(ce, &societyid)
+				t.Logf("Testing society id '%v'", societyID)
+				err := s.addSocietyID(ce, &societyID)
 				expectError(t, err)
 			}
 		})
 	})
 
 	t.Run("valid", func(t *testing.T) {
-		t.Run("societyid", func(t *testing.T) {
-			for _, societyid := range []string{"-", "1-", "-2", "123-456"} {
+		t.Run("societyId", func(t *testing.T) {
+			for _, societyID := range []string{"-", "1-", "-2", "123-456"} {
 				cd := getSocietyIDWithDummyData()
 				ce := NewContentEntry("myId", cd)
-				t.Logf("Testing society id '%v'", societyid)
-				err := s.addSocietyID(ce, &societyid)
+				t.Logf("Testing society id '%v'", societyID)
+				err := s.addSocietyID(ce, &societyID)
 				expectNoError(t, err)
 			}
 		})

@@ -79,7 +79,7 @@ func (s *Stamp) AddContent(ce ContentEntry, value *string) (err error) {
 		switch ce.Type() {
 		case "textCell":
 			err = s.addTextCell(ce, value)
-		case "societyid":
+		case "societyId":
 			err = s.addSocietyID(ce, value)
 		default:
 			panic("Valid type should have been checked by call to IsValid()")
@@ -117,10 +117,10 @@ func (s *Stamp) addTextCell(ce ContentEntry, value *string) (err error) {
 }
 
 // addSocietyID adds a society id to the current stamp. It requires a ContentEntry
-// object of type "societyid" and a value that follows the pattern
+// object of type "societyId" and a value that follows the pattern
 // "<player_id>-<char_id>"
 func (s *Stamp) addSocietyID(ce ContentEntry, value *string) (err error) {
-	Assert(ce.Type() == "societyid", "Provided ContentEntry object has wrong type")
+	Assert(ce.Type() == "societyId", "Provided ContentEntry object has wrong type")
 
 	err = ce.IsValid()
 	if err != nil {
