@@ -147,9 +147,10 @@ playername:
 
 Some content types, e.g. `textCell`, allow to choose an alignment.
 This normally consists of a horizontal and a vertical alignment.
-For example, selecting an alignment of `RT` for a `textCell` would indicate that the text should be aligned in the top right corner of the cell.
+For example, selecting an alignment of `RT` for a `textCell` would indicate that the text should be aligned in the **top** **right** corner of the cell.
 The possible values for horizontal and vertical alignment can be found below.
 If you choose more than one horizontal or vertical alignment, no error will be thrown yet, but only one of the chosen alignments will be used.
+The order of the alignment values does not matter, e.g. both `RT` and `TR` will have the same result.
 
 ##### Horizontal Alignment
 
