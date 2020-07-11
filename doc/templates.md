@@ -23,12 +23,12 @@ See also the `Template file format` section below on this.
 
 Template files are stored in YAML format, one template per file.
 The official spec of this format is maintained at [yaml.org](https://yaml.org/), and if you search the web you will find lots of examples, introductions and explanations to the format.
-In this document, however, I will try to spare you the irrelevant parts and only include a basic overview over what you might need.
+In this document, however, I will try to spare you the irrelevant parts and only include a very basic overview over what you might need.
 
 A YAML file is a plain text file and can be opened with any text editor, if need be with the Windows Notepad application.
 What is not possible is to use MS Word, LibreOffice and the like to modify such files.
 Many modern text editors even bringt support for writing/modifying YAML files.
-One such editor that I can recommend it [Notepad++](https://notepad-plus-plus.org) (not to be mixed up with the already mentioned MS Notepad).
+One such editor that I can recommend is [Notepad++](https://notepad-plus-plus.org) (not to be mixed up with the already mentioned MS Notepad).
 
 YAML is intended to be a human-readable format.
 Most lines in these files follow the format `<some identifier>: <some value>`, e.g. `description: This is a template for PFS`.
@@ -209,30 +209,33 @@ This means you can also change the appearance of inherited content by replacing 
 <details>
   <summary>Inheritance Example</summary>
 
-File 1:
+File 1 (will be inherited by file 2 below):
 ```yaml
 id: foo
 presets:
   defaultfont:
     font: Helvetica
     fontsize: 14
+
   topline:
     y: 100
     y2: 200
     presets: [ defaultfont ]
+
 content:
   charname:
     type: textCell
     x:  100
     x2: 200
     presets: [ topline ]
+
   xp:
     type: textCell
     x: 300
     y: 300
 ```
 
-File 2:
+File 2 (inherits file 1 from above):
 ```yaml
 id: foobar
 inherit: foo
@@ -240,45 +243,52 @@ presets:
   defaultfont:
     font: Arial
     fontsize: 10
+
 content:
   playername:
     type: textCell
     x:  300
     x2: 400
     presets: [ topline ]
+
   xp:
     type: textCell
     x: 450
     y: 450
 ```
-</details>
 
 Result after inheritance was resolved:
 ```yaml
 id: foobar
 presets:
-  defaultfont:
+  defaultfont:  # <= this comes from file 2
     font: Arial
     fontsize: 10
-  topline:
+
+  topline:      # <= this comes from file 1
     y: 100
     y2: 200
     presets: [ defaultfont ]
+
 content:
-  charname:
+  charname:     # <= this comes from file 1
     type: textCell
     x:  100
     x2: 200
     presets: [ topline ]
-  playername:
+
+  playername:   # <= this comes from file 2
     type: textCell
     x:  300
     x2: 400
     presets: [ topline ]
-  xp:
+
+  xp:           # <= this comes from file 2
     x: 450
     y: 450
 ```
+
+</details>
 
 ## Finding the correct coordinates
 
