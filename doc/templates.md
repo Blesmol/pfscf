@@ -105,17 +105,17 @@ Each content entry requires a mandatory field `type` where the type of the conte
 A `textCell` describes a rectangular cell on the PDF file where user-provided text is added.
 
 It has a couple of mandatory and some optional fields:
-| Field      | Description                                                       | Input type | Required? |
-|:-----------|:------------------------------------------------------------------|:----------:|:---------:|
-| `desc`     | Gives a short description of what this is                         | Text       | TODO      |
-| `x`        | First coordinate for the cell on the X axis                       | Number     | Mandatory |
-| `y`        | First coordinate for the cell on the Y axis                       | Number     | Mandatory |
-| `x2`       | Second coordinate for the cell on the X axis                      | Number     | Mandatory |
-| `y2`       | Second coordinate for the cell on the Y axis                      | Number     | Mandatory |
-| `font`     | Name of the font to use. See [here](#fonts)                       | Text       | Mandatory |
-| `fontsize` | Fontsize in points                                                | Number     | Mandatory |
-| `align`    | Text alignment inside the rectangle. See [here](#text-alignment). | Text       | TODO      |
-| `example`  | An example input value                                            | Text       | Optional  |
+| Field      | Description                                                                                   | Input type | Required? |
+|:-----------|:----------------------------------------------------------------------------------------------|:----------:|:---------:|
+| `desc`     | Gives a short description of what this is                                                     | Text       | TODO      |
+| `x`        | First coordinate for the cell on the X axis                                                   | Number     | Mandatory |
+| `y`        | First coordinate for the cell on the Y axis                                                   | Number     | Mandatory |
+| `x2`       | Second coordinate for the cell on the X axis                                                  | Number     | Mandatory |
+| `y2`       | Second coordinate for the cell on the Y axis                                                  | Number     | Mandatory |
+| `font`     | Name of the font to use. See [the list of supported fonts](#fonts)                            | Text       | Mandatory |
+| `fontsize` | Fontsize in points                                                                            | Number     | Mandatory |
+| `align`    | Text alignment inside the rectangle. See [the list of supported alignments](#text-alignment). | Text       | TODO      |
+| `example`  | An example input value                                                                        | Text       | Optional  |
 
 
 Regarding the coordinates: It does not matter whether `x` is smaller than `x2` or vice versa.
@@ -141,9 +141,15 @@ playername:
 
 #### Type `societyId`
 
-### Misc
+### Other Formating Options
 
 #### Text Alignment
+
+Some content types, e.g. `textCell`, allow to choose an alignment.
+This normally consists of a horizontal and a vertical alignment.
+For example, selecting an alignment of `RT` for a `textCell` would indicate that the text should be aligned in the top right corner of the cell.
+The possible values for horizontal and vertical alignment can be found below.
+If you choose more than one horizontal or vertical alignment, no error will be thrown yet, but only one of the chosen alignments will be used.
 
 ##### Horizontal Alignment
 
@@ -160,7 +166,13 @@ playername:
 
 #### Fonts
 
-Currently `pfscf` supports only the list of 14 standard PDF fonts.
+The PDF format has builtin support for 14 fonts, the standard PDF fonts.
+But of course normally you see PDFs out ther that use a plethora of other fonts.
+So if someone uses some font for a PDF file that is not included in the standard fonts, the safest way to ensure that whoever opens a PDF file is not greeted with some nasty error message about missing fonts is to include that font in the resulting PDF.
+However, that is currently not supported by `pfscf` and perhaps never will be.
+So at the moment only the set of standard PDF fonts is officially supported.
+If you use something else, you're doing it at your own risk.
+It might work, or it might not.
 At the moment there is no check included to filter out wrong or unsupported font names.
 
 The list of fonts that can be used is as follows:
@@ -182,3 +194,5 @@ The list of fonts that can be used is as follows:
 ### Preset Mechanism
 
 ## Template Inheritance
+
+## Finding the correct coordinates
