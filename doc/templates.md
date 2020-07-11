@@ -67,22 +67,22 @@ inherit: idOfMyOtherCoolTemplate
 
 presets:
   topline:
-    y1: 100
+    y:  100
     y2: 200
   bottomline:
-    y1: 400
+    y:  400
     y2: 500
 
 content:
   name:
     type: textCell
     presets: [ topline ]
-    x1: 50
+    x: 50
     x2: 150
   date:
     type: textCell
     presets: [ bottomline ]
-    x1: 200
+    x: 200
     x2: 230
 ```
 </details>
@@ -108,8 +108,8 @@ It has a couple of mandatory and some optional fields:
 | Field      | Description                                                       | Input type | Required? |
 |:-----------|:------------------------------------------------------------------|:----------:|:---------:|
 | `desc`     | Gives a short description of what this is                         | Text       | TODO      |
-| `x1`       | First coordinate for the cell on the X axis                       | Number     | Mandatory |
-| `y1`       | First coordinate for the cell on the Y axis                       | Number     | Mandatory |
+| `x`        | First coordinate for the cell on the X axis                       | Number     | Mandatory |
+| `y`        | First coordinate for the cell on the Y axis                       | Number     | Mandatory |
 | `x2`       | Second coordinate for the cell on the X axis                      | Number     | Mandatory |
 | `y2`       | Second coordinate for the cell on the Y axis                      | Number     | Mandatory |
 | `font`     | Name of the font to use. See [here](#fonts)                       | Text       | Mandatory |
@@ -118,8 +118,8 @@ It has a couple of mandatory and some optional fields:
 | `example`  | An example input value                                            | Text       | Optional  |
 
 
-Regarding the coordinates: It does not matter whether `x1` is smaller than `x2` or vice versa.
-Same goes for `y1` and `y2`.
+Regarding the coordinates: It does not matter whether `x` is smaller than `x2` or vice versa.
+Same goes for `y` and `y2`.
 
 <details>
   <summary>Example</summary>
@@ -128,8 +128,8 @@ Same goes for `y1` and `y2`.
 playername:
   type: textCell
   desc: Player name
-  x1: 40
-  y1: 125
+  x:  40
+  y:  125
   x2: 140
   y2: 110
   font: Helvetica
