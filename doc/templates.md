@@ -122,7 +122,7 @@ Regarding the coordinates: It does not matter whether `x` is smaller than `x2` o
 Same goes for `y` and `y2`.
 
 <details>
-  <summary>Example</summary>
+  <summary>TextCell Example</summary>
 
 ```yaml
 playername:
@@ -195,6 +195,90 @@ The list of fonts that can be used is as follows:
 ### Preset Mechanism
 
 ## Template Inheritance
+
+Templates can inherit other templates.
+This means that all the content and presets from the original template will also be available in the new template.
+The inheritance mechanism works tranistively.
+So if template A inherits from template B, and template B inherits from template C, then all presets and content from both templates B and C will be available in template A.
+
+In case of conflicting IDs, i.e. when an ID for a preset or content entry appears in both template, the entry from the inheriting template takes precedence.
+
+Presets are only resolved after everything was inherited.
+This means you can also change the appearance of inherited content by replacing presets that are used by this inherited content.
+
+<details>
+  <summary>Inheritance Example</summary>
+
+File 1:
+```yaml
+id: foo
+presets:
+  defaultfont:
+    font: Helvetica
+    fontsize: 14
+  topline:
+    y: 100
+    y2: 200
+    presets: [ defaultfont ]
+content:
+  charname:
+    type: textCell
+    x:  100
+    x2: 200
+    presets: [ topline ]
+  xp:
+    type: textCell
+    x: 300
+    y: 300
+```
+
+File 2:
+```yaml
+id: foobar
+inherit: foo
+presets:
+  defaultfont:
+    font: Arial
+    fontsize: 10
+content:
+  playername:
+    type: textCell
+    x:  300
+    x2: 400
+    presets: [ topline ]
+  xp:
+    type: textCell
+    x: 450
+    y: 450
+```
+</details>
+
+Result after inheritance was resolved:
+```yaml
+id: foobar
+presets:
+  defaultfont:
+    font: Arial
+    fontsize: 10
+  topline:
+    y: 100
+    y2: 200
+    presets: [ defaultfont ]
+content:
+  charname:
+    type: textCell
+    x:  100
+    x2: 200
+    presets: [ topline ]
+  playername:
+    type: textCell
+    x:  300
+    x2: 400
+    presets: [ topline ]
+  xp:
+    x: 450
+    y: 450
+```
 
 ## Finding the correct coordinates
 
