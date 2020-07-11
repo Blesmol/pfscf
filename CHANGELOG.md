@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Documentation on how to write templates
 
 ### Changed
+- Replaced `x1` and `y1` with `x` and `y`.
 
 ### Removed
 
@@ -19,7 +20,7 @@ All notable changes to this project will be documented in this file.
 - New content type `societyid`. This is specifically meant for printing a PFS society id following the pattern `<player_id>-<char_id>`, e.g. 123456-789. This is easier to use than providing both values separately, and also allows better formatting / placement.
 
 ### Changed
-- Template `pfs2` now provide a `societyid` entry instead of separate `playerid` and `charid` entries. These were removed.
+- Template `pfs2` now provides a `societyid` entry instead of separate `playerid` and `charid` entries. These were removed.
 
 ## [0.5.0] - 2020-07-07
 

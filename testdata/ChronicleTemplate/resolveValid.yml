@@ -3,13 +3,13 @@ description: not tested
 presets:
   p1:
     presets: []
-    x1: 1
+    x: 1
     x2: 1
     xpivot: 1
   p2:
     presets: [p1]
     x2: 23
-    y1: 2
+    y: 2
   p3:
     presets: [p1]
     x2: 23
@@ -22,14 +22,14 @@ presets:
 content:
   c1:
     presets: []
-    x1: 1
+    x: 1
   c2:
     presets: [p1]
-    x1: 2
+    x: 2
   c3:
     presets: [p2, p3]
     xpivot: 4
   c4:
     presets: [p2, p2, p2]
-    x1: 1
+    x: 1
     x2: 1

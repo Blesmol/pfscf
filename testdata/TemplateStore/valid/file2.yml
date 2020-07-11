@@ -2,9 +2,9 @@ id: child
 description: desc
 presets:
   p0:
-    x1: 10
+    x: 10
   p1:
-    y1: 20
+    y: 20
 content:
   c0:
     type: textCell

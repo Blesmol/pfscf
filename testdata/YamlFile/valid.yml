@@ -3,7 +3,7 @@ description: my Description
 inherit: myInheritId
 presets:
   preset0:
-    y1: 150.0
+    y: 150.0
     y2: 200.0
   preset1:
     font: my font
@@ -12,8 +12,8 @@ content:
   myId:
     type: my Type
     desc: my Desc
-    x1: 11.0
-    y1: 12.0
+    x: 11.0
+    y: 12.0
     x2: 13.0
     y2: 14.0
     xpivot: 15.0
@@ -29,8 +29,8 @@ content:
     xpivot: 25.0
     y2: 24.0
     x2: 23.0
-    y1: 22.0
-    x1: 21.0
+    y: 22.0
+    x: 21.0
     desc: my other desc
     type: my other type
     example: my other example

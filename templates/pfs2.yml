@@ -7,19 +7,19 @@ presets:
 
   topline:
     presets: [defaultfont]
-    y1: 126
+    y:  126
     y2: 110
     align: CB
 
   rightbar:
     presets: [defaultfont]
-    x1: 472
+    x:  472
     x2: 567
     align: CM
 
   bottomline:
     presets: [defaultfont]
-    y1: 735
+    y:  735
     y2: 719
     align: CB
 
@@ -29,29 +29,29 @@ presets:
 
   facname:
     presets: [factions]
-    x1: 432
+    x:  432
     x2: 489
     align: CB
 
   facrep:
     presets: [factions]
-    x1: 531
+    x:  531
     x2: 547
     align: CB
 
   facline1:
     presets: [factions]
-    y1: 108
+    y:  108
     y2: 99
 
   facline2:
     presets: [factions]
-    y1: 128
+    y:  128
     y2: 119
 
   facline3:
     presets: [factions]
-    y1: 148
+    y:  148
     y2: 139
 
 content:
@@ -59,7 +59,7 @@ content:
     type: textCell
     desc: Player name
     presets: [topline]
-    x1: 42
+    x:  42
     x2: 142
     example: Bob
 
@@ -67,7 +67,7 @@ content:
     type: textCell
     desc: Players character name
     presets: [topline]
-    x1: 167
+    x:  167
     x2: 270
     example: Stormageddon
 
@@ -75,7 +75,7 @@ content:
     type: societyid
     desc: PFS Player ID
     presets: [topline]
-    x1: 276
+    x:  276
     xpivot: 348
     x2: 396
     example: 123456-2001
@@ -84,7 +84,7 @@ content:
     type: textCell
     desc: Experience points
     presets: [rightbar]
-    y1: 311
+    y:  311
     y2: 334
     example: 4
 
@@ -92,7 +92,7 @@ content:
     type: textCell
     desc: Gold pieces
     presets: [rightbar]
-    y1: 444
+    y:  444
     y2: 420
     example: 4gp 2sp
 
@@ -100,7 +100,7 @@ content:
     type: textCell
     desc: Dayjob
     presets: [rightbar]
-    y1: 481
+    y:  481
     y2: 456
     example: 8cp
 
@@ -108,7 +108,7 @@ content:
     type: textCell
     desc: Fame
     presets: [rightbar]
-    y1: 639
+    y:  639
     y2: 663
     example: 4
 
@@ -116,7 +116,7 @@ content:
     type: textCell
     desc: Event name
     presets: [bottomline]
-    x1: 43
+    x:  43
     x2: 147
     example: PaizoCon
 
@@ -124,7 +124,7 @@ content:
     type: textCell
     desc: Event code
     presets: [bottomline]
-    x1: 157
+    x:  157
     x2: 212
     example: 1234
 
@@ -132,7 +132,7 @@ content:
     type: textCell
     desc: The date on which the game session took place
     presets: [bottomline]
-    x1: 227
+    x:  227
     x2: 303
     example: 27.06.2020
 
@@ -140,7 +140,7 @@ content:
     type: textCell
     desc: Gamemasters name
     presets: [bottomline]
-    x1: 323
+    x:  323
     x2: 446
     example: John Doe
 
@@ -148,7 +148,7 @@ content:
     type: textCell
     desc: Gamemasters PFS ID
     presets: [bottomline]
-    x1: 460
+    x:  460
     x2: 563
     example: 654321
 

@@ -16,7 +16,8 @@ import (
 type ContentData struct {
 	Type     string   // the type which this entry represents
 	Desc     string   // Description of this parameter
-	X1, Y1   float64  // first set of coordinates
+	X1       float64  `yaml:"x"` // first x coordinate
+	Y1       float64  `yaml:"y"` // first y coordinate
 	X2, Y2   float64  // second set of coordinates
 	XPivot   float64  // pivot point on X axis
 	Font     string   // the name of the font (if any) that should be used to display the content

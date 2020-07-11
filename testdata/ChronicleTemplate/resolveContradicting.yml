@@ -2,9 +2,9 @@ id: resolveContradicting
 description: not tested
 presets:
   p1:
-    y1: 1
+    y: 1
   p2:
-    y1: 2
+    y: 2
   p3:
     presets: [p1, p2]
 content:

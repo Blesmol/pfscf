@@ -3,15 +3,15 @@ description: not tested
 presets:
   p1:
     presets: []
-    x1: 1
+    x: 1
     x2: 1
-    y1: 1
+    y: 1
     y2: 1
     xpivot: 1
   p2:
     presets: [p1]
     x2: 23
-    y1: 2
+    y: 2
   p3:
     presets: [p1]
     x2: 23
