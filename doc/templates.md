@@ -105,17 +105,18 @@ Each content entry requires a mandatory field `type` where the type of the conte
 A `textCell` describes a rectangular cell on the PDF file where user-provided text is added.
 
 It has a couple of mandatory and some optional fields:
-| Field      | Description                                                                                   | Input type | Required? |
-|:-----------|:----------------------------------------------------------------------------------------------|:----------:|:---------:|
-| `desc`     | Gives a short description of what this is                                                     | Text       | TODO      |
-| `x`        | First coordinate for the cell on the X axis                                                   | Number     | Mandatory |
-| `y`        | First coordinate for the cell on the Y axis                                                   | Number     | Mandatory |
-| `x2`       | Second coordinate for the cell on the X axis                                                  | Number     | Mandatory |
-| `y2`       | Second coordinate for the cell on the Y axis                                                  | Number     | Mandatory |
-| `font`     | Name of the font to use. See [the list of supported fonts](#fonts)                            | Text       | Mandatory |
-| `fontsize` | Fontsize in points                                                                            | Number     | Mandatory |
-| `align`    | Text alignment inside the rectangle. See [the list of supported alignments](#text-alignment). | Text       | TODO      |
-| `example`  | An example input value                                                                        | Text       | Optional  |
+| Field      | Description                                                                                             | Input type | Required? |
+|:-----------|:--------------------------------------------------------------------------------------------------------|:----------:|:---------:|
+| `desc`     | Gives a short description of what this is                                                               | Text       | TODO      |
+| `x`        | First coordinate for the cell on the X axis                                                             | Number     | Mandatory |
+| `y`        | First coordinate for the cell on the Y axis                                                             | Number     | Mandatory |
+| `x2`       | Second coordinate for the cell on the X axis                                                            | Number     | Mandatory |
+| `y2`       | Second coordinate for the cell on the Y axis                                                            | Number     | Mandatory |
+| `font`     | Name of the font to use. See [the list of supported fonts](#fonts)                                      | Text       | Mandatory |
+| `fontsize` | Fontsize in points                                                                                      | Number     | Mandatory |
+| `align`    | Text alignment inside the rectangle. See [the list of supported alignments](#text-alignment).           | Text       | TODO      |
+| `example`  | An example input value                                                                                  | Text       | Optional  |
+| `presets`  | A list of preset IDs to apply to this content entry. See the [section about presets](#preset-mechanism) | List       | Optional  |
 
 
 Regarding the coordinates: It does not matter whether `x` is smaller than `x2` or vice versa.
@@ -140,6 +141,54 @@ playername:
 </details>
 
 #### Type `societyId`
+
+A `societyId` is a special type of content whose sole purpose is to bring a society ID to a chronicle with some special formatting.
+A society ID should follow the pattern `<player_id>-<char_id>`, e.g. 123456-789.
+
+So why not simply use one or multiple `textCell` entries for this?
+Well, the `societyId` does a little bit more than that.
+One special thing is that it blanks out (some of) the background underneath it.
+For PFS2, there is already the "- 2" part of the society ID preprinted on the chronicles.
+I can understand the motivation behind that, but for the automatically filled out chronicles I want to have everything using the same font and size.
+
+Second reason for an own content type is the positioning.
+With a text cell you always have to make assumptions on where exactly to put the text.
+Should it be left-aligned?
+But what if the player id is longer for some players as it has more digits?
+Long story short: The `societyId` type takes one extra parameter `xpivot` that basically says on where exactly the dash should be located on the x axis.
+Left of that we have the player id, right of that we have the char id.
+
+| Field      | Description                                                                                             | Input type | Required? |
+|:-----------|:--------------------------------------------------------------------------------------------------------|:----------:|:---------:|
+| `desc`     | Gives a short description of what this is                                                               | Text       | TODO      |
+| `x`        | First coordinate for the cell on the X axis                                                             | Number     | Mandatory |
+| `y`        | First coordinate for the cell on the Y axis                                                             | Number     | Mandatory |
+| `x2`       | Second coordinate for the cell on the X axis                                                            | Number     | Mandatory |
+| `y2`       | Second coordinate for the cell on the Y axis                                                            | Number     | Mandatory |
+| `xpivot`   | Location of the (center of the) dash on the x axis. Must lie between `x` and `x2`                       | Number     | Mandatory |
+| `font`     | Name of the font to use. See [the list of supported fonts](#fonts)                                      | Text       | Mandatory |
+| `fontsize` | Fontsize in points                                                                                      | Number     | Mandatory |
+| `example`  | An example input value                                                                                  | Text       | Optional  |
+| `presets`  | A list of preset IDs to apply to this content entry. See the [section about presets](#preset-mechanism) | List       | Optional  |
+
+<details>
+  <summary>SocietyId Example</summary>
+
+```yaml
+societyid:
+  type: societyId
+  desc: The players society id
+  x:  40
+  y:  125
+  xpivot: 100
+  x2: 140
+  y2: 110
+  font: Helvetica
+  fontsize: 14
+  example: 123456-789
+```
+</details>
+
 
 ### Other Formating Options
 
