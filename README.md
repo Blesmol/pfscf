@@ -2,7 +2,7 @@
 
 The "Pathfinder Society Chronicle Filler" (or short: pfscf) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle sheets for the Pathfinder Roleplaying Game from [Paizo Inc](https://paizo.com).
 
-You can download the program in the [Releases section](../../releases/).
+You can download the program in the [Releases section](https://github.com/Blesmol/pfscf/releases).
 
 ## Usage
 
