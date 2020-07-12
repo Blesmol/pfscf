@@ -113,6 +113,15 @@ func expectNotSet(t *testing.T, got interface{}) {
 	}
 }
 
+func expectIsSet(t *testing.T, got interface{}) {
+	t.Helper()
+
+	if !IsSet(got) {
+		callStack()
+		t.Errorf("Expected value of type '%v' to be set, but was not", reflect.TypeOf(got))
+	}
+}
+
 func expectAllExportedSet(t *testing.T, got interface{}) {
 	t.Helper()
 

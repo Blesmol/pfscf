@@ -13,7 +13,7 @@ var (
 // GetFillCommand returns the cobra command for the "fill" action.
 func GetFillCommand() (cmd *cobra.Command) {
 	fillCmd := &cobra.Command{
-		Use:     "fill <template> <infile> <outfile>",
+		Use:     "fill <template> <infile> <outfile> [<content_id>=<value> ...]",
 		Aliases: []string{"f"},
 
 		Short: "Fill out a single chronicle sheet",
