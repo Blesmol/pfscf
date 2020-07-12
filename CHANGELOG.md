@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- Documentation on how to write templates
+
+### Changed
+
+### Removed
+
+### Fixed
+
 ## [0.6.0] - 2020-07-08
 
 ### Added
