@@ -118,24 +118,42 @@ Each content entry requires a mandatory field `type` where the type of the conte
 
 ### Generic Content Entry Structure
 
+A content entry has a specific structure and set of fields.
+The different types listed below use only a subset of these fields.
+
+The available fields are as follows:
+| Field      | Description                                                                                              | Input type |
+|:-----------|:---------------------------------------------------------------------------------------------------------|:----------:|
+| `type`     | The name of the type of this content entry. The currently supported types are described below            | Text       |
+| `desc`     | Short description of what this content entry is or does                                                  | Text       |
+| `x`        | First coordinate on the X axis for the current content                                                   | Number     |
+| `y`        | First coordinate on the Y axis for the current content                                                   | Number     |
+| `x2`       | Second coordinate on the X axis for the current content                                                  | Number     |
+| `y2`       | Second coordinate on the Y axis for the current content                                                  | Number     |
+| `xpivot`   | Pivot point on the X axis for the current content                                                        | Number     |
+| `font`     | Name of the font to use. See [the list of supported fonts](#fonts)                                       | Text       |
+| `fontsize` | Fontsize in points                                                                                       | Number     |
+| `align`    | Text alignment inside the rectangle. See [the list of supported alignments](#text-alignment).            | Text       |
+| `example`  | An example input value for the current content                                                           | Text       |
+| `presets`  | A list of preset IDs to apply to this content entry. See the [section about presets](#presets-mechanism) | List       |
+
 ### Type `textCell`
 
 A `textCell` describes a rectangular cell on the PDF file where user-provided text is added.
 
-It has a couple of mandatory and some optional fields:
-| Field      | Description                                                                                             | Input type | Required? |
-|:-----------|:--------------------------------------------------------------------------------------------------------|:----------:|:---------:|
-| `desc`     | Gives a short description of what this is                                                               | Text       | TODO      |
-| `x`        | First coordinate for the cell on the X axis                                                             | Number     | Mandatory |
-| `y`        | First coordinate for the cell on the Y axis                                                             | Number     | Mandatory |
-| `x2`       | Second coordinate for the cell on the X axis                                                            | Number     | Mandatory |
-| `y2`       | Second coordinate for the cell on the Y axis                                                            | Number     | Mandatory |
-| `font`     | Name of the font to use. See [the list of supported fonts](#fonts)                                      | Text       | Mandatory |
-| `fontsize` | Fontsize in points                                                                                      | Number     | Mandatory |
-| `align`    | Text alignment inside the rectangle. See [the list of supported alignments](#text-alignment).           | Text       | TODO      |
-| `example`  | An example input value                                                                                  | Text       | Optional  |
-| `presets`  | A list of preset IDs to apply to this content entry. See the [section about presets](#presets-mechanism) | List       | Optional  |
+It has a couple of mandatory and some optional fields.
+All fields that are not listed in the table below are currently not used and simply ignored.
 
+| Field      | Required?     | Comment                                                             |
+|:-----------|:-------------:|:--------------------------------------------------------------------|
+| `desc`     | Optional      |                                                                     |
+| `x`, `y`   | Mandatory     | Set of coordinates for one of the cell corners                      |
+| `x2`, `y2` | Mandatory     | Set of coordinates for the cell corner opposite of the first corner |
+| `font`     | Mandatory     |                                                                     |
+| `fontsize` | Mandatory     |                                                                     |
+| `align`    | Mandatory   . |                                                                     |
+| `example`  | Optional      |                                                                     |
+| `presets`  | Optional      |                                                                     |
 
 Regarding the coordinates: It does not matter whether `x` is smaller than `x2` or vice versa.
 Same goes for `y` and `y2`.
@@ -176,18 +194,19 @@ But what if the player id is longer for some players as it has more digits?
 Long story short: The `societyId` type takes one extra parameter `xpivot` that basically says on where exactly the dash should be located on the x axis.
 Left of that we have the player id, right of that we have the char id.
 
-| Field      | Description                                                                                             | Input type | Required? |
-|:-----------|:--------------------------------------------------------------------------------------------------------|:----------:|:---------:|
-| `desc`     | Gives a short description of what this is                                                               | Text       | TODO      |
-| `x`        | First coordinate for the cell on the X axis                                                             | Number     | Mandatory |
-| `y`        | First coordinate for the cell on the Y axis                                                             | Number     | Mandatory |
-| `x2`       | Second coordinate for the cell on the X axis                                                            | Number     | Mandatory |
-| `y2`       | Second coordinate for the cell on the Y axis                                                            | Number     | Mandatory |
-| `xpivot`   | Location of the (center of the) dash on the x axis. Must lie between `x` and `x2`                       | Number     | Mandatory |
-| `font`     | Name of the font to use. See [the list of supported fonts](#fonts)                                      | Text       | Mandatory |
-| `fontsize` | Fontsize in points                                                                                      | Number     | Mandatory |
-| `example`  | An example input value                                                                                  | Text       | Optional  |
-| `presets`  | A list of preset IDs to apply to this content entry. See the [section about presets](#presets-mechanism) | List       | Optional  |
+This content type has a couple of mandatory and some optional fields.
+All fields that are not listed in the table below are currently not used and simply ignored.
+
+| Field      | Required? | Comment                                                                           |
+|:-----------|:---------:|:----------------------------------------------------------------------------------|
+| `desc`     | Optional  |                                                                                   |
+| `x`, `y`   | Mandatory | Set of coordinates for one of the cell corners                                    |
+| `x2`, `y2` | Mandatory | Set of coordinates for the cell corner opposite of the first corner               |
+| `xpivot`   | Mandatory | Location of the (center of the) dash on the x axis. Must lie between `x` and `x2` |
+| `font`     | Mandatory |                                                                                   |
+| `fontsize` | Mandatory |                                                                                   |
+| `example`  | Optional  |                                                                                   |
+| `presets`  | Optional  |                                                                                   |
 
 <details>
   <summary>SocietyId Example</summary>
