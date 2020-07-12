@@ -13,7 +13,7 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 		Aliases: []string{"t", "templates"},
 
 		Short: "Various actions on templates: list, describe, etc",
-		Long:  "Long description of actions on templates.",
+		//Long:  "TBD",
 
 		Args: cobra.ExactArgs(0),
 	}
@@ -49,7 +49,7 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 		Aliases: []string{"v"},
 
 		Short: "Validate a specific template",
-		Long:  "Validate a specific template",
+		//Long:  "TBD",
 
 		Args: cobra.ExactArgs(1),
 
