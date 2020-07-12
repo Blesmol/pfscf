@@ -83,7 +83,7 @@ Not yet supported, unless you repeat the "Fill out a single chronicle" section f
 
 ### Writing your own templates
 
-Please see the [Documentation on writing your own templates](../../tree/master/doc/templates.md)
+Please see the [Documentation on writing your own templates](docs/templates.md)
 
 ## FAQ
 
