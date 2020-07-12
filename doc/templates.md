@@ -100,6 +100,8 @@ The description on what may be included in a `content` or `presets` entry is des
 The pfsct app supports different types of content entries.
 Each content entry requires a mandatory field `type` where the type of the content entry must be added.
 
+#### Generic Content Entry Structure
+
 #### Type `textCell`
 
 A `textCell` describes a rectangular cell on the PDF file where user-provided text is added.
@@ -189,59 +191,99 @@ societyid:
 ```
 </details>
 
-
-### Other Formating Options
-
-#### Text Alignment
-
-Some content types, e.g. `textCell`, allow to choose an alignment.
-This normally consists of a horizontal and a vertical alignment.
-For example, selecting an alignment of `RT` for a `textCell` would indicate that the text should be aligned in the **top** **right** corner of the cell.
-The possible values for horizontal and vertical alignment can be found below.
-If you choose more than one horizontal or vertical alignment, no error will be thrown yet, but only one of the chosen alignments will be used.
-The order of the alignment values does not matter, e.g. both `RT` and `TR` will have the same result.
-
-##### Horizontal Alignment
-
-* `L`: Left-bound
-* `C`: Centered
-* `R`: Right-bound
-
-##### Vertical Alignment
-
-* `T`: Top
-* `M`: Middle
-* `B`: Bottom
-* `A`: Baseline
-
-#### Fonts
-
-The PDF format has builtin support for 14 fonts, the standard PDF fonts.
-But of course normally you see PDFs out ther that use a plethora of other fonts.
-So if someone uses some font for a PDF file that is not included in the standard fonts, the safest way to ensure that whoever opens a PDF file is not greeted with some nasty error message about missing fonts is to include that font in the resulting PDF.
-However, that is currently not supported by `pfscf` and perhaps never will be.
-So at the moment only the set of standard PDF fonts is officially supported.
-If you use something else, you're doing it at your own risk.
-It might work, or it might not.
-At the moment there is no check included to filter out wrong or unsupported font names.
-
-The list of fonts that can be used is as follows:
-* Times-Roman
-* Times-Bold
-* Times-Italic
-* Times-BoldItalic
-* Courier
-* Courier-Bold
-* Courier-Oblique
-* Courier-BoldOblique
-* Helvetica
-* Helvetica-Bold
-* Helvetica-Oblique
-* Helvetica-BoldOblique
-* Symbol
-* ZapfDingbats
-
 ### Preset Mechanism
+
+Presets are a way to reuse things like coordinates that appear in multiple content entries.
+For example, you might want to use the same font everywhere.
+You can either write down the same font in each and every content entry.
+Or you create a preset that contains the font name and use that in all entries.
+
+Another useful example is if you have multiple content entries on a single line and don't want to repeat the coordinates in each entry here.
+You can then manage, e.g. the y coordinates in a single preset that is used by all entries on the same line.
+
+Presets are structured exactly like "regular" content entries, i.e. they support the same fields as described in section [Generic Content Entry Structure](#generic-content-entry-structure).
+They can be used from content entries or from other presets.
+To use a preset, it has to be listed in the `presets` section of a content entry.
+
+```yaml
+content:
+  name:
+    [...]
+    presets: [ topline ]
+```
+
+<details>
+  <summary>Presets Example</summary>
+
+Example structure:
+```yaml
+presets:
+  defaultfont:
+    font: Helvetica
+    fontsize: 14
+  topline:
+    y:  100
+    y2: 120
+    presets: [ defaultfont ]
+contents:
+  name:
+    type: textCell
+    x:  200
+    x2: 275
+    presets: [ topline ]
+```
+
+Resulting content:
+```yaml
+contents:
+  name:
+    type: textCell
+    x:  200
+    y:  100 # from preset 'topline'
+    x2: 275
+    y2: 120 # from preset 'topline'
+    font: Helvetica  # from template 'defaultfont', indirectly inherited via 'topline'
+    fontsize: 14     # from template 'defaultfont', indirectly inherited via 'topline'
+```
+</details>
+
+It is possible to use multiple presets at the same time.
+
+```yaml
+content:
+  name:
+    [...]
+    presets: [ topline, boldfont ]
+```
+
+But this will only work as long as the presets are "compatible" to each other, i.e. as long as they do not contain any conflicting information.
+So it is not possible to use two presets in the same content entry where one of them says that, e.g., the `y2` coordinate has a value of 100, and the other presets states that `y2` should be 105.
+
+<details>
+  <summary>Presets Conflict Example</summary>
+
+Example structure:
+```yaml
+presets:
+  presetX:
+    x: 50
+  presetCoords_1:
+    y: 100
+    presets: [ presetX ]
+  presetCoords_2:
+    y: 105
+    presets: [ presetX ]
+contents:
+  someEntry_1:
+    type: textCell
+    x: 100
+    presets: [ presetCoords_1 ]  # Only one preset used; original 'x' takes precedence, everything ok
+  someEntry_2:
+    type: textCell
+    presets: [ presetCoords_1, presetCoords_2 ] # Conflict! Both presets have different values for 'x'
+```
+</details>
+
 
 ## Template Inheritance
 
@@ -364,3 +406,54 @@ If you select this, normal input values like, e.g. `player=Bob` will be ignored.
 Instead, every content that has an `example` value provided will be printed to the chronicle using exactly this value.
 
 So from experience I would suggest to start with the `grid` option, get rough initial coordinates, and then switch to using both the `cellBorder` option and the `dummyValues` option to fine-tune everything.
+
+### Other Formating Options
+
+#### Text Alignment
+
+Some content types, e.g. `textCell`, allow to choose an alignment.
+This normally consists of a horizontal and a vertical alignment.
+For example, selecting an alignment of `RT` for a `textCell` would indicate that the text should be aligned in the **top** **right** corner of the cell.
+The possible values for horizontal and vertical alignment can be found below.
+If you choose more than one horizontal or vertical alignment, no error will be thrown yet, but only one of the chosen alignments will be used.
+The order of the alignment values does not matter, e.g. both `RT` and `TR` will have the same result.
+
+##### Horizontal Alignment
+
+* `L`: Left-bound
+* `C`: Centered
+* `R`: Right-bound
+
+##### Vertical Alignment
+
+* `T`: Top
+* `M`: Middle
+* `B`: Bottom
+* `A`: Baseline
+
+#### Fonts
+
+The PDF format has builtin support for 14 fonts, the standard PDF fonts.
+But of course normally you see PDFs out ther that use a plethora of other fonts.
+So if someone uses some font for a PDF file that is not included in the standard fonts, the safest way to ensure that whoever opens a PDF file is not greeted with some nasty error message about missing fonts is to include that font in the resulting PDF.
+However, that is currently not supported by `pfscf` and perhaps never will be.
+So at the moment only the set of standard PDF fonts is officially supported.
+If you use something else, you're doing it at your own risk.
+It might work, or it might not.
+At the moment there is no check included to filter out wrong or unsupported font names.
+
+The list of fonts that can be used is as follows:
+* Times-Roman
+* Times-Bold
+* Times-Italic
+* Times-BoldItalic
+* Courier
+* Courier-Bold
+* Courier-Oblique
+* Courier-BoldOblique
+* Helvetica
+* Helvetica-Bold
+* Helvetica-Oblique
+* Helvetica-BoldOblique
+* Symbol
+* ZapfDingbats
