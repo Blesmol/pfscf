@@ -5,6 +5,22 @@ Or you are just curious on what is currently supported by pfscf.
 Besides, it's always useful to provide proper documentation.
 Even if perhaps only for the reason to show that the weird behavior for something might be actually intended!
 
+## Table of Contents
+* [Template Structure on Disk](#template-structure-on-disk)
+* [Template File Format](#template-file-format)
+    * [YAML Format](#yaml-format)
+	* [File Layout](#file-layout)
+* [Content Types](#content-types)
+    * [Generic Content Entry Structure](#generic-content-entry-structure)
+	* [Type "textCell"](#type-textcell)
+    * [Type "societyId"](#type-societyid)
+* [Presets Mechanism](#presets-mechanism)
+* [Template Inheritance](#template-inheritance)
+* [Finding the Correct Coordinates](#finding-the-correct-coordinates)
+* [Other Formatting Options](#other-formatting-options)
+    * [Text Alignment](#text-alignment)
+	* [Fonts](#fonts)
+
 ## Template Structure on Disk
 
 The template files are stored in a folder `templates` that is located in the same folder as the pfscf executable file.
@@ -95,14 +111,14 @@ Each entry below `content` and `presets` must have an ID that is unique within t
 That means, no two entries in the `content` section may have the same ID, and no two entries in the `presets` section may have the same ID.
 The description on what may be included in a `content` or `presets` entry is described below.
 
-### Content Types
+## Content Types
 
 The pfsct app supports different types of content entries.
 Each content entry requires a mandatory field `type` where the type of the content entry must be added.
 
-#### Generic Content Entry Structure
+### Generic Content Entry Structure
 
-#### Type `textCell`
+### Type `textCell`
 
 A `textCell` describes a rectangular cell on the PDF file where user-provided text is added.
 
@@ -118,7 +134,7 @@ It has a couple of mandatory and some optional fields:
 | `fontsize` | Fontsize in points                                                                                      | Number     | Mandatory |
 | `align`    | Text alignment inside the rectangle. See [the list of supported alignments](#text-alignment).           | Text       | TODO      |
 | `example`  | An example input value                                                                                  | Text       | Optional  |
-| `presets`  | A list of preset IDs to apply to this content entry. See the [section about presets](#preset-mechanism) | List       | Optional  |
+| `presets`  | A list of preset IDs to apply to this content entry. See the [section about presets](#presets-mechanism) | List       | Optional  |
 
 
 Regarding the coordinates: It does not matter whether `x` is smaller than `x2` or vice versa.
@@ -142,7 +158,7 @@ playername:
 ```
 </details>
 
-#### Type `societyId`
+### Type `societyId`
 
 A `societyId` is a special type of content whose sole purpose is to bring a society ID to a chronicle with some special formatting.
 A society ID should follow the pattern `<player_id>-<char_id>`, e.g. 123456-789.
@@ -171,7 +187,7 @@ Left of that we have the player id, right of that we have the char id.
 | `font`     | Name of the font to use. See [the list of supported fonts](#fonts)                                      | Text       | Mandatory |
 | `fontsize` | Fontsize in points                                                                                      | Number     | Mandatory |
 | `example`  | An example input value                                                                                  | Text       | Optional  |
-| `presets`  | A list of preset IDs to apply to this content entry. See the [section about presets](#preset-mechanism) | List       | Optional  |
+| `presets`  | A list of preset IDs to apply to this content entry. See the [section about presets](#presets-mechanism) | List       | Optional  |
 
 <details>
   <summary>SocietyId Example</summary>
@@ -191,7 +207,7 @@ societyid:
 ```
 </details>
 
-### Preset Mechanism
+## Presets Mechanism
 
 Presets are a way to reuse things like coordinates that appear in multiple content entries.
 For example, you might want to use the same font everywhere.
@@ -267,17 +283,21 @@ Example structure:
 presets:
   presetX:
     x: 50
+
   presetCoords_1:
     y: 100
     presets: [ presetX ]
+
   presetCoords_2:
     y: 105
     presets: [ presetX ]
+
 contents:
   someEntry_1:
     type: textCell
     x: 100
     presets: [ presetCoords_1 ]  # Only one preset used; original 'x' takes precedence, everything ok
+
   someEntry_2:
     type: textCell
     presets: [ presetCoords_1, presetCoords_2 ] # Conflict! Both presets have different values for 'x'
@@ -381,7 +401,7 @@ content:
 
 </details>
 
-## Finding the correct coordinates
+## Finding the Correct Coordinates
 
 Let's be honest from the beginning: Finding the correct coordinates for adding own content is always fiddly and a lot of try-and-error.
 However, there are a few ways to make life easier here.
@@ -407,9 +427,9 @@ Instead, every content that has an `example` value provided will be printed to t
 
 So from experience I would suggest to start with the `grid` option, get rough initial coordinates, and then switch to using both the `cellBorder` option and the `dummyValues` option to fine-tune everything.
 
-### Other Formating Options
+## Other Formatting Options
 
-#### Text Alignment
+### Text Alignment
 
 Some content types, e.g. `textCell`, allow to choose an alignment.
 This normally consists of a horizontal and a vertical alignment.
@@ -418,20 +438,20 @@ The possible values for horizontal and vertical alignment can be found below.
 If you choose more than one horizontal or vertical alignment, no error will be thrown yet, but only one of the chosen alignments will be used.
 The order of the alignment values does not matter, e.g. both `RT` and `TR` will have the same result.
 
-##### Horizontal Alignment
+#### Horizontal Alignment
 
 * `L`: Left-bound
 * `C`: Centered
 * `R`: Right-bound
 
-##### Vertical Alignment
+#### Vertical Alignment
 
 * `T`: Top
 * `M`: Middle
 * `B`: Bottom
 * `A`: Baseline
 
-#### Fonts
+### Fonts
 
 The PDF format has builtin support for 14 fonts, the standard PDF fonts.
 But of course normally you see PDFs out ther that use a plethora of other fonts.
