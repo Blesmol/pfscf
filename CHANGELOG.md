@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Renamed `x1` and `y1` to `x` and `y`.
 - Renamed content `societyid` to `societyId`
+- Renamed content `code` to `eventcode`
 
 ### Removed
 
