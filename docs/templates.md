@@ -472,27 +472,13 @@ The order of the alignment values does not matter, e.g. both `RT` and `TR` will 
 
 ### Fonts
 
-The PDF format has builtin support for 14 fonts, the standard PDF fonts.
-But of course normally you see PDFs out ther that use a plethora of other fonts.
-So if someone uses some font for a PDF file that is not included in the standard fonts, the safest way to ensure that whoever opens a PDF file is not greeted with some nasty error message about missing fonts is to include that font in the resulting PDF.
-However, that is currently not supported by `pfscf` and perhaps never will be.
-So at the moment only the set of standard PDF fonts is officially supported.
-If you use something else, you're doing it at your own risk.
-It might work, or it might not.
-At the moment there is no check included to filter out wrong or unsupported font names.
-
-The list of fonts that can be used is as follows:
-* Times-Roman
-* Times-Bold
-* Times-Italic
-* Times-BoldItalic
+The list of fonts that can currently be used is as follows:
+* Arial
 * Courier
-* Courier-Bold
-* Courier-Oblique
-* Courier-BoldOblique
 * Helvetica
-* Helvetica-Bold
-* Helvetica-Oblique
-* Helvetica-BoldOblique
+* Times
 * Symbol
 * ZapfDingbats
+
+Support for other fonts will probably never come.
+What might come later is support for formatting options like bold, italics, underscores.
