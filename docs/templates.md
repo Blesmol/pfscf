@@ -426,7 +426,7 @@ Let's be honest from the beginning: Finding the correct coordinates for adding o
 However, there are a few ways to make life easier here.
 There are currently three options for the `pfscf fill` command to support finding the correct coordinates:
 * `--cellBorder` (short: `-c`)
-* `--dummyValues` (short: `-d`)
+* `--exampleValues` (short: `-e`)
 * `--grid` (short: `-g`)
 
 The `grid` option is probably the most useful.
@@ -440,11 +440,11 @@ This allows to see the exact boundaries and locations of what you provided via c
 At the moment, this is only done for content that is actually printed to the page.
 So if you have some new content, but do not print it on the page, there won't be any borders displayed as well.
 
-And finally the `dummyValues` option.
+And finally the `exampleValues` option.
 If you select this, normal input values like, e.g. `player=Bob` will be ignored.
 Instead, every content that has an `example` value provided will be printed to the chronicle using exactly this value.
 
-So from experience I would suggest to start with the `grid` option, get rough initial coordinates, and then switch to using both the `cellBorder` option and the `dummyValues` option to fine-tune everything.
+So from experience I would suggest to start with the `grid` option, get rough initial coordinates, and then switch to using both the `cellBorder` option and the `exampleValues` option to fine-tune everything.
 
 ## Other Formatting Options
 

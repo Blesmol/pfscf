@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	drawGrid       bool
-	drawCellBorder bool
-	useDummyValues bool
+	drawGrid                   bool
+	drawCellBorder             bool
+	actionFillUseExampleValues bool
 )
 
 // GetFillCommand returns the cobra command for the "fill" action.
@@ -28,7 +28,7 @@ func GetFillCommand() (cmd *cobra.Command) {
 	}
 	fillCmd.Flags().BoolVarP(&drawGrid, "grid", "g", false, "Draw a coordinate grid on the output file")
 	fillCmd.Flags().BoolVarP(&drawCellBorder, "cellBorder", "c", false, "Draw the cell borders of all added fields")
-	fillCmd.Flags().BoolVarP(&useDummyValues, "dummyValues", "d", false, "Use dummy values to fill out the chronicle.")
+	fillCmd.Flags().BoolVarP(&actionFillUseExampleValues, "exampleValues", "e", false, "Use example values to fill out the chronicle")
 
 	return fillCmd
 }
@@ -47,7 +47,7 @@ func executeFill(cmd *cobra.Command, args []string) {
 
 	// parse remaining arguments
 	var argStore ArgStore
-	if !useDummyValues {
+	if !actionFillUseExampleValues {
 		argStore = ArgStoreFromArgs(args[3:])
 	} else {
 		argStore = ArgStoreFromTemplateExamples(cTmpl)
