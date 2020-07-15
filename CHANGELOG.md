@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 
 ### Fixed
+- #33: Now correctly only reads files with .yml extension, not with .yml~ or .ymla
 
 ## [0.6.0] - 2020-07-08
 

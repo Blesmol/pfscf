@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	templateFilePattern = ".+\\.yml"
+	templateFilePattern = ".+\\.yml$"
 )
 
 // YamlFile represents the structure of a yaml template file
