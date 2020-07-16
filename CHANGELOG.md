@@ -5,7 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [0.7.0] - 2020-07-16
+
+### Added
 - Documentation on how to write templates
+- Batch mode for filling out chronicles
 
 ### Changed
 - Renamed `x1` and `y1` to `x` and `y`.
@@ -13,10 +24,9 @@ All notable changes to this project will be documented in this file.
 - Renamed content `code` to `eventcode`
 - Renamed cmd line option `--dummyValues` to `--exampleValues`
 
-### Removed
-
 ### Fixed
 - #33: Now correctly only reads files with .yml extension, not with .yml~ or .ymla
+- Action `template describe -v` now works again
 
 ## [0.6.0] - 2020-07-08
 
