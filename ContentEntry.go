@@ -177,7 +177,7 @@ func (ce *ContentEntry) Describe(verbose bool) (result string) {
 // containing "Not available" is returned instead.
 func (ce *ContentEntry) UsageExample() (result string) {
 	switch ce.Type() {
-	case "textCell":
+	case "textCell", "societyId":
 		if !IsSet(ce.Example) {
 			return fmt.Sprintf("Not available")
 		}
