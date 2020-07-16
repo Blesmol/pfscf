@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"runtime/debug"
+	"strings"
 	"testing"
 )
 
@@ -112,6 +113,15 @@ func expectNotSet(t *testing.T, got interface{}) {
 	}
 }
 
+func expectIsSet(t *testing.T, got interface{}) {
+	t.Helper()
+
+	if !IsSet(got) {
+		callStack()
+		t.Errorf("Expected value of type '%v' to be set, but was not", reflect.TypeOf(got))
+	}
+}
+
 func expectAllExportedSet(t *testing.T, got interface{}) {
 	t.Helper()
 
@@ -202,5 +212,14 @@ func expectFalse(t *testing.T, v bool) {
 	if v {
 		callStack()
 		t.Errorf("Expected false, but was true")
+	}
+}
+
+func expectStringContains(t *testing.T, got string, exp string) {
+	t.Helper()
+
+	if !strings.Contains(got, exp) {
+		callStack()
+		t.Errorf("Expected string '%v' to contain '%v', which it does not", got, exp)
 	}
 }

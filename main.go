@@ -26,6 +26,7 @@ func main() {
 
 	RootCmd.AddCommand(GetFillCommand())
 	RootCmd.AddCommand(GetTemplateCommand())
+	RootCmd.AddCommand(GetBatchCommand())
 
 	err := RootCmd.Execute()
 	if err != nil {
