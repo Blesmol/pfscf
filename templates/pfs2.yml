@@ -117,14 +117,14 @@ content:
     desc: Event name
     presets: [bottomline]
     x:  43
-    x2: 147
+    x2: 143
     example: PaizoCon
 
   eventcode:
     type: textCell
     desc: Event code
     presets: [bottomline]
-    x:  157
+    x:  158
     x2: 212
     example: 1234
 
@@ -140,7 +140,7 @@ content:
     type: textCell
     desc: Gamemasters name
     presets: [bottomline]
-    x:  323
+    x:  318
     x2: 446
     example: John Doe
 
