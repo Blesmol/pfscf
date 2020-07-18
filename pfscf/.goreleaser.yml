@@ -1,3 +1,4 @@
+project_name: pfscf
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -27,8 +28,8 @@ archives:
     - goos: windows
       format: zip
   files:
-    - templates/*
-    - CHANGELOG.md
+    - templates/**/*
+    - ../CHANGELOG.md
 checksum:
   name_template: 'checksums.txt'
 snapshot:
