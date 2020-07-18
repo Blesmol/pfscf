@@ -1,4 +1,4 @@
-module github.com/Blesmol/pfscf
+module github.com/Blesmol/pfscf/pfscf
 
 go 1.14
 
