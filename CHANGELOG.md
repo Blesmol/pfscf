@@ -12,6 +12,11 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## [0.7.1] - 2020-07-18
+
+### Changed
+- Changed source code structure on disk and goreleaser config
+
 ## [0.7.0] - 2020-07-16
 
 ### Added
