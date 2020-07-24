@@ -248,3 +248,95 @@ func (ce *ContentEntry) AddMissingValuesFrom(other *ContentEntry) {
 		}
 	}
 }
+
+// AddContent is a generic function to add content to a stamp. It will
+// internally check the content type and call the appropriate subfunction.
+func (ce ContentEntry) AddContent(s *Stamp, value *string) (err error) {
+	err = ce.IsValid()
+	if err == nil {
+		switch ce.Type() {
+		case "textCell":
+			err = ce.addTextCell(s, value)
+		case "societyId":
+			err = ce.addSocietyID(s, value)
+		default:
+			panic("Valid type should have been checked by call to IsValid()")
+		}
+	}
+
+	if err != nil {
+		return fmt.Errorf("Error adding content '%v': %v", ce.ID(), err)
+	}
+	return nil
+}
+
+func (ce ContentEntry) addTextCell(s *Stamp, value *string) (err error) {
+	Assert(ce.Type() == "textCell", "Provided ContentEntry object has wrong type")
+
+	err = ce.IsValid()
+	if err != nil {
+		return err
+	}
+
+	if value == nil {
+		return fmt.Errorf("No input value provided")
+	}
+
+	x, y, w, h := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
+
+	s.AddTextCell(x, y, w, h, ce.Font(), ce.Fontsize(), ce.Align(), *value)
+
+	return nil
+}
+
+func (ce ContentEntry) addSocietyID(s *Stamp, value *string) (err error) {
+	Assert(ce.Type() == "societyId", "Provided ContentEntry object has wrong type")
+
+	err = ce.IsValid()
+	if err != nil {
+		return err
+	}
+
+	if value == nil {
+		return fmt.Errorf("No input value provided")
+	}
+
+	// check that xpivot lies between x1 and x2
+	x, _, w, _ := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
+	if ce.XPivot() <= x || ce.XPivot() >= (x+w) {
+		return fmt.Errorf("xpivot value must lie between x1 and x2: %v < %v < %v", ce.X1(), ce.XPivot(), ce.X2())
+	}
+
+	societyID := regexSocietyID.FindStringSubmatch(*value)
+	if len(societyID) == 0 {
+		return fmt.Errorf("Provided society ID does not follow the pattern '<player_id>-<char_id>': '%v'", *value)
+	}
+	Assert(len(societyID) == 3, "Should contain the matching text plus the capturing groups")
+	playerID := societyID[1]
+	charID := societyID[2]
+
+	// string lenghts may not be measured before a font was set
+	dash := " - "
+	dashWidth := s.GetStringWidth(dash, ce.Font(), "", ce.Fontsize())
+
+	// draw white rectangle for (nearly) whole area to blank out existing dash
+	// this is currently kind of fiddly and hackish... if we blank out the
+	// complete area, then the bottom line may be gone as well, which I do not like...
+	x, y, w, h := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
+	yOffset := 1.0
+	s.DrawRectangle(x, y-yOffset, w, h-yOffset, "F", 255, 255, 255)
+
+	// player id
+	x, y, w, h = getXYWH(ce.X1(), ce.Y1(), ce.XPivot()-(dashWidth/2.0), ce.Y2())
+	s.AddTextCell(x, y, w, h, ce.Font(), ce.Fontsize(), "RB", playerID)
+
+	// dash
+	x, y, w, h = getXYWH(ce.XPivot()-(dashWidth/2), ce.Y1(), ce.XPivot()+(dashWidth/2), ce.Y2())
+	s.AddTextCell(x, y, w, h, ce.Font(), ce.Fontsize(), "CB", dash)
+
+	// char id
+	x, y, w, h = getXYWH(ce.XPivot()+(dashWidth/2.0), ce.Y1(), ce.X2(), ce.Y2())
+	s.AddTextCell(x, y, w, h, ce.Font(), ce.Fontsize(), "LB", charID)
+
+	return nil
+}
