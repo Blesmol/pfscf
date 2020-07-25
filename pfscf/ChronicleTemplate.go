@@ -14,7 +14,7 @@ type ChronicleTemplate struct {
 	inherit     string
 	yFilename   string // filename of the originating yaml file
 	content     map[string]ContentEntry
-	presets     map[string]ContentEntry
+	presets     map[string]PresetEntry
 }
 
 // NewChronicleTemplate converts a YamlFile into a ChronicleTemplate. It returns
@@ -47,9 +47,9 @@ func NewChronicleTemplate(yFilename string, yFile *YamlFile) (ct *ChronicleTempl
 		ct.content[id] = NewContentEntry(id, entry)
 	}
 
-	ct.presets = make(map[string]ContentEntry, len(yFile.Presets))
+	ct.presets = make(map[string]PresetEntry, len(yFile.Presets))
 	for id, entry := range yFile.Presets {
-		ct.presets[id] = NewContentEntry(id, entry)
+		ct.presets[id] = NewPresetEntry(id, entry)
 	}
 
 	return ct, nil
@@ -77,8 +77,8 @@ func (ct *ChronicleTemplate) Filename() string {
 
 // GetPreset returns the preset ContentEntry matching the provided id from
 // the current ChronicleTemplate
-func (ct *ChronicleTemplate) GetPreset(id string) (ce ContentEntry, exists bool) {
-	ce, exists = ct.presets[id]
+func (ct *ChronicleTemplate) GetPreset(id string) (pe PresetEntry, exists bool) {
+	pe, exists = ct.presets[id]
 	return
 }
 
@@ -203,7 +203,7 @@ func (ct *ChronicleTemplate) ResolveContent() (err error) {
 
 		for _, presetID := range ce.Presets() {
 			preset, _ := ct.GetPreset(presetID)
-			ce.AddMissingValuesFrom(&preset)
+			AddMissingValues(preset, &ce.data, "Presets", "ID")
 		}
 
 		ct.content[ce.ID()] = ce
@@ -215,56 +215,57 @@ func (ct *ChronicleTemplate) ResolveContent() (err error) {
 // ResolvePresets resolves inherited values between presets
 func (ct *ChronicleTemplate) ResolvePresets() (err error) {
 	resolved := make(map[string]bool)
-	for _, ce := range ct.presets {
-		if err := ct.resolvePresetsInternal(ce, &resolved); err != nil {
+	for _, pe := range ct.presets {
+		if err := ct.resolvePresetsInternal(pe, &resolved); err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
 // resolvePresetsInternal recursively resolves all presets
-func (ct *ChronicleTemplate) resolvePresetsInternal(ce ContentEntry, resolved *map[string]bool, resolveChain ...string) (err error) {
+func (ct *ChronicleTemplate) resolvePresetsInternal(pe PresetEntry, resolved *map[string]bool, resolveChain ...string) (err error) {
 	// check if already resolved
-	if _, exists := (*resolved)[ce.ID()]; exists {
+	if _, exists := (*resolved)[pe.ID]; exists {
 		return nil
 	}
 
 	// check that we do not have any cyclic dependencies
 	for idx, otherID := range resolveChain {
-		if ce.ID() == otherID {
+		if pe.ID == otherID {
 			outputChain := append(resolveChain[idx:], otherID) // reduce to relevant part, include conflicting ID again
-			return fmt.Errorf("Error resolving preset '%v.%v': Cyclic dependency, chain is %v", ct.ID(), ce.ID(), outputChain)
+			return fmt.Errorf("Error resolving preset '%v.%v': Cyclic dependency, chain is %v", ct.ID(), pe.ID, outputChain)
 		}
 	}
 
 	// ensure that all required presets exist and are already resolved before continuing
-	for _, requiredPresetID := range ce.Presets() {
+	for _, requiredPresetID := range pe.Presets {
 		requiredPreset, exists := ct.GetPreset(requiredPresetID)
 		if !exists {
-			return fmt.Errorf("Error resolving preset '%v.%v': Consumed preset '%v' cannot be found", ct.ID(), ce.ID(), requiredPresetID)
+			return fmt.Errorf("Error resolving preset '%v.%v': Consumed preset '%v' cannot be found", ct.ID(), pe.ID, requiredPresetID)
 		}
 
-		tempResolveChain := append(resolveChain, ce.ID()) // prepare resolveChain for recursive call
+		tempResolveChain := append(resolveChain, pe.ID) // prepare resolveChain for recursive call
 		if err = ct.resolvePresetsInternal(requiredPreset, resolved, tempResolveChain...); err != nil {
 			return err
 		}
 	}
 
 	// check that required presets are not contradicting each other
-	if err = ct.presetsAreNotContradicting(ce.Presets()...); err != nil {
-		return fmt.Errorf("Error resolving preset '%v.%v': %v", ct.ID(), ce.ID(), err)
+	if err = ct.presetsAreNotContradicting(pe.Presets...); err != nil {
+		return fmt.Errorf("Error resolving preset '%v.%v': %v", ct.ID(), pe.ID, err)
 	}
 
 	// now finally include values from presets into current entry
-	for _, requiredPresetID := range ce.Presets() {
+	for _, requiredPresetID := range pe.Presets {
 		requiredPreset, _ := ct.GetPreset(requiredPresetID)
-		ce.AddMissingValuesFrom(&requiredPreset)
+		AddMissingValues(requiredPreset, &pe, "Presets", "ID")
 	}
 
 	// update entry stored in ChronicleTemplate, record that we are ready, and thats it.
-	ct.presets[ce.ID()] = ce
-	(*resolved)[ce.ID()] = true
+	ct.presets[pe.ID] = pe
+	(*resolved)[pe.ID] = true
 
 	return nil
 }

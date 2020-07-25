@@ -2,9 +2,9 @@ id: inheritFromValid
 description: simpleDescription
 presets:
   p0:
-    type: inherited
+    font: inherited
   p1:
-    type: inherited
+    font: inherited
 content:
   c0:
-    type: inherited
+    font: inherited

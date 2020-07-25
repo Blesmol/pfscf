@@ -44,6 +44,36 @@ func NewContentEntry(id string, data ContentData) (ce ContentEntry) {
 	return
 }
 
+// PresetEntry represents an entry in the 'preset' section
+type PresetEntry struct {
+	ID             string // TODO don't export any longer. Would solve other problems as well
+	X1, Y1, X2, Y2 float64
+	XPivot         float64
+	Font           string
+	Fontsize       float64
+	Align          string
+	Presets        []string // TODO also do not export? Not sure...
+}
+
+// NewPresetEntry create a new PresetEntry object.
+// TODO Throw error in case of unused fields from ContentData that are set.
+func NewPresetEntry(id string, data ContentData) (pe PresetEntry) {
+	Assert(IsSet(id), "ID should always be present here")
+	pe = PresetEntry{
+		ID:       id,
+		X1:       data.X1,
+		Y1:       data.Y1,
+		X2:       data.X2,
+		Y2:       data.Y2,
+		XPivot:   data.XPivot,
+		Font:     data.Font,
+		Fontsize: data.Fontsize,
+		Align:    data.Align,
+		Presets:  data.Presets,
+	}
+	return
+}
+
 // ID returns the id of this ContentEntry object
 func (ce *ContentEntry) ID() (result string) {
 	return ce.id
@@ -188,12 +218,12 @@ func (ce *ContentEntry) UsageExample() (result string) {
 }
 
 // IsNotContradictingWith checks if the provided ContentEntry objects are
-// contradicting or not. They are not contradicting all values that are set
+// contradicting or not. They are not contradicting if all values that are set
 // (i.e. contain a non-zero value) within the objects contain the same value.
 // One exception to this is the "Presets" list, which is ignored here.
-func (ce ContentEntry) IsNotContradictingWith(other ContentEntry) (err error) {
-	vLeft := reflect.ValueOf(ce.data)
-	vRight := reflect.ValueOf(other.data)
+func (pe PresetEntry) IsNotContradictingWith(other PresetEntry) (err error) {
+	vLeft := reflect.ValueOf(pe)
+	vRight := reflect.ValueOf(other)
 
 	for i := 0; i < vLeft.NumField(); i++ {
 		fieldLeft := vLeft.Field(i)
@@ -203,7 +233,8 @@ func (ce ContentEntry) IsNotContradictingWith(other ContentEntry) (err error) {
 		// Ignore the Presets field, as differences here are acceptable.
 		// To be on the safe side wrt future changes, check the name instead of checking
 		// whether this field is of kind struct.
-		if fieldName == "Presets" {
+		if contains([]string{"Presets", "ID"}, fieldName) {
+			// TODO move list of fields into separate getter method of PresetEntry?
 			continue
 		}
 
@@ -211,32 +242,51 @@ func (ce ContentEntry) IsNotContradictingWith(other ContentEntry) (err error) {
 			continue
 		}
 		if fieldLeft.Interface() != fieldRight.Interface() {
-			return fmt.Errorf("Contradicting data for field '%v':\n- '%v': %v\n- '%v': %v", fieldName, ce.ID(), fieldLeft.Interface(), other.ID(), fieldRight.Interface())
+			return fmt.Errorf("Contradicting data for field '%v':\n- '%v': %v\n- '%v': %v", fieldName, pe.ID, fieldLeft.Interface(), other.ID, fieldRight.Interface())
 		}
 	}
 
 	return nil
 }
 
-// AddMissingValuesFrom wants to have a documentation
-func (ce *ContentEntry) AddMissingValuesFrom(other *ContentEntry) {
-	// TODO convert arg from ptr to value?
-	vSrc := reflect.ValueOf(other.data)
-	vDst := reflect.ValueOf(&ce.data).Elem() // go over pointer instead of value as we want to modify
+// AddMissingValues copies over values from one object to the other and wants to have
+// some proper documentation.
+// TODO only copy fields that exist in both source and target
+// TODO add arguments to influence behavior? Like "exitOnMissingTargetField"?
+func AddMissingValues(source interface{}, target interface{}, ignoredFields ...string) {
+	Assert(reflect.ValueOf(source).Kind() == reflect.Struct, "Can only process structs as source")
+	Assert(reflect.ValueOf(target).Kind() == reflect.Ptr, "Target argument must be passed by ptr, as we modify it")
+	Assert(reflect.ValueOf(target).Elem().Kind() == reflect.Struct, "Can only process structs as target")
+
+	vSrc := reflect.ValueOf(source)
+	vDst := reflect.ValueOf(target).Elem()
+
+	// Aktuell iteriere ich ueber die Feld-Indices. Das ist sch...lecht.
+	// Bei jedem Feld muss ich im Grunde genommen den Namen besorgen, schauen ob drueben
+	// ein gleichnamiges existiert und mir das besorgen. Und pruefen ob exportiert oder settable.
 
 	for i := 0; i < vDst.NumField(); i++ {
 		fieldDst := vDst.Field(i)
-		fieldSrc := vSrc.Field(i)
-		fieldName := vSrc.Type().Field(i).Name
+		fieldName := vDst.Type().Field(i).Name
 
 		// Ignore the Presets field, as we do not want to take over values for this.
-		if fieldName == "Presets" {
+		if contains(ignoredFields, fieldName) { // especially filter out "Presets" and "ID"
+			continue
+		}
+
+		// take care to skip unexported fields
+		if !fieldDst.CanSet() {
+			continue
+		}
+
+		fieldSrc := vSrc.FieldByName(fieldName)
+
+		// skip target fields that do not exist on source side side
+		if !fieldSrc.IsValid() {
 			continue
 		}
 
 		if fieldDst.IsZero() && !fieldSrc.IsZero() {
-			Assert(fieldDst.CanSet(), fmt.Sprintf("Field with index %v must be settable", i))
-
 			switch fieldDst.Kind() {
 			case reflect.String:
 				fallthrough
@@ -247,6 +297,15 @@ func (ce *ContentEntry) AddMissingValuesFrom(other *ContentEntry) {
 			}
 		}
 	}
+}
+
+func contains(list []string, element string) (result bool) {
+	for _, listElement := range list {
+		if element == listElement {
+			return true
+		}
+	}
+	return false
 }
 
 // AddContent is a generic function to add content to a stamp. It will

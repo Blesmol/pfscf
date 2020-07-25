@@ -128,65 +128,65 @@ func TestContentEntry_IsValid(t *testing.T) {
 
 }
 
-func TestContentEntry_IsNotContradictingWith(t *testing.T) {
+func TestPresetEntry_IsNotContradictingWith(t *testing.T) {
 	var err error
 
 	cdEmpty := ContentData{}
-	ceEmpty := NewContentEntry("idEmpty", cdEmpty)
+	peEmpty := NewPresetEntry("idEmpty", cdEmpty)
 
 	cdAllSet := getContentDataWithDummyData(t, "type")
-	ceAllSet := NewContentEntry("idAllSet", cdAllSet)
+	peAllSet := NewPresetEntry("idAllSet", cdAllSet)
 
 	t.Run("no self-contradiction", func(t *testing.T) {
 		// a given CE with values should not contradict itself
-		err = ceAllSet.IsNotContradictingWith(ceAllSet)
+		err = peAllSet.IsNotContradictingWith(peAllSet)
 		expectNoError(t, err)
 	})
 
 	t.Run("empty contradicts nothing", func(t *testing.T) {
 		// a given CE with no values should contradict nothing
-		err = ceEmpty.IsNotContradictingWith(ceEmpty)
+		err = peEmpty.IsNotContradictingWith(peEmpty)
 		expectNoError(t, err)
-		err = ceAllSet.IsNotContradictingWith(ceEmpty)
+		err = peAllSet.IsNotContradictingWith(peEmpty)
 		expectNoError(t, err)
-		err = ceEmpty.IsNotContradictingWith(ceAllSet)
+		err = peEmpty.IsNotContradictingWith(peAllSet)
 		expectNoError(t, err)
 	})
 
 	t.Run("non-overlapping", func(t *testing.T) {
 		// Have two partly-set objects with non-overlapping content
 		cdLeft := ContentData{X1: 1.0, Desc: "desc"}
-		ceLeft := NewContentEntry("idLeft", cdLeft)
+		peLeft := NewPresetEntry("idLeft", cdLeft)
 		cdRight := ContentData{X2: 2.0, Font: "font"}
-		ceRight := NewContentEntry("idRight", cdRight)
-		err = ceLeft.IsNotContradictingWith(ceRight)
+		peRight := NewPresetEntry("idRight", cdRight)
+		err = peLeft.IsNotContradictingWith(peRight)
 		expectNoError(t, err)
 	})
 
 	t.Run("conflicting string attribute", func(t *testing.T) {
 		cdLeft := getContentDataWithDummyData(t, "type")
 		cdLeft.Font = cdLeft.Font + "foo" // <= conflicting data
-		ceLeft := NewContentEntry("idLeft", cdLeft)
+		peLeft := NewPresetEntry("idLeft", cdLeft)
 		cdRight := getContentDataWithDummyData(t, "type")
-		ceRight := NewContentEntry("idRight", cdRight)
+		peRight := NewPresetEntry("idRight", cdRight)
 
-		err = ceLeft.IsNotContradictingWith(ceRight)
+		err = peLeft.IsNotContradictingWith(peRight)
 		expectError(t, err)
 	})
 
 	t.Run("conflicting float64 attribute", func(t *testing.T) {
 		cdLeft := getContentDataWithDummyData(t, "type")
 		cdLeft.Fontsize = cdLeft.Fontsize + 1.0 // <= conflicting data
-		ceLeft := NewContentEntry("idLeft", cdLeft)
+		peLeft := NewPresetEntry("idLeft", cdLeft)
 		cdRight := getContentDataWithDummyData(t, "type")
-		ceRight := NewContentEntry("idRight", cdRight)
+		peRight := NewPresetEntry("idRight", cdRight)
 
-		err = ceLeft.IsNotContradictingWith(ceRight)
+		err = peLeft.IsNotContradictingWith(peRight)
 		expectError(t, err)
 	})
 }
 
-func TestContentEntry_AddMissingValuesFromOther(t *testing.T) {
+func TestAddMissingValues(t *testing.T) {
 
 	cdEmpty := ContentData{}
 	cdAllSet := getContentDataWithDummyData(t, "type")
@@ -195,15 +195,15 @@ func TestContentEntry_AddMissingValuesFromOther(t *testing.T) {
 		ceSrc := NewContentEntry("idAllSet", cdAllSet)
 		ceDst := NewContentEntry("idEmpty", cdEmpty)
 
-		ceDst.AddMissingValuesFrom(&ceSrc)
+		AddMissingValues(ceSrc.data, &ceDst.data, "Presets", "ID")
 		expectAllExportedSet(t, ceDst)
-
 	})
 
 	t.Run("do not overwrite existing data", func(t *testing.T) {
 		ceSrc := NewContentEntry("src", ContentData{Desc: "srcDesc", Font: "srcFont", X1: 1.0, Y1: 2.0})
 		ceDst := NewContentEntry("dst", ContentData{Desc: "dstDesc", X1: 3.0, X2: 4.0})
-		ceDst.AddMissingValuesFrom(&ceSrc)
+
+		AddMissingValues(ceSrc.data, &ceDst.data, "Presets", "ID")
 
 		expectEqual(t, ceDst.Description(), "dstDesc")
 		expectEqual(t, ceDst.Font(), "srcFont")
@@ -211,6 +211,8 @@ func TestContentEntry_AddMissingValuesFromOther(t *testing.T) {
 		expectEqual(t, ceDst.Y1(), 2.0)
 		expectEqual(t, ceDst.X2(), 4.0)
 	})
+
+	// TODO add tests where some fields do not exist in source structure and others not in target structure
 }
 
 func TestAddContent(t *testing.T) {

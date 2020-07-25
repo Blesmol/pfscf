@@ -2,8 +2,8 @@ id: inheritTo
 description: simpleDescription
 presets:
   p0:
-    type: base
+    font: base
 content:
   c0:
-    type: base
+    font: base
 
