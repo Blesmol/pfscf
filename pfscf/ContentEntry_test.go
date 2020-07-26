@@ -167,7 +167,7 @@ func TestAddContent(t *testing.T) {
 			cd := getTextCellWithDummyData()
 			cd.Type = ""
 			ce := NewContentEntry("myId", cd)
-			err := ce.AddContent(s, &text)
+			err := ce.GenerateOutput(s, &text)
 			expectError(t, err)
 		})
 
@@ -175,7 +175,7 @@ func TestAddContent(t *testing.T) {
 			cd := getTextCellWithDummyData()
 			cd.Type = "unknownType"
 			ce := NewContentEntry("myId", cd)
-			err := ce.AddContent(s, &text)
+			err := ce.GenerateOutput(s, &text)
 			expectError(t, err)
 		})
 
@@ -187,14 +187,14 @@ func TestAddContent(t *testing.T) {
 		t.Run("textCell", func(t *testing.T) {
 			cd := getTextCellWithDummyData()
 			ce := NewContentEntry("myId", cd)
-			err := ce.AddContent(s, &text)
+			err := ce.GenerateOutput(s, &text)
 			expectNoError(t, err)
 		})
 		t.Run("societyId", func(t *testing.T) {
 			societyID := "123456-789"
 			cd := getSocietyIDWithDummyData()
 			ce := NewContentEntry("myId", cd)
-			err := ce.AddContent(s, &societyID)
+			err := ce.GenerateOutput(s, &societyID)
 			expectNoError(t, err)
 		})
 	})

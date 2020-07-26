@@ -6,9 +6,6 @@ import (
 	"strings"
 )
 
-// ContentData is a generic data-holding struct with lots of fields
-// to fit all the supported tpyes of Content
-
 // ContentData is a generic struct with lots of fields to fit all
 // supported types of Content. Each type will only check its required
 // fields. So basically only field "Type" always has to be provided,
@@ -36,6 +33,16 @@ type ContentEntry struct {
 	data ContentData
 }
 
+// ContentInterface is an interface for the content. D'oh!
+type ContentInterface interface {
+	ID() string
+	Describe(verbose bool) (result string)
+	HasExample() bool
+	Example() string
+	Resolve(ps PresetStore) (resolvedCI ContentInterface, err error)
+	GenerateOutput(s *Stamp, value *string) (err error)
+}
+
 // NewContentEntry creates a new ContentEntry object.
 func NewContentEntry(id string, data ContentData) (ce ContentEntry) {
 	Assert(IsSet(id), "ID should always be present here")
@@ -45,7 +52,7 @@ func NewContentEntry(id string, data ContentData) (ce ContentEntry) {
 }
 
 // ID returns the id of this ContentEntry object
-func (ce *ContentEntry) ID() (result string) {
+func (ce ContentEntry) ID() (result string) {
 	return ce.id
 }
 
@@ -99,8 +106,13 @@ func (ce *ContentEntry) Align() (result string) {
 	return ce.data.Align
 }
 
+// HasExample returns whether the current ContentEntry has a value set for the example or not
+func (ce ContentEntry) HasExample() bool {
+	return IsSet(ce.data.Example)
+}
+
 // Example returns the example of this ContentEntry object
-func (ce *ContentEntry) Example() (result string) {
+func (ce ContentEntry) Example() (result string) {
 	return ce.data.Example
 }
 
@@ -153,7 +165,7 @@ func (ce ContentEntry) IsValid() (err error) {
 
 // Describe describes a single ContentEntry object. It returns the
 // description as a multi-line string
-func (ce *ContentEntry) Describe(verbose bool) (result string) {
+func (ce ContentEntry) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	if !verbose {
@@ -246,9 +258,9 @@ func contains(list []string, element string) (result bool) {
 	return false
 }
 
-// AddContent is a generic function to add content to a stamp. It will
+// GenerateOutput is a generic function to add content to a stamp. It will
 // internally check the content type and call the appropriate subfunction.
-func (ce ContentEntry) AddContent(s *Stamp, value *string) (err error) {
+func (ce ContentEntry) GenerateOutput(s *Stamp, value *string) (err error) {
 	err = ce.IsValid()
 	if err == nil {
 		switch ce.Type() {
@@ -336,4 +348,21 @@ func (ce ContentEntry) addSocietyID(s *Stamp, value *string) (err error) {
 	s.AddTextCell(x, y, w, h, ce.Font(), ce.Fontsize(), "LB", charID)
 
 	return nil
+}
+
+// Resolve resolves this ContentEntry using the preset values from the
+// provided PresetStore
+func (ce ContentEntry) Resolve(ps PresetStore) (resolvedCI ContentInterface, err error) {
+	// check that required presets are not contradicting each other
+	if err = ps.PresetsAreNotContradicting(ce.Presets()...); err != nil {
+		err = fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)
+		return
+	}
+
+	for _, presetID := range ce.Presets() {
+		preset, _ := ps.Get(presetID)
+		AddMissingValues(preset, &ce.data, "Presets", "ID")
+	}
+
+	return ce, nil
 }

@@ -188,7 +188,7 @@ func (pdf *Pdf) Fill(argStore ArgStore, ct *ChronicleTemplate, outfile string) (
 			return fmt.Errorf("Found no content with key '%v'", key)
 		}
 
-		err := content.AddContent(stamp, &value) // TODO revert again? would feel more natural...
+		err := content.GenerateOutput(stamp, &value)
 		if err != nil {
 			return err
 		}

@@ -6,7 +6,7 @@ import (
 )
 
 // ContentStore stores the list of ContentEntries for a single ChronicleTemplate
-type ContentStore map[string]ContentEntry
+type ContentStore map[string]ContentInterface
 
 // NewContentStore creates a new ContentStore object with the provided initial capacity
 func NewContentStore(initialCapacity int) (cs ContentStore) {
@@ -26,15 +26,15 @@ func (cs ContentStore) GetIDs(includeAliases bool) (idList []string) {
 }
 
 // Get returns the ContentEntry matching the provided id.
-func (cs ContentStore) Get(id string) (pe ContentEntry, exists bool) {
-	pe, exists = cs[id]
+func (cs ContentStore) Get(id string) (ci ContentInterface, exists bool) {
+	ci, exists = cs[id]
 	return
 }
 
 // Set adds or updates the entry with the specified ID in the ContentStore to
 // the provided ContentEntry
-func (cs *ContentStore) Set(id string, ce ContentEntry) {
-	(*cs)[id] = ce
+func (cs *ContentStore) Set(id string, ci ContentInterface) {
+	(*cs)[id] = ci
 }
 
 // InheritFrom copies over entries from another ContentStore. An error is thrown
@@ -53,19 +53,12 @@ func (cs *ContentStore) InheritFrom(other ContentStore) (err error) {
 
 // Resolve resolves preset requirements for all entries in the ContentStore
 func (cs *ContentStore) Resolve(ps PresetStore) (err error) {
-	for _, ce := range *cs {
-
-		// check that required presets are not contradicting each other
-		if err = ps.PresetsAreNotContradicting(ce.Presets()...); err != nil {
-			return fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)
+	for _, ci := range *cs {
+		resolvedCI, err := ci.Resolve(ps)
+		if err != nil {
+			return err
 		}
-
-		for _, presetID := range ce.Presets() {
-			preset, _ := ps.Get(presetID)
-			AddMissingValues(preset, &ce.data, "Presets", "ID")
-		}
-
-		cs.Set(ce.ID(), ce)
+		cs.Set(ci.ID(), resolvedCI)
 	}
 
 	return nil
