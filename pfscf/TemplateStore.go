@@ -53,13 +53,9 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 
 	// resolve presets and content
 	for _, templateID := range ts.GetTemplateIDs(false) {
-		// TODO test resolving above
-
 		template, _ := ts.GetTemplate(templateID)
-		if err = template.ResolvePresets(); err != nil {
-			return nil, err
-		}
-		if err = template.ResolveContent(); err != nil {
+
+		if err = template.Resolve(); err != nil {
 			return nil, err
 		}
 	}
