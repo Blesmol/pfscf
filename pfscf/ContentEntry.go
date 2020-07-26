@@ -44,36 +44,6 @@ func NewContentEntry(id string, data ContentData) (ce ContentEntry) {
 	return
 }
 
-// PresetEntry represents an entry in the 'preset' section
-type PresetEntry struct {
-	ID             string // TODO don't export any longer. Would solve other problems as well
-	X1, Y1, X2, Y2 float64
-	XPivot         float64
-	Font           string
-	Fontsize       float64
-	Align          string
-	Presets        []string // TODO also do not export? Not sure...
-}
-
-// NewPresetEntry create a new PresetEntry object.
-// TODO Throw error in case of unused fields from ContentData that are set.
-func NewPresetEntry(id string, data ContentData) (pe PresetEntry) {
-	Assert(IsSet(id), "ID should always be present here")
-	pe = PresetEntry{
-		ID:       id,
-		X1:       data.X1,
-		Y1:       data.Y1,
-		X2:       data.X2,
-		Y2:       data.Y2,
-		XPivot:   data.XPivot,
-		Font:     data.Font,
-		Fontsize: data.Fontsize,
-		Align:    data.Align,
-		Presets:  data.Presets,
-	}
-	return
-}
-
 // ID returns the id of this ContentEntry object
 func (ce *ContentEntry) ID() (result string) {
 	return ce.id
@@ -215,38 +185,6 @@ func (ce *ContentEntry) UsageExample() (result string) {
 	default:
 		panic("Unknown ContentEntry type")
 	}
-}
-
-// IsNotContradictingWith checks if the provided ContentEntry objects are
-// contradicting or not. They are not contradicting if all values that are set
-// (i.e. contain a non-zero value) within the objects contain the same value.
-// One exception to this is the "Presets" list, which is ignored here.
-func (pe PresetEntry) IsNotContradictingWith(other PresetEntry) (err error) {
-	vLeft := reflect.ValueOf(pe)
-	vRight := reflect.ValueOf(other)
-
-	for i := 0; i < vLeft.NumField(); i++ {
-		fieldLeft := vLeft.Field(i)
-		fieldRight := vRight.Field(i)
-		fieldName := vLeft.Type().Field(i).Name
-
-		// Ignore the Presets field, as differences here are acceptable.
-		// To be on the safe side wrt future changes, check the name instead of checking
-		// whether this field is of kind struct.
-		if contains([]string{"Presets", "ID"}, fieldName) {
-			// TODO move list of fields into separate getter method of PresetEntry?
-			continue
-		}
-
-		if fieldLeft.IsZero() || fieldRight.IsZero() {
-			continue
-		}
-		if fieldLeft.Interface() != fieldRight.Interface() {
-			return fmt.Errorf("Contradicting data for field '%v':\n- '%v': %v\n- '%v': %v", fieldName, pe.ID, fieldLeft.Interface(), other.ID, fieldRight.Interface())
-		}
-	}
-
-	return nil
 }
 
 // AddMissingValues copies over values from one object to the other and wants to have
