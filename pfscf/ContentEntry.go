@@ -6,204 +6,322 @@ import (
 	"strings"
 )
 
-// ContentData is a generic struct with lots of fields to fit all
-// supported types of Content. Each type will only check its required
-// fields. So basically only field "Type" always has to be provided,
-// everything else depends on the concrete type.
-type ContentData struct {
-	Type     string   // the type which this entry represents
-	Desc     string   // Description of this parameter
-	X1       float64  `yaml:"x"` // first x coordinate
-	Y1       float64  `yaml:"y"` // first y coordinate
-	X2, Y2   float64  // second set of coordinates
-	XPivot   float64  // pivot point on X axis
-	Font     string   // the name of the font (if any) that should be used to display the content
-	Fontsize float64  // size of the font in points
-	Align    string   // Alignment of the content: L/C/R + T/M/B
-	Example  string   // Example value to be displayed to users
-	Presets  []string // List of presets that should be applied on this ContentData / ContentEntry
-	//Flags    *[]string
-}
-
-// ContentEntry wraps a ContentData object and adds some additional data.
-// It also provides a bunch of functions to validate and access the data
-// and to perform operations on it.
-type ContentEntry struct {
-	id   string
-	data ContentData
-}
-
-// ContentInterface is an interface for the content. D'oh!
-type ContentInterface interface {
+// ContentEntry is an interface for the content. D'oh!
+type ContentEntry interface {
 	ID() string
+	Type() string
+	ExampleValue() string
+	UsageExample() string
+	IsValid() (err error)
 	Describe(verbose bool) (result string)
-	HasExample() bool
-	Example() string
-	Resolve(ps PresetStore) (resolvedCI ContentInterface, err error)
+	Resolve(ps PresetStore) (resolvedCI ContentEntry, err error)
 	GenerateOutput(s *Stamp, value *string) (err error)
 }
 
-// NewContentEntry creates a new ContentEntry object.
-func NewContentEntry(id string, data ContentData) (ce ContentEntry) {
-	Assert(IsSet(id), "ID should always be present here")
-	ce.id = id
-	ce.data = data
-	return
-}
-
-// ID returns the id of this ContentEntry object
-func (ce ContentEntry) ID() (result string) {
-	return ce.id
-}
-
-// Type returns the type value this ContentEntry object
-func (ce *ContentEntry) Type() (result string) {
-	return ce.data.Type
-}
-
-// Description returns the description of this ContentEntry object
-func (ce *ContentEntry) Description() (result string) {
-	return ce.data.Desc
-}
-
-// X1 returns the x1 value of this ContentEntry object
-func (ce *ContentEntry) X1() (result float64) {
-	return ce.data.X1
-}
-
-// Y1 returns the y1 value of this ContentEntry object
-func (ce *ContentEntry) Y1() (result float64) {
-	return ce.data.Y1
-}
-
-// X2 returns the x2 value of this ContentEntry object
-func (ce *ContentEntry) X2() (result float64) {
-	return ce.data.X2
-}
-
-// Y2 returns the y2 value of this ContentEntry object
-func (ce *ContentEntry) Y2() (result float64) {
-	return ce.data.Y2
-}
-
-// XPivot returns the xpivot of this ContentEntry object
-func (ce *ContentEntry) XPivot() (result float64) {
-	return ce.data.XPivot
-}
-
-// Font returns the font of this ContentEntry object
-func (ce *ContentEntry) Font() (result string) {
-	return ce.data.Font
-}
-
-// Fontsize returns of this ContentEntry object
-func (ce *ContentEntry) Fontsize() (result float64) {
-	return ce.data.Fontsize
-}
-
-// Align returns the alignment string of this ContentEntry object
-func (ce *ContentEntry) Align() (result string) {
-	return ce.data.Align
-}
-
-// HasExample returns whether the current ContentEntry has a value set for the example or not
-func (ce ContentEntry) HasExample() bool {
-	return IsSet(ce.data.Example)
-}
-
-// Example returns the example of this ContentEntry object
-func (ce ContentEntry) Example() (result string) {
-	return ce.data.Example
-}
-
-// Presets returns the list of presets set for this ContentEntry object
-func (ce *ContentEntry) Presets() (result []string) {
-	return ce.data.Presets
-}
-
-// CheckThatValuesArePresent takes a list of field names from the included ContentData struct and checks
-// that these fields neither point to a nil ptr nor that the values behind the pointers contain the
-// corresponding types zero value.
-func (ce ContentEntry) CheckThatValuesArePresent(names ...string) (err error) {
-	// TODO name all missing entries in error message
-	r := reflect.ValueOf(ce.data)
-
-	for _, fieldName := range names {
-		field := r.FieldByName(fieldName)
-		Assert(field.IsValid(), fmt.Sprintf("ContentData does not contain a field with name '%v'", fieldName))
-
-		if !IsSet(field.Interface()) {
-			return fmt.Errorf("ContentEntry '%v' does not contain a value for field '%v'", ce.ID(), fieldName)
-		}
+// NewContentEntry creates a new content entry object for the provided ContentData object.
+func NewContentEntry(id string, data ContentData) (ce ContentEntry, err error) {
+	switch data.Type {
+	case "textCell":
+		return NewContentTextCell(id, data)
+	case "societyId":
+		return NewContentSocietyID(id, data)
+	case "":
+		return nil, fmt.Errorf("No content type provided")
+	default:
+		return nil, fmt.Errorf("Unknown content type: '%v'", data.Type)
 	}
-	return nil
 }
 
-// IsValid checks whether a ContentEntry object is valid. This means that it
-// must contain type information, and depending on the type information
-// a certain set of other fields must be set.
-func (ce ContentEntry) IsValid() (err error) {
-	// Type must be checked first, as we decide by that value on which fields to check
-	err = ce.CheckThatValuesArePresent("Type")
+// ---------------------------------------------------------------------------------
 
-	if err == nil {
-		switch ce.Type() {
-		case "textCell":
-			err = ce.CheckThatValuesArePresent("X1", "Y1", "X2", "Y2", "Font", "Fontsize", "Align")
-		case "societyId":
-			err = ce.CheckThatValuesArePresent("X1", "Y1", "X2", "Y2", "XPivot", "Font", "Fontsize")
-		default:
-			err = fmt.Errorf("Content has unknown type '%v'", ce.Type())
-		}
-	}
+// ContentTextCell is the final type to implement textCells.
+// TODO switch to pointers to distinguish between unset values and zero values?
+type ContentTextCell struct {
+	id           string
+	description  string
+	exampleValue string
+	presets      []string
 
-	if err != nil {
-		return fmt.Errorf("Error validating content '%v': %v", ce.ID(), err)
-	}
-	return nil
+	X1, Y1   float64
+	X2, Y2   float64
+	Font     string
+	Fontsize float64
+	Align    string
 }
 
-// Describe describes a single ContentEntry object. It returns the
-// description as a multi-line string
-func (ce ContentEntry) Describe(verbose bool) (result string) {
+// NewContentTextCell will return a content object that represents a text cell
+func NewContentTextCell(id string, data ContentData) (tc ContentTextCell, err error) {
+	// TODO return error for values that are set here besides the required ones
+
+	tc.id = id
+	tc.description = data.Desc
+	tc.exampleValue = data.Example
+	tc.presets = data.Presets
+
+	tc.X1 = data.X1
+	tc.Y1 = data.Y1
+	tc.X2 = data.X2
+	tc.Y2 = data.Y2
+	tc.Font = data.Font
+	tc.Fontsize = data.Fontsize
+	tc.Align = data.Align
+
+	return tc, nil
+}
+
+// ID returns the content objects ID
+func (tc ContentTextCell) ID() (id string) {
+	return tc.id
+}
+
+// Type returns the (hardcoded) type for this type of content
+func (tc ContentTextCell) Type() (contentType string) {
+	return "textCell"
+}
+
+// ExampleValue returns the example value provided for this content object. If
+// no example was provided, an empty string is returned.
+func (tc ContentTextCell) ExampleValue() (exampleValue string) {
+	return tc.exampleValue
+}
+
+// UsageExample retuns an example call on how this content can be invoked
+// from the command line.
+func (tc ContentTextCell) UsageExample() (result string) {
+	return genericContentUsageExample(tc.id, tc.exampleValue)
+}
+
+// IsValid checks whether the current content object is valid and returns an
+// error with details if the object is not valid.
+func (tc ContentTextCell) IsValid() (err error) {
+	// TODO return error for negative numbers
+	// TODO after switching to percent: Return errors for values x < 0 || x > 100
+	// TODO switch to not checking all fields for being set, as values of 0 might be valid as well
+	return CheckThatAllExportedFieldsAreSet(tc)
+}
+
+// Describe returns a textual description of the current content object
+func (tc ContentTextCell) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
-	if !verbose {
-		fmt.Fprintf(&sb, "- %v", ce.ID())
-		if IsSet(ce.Description()) {
-			fmt.Fprintf(&sb, ": %v", ce.Description())
-		}
+	var description string
+	if IsSet(tc.description) {
+		description = tc.description
 	} else {
-		fmt.Fprintf(&sb, "- %v\n", ce.ID())
-		fmt.Fprintf(&sb, "\tDesc: %v\n", ce.Description())
-		fmt.Fprintf(&sb, "\tType: %v\n", ce.Type())
-		fmt.Fprintf(&sb, "\tExample: %v", ce.UsageExample())
+		description = "No description available"
+	}
+
+	if !verbose {
+		fmt.Fprintf(&sb, "- %v: %v", tc.id, description)
+	} else {
+		fmt.Fprintf(&sb, "- %v\n", tc.id)
+		fmt.Fprintf(&sb, "\tDesc: %v\n", description)
+		fmt.Fprintf(&sb, "\tType: %v\n", tc.Type())
+		fmt.Fprintf(&sb, "\tExample: %v", tc.UsageExample())
 	}
 
 	return sb.String()
 }
 
-// UsageExample returns an example call for the current ContentEntry object.
-// If this is not possible, e.g because no example value is included or
-// this is in general not possible for the given type, then a string
-// containing "Not available" is returned instead.
-func (ce *ContentEntry) UsageExample() (result string) {
-	switch ce.Type() {
-	case "textCell", "societyId":
-		if !IsSet(ce.Example) {
-			return fmt.Sprintf("Not available")
-		}
-		return fmt.Sprintf("%v=%v", ce.id, QuoteStringIfRequired(ce.Example()))
-	default:
-		panic("Unknown ContentEntry type")
+// Resolve the presets for this content object.
+func (tc ContentTextCell) Resolve(ps PresetStore) (resolvedCI ContentEntry, err error) {
+	// check that required presets are not contradicting each other
+	if err = ps.PresetsAreNotContradicting(tc.presets...); err != nil {
+		err = fmt.Errorf("Error resolving content '%v': %v", tc.ID(), err)
+		return
 	}
+
+	for _, presetID := range tc.presets {
+		preset, _ := ps.Get(presetID)
+		AddMissingValues(&tc, preset)
+	}
+
+	return tc, nil
 }
 
-// AddMissingValues copies over values from one object to the other and wants to have
-// some proper documentation.
-// TODO only copy fields that exist in both source and target
-// TODO add arguments to influence behavior? Like "exitOnMissingTargetField"?
-func AddMissingValues(source interface{}, target interface{}, ignoredFields ...string) {
+// GenerateOutput generates the output for this textCell object.
+func (tc ContentTextCell) GenerateOutput(s *Stamp, value *string) (err error) {
+	err = tc.IsValid()
+	if err != nil {
+		return err
+	}
+
+	if value == nil {
+		return fmt.Errorf("No input value provided")
+	}
+
+	x, y, w, h := getXYWH(tc.X1, tc.Y1, tc.X2, tc.Y2)
+
+	s.AddTextCell(x, y, w, h, tc.Font, tc.Fontsize, tc.Align, *value)
+
+	return nil
+}
+
+// ---------------------------------------------------------------------------------
+
+// ContentSocietyID is the final type to implement societyIDs.
+type ContentSocietyID struct {
+	id           string
+	description  string
+	exampleValue string
+	presets      []string
+
+	X1, Y1   float64
+	X2, Y2   float64
+	XPivot   float64
+	Font     string
+	Fontsize float64
+}
+
+// NewContentSocietyID will return a content object that represents a society ID
+func NewContentSocietyID(id string, data ContentData) (si ContentSocietyID, err error) {
+	si.id = id
+	si.description = data.Desc
+	si.exampleValue = data.Example
+	si.presets = data.Presets
+
+	si.X1 = data.X1
+	si.Y1 = data.Y1
+	si.X2 = data.X2
+	si.Y2 = data.Y2
+	si.XPivot = data.XPivot
+	si.Font = data.Font
+	si.Fontsize = data.Fontsize
+
+	return si, nil
+}
+
+// ID returns the content objects ID
+func (si ContentSocietyID) ID() (id string) {
+	return si.id
+}
+
+// Type returns the (hardcoded) type for this type of content
+func (si ContentSocietyID) Type() (contentType string) {
+	return "societyId"
+}
+
+// ExampleValue returns the example value provided for this content object. If
+// no example was provided, an empty string is returned.
+func (si ContentSocietyID) ExampleValue() (exampleValue string) {
+	return si.exampleValue
+}
+
+// UsageExample retuns an example call on how this content can be invoked
+// from the command line.
+func (si ContentSocietyID) UsageExample() (result string) {
+	return genericContentUsageExample(si.id, si.exampleValue)
+}
+
+// IsValid checks whether the current content object is valid and returns an
+// error with details if the object is not valid.
+func (si ContentSocietyID) IsValid() (err error) {
+	if err = CheckThatAllExportedFieldsAreSet(si); err != nil {
+		return err
+	}
+
+	x, _, w, _ := getXYWH(si.X1, si.Y1, si.X2, si.Y2)
+	if si.XPivot <= x || si.XPivot >= (x+w) {
+		return fmt.Errorf("xpivot value must lie between x1 and x2: %v < %v < %v", si.X1, si.XPivot, si.X2)
+	}
+
+	return nil
+}
+
+// Describe returns a textual description of the current content object
+func (si ContentSocietyID) Describe(verbose bool) (result string) {
+	var sb strings.Builder
+
+	var description string
+	if IsSet(si.description) {
+		description = si.description
+	} else {
+		description = "No description available"
+	}
+
+	if !verbose {
+		fmt.Fprintf(&sb, "- %v: %v", si.id, description)
+	} else {
+		fmt.Fprintf(&sb, "- %v\n", si.id)
+		fmt.Fprintf(&sb, "\tDesc: %v\n", description)
+		fmt.Fprintf(&sb, "\tType: %v\n", si.Type())
+		fmt.Fprintf(&sb, "\tExample: %v", si.UsageExample())
+	}
+
+	return sb.String()
+}
+
+// Resolve the presets for this content object.
+func (si ContentSocietyID) Resolve(ps PresetStore) (resolvedCI ContentEntry, err error) {
+	// check that required presets are not contradicting each other
+	if err = ps.PresetsAreNotContradicting(si.presets...); err != nil {
+		err = fmt.Errorf("Error resolving content '%v': %v", si.ID(), err)
+		return
+	}
+
+	for _, presetID := range si.presets {
+		preset, _ := ps.Get(presetID)
+		AddMissingValues(&si, preset)
+	}
+
+	return si, nil
+}
+
+// GenerateOutput generates the output for this textCell object.
+func (si ContentSocietyID) GenerateOutput(s *Stamp, value *string) (err error) {
+	err = si.IsValid()
+	if err != nil {
+		return err
+	}
+
+	if value == nil {
+		return fmt.Errorf("No input value provided")
+	}
+
+	// check that xpivot lies between x1 and x2
+	x, _, w, _ := getXYWH(si.X1, si.Y1, si.X2, si.Y2)
+
+	societyID := regexSocietyID.FindStringSubmatch(*value)
+	if len(societyID) == 0 {
+		return fmt.Errorf("Provided society ID does not follow the pattern '<player_id>-<char_id>': '%v'", *value)
+	}
+	Assert(len(societyID) == 3, "Should contain the matching text plus the capturing groups")
+	playerID := societyID[1]
+	charID := societyID[2]
+
+	// string lenghts may not be measured before a font was set
+	dash := " - "
+	dashWidth := s.GetStringWidth(dash, si.Font, "", si.Fontsize)
+
+	// draw white rectangle for (nearly) whole area to blank out existing dash
+	// this is currently kind of fiddly and hackish... if we blank out the
+	// complete area, then the bottom line may be gone as well, which I do not like...
+	x, y, w, h := getXYWH(si.X1, si.Y1, si.X2, si.Y2)
+	yOffset := 1.0
+	s.DrawRectangle(x, y-yOffset, w, h-yOffset, "F", 255, 255, 255)
+
+	// player id
+	x, y, w, h = getXYWH(si.X1, si.Y1, si.XPivot-(dashWidth/2.0), si.Y2)
+	s.AddTextCell(x, y, w, h, si.Font, si.Fontsize, "RB", playerID)
+
+	// dash
+	x, y, w, h = getXYWH(si.XPivot-(dashWidth/2), si.Y1, si.XPivot+(dashWidth/2), si.Y2)
+	s.AddTextCell(x, y, w, h, si.Font, si.Fontsize, "CB", dash)
+
+	// char id
+	x, y, w, h = getXYWH(si.XPivot+(dashWidth/2.0), si.Y1, si.X2, si.Y2)
+	s.AddTextCell(x, y, w, h, si.Font, si.Fontsize, "LB", charID)
+
+	return nil
+}
+
+// ---------------------------------------------------------------------------------
+
+// AddMissingValues iterates over the exported fields of the source object. For each
+// such fields it checks whether the target object contains a field with the same
+// name. If that is the case and if the target field does not yet have a value set,
+// then the value from the source object is copied over.
+func AddMissingValues(target interface{}, source interface{}, ignoredFields ...string) {
 	Assert(reflect.ValueOf(source).Kind() == reflect.Struct, "Can only process structs as source")
 	Assert(reflect.ValueOf(target).Kind() == reflect.Ptr, "Target argument must be passed by ptr, as we modify it")
 	Assert(reflect.ValueOf(target).Elem().Kind() == reflect.Struct, "Can only process structs as target")
@@ -211,16 +329,12 @@ func AddMissingValues(source interface{}, target interface{}, ignoredFields ...s
 	vSrc := reflect.ValueOf(source)
 	vDst := reflect.ValueOf(target).Elem()
 
-	// Aktuell iteriere ich ueber die Feld-Indices. Das ist sch...lecht.
-	// Bei jedem Feld muss ich im Grunde genommen den Namen besorgen, schauen ob drueben
-	// ein gleichnamiges existiert und mir das besorgen. Und pruefen ob exportiert oder settable.
-
 	for i := 0; i < vDst.NumField(); i++ {
 		fieldDst := vDst.Field(i)
 		fieldName := vDst.Type().Field(i).Name
 
 		// Ignore the Presets field, as we do not want to take over values for this.
-		if contains(ignoredFields, fieldName) { // especially filter out "Presets" and "ID"
+		if Contains(ignoredFields, fieldName) { // especially filter out "Presets" and "ID"
 			continue
 		}
 
@@ -243,126 +357,46 @@ func AddMissingValues(source interface{}, target interface{}, ignoredFields ...s
 			case reflect.Float64:
 				fieldDst.Set(fieldSrc)
 			default:
-				panic(fmt.Sprintf("Unsupported struct type '%v', update function 'AddMissingValuesFrom()'", fieldDst.Kind()))
+				panic(fmt.Sprintf("Unsupported datat type '%v' in struct, update function 'AddMissingValuesFrom()'", fieldDst.Kind()))
 			}
 		}
 	}
 }
 
-func contains(list []string, element string) (result bool) {
-	for _, listElement := range list {
-		if element == listElement {
-			return true
-		}
-	}
-	return false
-}
+// CheckThatAllExportedFieldsAreSet returns an error if at least one exported field
+// in the passed structure is not set.
+func CheckThatAllExportedFieldsAreSet(obj interface{}) (err error) {
+	oVal := reflect.ValueOf(obj)
+	Assert(oVal.Kind() == reflect.Struct, "Can only work on structs")
 
-// GenerateOutput is a generic function to add content to a stamp. It will
-// internally check the content type and call the appropriate subfunction.
-func (ce ContentEntry) GenerateOutput(s *Stamp, value *string) (err error) {
-	err = ce.IsValid()
-	if err == nil {
-		switch ce.Type() {
-		case "textCell":
-			err = ce.addTextCell(s, value)
-		case "societyId":
-			err = ce.addSocietyID(s, value)
-		default:
-			panic("Valid type should have been checked by call to IsValid()")
+	unsetFields := make([]string, 0)
+	for idx := 0; idx < oVal.NumField(); idx++ {
+		fieldVal := oVal.Field(idx)
+
+		// skip unexported fields
+		if !IsExported(fieldVal) {
+			continue
+		}
+
+		if !IsSet(fieldVal.Interface()) {
+			fieldName := reflect.TypeOf(obj).Field(idx).Name
+			unsetFields = append(unsetFields, fieldName)
 		}
 	}
 
-	if err != nil {
-		return fmt.Errorf("Error adding content '%v': %v", ce.ID(), err)
+	if len(unsetFields) > 0 {
+		return fmt.Errorf("Missing value for the following fields: %v", unsetFields)
 	}
-	return nil
-}
-
-func (ce ContentEntry) addTextCell(s *Stamp, value *string) (err error) {
-	Assert(ce.Type() == "textCell", "Provided ContentEntry object has wrong type")
-
-	err = ce.IsValid()
-	if err != nil {
-		return err
-	}
-
-	if value == nil {
-		return fmt.Errorf("No input value provided")
-	}
-
-	x, y, w, h := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
-
-	s.AddTextCell(x, y, w, h, ce.Font(), ce.Fontsize(), ce.Align(), *value)
 
 	return nil
 }
 
-func (ce ContentEntry) addSocietyID(s *Stamp, value *string) (err error) {
-	Assert(ce.Type() == "societyId", "Provided ContentEntry object has wrong type")
-
-	err = ce.IsValid()
-	if err != nil {
-		return err
+// genericContentUsageExample returns an example call for the current provided
+// values. If no example value was provided, then a string containing
+// "Not available" is returned instead.
+func genericContentUsageExample(id, exampleValue string) (result string) {
+	if !IsSet(exampleValue) {
+		return fmt.Sprintf("Not available")
 	}
-
-	if value == nil {
-		return fmt.Errorf("No input value provided")
-	}
-
-	// check that xpivot lies between x1 and x2
-	x, _, w, _ := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
-	if ce.XPivot() <= x || ce.XPivot() >= (x+w) {
-		return fmt.Errorf("xpivot value must lie between x1 and x2: %v < %v < %v", ce.X1(), ce.XPivot(), ce.X2())
-	}
-
-	societyID := regexSocietyID.FindStringSubmatch(*value)
-	if len(societyID) == 0 {
-		return fmt.Errorf("Provided society ID does not follow the pattern '<player_id>-<char_id>': '%v'", *value)
-	}
-	Assert(len(societyID) == 3, "Should contain the matching text plus the capturing groups")
-	playerID := societyID[1]
-	charID := societyID[2]
-
-	// string lenghts may not be measured before a font was set
-	dash := " - "
-	dashWidth := s.GetStringWidth(dash, ce.Font(), "", ce.Fontsize())
-
-	// draw white rectangle for (nearly) whole area to blank out existing dash
-	// this is currently kind of fiddly and hackish... if we blank out the
-	// complete area, then the bottom line may be gone as well, which I do not like...
-	x, y, w, h := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
-	yOffset := 1.0
-	s.DrawRectangle(x, y-yOffset, w, h-yOffset, "F", 255, 255, 255)
-
-	// player id
-	x, y, w, h = getXYWH(ce.X1(), ce.Y1(), ce.XPivot()-(dashWidth/2.0), ce.Y2())
-	s.AddTextCell(x, y, w, h, ce.Font(), ce.Fontsize(), "RB", playerID)
-
-	// dash
-	x, y, w, h = getXYWH(ce.XPivot()-(dashWidth/2), ce.Y1(), ce.XPivot()+(dashWidth/2), ce.Y2())
-	s.AddTextCell(x, y, w, h, ce.Font(), ce.Fontsize(), "CB", dash)
-
-	// char id
-	x, y, w, h = getXYWH(ce.XPivot()+(dashWidth/2.0), ce.Y1(), ce.X2(), ce.Y2())
-	s.AddTextCell(x, y, w, h, ce.Font(), ce.Fontsize(), "LB", charID)
-
-	return nil
-}
-
-// Resolve resolves this ContentEntry using the preset values from the
-// provided PresetStore
-func (ce ContentEntry) Resolve(ps PresetStore) (resolvedCI ContentInterface, err error) {
-	// check that required presets are not contradicting each other
-	if err = ps.PresetsAreNotContradicting(ce.Presets()...); err != nil {
-		err = fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)
-		return
-	}
-
-	for _, presetID := range ce.Presets() {
-		preset, _ := ps.Get(presetID)
-		AddMissingValues(preset, &ce.data, "Presets", "ID")
-	}
-
-	return ce, nil
+	return fmt.Sprintf("%v=%v", id, QuoteStringIfRequired(exampleValue))
 }

@@ -6,7 +6,7 @@ import (
 )
 
 // ContentStore stores the list of ContentEntries for a single ChronicleTemplate
-type ContentStore map[string]ContentInterface
+type ContentStore map[string]ContentEntry
 
 // NewContentStore creates a new ContentStore object with the provided initial capacity
 func NewContentStore(initialCapacity int) (cs ContentStore) {
@@ -26,15 +26,15 @@ func (cs ContentStore) GetIDs(includeAliases bool) (idList []string) {
 }
 
 // Get returns the ContentEntry matching the provided id.
-func (cs ContentStore) Get(id string) (ci ContentInterface, exists bool) {
-	ci, exists = cs[id]
+func (cs ContentStore) Get(id string) (ce ContentEntry, exists bool) {
+	ce, exists = cs[id]
 	return
 }
 
 // Set adds or updates the entry with the specified ID in the ContentStore to
 // the provided ContentEntry
-func (cs *ContentStore) Set(id string, ci ContentInterface) {
-	(*cs)[id] = ci
+func (cs *ContentStore) Set(id string, ce ContentEntry) {
+	(*cs)[id] = ce
 }
 
 // InheritFrom copies over entries from another ContentStore. An error is thrown

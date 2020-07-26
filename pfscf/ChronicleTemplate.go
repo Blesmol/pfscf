@@ -43,7 +43,10 @@ func NewChronicleTemplate(yFilename string, yFile *YamlFile) (ct *ChronicleTempl
 
 	ct.content = NewContentStore(len(yFile.Content))
 	for id, entry := range yFile.Content {
-		ct.content[id] = NewContentEntry(id, entry)
+		ct.content[id], err = NewContentEntry(id, entry)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	ct.presets = NewPresetStore(len(yFile.Presets))
@@ -89,7 +92,7 @@ func (ct ChronicleTemplate) GetPresetIDs() (idList []string) {
 
 // GetContent returns the ContentEntry object matching the provided id
 // from the current ChronicleTemplate
-func (ct ChronicleTemplate) GetContent(id string) (ci ContentInterface, exists bool) {
+func (ct ChronicleTemplate) GetContent(id string) (ci ContentEntry, exists bool) {
 	return ct.content.Get(id)
 }
 

@@ -23,6 +23,25 @@ type YamlFile struct {
 	Content     map[string]ContentData // The Content.
 }
 
+// ContentData is a generic struct with lots of fields to fit all
+// supported types of Content. Each type will only check its required
+// fields. So basically only field "Type" always has to be provided,
+// everything else depends on the concrete type.
+type ContentData struct {
+	Type     string   // the type which this entry represents
+	Desc     string   // Description of this parameter
+	X1       float64  `yaml:"x"` // first x coordinate
+	Y1       float64  `yaml:"y"` // first y coordinate
+	X2, Y2   float64  // second set of coordinates
+	XPivot   float64  // pivot point on X axis
+	Font     string   // the name of the font (if any) that should be used to display the content
+	Fontsize float64  // size of the font in points
+	Align    string   // Alignment of the content: L/C/R + T/M/B
+	Example  string   // Example value to be displayed to users
+	Presets  []string // List of presets that should be applied on this ContentData / ContentEntry
+	//Flags    *[]string
+}
+
 // GetYamlFile reads the yaml file from the provided location.
 func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 	yFile = new(YamlFile)

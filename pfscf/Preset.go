@@ -7,13 +7,15 @@ import (
 
 // PresetEntry represents an entry in the 'preset' section
 type PresetEntry struct {
-	ID             string // TODO don't export any longer. Would solve other problems as well
-	X1, Y1, X2, Y2 float64
-	XPivot         float64
-	Font           string
-	Fontsize       float64
-	Align          string
-	Presets        []string // TODO also do not export? Not sure...
+	id      string
+	presets []string
+
+	X1, Y1   float64
+	X2, Y2   float64
+	XPivot   float64
+	Font     string
+	Fontsize float64
+	Align    string
 }
 
 // NewPresetEntry create a new PresetEntry object.
@@ -21,7 +23,9 @@ type PresetEntry struct {
 func NewPresetEntry(id string, data ContentData) (pe PresetEntry) {
 	Assert(IsSet(id), "ID should always be present here")
 	pe = PresetEntry{
-		ID:       id,
+		id:      id,
+		presets: data.Presets,
+
 		X1:       data.X1,
 		Y1:       data.Y1,
 		X2:       data.X2,
@@ -30,7 +34,6 @@ func NewPresetEntry(id string, data ContentData) (pe PresetEntry) {
 		Font:     data.Font,
 		Fontsize: data.Fontsize,
 		Align:    data.Align,
-		Presets:  data.Presets,
 	}
 	return
 }
@@ -48,19 +51,15 @@ func (pe PresetEntry) IsNotContradictingWith(other PresetEntry) (err error) {
 		fieldRight := vRight.Field(i)
 		fieldName := vLeft.Type().Field(i).Name
 
-		// Ignore the Presets field, as differences here are acceptable.
-		// To be on the safe side wrt future changes, check the name instead of checking
-		// whether this field is of kind struct.
-		if contains([]string{"Presets", "ID"}, fieldName) {
-			// TODO move list of fields into separate getter method of PresetEntry?
-			continue
+		if !IsExported(fieldLeft) {
+			continue // skip non-exported fields
 		}
 
 		if fieldLeft.IsZero() || fieldRight.IsZero() {
 			continue
 		}
 		if fieldLeft.Interface() != fieldRight.Interface() {
-			return fmt.Errorf("Contradicting data for field '%v':\n- '%v': %v\n- '%v': %v", fieldName, pe.ID, fieldLeft.Interface(), other.ID, fieldRight.Interface())
+			return fmt.Errorf("Contradicting data for field '%v':\n- '%v': %v\n- '%v': %v", fieldName, pe.id, fieldLeft.Interface(), other.id, fieldRight.Interface())
 		}
 	}
 

@@ -7,4 +7,5 @@ presets:
     font: inherited
 content:
   c1:
+    type: textCell
     font: inherited

@@ -102,17 +102,15 @@ func TestNewChronicleTemplate(t *testing.T) {
 
 			// content
 			expectEqual(t, len(ct.content), 3)
-			ci0, exists := ct.GetContent("c0")
+			ce0, exists := ct.GetContent("c0")
 			expectTrue(t, exists)
-			ce0 := ci0.(ContentEntry)
-			expectEqual(t, ce0.Type(), "someType")
-			expectEqual(t, ce0.X1(), 1.0)
+			expectEqual(t, ce0.Type(), "textCell")
+			expectEqual(t, ce0.ExampleValue(), "c0example")
 
-			ci1, exists := ct.GetContent("c1")
+			ce1, exists := ct.GetContent("c1")
 			expectTrue(t, exists)
-			ce1 := ci1.(ContentEntry)
-			expectEqual(t, ce1.Type(), "someType")
-			expectEqual(t, ce1.X1(), 2.0)
+			expectEqual(t, ce1.Type(), "societyId")
+			expectEqual(t, ce1.ExampleValue(), "c1example")
 			_, exists = ct.GetContent("p0")
 			expectFalse(t, exists)
 
@@ -175,14 +173,14 @@ func TestInheritFrom(t *testing.T) {
 		expectEqual(t, p1.Font, "inherited")
 
 		expectEqual(t, len(ctTo.GetContentIDs(false)), 2)
-		ci0, exists := ctTo.GetContent("c0")
+		ce0, exists := ctTo.GetContent("c0")
 		expectTrue(t, exists)
-		ce0 := ci0.(ContentEntry)
-		expectEqual(t, ce0.Font(), "base")
-		ci1, exists := ctTo.GetContent("c1")
+		tc0 := ce0.(ContentTextCell)
+		expectEqual(t, tc0.Font, "base")
+		ce1, exists := ctTo.GetContent("c1")
 		expectTrue(t, exists)
-		ce1 := ci1.(ContentEntry)
-		expectEqual(t, ce1.Font(), "inherited")
+		tc1 := ce1.(ContentTextCell)
+		expectEqual(t, tc1.Font, "inherited")
 	})
 
 	t.Run("inherit from duplicate content", func(t *testing.T) {

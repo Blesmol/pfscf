@@ -26,32 +26,32 @@ func TestPresetStore_PresetsAreNotContradicting(t *testing.T) {
 		t.Run("empty list", func(t *testing.T) {
 			p1, exists := ct.GetPreset("p1")
 			expectTrue(t, exists)
-			expectEqual(t, len(p1.Presets), 0) // empty list
-			err := ct.presets.PresetsAreNotContradicting(p1.Presets...)
+			expectEqual(t, len(p1.presets), 0) // empty list
+			err := ct.presets.PresetsAreNotContradicting(p1.presets...)
 			expectNoError(t, err)
 		})
 
 		t.Run("list with one element", func(t *testing.T) {
 			p2, exists := ct.GetPreset("p2")
 			expectTrue(t, exists)
-			expectEqual(t, len(p2.Presets), 1)
-			err := ct.presets.PresetsAreNotContradicting(p2.Presets...)
+			expectEqual(t, len(p2.presets), 1)
+			err := ct.presets.PresetsAreNotContradicting(p2.presets...)
 			expectNoError(t, err)
 		})
 
 		t.Run("list with more elements", func(t *testing.T) {
 			p4, exists := ct.GetPreset("p4")
 			expectTrue(t, exists)
-			expectTrue(t, len(p4.Presets) > 1)
-			err := ct.presets.PresetsAreNotContradicting(p4.Presets...)
+			expectTrue(t, len(p4.presets) > 1)
+			err := ct.presets.PresetsAreNotContradicting(p4.presets...)
 			expectNoError(t, err)
 		})
 
 		t.Run("list with duplicate elements", func(t *testing.T) {
 			p5, exists := ct.GetPreset("p5")
 			expectTrue(t, exists)
-			expectTrue(t, len(p5.Presets) > 1)
-			err := ct.presets.PresetsAreNotContradicting(p5.Presets...)
+			expectTrue(t, len(p5.presets) > 1)
+			err := ct.presets.PresetsAreNotContradicting(p5.presets...)
 			expectNoError(t, err)
 		})
 	})

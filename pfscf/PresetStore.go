@@ -31,6 +31,7 @@ func (ps PresetStore) Get(id string) (pe PresetEntry, exists bool) {
 
 // Set adds or updates the entry with the specified ID in the PresetStore to
 // the provided PresetEntry
+// TODO the PresetEntry already contains an id... why not simply take this from there?
 func (ps *PresetStore) Set(id string, pe PresetEntry) {
 	(*ps)[id] = pe
 }
@@ -100,45 +101,45 @@ func (ps *PresetStore) Resolve() (err error) {
 // resolveInternal recursively resolves all presets
 func (ps *PresetStore) resolveInternal(pe PresetEntry, resolved *map[string]bool, resolveChain ...string) (err error) {
 	// check if already resolved
-	if _, exists := (*resolved)[pe.ID]; exists {
+	if _, exists := (*resolved)[pe.id]; exists {
 		return nil
 	}
 
 	// check that we do not have any cyclic dependencies
 	for idx, otherID := range resolveChain {
-		if pe.ID == otherID {
+		if pe.id == otherID {
 			outputChain := append(resolveChain[idx:], otherID) // reduce to relevant part, include conflicting ID again
-			return fmt.Errorf("Error resolving preset '%v': Cyclic dependency, chain is %v", pe.ID, outputChain)
+			return fmt.Errorf("Error resolving preset '%v': Cyclic dependency, chain is %v", pe.id, outputChain)
 		}
 	}
 
 	// ensure that all required presets exist and are already resolved before continuing
-	for _, requiredPresetID := range pe.Presets {
+	for _, requiredPresetID := range pe.presets {
 		requiredPreset, exists := ps.Get(requiredPresetID)
 		if !exists {
-			return fmt.Errorf("Error resolving preset '%v': Consumed preset '%v' cannot be found", pe.ID, requiredPresetID)
+			return fmt.Errorf("Error resolving preset '%v': Consumed preset '%v' cannot be found", pe.id, requiredPresetID)
 		}
 
-		tempResolveChain := append(resolveChain, pe.ID) // prepare resolveChain for recursive call
+		tempResolveChain := append(resolveChain, pe.id) // prepare resolveChain for recursive call
 		if err = ps.resolveInternal(requiredPreset, resolved, tempResolveChain...); err != nil {
 			return err
 		}
 	}
 
 	// check that required presets are not contradicting each other
-	if err = ps.PresetsAreNotContradicting(pe.Presets...); err != nil {
-		return fmt.Errorf("Error resolving preset '%v': %v", pe.ID, err)
+	if err = ps.PresetsAreNotContradicting(pe.presets...); err != nil {
+		return fmt.Errorf("Error resolving preset '%v': %v", pe.id, err)
 	}
 
 	// now finally include values from presets into current entry
-	for _, requiredPresetID := range pe.Presets {
+	for _, requiredPresetID := range pe.presets {
 		requiredPreset, _ := ps.Get(requiredPresetID)
-		AddMissingValues(requiredPreset, &pe, "Presets", "ID")
+		AddMissingValues(&pe, requiredPreset)
 	}
 
 	// update entry stored in ChronicleTemplate, record that we are ready, and thats it.
-	ps.Set(pe.ID, pe)
-	(*resolved)[pe.ID] = true
+	ps.Set(pe.id, pe)
+	(*resolved)[pe.id] = true
 
 	return nil
 }

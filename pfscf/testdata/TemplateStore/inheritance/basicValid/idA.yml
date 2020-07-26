@@ -2,7 +2,7 @@ id: id_a
 description: foo
 content:
   content_a:
-    type: testType
+    type: textCell
 presets:
   preset_a:
-    type: testType
+    type: textCell

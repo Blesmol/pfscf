@@ -21,15 +21,19 @@ presets:
     presets: [p2, p2, p2]
 content:
   c1:
+    type: textCell
     presets: []
     x: 1
   c2:
+    type: textCell
     presets: [p1]
     x: 2
   c3:
+    type: textCell
     presets: [p2, p3]
     xpivot: 4
   c4:
+    type: textCell
     presets: [p2, p2, p2]
     x: 1
     x2: 1
