@@ -23,7 +23,7 @@ func (ps PresetStore) GetIDs() (idList []string) {
 	return idList
 }
 
-// Get returns the preset ContentEntry matching the provided id.
+// Get returns the PresetEntry matching the provided id.
 func (ps PresetStore) Get(id string) (pe PresetEntry, exists bool) {
 	pe, exists = ps[id]
 	return

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 	"strings"
 )
 
@@ -13,7 +12,7 @@ type ChronicleTemplate struct {
 	description string
 	inherit     string
 	yFilename   string // filename of the originating yaml file
-	content     map[string]ContentEntry
+	content     ContentStore
 	presets     PresetStore
 }
 
@@ -42,7 +41,7 @@ func NewChronicleTemplate(yFilename string, yFile *YamlFile) (ct *ChronicleTempl
 	ct.inherit = yFile.Inherit
 	ct.yFilename = yFilename
 
-	ct.content = make(map[string]ContentEntry, len(yFile.Content))
+	ct.content = NewContentStore(len(yFile.Content))
 	for id, entry := range yFile.Content {
 		ct.content[id] = NewContentEntry(id, entry)
 	}
@@ -56,53 +55,47 @@ func NewChronicleTemplate(yFilename string, yFile *YamlFile) (ct *ChronicleTempl
 }
 
 // ID returns the ID of the chronicle template
-func (ct *ChronicleTemplate) ID() string {
+func (ct ChronicleTemplate) ID() string {
 	return ct.id
 }
 
 // Description returns the description of the chronicle template
-func (ct *ChronicleTemplate) Description() string {
+func (ct ChronicleTemplate) Description() string {
 	return ct.description
 }
 
 // Inherit returns the ID of the template from which this template inherits
-func (ct *ChronicleTemplate) Inherit() string {
+func (ct ChronicleTemplate) Inherit() string {
 	return ct.inherit
 }
 
 // Filename returns the file name of the chronicle template
-func (ct *ChronicleTemplate) Filename() string {
+func (ct ChronicleTemplate) Filename() string {
 	return ct.yFilename
 }
 
 // GetPreset returns the preset ContentEntry matching the provided id from
 // the current ChronicleTemplate
-func (ct *ChronicleTemplate) GetPreset(id string) (pe PresetEntry, exists bool) {
+// TODO function only used by tests, remove
+func (ct ChronicleTemplate) GetPreset(id string) (pe PresetEntry, exists bool) {
 	return ct.presets.Get(id)
 }
 
 // GetPresetIDs returns a sorted list of preset IDs contained in this chronicle template.
-func (ct *ChronicleTemplate) GetPresetIDs() (idList []string) {
+// TODO function only used by tests, remove
+func (ct ChronicleTemplate) GetPresetIDs() (idList []string) {
 	return ct.presets.GetIDs()
 }
 
 // GetContent returns the ContentEntry object matching the provided id
 // from the current ChronicleTemplate
-func (ct *ChronicleTemplate) GetContent(id string) (ce ContentEntry, exists bool) {
-	ce, exists = ct.content[id]
-	return
+func (ct ChronicleTemplate) GetContent(id string) (ce ContentEntry, exists bool) {
+	return ct.content.Get(id)
 }
 
 // GetContentIDs returns a sorted list of content IDs contained in this chronicle template
-func (ct *ChronicleTemplate) GetContentIDs(includeAliases bool) (idList []string) {
-	idList = make([]string, 0, len(ct.content))
-	for id, entry := range ct.content {
-		if includeAliases || id == entry.ID() {
-			idList = append(idList, id)
-		}
-	}
-	sort.Strings(idList)
-	return idList
+func (ct ChronicleTemplate) GetContentIDs(includeAliases bool) (idList []string) {
+	return ct.content.GetIDs(includeAliases)
 }
 
 // Describe describes a single chronicle template. It returns the
@@ -129,35 +122,12 @@ func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
 // entry exists in both objects. In case a preset object exists in
 // both objects, then the one from the original object takes precedence.
 func (ct *ChronicleTemplate) InheritFrom(ctOther *ChronicleTemplate) (err error) {
-	// get content from other object and throw error on duplicates
-	for id, otherEntry := range ctOther.content {
-		if _, exists := ct.content[id]; exists {
-			return fmt.Errorf("Inheritance error: Content ID '%v' cannot be inherited from '%v', because it already exists in '%v'", id, ctOther.ID(), ct.ID())
-		}
-		ct.content[id] = otherEntry
+	err = ct.content.InheritFrom(ctOther.content)
+	if err != nil {
+		return err
 	}
 
 	ct.presets.InheritFrom(ctOther.presets)
-
-	return nil
-}
-
-// ResolveContent resolves preset requirements for Content
-func (ct *ChronicleTemplate) ResolveContent() (err error) {
-	for _, ce := range ct.content {
-
-		// check that required presets are not contradicting each other
-		if err = ct.presets.PresetsAreNotContradicting(ce.Presets()...); err != nil {
-			return fmt.Errorf("Error resolving content '%v.%v': %v", ct.ID(), ce.ID(), err)
-		}
-
-		for _, presetID := range ce.Presets() {
-			preset, _ := ct.GetPreset(presetID)
-			AddMissingValues(preset, &ce.data, "Presets", "ID")
-		}
-
-		ct.content[ce.ID()] = ce
-	}
 
 	return nil
 }
@@ -167,7 +137,7 @@ func (ct *ChronicleTemplate) Resolve() (err error) {
 	if err = ct.presets.Resolve(); err != nil {
 		return err
 	}
-	if err = ct.ResolveContent(); err != nil {
+	if err = ct.content.Resolve(ct.presets); err != nil {
 		return err
 	}
 	return nil
