@@ -115,10 +115,10 @@ func TestWriteToFile(t *testing.T) {
 func TestCreateMeasurementCoordinates(t *testing.T) {
 	t.Run("with minor gap", func(t *testing.T) {
 		s := NewStamp(395.0, 395.0)
-		s.CreateMeasurementCoordinates(100.0, 25.0)
+		s.CreateMeasurementCoordinates(5.0, 1.0)
 	})
 	t.Run("without minor gap", func(t *testing.T) {
 		s := NewStamp(395.0, 395.0)
-		s.CreateMeasurementCoordinates(100.0, 0)
+		s.CreateMeasurementCoordinates(5.0, 0)
 	})
 }
