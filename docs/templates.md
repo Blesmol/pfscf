@@ -431,7 +431,7 @@ There are currently three options for the `pfscf fill` command to support findin
 
 The `grid` option is probably the most useful.
 It will draw a grid over the chronicle PDF file and print the x/y coordinates at the borders of the page.
-The grid consists of major lines every 25 points and minor lines every 5 points.
+The grid consists of major lines every 5 percent and minor lines every percent.
 This should allow to get at least the rough coordinates for whatever you want to add, although normally some fine-tuning is required afterwards.
 
 Next is the `cellBorder` option.

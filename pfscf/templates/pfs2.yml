@@ -7,183 +7,183 @@ presets:
 
   topline:
     presets: [defaultfont]
-    y:  126
-    y2: 110
+    y:  16
+    y2: 14
     align: CB
 
   rightbar:
     presets: [defaultfont]
-    x:  472
-    x2: 567
+    x:  78
+    x2: 94
     align: CM
 
   bottomline:
     presets: [defaultfont]
-    y:  735
-    y2: 719
+    y:  94
+    y2: 92
     align: CB
 
   factions:
     presets: [defaultfont]
     fontsize: 8
 
-  facname:
+  faccol1:
     presets: [factions]
-    x:  432
-    x2: 489
+    x:  72
+    x2: 81
     align: CB
 
-  facrep:
+  faccol2:
     presets: [factions]
-    x:  531
-    x2: 547
+    x:  88
+    x2: 91
     align: CB
 
   facline1:
     presets: [factions]
-    y:  108
-    y2: 99
+    y:  14
+    y2: 13
 
   facline2:
     presets: [factions]
-    y:  128
-    y2: 119
+    y:  16
+    y2: 15
 
   facline3:
     presets: [factions]
-    y:  148
-    y2: 139
+    y:  19
+    y2: 18
 
 content:
   player:
     type: textCell
     desc: Player name
     presets: [topline]
-    x:  42
-    x2: 142
+    x:  7.0
+    x2: 23
     example: Bob
 
   char:
     type: textCell
     desc: Players character name
     presets: [topline]
-    x:  167
-    x2: 270
+    x:  28
+    x2: 45
     example: Stormageddon
 
   societyid:
     type: societyId
     desc: PFS Player ID
     presets: [topline]
-    x:  276
-    xpivot: 348
-    x2: 396
+    x:  46
+    xpivot: 58
+    x2: 66
     example: 123456-2001
 
   xp:
     type: textCell
     desc: Experience points
     presets: [rightbar]
-    y:  311
-    y2: 334
+    y:  40
+    y2: 43
     example: 4
 
   gp:
     type: textCell
     desc: Gold pieces
     presets: [rightbar]
-    y:  444
-    y2: 420
+    y:  57
+    y2: 53
     example: 4gp 2sp
 
   dj:
     type: textCell
     desc: Dayjob
     presets: [rightbar]
-    y:  481
-    y2: 456
+    y:  61
+    y2: 58
     example: 8cp
 
   fame:
     type: textCell
     desc: Fame
     presets: [rightbar]
-    y:  639
-    y2: 663
+    y:  82
+    y2: 85
     example: 4
 
   event:
     type: textCell
     desc: Event name
     presets: [bottomline]
-    x:  43
-    x2: 143
+    x:   7
+    x2: 24
     example: PaizoCon
 
   eventcode:
     type: textCell
     desc: Event code
     presets: [bottomline]
-    x:  158
-    x2: 212
+    x:  26
+    x2: 35
     example: 1234
 
   date:
     type: textCell
     desc: The date on which the game session took place
     presets: [bottomline]
-    x:  227
-    x2: 303
+    x:  38
+    x2: 50
     example: 27.06.2020
 
   gm:
     type: textCell
     desc: Gamemasters name
     presets: [bottomline]
-    x:  318
-    x2: 446
+    x:  53
+    x2: 74
     example: John Doe
 
   gmid:
     type: textCell
     desc: Gamemasters PFS ID
     presets: [bottomline]
-    x:  460
-    x2: 563
+    x:  76
+    x2: 93
     example: 654321
 
   fac1name:
     type: textCell
     desc: Faction 1 Name
-    presets: [facname, facline1]
+    presets: [faccol1, facline1]
     example: Grand Archive
 
   fac1rep:
     type: textCell
     desc: Faction 1 Reputation points
-    presets: [facrep, facline1]
+    presets: [faccol2, facline1]
     example: 4
 
   fac2name:
     type: textCell
     desc: Faction 2 Name
-    presets: [facname, facline2]
+    presets: [faccol1, facline2]
     example: Grand Archive
 
   fac2rep:
     type: textCell
     desc: Faction 2 Reputation points
-    presets: [facrep, facline2]
+    presets: [faccol2, facline2]
     example: 4
 
   fac3name:
     type: textCell
     desc: Faction 3 Name
-    presets: [facname, facline3]
+    presets: [faccol1, facline3]
     example: Grand Archive
 
   fac3rep:
     type: textCell
     desc: Faction 3 Reputation points
-    presets: [facrep, facline3]
+    presets: [faccol2, facline3]
     example: 4

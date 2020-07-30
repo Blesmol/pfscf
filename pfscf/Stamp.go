@@ -49,11 +49,18 @@ func (s *Stamp) SetCellBorder(shouldDrawBorder bool) {
 	}
 }
 
-// percentToPoints converts the provided percent coordinates into absolute
+// pctToPt converts the provided percent coordinates into absolute
 // point coordinates for the current stamp object.
 // A value of, e.g. 10% should be passed as 10.0, not as 0.10
-func (s *Stamp) percentToPoint(x, y float64) (xPt, yPt float64) {
+func (s *Stamp) pctToPt(x, y float64) (xPt, yPt float64) {
 	return s.dimX * (x / 100.0), s.dimY * (y / 100.0)
+}
+
+// ptToPct converts the provided point coordinates into percent
+// coordinates for the current stamp object.
+// A value of, e.g. 10% will be returned as 10.0, not as 0.10
+func (s *Stamp) ptToPct(x, y float64) (xPct, yPct float64) {
+	return (100.0 / s.dimX) * x, (100.0 / s.dimY) * y
 }
 
 // getXYWH transforms two sets of x/y coordinates into a single set of
@@ -74,6 +81,15 @@ func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 		h = y1 - y2
 	}
 	return
+}
+
+// getXYWHasPt transforms two sets of x/y coordinates in percent into a single
+// set of x/y coodinates and a pair of width/height values in points unit
+func (s *Stamp) getXYWHasPt(x1, y1, x2, y2 float64) (x, y, w, h float64) {
+	xPct, yPct, wPct, hPct := getXYWH(x1, y1, x2, y2)
+	x, y = s.pctToPt(xPct, yPct)
+	w, h = s.pctToPt(wPct, hPct)
+	return x, y, w, h
 }
 
 // AddTextCell adds a text cell to the stamp.
@@ -143,7 +159,7 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 		s.pdf.SetLineWidth(minorLineWidth)
 
 		for curPercent := 0.0; curPercent <= 100.0; curPercent += minorGap {
-			curX, curY := s.percentToPoint(curPercent, curPercent)
+			curX, curY := s.pctToPt(curPercent, curPercent)
 
 			if curX >= minX && curX <= maxX {
 				s.pdf.Line(curX, minY, curX, maxY)
@@ -161,7 +177,7 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 
 	// draw major gap X lines with labels
 	for curPercent := 0.0; curPercent <= 100.0; curPercent += majorGap {
-		curX, curY := s.percentToPoint(curPercent, curPercent)
+		curX, curY := s.pctToPt(curPercent, curPercent)
 
 		if curX >= minX && curX <= maxX {
 			s.pdf.Line(curX, minY, curX, maxY)
