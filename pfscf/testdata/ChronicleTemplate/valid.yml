@@ -3,13 +3,16 @@ description: simpleDescription
 inherit: otherId
 content:
   c2:
-    type: someType
+    type: textCell
+    example: c2example
     x: 3
   c0:
-    type: someType
+    type: textCell
+    example: c0example
     x: 1
   c1:
-    type: someType
+    type: societyId
+    example: c1example
     x: 2
 presets:
   p2:

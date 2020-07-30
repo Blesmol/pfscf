@@ -69,110 +69,24 @@ func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 	return
 }
 
-// AddContent is a generic function to add content to a stamp. It will
-// internally check the content type and call the appropriate subfunction.
-func (s *Stamp) AddContent(ce ContentEntry, value *string) (err error) {
-	// TODO make description mandatory and check here?
-
-	err = ce.IsValid()
-	if err == nil {
-		switch ce.Type() {
-		case "textCell":
-			err = s.addTextCell(ce, value)
-		case "societyId":
-			err = s.addSocietyID(ce, value)
-		default:
-			panic("Valid type should have been checked by call to IsValid()")
-		}
-	}
-
-	if err != nil {
-		return fmt.Errorf("Error adding content '%v': %v", ce.ID(), err)
-	}
-	return nil
-}
-
-// addTextCell adds a text cell to the current stamp. It requires a ContentEntry
-// object of type "textCell" and a value.
-func (s *Stamp) addTextCell(ce ContentEntry, value *string) (err error) {
-	Assert(ce.Type() == "textCell", "Provided ContentEntry object has wrong type")
-
-	err = ce.IsValid()
-	if err != nil {
-		return err
-	}
-
-	if value == nil {
-		return fmt.Errorf("No input value provided")
-	}
-
-	x, y, w, h := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
-
-	s.pdf.SetFont(ce.Font(), "", ce.Fontsize())
+// AddTextCell adds a text cell to the stamp.
+func (s *Stamp) AddTextCell(x, y, w, h float64, font string, fontsize float64, align string, text string) {
+	s.pdf.SetFont(font, "", fontsize)
 	s.pdf.SetXY(x, y)
 	s.pdf.SetCellMargin(0)
-	s.pdf.CellFormat(w, h, *value, s.cellBorder, 0, ce.Align(), false, 0, "")
-
-	return nil
+	s.pdf.CellFormat(w, h, text, s.cellBorder, 0, align, false, 0, "")
 }
 
-// addSocietyID adds a society id to the current stamp. It requires a ContentEntry
-// object of type "societyId" and a value that follows the pattern
-// "<player_id>-<char_id>"
-func (s *Stamp) addSocietyID(ce ContentEntry, value *string) (err error) {
-	Assert(ce.Type() == "societyId", "Provided ContentEntry object has wrong type")
+// DrawRectangle draws a rectangle on the stamp.
+func (s *Stamp) DrawRectangle(x, y, w, h float64, style string, r, g, b int) {
+	s.pdf.SetFillColor(r, g, b)
+	s.pdf.Rect(x, y, w, h, style)
+}
 
-	err = ce.IsValid()
-	if err != nil {
-		return err
-	}
-
-	if value == nil {
-		return fmt.Errorf("No input value provided")
-	}
-
-	// check that xpivot lies between x1 and x2
-	x, _, w, _ := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
-	if ce.XPivot() <= x || ce.XPivot() >= (x+w) {
-		return fmt.Errorf("xpivot value must lie between x1 and x2: %v < %v < %v", ce.X1(), ce.XPivot(), ce.X2())
-	}
-
-	societyID := regexSocietyID.FindStringSubmatch(*value)
-	if len(societyID) == 0 {
-		return fmt.Errorf("Provided society ID does not follow the pattern '<player_id>-<char_id>': '%v'", *value)
-	}
-	Assert(len(societyID) == 3, "Should contain the matching text plus the capturing groups")
-	playerID := societyID[1]
-	charID := societyID[2]
-
-	s.pdf.SetFont(ce.Font(), "", ce.Fontsize())
-	s.pdf.SetCellMargin(0)
-
-	// string lenghts may not be measured before a font was set
-	dash := " - "
-	dashWidth := s.pdf.GetStringWidth(dash)
-
-	// draw white rectangle for (nearly) whole area to blank out existing dash
-	// this is currently kind of fiddly and hackish... if we blank out the
-	// complete area, then the bottom line may be gone as well, which I do not like...
-	x, y, w, h := getXYWH(ce.X1(), ce.Y1(), ce.X2(), ce.Y2())
-	yOffset := 1.0
-	s.pdf.SetFillColor(255, 255, 255)
-	s.pdf.Rect(x, y-yOffset, w, h-yOffset, "F") // F=fill
-
-	// player id
-	x, y, w, h = getXYWH(ce.X1(), ce.Y1(), ce.XPivot()-(dashWidth/2.0), ce.Y2())
-	s.pdf.SetXY(x, y)
-	s.pdf.CellFormat(w, h, playerID, s.cellBorder, 0, "RB", false, 0, "")
-
-	// dash
-	s.pdf.CellFormat(dashWidth, h, dash, s.cellBorder, 0, "CB", false, 0, "")
-
-	// char id
-	x, y, w, h = getXYWH(ce.XPivot()+(dashWidth/2.0), ce.Y1(), ce.X2(), ce.Y2())
-	s.pdf.CellFormat(w, h, charID, s.cellBorder, 0, "LB", false, 0, "")
-
-	return nil
+// GetStringWidth returns the width of a given string
+func (s *Stamp) GetStringWidth(str string, font string, style string, fontsize float64) (result float64) {
+	s.pdf.SetFont(font, style, fontsize)
+	return s.pdf.GetStringWidth(str)
 }
 
 // WriteToFile writes the content of the Stamp object into a PDF file.

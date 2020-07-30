@@ -175,7 +175,7 @@ func (pdf *Pdf) Fill(argStore ArgStore, ct *ChronicleTemplate, outfile string) (
 	// create stamp
 	stamp := NewStamp(width, height)
 
-	if drawCellBorder { // TODO use argument rather than global variable
+	if drawCellBorder { // TODO use function parameter rather than global variable
 		stamp.SetCellBorder(true)
 	}
 
@@ -188,7 +188,7 @@ func (pdf *Pdf) Fill(argStore ArgStore, ct *ChronicleTemplate, outfile string) (
 			return fmt.Errorf("Found no content with key '%v'", key)
 		}
 
-		err := stamp.AddContent(content, &value)
+		err := content.GenerateOutput(stamp, &value)
 		if err != nil {
 			return err
 		}

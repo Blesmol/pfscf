@@ -70,7 +70,7 @@ func expectNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
 	t.Helper()
 
-	if !reflect.ValueOf(got).IsNil() {
+	if reflect.TypeOf(got) != nil && !reflect.ValueOf(got).IsNil() {
 		callStack()
 		t.Errorf("Expected nil, got '%v' (Type %v)", got, reflect.TypeOf(got))
 	}
@@ -80,18 +80,29 @@ func expectNotNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
 	t.Helper()
 
-	if reflect.ValueOf(got).IsNil() {
+	if reflect.TypeOf(got) == nil || reflect.ValueOf(got).IsNil() {
 		callStack()
 		t.Errorf("Expected not nil, got '%v' (Type %v)", got, reflect.TypeOf(got))
 	}
 }
 
-func expectError(t *testing.T, err error) {
+// expectError checks that the provided error does not equal nil. If additional
+// string arguments were passend, then it is checked that the error message
+// contains all of them.
+func expectError(t *testing.T, err error, expContent ...string) {
 	t.Helper()
 
 	if err == nil {
 		callStack()
 		t.Error("Expected an error, got nil")
+	}
+
+	for _, expPartialError := range expContent {
+		if !strings.Contains(err.Error(), expPartialError) {
+			callStack()
+			t.Errorf("Expected string '%v' to be contained in error message:\n%v", expPartialError, err.Error())
+			return
+		}
 	}
 }
 
@@ -130,9 +141,11 @@ func expectAllExportedSet(t *testing.T, got interface{}) {
 	case reflect.Struct:
 		for i := 0; i < vGot.NumField(); i++ {
 			field := vGot.Field(i)
-			if field.CanInterface() {
-				expectAllExportedSet(t, field.Interface())
+			if !IsExported(field) {
+				continue // skip non-exported fields
 			}
+			t.Logf("Testing field '%v'", reflect.TypeOf(got).Field(i).Name)
+			expectAllExportedSet(t, field.Interface())
 		}
 	case reflect.Ptr:
 		if IsSet(got) {
@@ -221,5 +234,14 @@ func expectStringContains(t *testing.T, got string, exp string) {
 	if !strings.Contains(got, exp) {
 		callStack()
 		t.Errorf("Expected string '%v' to contain '%v', which it does not", got, exp)
+	}
+}
+
+func expectStringContainsNot(t *testing.T, got string, exp string) {
+	t.Helper()
+
+	if strings.Contains(got, exp) {
+		callStack()
+		t.Errorf("Expected string '%v' to NOT contain '%v', but it does", got, exp)
 	}
 }

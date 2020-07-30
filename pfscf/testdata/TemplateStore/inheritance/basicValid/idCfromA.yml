@@ -3,11 +3,11 @@ description: foo
 inherit: id_a
 content:
   content_c1:
-    type: testType
+    type: textCell
   content_c2:
-    type: testType
+    type: textCell
 presets:
   preset_c1:
-    type: testType
+    type: textCell
   preset_c2:
-    type: testType
+    type: textCell

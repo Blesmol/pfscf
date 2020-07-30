@@ -102,7 +102,7 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 				expectEqual(t, len(contentIDList), 1)
 				expectEqual(t, contentIDList[0], "content_a")
 
-				presetIDList := ctA.GetPresetIDs()
+				presetIDList := ctA.presets.GetIDs()
 				expectEqual(t, len(presetIDList), 1)
 				expectEqual(t, presetIDList[0], "preset_a")
 			})
@@ -118,7 +118,7 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 				expectEqual(t, contentIDList[1], "content_c1")
 				expectEqual(t, contentIDList[2], "content_c2")
 
-				presetIDList := ctC.GetPresetIDs()
+				presetIDList := ctC.presets.GetIDs()
 				expectEqual(t, len(presetIDList), 3)
 				expectEqual(t, presetIDList[0], "preset_a")
 				expectEqual(t, presetIDList[1], "preset_c1")
@@ -137,7 +137,7 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 				expectEqual(t, contentIDList[2], "content_c2")
 				expectEqual(t, contentIDList[3], "content_d")
 
-				presetIDList := ctD.GetPresetIDs()
+				presetIDList := ctD.presets.GetIDs()
 				expectEqual(t, len(presetIDList), 4)
 				expectEqual(t, presetIDList[0], "preset_a")
 				expectEqual(t, presetIDList[1], "preset_c1")

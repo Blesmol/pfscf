@@ -124,3 +124,22 @@ func QuoteStringIfRequired(s string) string {
 	}
 	return s
 }
+
+// IsExported takes a reflection value and checks whether that is an exported field in
+// a struct. Well, we cannot check here whether this is a struct field, but under the
+// assumption that it was one, we can check whether it is exported then. Yay!
+func IsExported(val reflect.Value) bool {
+	// Check to CanInterface() should be sufficient according to
+	// https://stackoverflow.com/questions/50279840/when-is-go-reflect-caninterface-false
+	return val.CanInterface()
+}
+
+// Contains checks whether a list of strings contains a specific string.
+func Contains(list []string, element string) (result bool) {
+	for _, listElement := range list {
+		if element == listElement {
+			return true
+		}
+	}
+	return false
+}
