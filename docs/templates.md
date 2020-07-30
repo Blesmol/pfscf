@@ -31,7 +31,7 @@ For example, this could be used to have separate folders for each supported game
 The filenames of the template files are irrelevant.
 They should provide a hint to what is included, but besides from that they are not used anywhere.
 This especially means that they are not used for the unique identifier which each template must have; this is done by the `id` field within the template file.
-See also the `Template file format` section below on this.
+See also the [`Template file format`](#template-file-format) section below on this.
 
 ## Template File Format
 
@@ -103,8 +103,8 @@ content:
 ```
 </details>
 
-The only mandatory top-level field in such a template is the `id`, all other top-level fields (`description`, `inherit`, `presets`, `content`) in this basic structure are optional.
-Of course, a template that only consists of an `id`  does not make much sense.
+The only mandatory top-level fields in such a template are the `id` and the `description`, all other top-level fields (`inherit`, `presets`, `content`) in this basic structure are optional.
+Of course, a template that only consists of an `id` and a `description` does not make much sense.
 But who am I to judge?
 
 Each entry below `content` and `presets` must have an ID that is unique within that section.
@@ -233,12 +233,12 @@ For example, you might want to use the same font everywhere.
 You can either write down the same font in each and every content entry.
 Or you create a preset that contains the font name and use that in all entries.
 
-Another useful example is if you have multiple content entries on a single line and don't want to repeat the coordinates in each entry here.
-You can then manage, e.g. the y coordinates in a single preset that is used by all entries on the same line.
+Another useful example is if you have multiple content entries that should appear on the same line in the final PDF, i.e. they are using the same coordinates for the Y axis, and don't want to repeat the coordinates in each entry here.
+You can then manage, e.g. the Y coordinates in a single preset that is used by all entries on the same line.
 
-Presets are structured exactly like "regular" content entries, i.e. they support the same fields as described in section [Generic Content Entry Structure](#generic-content-entry-structure).
-They can be used from content entries or from other presets.
-To use a preset, it has to be listed in the `presets` section of a content entry.
+Presets are structured in a more or less similar way as "regular" content entries, i.e. the list of supported fields is a subset of what is presented in section [Generic Content Entry Structure](#generic-content-entry-structure).
+Presets can be used by content entries or by other presets.
+To use a preset, it has to be listed in the `presets` section of a content entry or another preset entry.
 
 ```yaml
 content:
