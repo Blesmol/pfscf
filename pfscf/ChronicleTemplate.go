@@ -77,19 +77,6 @@ func (ct ChronicleTemplate) Filename() string {
 	return ct.yFilename
 }
 
-// GetPreset returns the preset ContentEntry matching the provided id from
-// the current ChronicleTemplate
-// TODO function only used by tests, remove
-func (ct ChronicleTemplate) GetPreset(id string) (pe PresetEntry, exists bool) {
-	return ct.presets.Get(id)
-}
-
-// GetPresetIDs returns a sorted list of preset IDs contained in this chronicle template.
-// TODO function only used by tests, remove
-func (ct ChronicleTemplate) GetPresetIDs() (idList []string) {
-	return ct.presets.GetIDs()
-}
-
 // GetContent returns the ContentEntry object matching the provided id
 // from the current ChronicleTemplate
 func (ct ChronicleTemplate) GetContent(id string) (ci ContentEntry, exists bool) {

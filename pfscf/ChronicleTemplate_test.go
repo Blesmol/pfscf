@@ -116,13 +116,13 @@ func TestNewChronicleTemplate(t *testing.T) {
 
 			// presets
 			expectEqual(t, len(ct.presets), 3)
-			p0, exists := ct.GetPreset("p0")
+			p0, exists := ct.presets.Get("p0")
 			expectTrue(t, exists)
 			expectEqual(t, p0.Y1, 10.0)
-			p1, exists := ct.GetPreset("p1")
+			p1, exists := ct.presets.Get("p1")
 			expectTrue(t, exists)
 			expectEqual(t, p1.Y1, 11.0)
-			_, exists = ct.GetPreset("c0")
+			_, exists = ct.presets.Get("c0")
 			expectFalse(t, exists)
 		})
 
@@ -164,11 +164,11 @@ func TestInheritFrom(t *testing.T) {
 		err := ctTo.InheritFrom(ctFrom)
 		expectNoError(t, err)
 
-		expectEqual(t, len(ctTo.GetPresetIDs()), 2)
-		p0, exists := ctTo.GetPreset("p0")
+		expectEqual(t, len(ctTo.presets.GetIDs()), 2)
+		p0, exists := ctTo.presets.Get("p0")
 		expectTrue(t, exists)
 		expectEqual(t, p0.Font, "base")
-		p1, exists := ctTo.GetPreset("p1")
+		p1, exists := ctTo.presets.Get("p1")
 		expectTrue(t, exists)
 		expectEqual(t, p1.Font, "inherited")
 
