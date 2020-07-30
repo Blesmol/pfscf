@@ -86,13 +86,23 @@ func expectNotNil(t *testing.T, got interface{}) {
 	}
 }
 
-// TODO add variadic list of string arguments and check that each argument is contained in the error message
-func expectError(t *testing.T, err error) {
+// expectError checks that the provided error does not equal nil. If additional
+// string arguments were passend, then it is checked that the error message
+// contains all of them.
+func expectError(t *testing.T, err error, expContent ...string) {
 	t.Helper()
 
 	if err == nil {
 		callStack()
 		t.Error("Expected an error, got nil")
+	}
+
+	for _, expPartialError := range expContent {
+		if !strings.Contains(err.Error(), expPartialError) {
+			callStack()
+			t.Errorf("Expected string '%v' to be contained in error message:\n%v", expPartialError, err.Error())
+			return
+		}
 	}
 }
 
