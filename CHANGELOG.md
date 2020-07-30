@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 ### Changed
+- Switched template measurement unit from points to percent
 
 ### Removed
 
