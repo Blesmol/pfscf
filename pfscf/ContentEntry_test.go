@@ -60,14 +60,14 @@ func TestNewContentEntry(t *testing.T) {
 			data := getContentDataWithDummyData(t, "")
 			_, err := NewContentEntry("x", data)
 
-			expectError(t, err)
+			expectError(t, err, "No content type provided")
 		})
 
 		t.Run("unknown type", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "foo")
 			_, err := NewContentEntry("x", data)
 
-			expectError(t, err)
+			expectError(t, err, "Unknown content type")
 		})
 	})
 
@@ -146,7 +146,7 @@ func TestContentTextCell_IsValid(t *testing.T) {
 		expectNoError(t, err)
 
 		err = tc.IsValid()
-		expectError(t, err)
+		expectError(t, err, "Missing value", "Font")
 	})
 
 	t.Run("valid", func(t *testing.T) {
@@ -216,7 +216,7 @@ func TestContentTextCell_Resolve(t *testing.T) {
 			expectNoError(t, err)
 
 			_, err = tc.Resolve(ps)
-			expectError(t, err)
+			expectError(t, err, "does not exist")
 		})
 
 		t.Run("conflicting presets", func(t *testing.T) {
@@ -226,7 +226,7 @@ func TestContentTextCell_Resolve(t *testing.T) {
 			expectNoError(t, err)
 
 			_, err = tc.Resolve(ps)
-			expectError(t, err)
+			expectError(t, err, "Contradicting data", "X1", "conflict1", "conflict2")
 		})
 	})
 
@@ -259,7 +259,7 @@ func TestContentTextCell_GenerateOutput(t *testing.T) {
 			expectNoError(t, err)
 
 			err = tc.GenerateOutput(stamp, &value)
-			expectError(t, err)
+			expectError(t, err, "Missing value", "X1")
 		})
 
 		t.Run("missing value", func(t *testing.T) {
@@ -268,7 +268,7 @@ func TestContentTextCell_GenerateOutput(t *testing.T) {
 			expectNoError(t, err)
 
 			err = tc.GenerateOutput(stamp, nil)
-			expectError(t, err)
+			expectError(t, err, "No input value provided")
 		})
 	})
 
@@ -339,7 +339,7 @@ func TestContentSocietyID_IsValid(t *testing.T) {
 			expectNoError(t, err)
 
 			err = si.IsValid()
-			expectError(t, err)
+			expectError(t, err, "Missing value")
 		})
 
 		t.Run("range violation", func(t *testing.T) {
@@ -354,7 +354,7 @@ func TestContentSocietyID_IsValid(t *testing.T) {
 				expectNoError(t, err)
 
 				err = si.IsValid()
-				expectError(t, err)
+				expectError(t, err, "xpivot value must lie between")
 			}
 		})
 	})
@@ -426,7 +426,7 @@ func TestContentSocietyID_Resolve(t *testing.T) {
 			expectNoError(t, err)
 
 			_, err = si.Resolve(ps)
-			expectError(t, err)
+			expectError(t, err, "does not exist")
 		})
 
 		t.Run("conflicting presets", func(t *testing.T) {
@@ -436,7 +436,7 @@ func TestContentSocietyID_Resolve(t *testing.T) {
 			expectNoError(t, err)
 
 			_, err = si.Resolve(ps)
-			expectError(t, err)
+			expectError(t, err, "Contradicting", "X1", "conflict1", "conflict2")
 		})
 	})
 
@@ -469,7 +469,7 @@ func TestContentSocietyID_GenerateOutput(t *testing.T) {
 			expectNoError(t, err)
 
 			err = si.GenerateOutput(stamp, &validValue)
-			expectError(t, err)
+			expectError(t, err, "Missing value", "X1")
 		})
 
 		t.Run("missing value", func(t *testing.T) {
@@ -478,7 +478,7 @@ func TestContentSocietyID_GenerateOutput(t *testing.T) {
 			expectNoError(t, err)
 
 			err = si.GenerateOutput(stamp, nil)
-			expectError(t, err)
+			expectError(t, err, "No input value provided")
 		})
 
 		t.Run("value with invalid format", func(t *testing.T) {
@@ -488,7 +488,7 @@ func TestContentSocietyID_GenerateOutput(t *testing.T) {
 
 			for _, invalidSocietyID := range []string{"", "foo", "a123-456", "123-456b", "1"} {
 				err = si.GenerateOutput(stamp, &invalidSocietyID)
-				expectError(t, err)
+				expectError(t, err, "does not follow the pattern")
 			}
 		})
 	})
@@ -581,7 +581,7 @@ func TestCheckThatAllExportedFieldsAreSet(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
 		testVal := testStruct{A: 1.0, b: 2.0}
 		err := CheckThatAllExportedFieldsAreSet(testVal)
-		expectError(t, err)
+		expectError(t, err, "Missing value", "C")
 	})
 
 	t.Run("valid", func(t *testing.T) {
