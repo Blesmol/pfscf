@@ -49,6 +49,13 @@ func (s *Stamp) SetCellBorder(shouldDrawBorder bool) {
 	}
 }
 
+// percentToPoints converts the provided percent coordinates into absolute
+// point coordinates for the current stamp object.
+// A value of, e.g. 10% should be passed as 10.0, not as 0.10
+func (s *Stamp) percentToPoint(x, y float64) (xPt, yPt float64) {
+	return s.dimX * (x / 100.0), s.dimY * (y / 100.0)
+}
+
 // getXYWH transforms two sets of x/y coordinates into a single set of
 // x/y coordinates and a pair of width/height values.
 func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {

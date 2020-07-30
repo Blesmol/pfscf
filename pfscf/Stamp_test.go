@@ -52,6 +52,14 @@ func TestSetCellBorder(t *testing.T) {
 	expectEqual(t, s.cellBorder, "0")
 }
 
+func TestPercentToPoint(t *testing.T) {
+	s := NewStamp(100.0, 100.0)
+
+	x, y := s.percentToPoint(10.0, 10.0)
+	expectEqual(t, x, 10.0)
+	expectEqual(t, y, 10.0)
+}
+
 func TestGetXYWH(t *testing.T) {
 	t.Run("x1/y1 smaller than x2/y2", func(t *testing.T) {
 		x, y, w, h := getXYWH(0.0, 1.0, 100.0, 101.0)
