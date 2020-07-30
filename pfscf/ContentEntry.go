@@ -150,7 +150,7 @@ func (tc ContentTextCell) GenerateOutput(s *Stamp, value *string) (err error) {
 		return fmt.Errorf("No input value provided")
 	}
 
-	x, y, w, h := getXYWH(tc.X1, tc.Y1, tc.X2, tc.Y2)
+	x, y, w, h := s.getXYWHasPt(tc.X1, tc.Y1, tc.X2, tc.Y2)
 
 	s.AddTextCell(x, y, w, h, tc.Font, tc.Fontsize, tc.Align, *value)
 
@@ -278,9 +278,7 @@ func (si ContentSocietyID) GenerateOutput(s *Stamp, value *string) (err error) {
 		return fmt.Errorf("No input value provided")
 	}
 
-	// check that xpivot lies between x1 and x2
-	x, _, w, _ := getXYWH(si.X1, si.Y1, si.X2, si.Y2)
-
+	// check and split up provided society id value
 	societyID := regexSocietyID.FindStringSubmatch(*value)
 	if len(societyID) == 0 {
 		return fmt.Errorf("Provided society ID does not follow the pattern '<player_id>-<char_id>': '%v'", *value)
@@ -289,27 +287,26 @@ func (si ContentSocietyID) GenerateOutput(s *Stamp, value *string) (err error) {
 	playerID := societyID[1]
 	charID := societyID[2]
 
-	// string lenghts may not be measured before a font was set
 	dash := " - "
-	dashWidth := s.GetStringWidth(dash, si.Font, "", si.Fontsize)
+	dashWidth, _ := s.ptToPct(s.GetStringWidth(dash, si.Font, "", si.Fontsize), 0.0)
 
 	// draw white rectangle for (nearly) whole area to blank out existing dash
 	// this is currently kind of fiddly and hackish... if we blank out the
 	// complete area, then the bottom line may be gone as well, which I do not like...
-	x, y, w, h := getXYWH(si.X1, si.Y1, si.X2, si.Y2)
+	x, y, w, h := s.getXYWHasPt(si.X1, si.Y1, si.X2, si.Y2)
 	yOffset := 1.0
 	s.DrawRectangle(x, y-yOffset, w, h-yOffset, "F", 255, 255, 255)
 
 	// player id
-	x, y, w, h = getXYWH(si.X1, si.Y1, si.XPivot-(dashWidth/2.0), si.Y2)
+	x, y, w, h = s.getXYWHasPt(si.X1, si.Y1, si.XPivot-(dashWidth/2.0), si.Y2)
 	s.AddTextCell(x, y, w, h, si.Font, si.Fontsize, "RB", playerID)
 
 	// dash
-	x, y, w, h = getXYWH(si.XPivot-(dashWidth/2), si.Y1, si.XPivot+(dashWidth/2), si.Y2)
+	x, y, w, h = s.getXYWHasPt(si.XPivot-(dashWidth/2), si.Y1, si.XPivot+(dashWidth/2), si.Y2)
 	s.AddTextCell(x, y, w, h, si.Font, si.Fontsize, "CB", dash)
 
 	// char id
-	x, y, w, h = getXYWH(si.XPivot+(dashWidth/2.0), si.Y1, si.X2, si.Y2)
+	x, y, w, h = s.getXYWHasPt(si.XPivot+(dashWidth/2.0), si.Y1, si.X2, si.Y2)
 	s.AddTextCell(x, y, w, h, si.Font, si.Fontsize, "LB", charID)
 
 	return nil

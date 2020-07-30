@@ -195,7 +195,7 @@ func (pdf *Pdf) Fill(argStore ArgStore, ct *ChronicleTemplate, outfile string) (
 	}
 
 	if drawGrid { // TODO use argument rather than global variable
-		stamp.CreateMeasurementCoordinates(25, 5)
+		stamp.CreateMeasurementCoordinates(5, 1)
 	}
 
 	// write stamp

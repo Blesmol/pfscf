@@ -49,6 +49,20 @@ func (s *Stamp) SetCellBorder(shouldDrawBorder bool) {
 	}
 }
 
+// pctToPt converts the provided percent coordinates into absolute
+// point coordinates for the current stamp object.
+// A value of, e.g. 10% should be passed as 10.0, not as 0.10
+func (s *Stamp) pctToPt(x, y float64) (xPt, yPt float64) {
+	return s.dimX * (x / 100.0), s.dimY * (y / 100.0)
+}
+
+// ptToPct converts the provided point coordinates into percent
+// coordinates for the current stamp object.
+// A value of, e.g. 10% will be returned as 10.0, not as 0.10
+func (s *Stamp) ptToPct(x, y float64) (xPct, yPct float64) {
+	return (100.0 / s.dimX) * x, (100.0 / s.dimY) * y
+}
+
 // getXYWH transforms two sets of x/y coordinates into a single set of
 // x/y coordinates and a pair of width/height values.
 func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
@@ -67,6 +81,15 @@ func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 		h = y1 - y2
 	}
 	return
+}
+
+// getXYWHasPt transforms two sets of x/y coordinates in percent into a single
+// set of x/y coodinates and a pair of width/height values in points unit
+func (s *Stamp) getXYWHasPt(x1, y1, x2, y2 float64) (x, y, w, h float64) {
+	xPct, yPct, wPct, hPct := getXYWH(x1, y1, x2, y2)
+	x, y = s.pctToPt(xPct, yPct)
+	w, h = s.pctToPt(wPct, hPct)
+	return x, y, w, h
 }
 
 // AddTextCell adds a text cell to the stamp.
@@ -102,77 +125,121 @@ func (s *Stamp) WriteToFile(filename string) (err error) {
 func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 	Assert(majorGap > 0, "Provided gap should be greater than 0")
 
-	const fontSize = float64(6)
-	const borderArea = float64(16) // do not add lines and text if that near to the page border
-	const majorLineWidth = float64(0.5)
-	const minorLineWidth = float64(0.1)
+	const (
+		labelFont      = "Arial"
+		labelFontStyle = "B"
+		labelFontSize  = float64(6)
+		borderAreaPt   = float64(16) // do not add lines and text if that near to the page border
+		majorLineWidth = float64(0.5)
+		minorLineWidth = float64(0.1)
+
+		extraSpace = float64(1.0) // points
+	)
 
 	// store away old settings and reset at the end (you never know...)
 	formerR, formerB, formerG := s.pdf.GetDrawColor()
-	formerLineWidth := s.pdf.GetLineWidth()
 	defer s.pdf.SetDrawColor(formerR, formerG, formerB)
+	formerLineWidth := s.pdf.GetLineWidth()
 	defer s.pdf.SetLineWidth(formerLineWidth)
 
-	// ignore minor gap if 0 or below
+	s.pdf.SetFont(labelFont, labelFontStyle, labelFontSize) // Used for the labels at the borders
+
+	maxLabelWidth := s.pdf.GetStringWidth("x:99%") + extraSpace // 100% won't be reached
+	maxLabelHeight := labelFontSize + extraSpace
+
+	minX := 0.0 + maxLabelWidth
+	maxX := s.dimX - maxLabelWidth
+	minY := 0.0 + maxLabelHeight
+	maxY := s.dimY - maxLabelHeight
+
+	// ignore minor gap if 0 (or below)
 	if minorGap > 0 {
 		// settings for minor gap drawing
 		s.pdf.SetDrawColor(196, 196, 196) // something lightgrayish
 		s.pdf.SetLineWidth(minorLineWidth)
 
-		// draw minor gap X lines
-		for curX := float64(0); curX < s.dimX; curX += minorGap {
-			if curX < (0+borderArea) || curX > (s.dimX-borderArea) {
-				continue
-			}
-			s.pdf.Line(curX, 0+borderArea, curX, s.dimY-borderArea)
-		}
+		for curPercent := 0.0; curPercent <= 100.0; curPercent += minorGap {
+			curX, curY := s.pctToPt(curPercent, curPercent)
 
-		// draw minor gap Y
-		for curY := float64(0); curY < s.dimY; curY += minorGap {
-			if curY < (0+borderArea) || curY > (s.dimY-borderArea) {
-				continue
+			if curX >= minX && curX <= maxX {
+				s.pdf.Line(curX, minY, curX, maxY)
 			}
-			s.pdf.Line(0+borderArea, curY, s.dimX-borderArea, curY)
+
+			if curY >= minY && curY <= maxY {
+				s.pdf.Line(minX, curY, maxX, curY)
+			}
 		}
 	}
 
 	// settings for major gap drawing
-	s.pdf.SetFont("Arial", "B", fontSize)
 	s.pdf.SetDrawColor(64, 64, 255) // something blueish
 	s.pdf.SetLineWidth(majorLineWidth)
 
 	// draw major gap X lines with labels
-	for curX := float64(0); curX < s.dimX; curX += majorGap {
-		if curX < (0+borderArea) || curX > (s.dimX-borderArea) {
-			continue
+	for curPercent := 0.0; curPercent <= 100.0; curPercent += majorGap {
+		curX, curY := s.pctToPt(curPercent, curPercent)
+
+		if curX >= minX && curX <= maxX {
+			s.pdf.Line(curX, minY, curX, maxY)
+
+			labelText := fmt.Sprintf("x:%v%%", strconv.Itoa(int(curPercent)))
+			labelWidth := s.pdf.GetStringWidth(labelText)
+
+			labelXPos := curX - (labelWidth / 2.0) // place in middle of line
+			labelYTopPos := 0.0 + maxLabelHeight - extraSpace
+			labelYBottomPos := s.dimY - extraSpace
+
+			s.pdf.Text(labelXPos, labelYTopPos, labelText)
+			s.pdf.Text(labelXPos, labelYBottomPos, labelText)
 		}
 
-		coordString := fmt.Sprintf("x:%v", strconv.Itoa(int(curX)))
-		textWidth := s.pdf.GetStringWidth(coordString)
-		textOffset := textWidth / 2 // place in the middle of the line
-		textTopBorderMargin := fontSize + 2
-		textBottomBorderMargin := float64(2)
-		lineTopBorderMargin := textTopBorderMargin + 2
-		lineBottomBorderMargin := textBottomBorderMargin + fontSize + 2
+		if curY >= minY && curY <= maxY {
+			s.pdf.Line(minX, curY, maxX, curY)
 
-		s.pdf.Line(curX, 0+lineTopBorderMargin, curX, s.dimY-lineBottomBorderMargin)
-		s.pdf.Text(curX-textOffset, textTopBorderMargin, coordString)
-		s.pdf.Text(curX-textOffset, s.dimY-textBottomBorderMargin, coordString)
+			labelText := fmt.Sprintf("y:%v%%", strconv.Itoa(int(curPercent)))
+			labelWidth := s.pdf.GetStringWidth(labelText)
+			labelXLeft := 0.0 + extraSpace
+			labelXRight := s.dimX - labelWidth
+			labelYPos := curY + (maxLabelHeight / 2.0) - extraSpace
+
+			s.pdf.Text(labelXLeft, labelYPos, labelText)
+			s.pdf.Text(labelXRight, labelYPos, labelText)
+		}
 	}
 
-	// draw major gap Y lines with labels
-	for curY := float64(0); curY < s.dimY; curY += majorGap {
-		if curY < (0+borderArea) || curY > (s.dimY-borderArea) {
-			continue
+	/*
+		for curX := float64(0); curX < s.dimX; curX += majorGap {
+			if curX < (0+borderAreaPt) || curX > (s.dimX-borderAreaPt) {
+				continue
+			}
+
+			coordString := fmt.Sprintf("x:%v", strconv.Itoa(int(curX)))
+			textWidth := s.pdf.GetStringWidth(coordString)
+			textOffset := textWidth / 2 // place in the middle of the line
+			textTopBorderMargin := labelFontSize + 2
+			textBottomBorderMargin := float64(2)
+			lineTopBorderMargin := textTopBorderMargin + 2
+			lineBottomBorderMargin := textBottomBorderMargin + labelFontSize + 2
+
+			s.pdf.Line(curX, 0+lineTopBorderMargin, curX, s.dimY-lineBottomBorderMargin)
+			s.pdf.Text(curX-textOffset, textTopBorderMargin, coordString)
+			s.pdf.Text(curX-textOffset, s.dimY-textBottomBorderMargin, coordString)
 		}
 
-		coordString := fmt.Sprintf("y:%v", strconv.Itoa(int(curY)))
-		textWidth := s.pdf.GetStringWidth(coordString)
-		textPosY := curY + (fontSize / 2) - 1
-		lineBorderMargin := textWidth + 4 // enough space for the text plus a little
+		// draw major gap Y lines with labels
+		for curY := float64(0); curY < s.dimY; curY += majorGap {
+			if curY < (0+borderAreaPt) || curY > (s.dimY-borderAreaPt) {
+				continue
+			}
 
-		s.pdf.Line(0+lineBorderMargin, curY, s.dimX-lineBorderMargin, curY)
-		s.pdf.Text(2, textPosY, coordString)
-		s.pdf.Text(s.dimX-textWidth-2, textPosY, coordString)
-	}
+			coordString := fmt.Sprintf("y:%v", strconv.Itoa(int(curY)))
+			textWidth := s.pdf.GetStringWidth(coordString)
+			textPosY := curY + (labelFontSize / 2) - 1
+			lineBorderMargin := textWidth + 4 // enough space for the text plus a little
+
+			s.pdf.Line(0+lineBorderMargin, curY, s.dimX-lineBorderMargin, curY)
+			s.pdf.Text(2, textPosY, coordString)
+			s.pdf.Text(s.dimX-textWidth-2, textPosY, coordString)
+		}
+	*/
 }
