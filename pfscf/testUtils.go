@@ -70,7 +70,7 @@ func expectNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
 	t.Helper()
 
-	if !reflect.ValueOf(got).IsNil() {
+	if reflect.TypeOf(got) != nil && !reflect.ValueOf(got).IsNil() {
 		callStack()
 		t.Errorf("Expected nil, got '%v' (Type %v)", got, reflect.TypeOf(got))
 	}
@@ -80,7 +80,7 @@ func expectNotNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
 	t.Helper()
 
-	if reflect.ValueOf(got).IsNil() {
+	if reflect.TypeOf(got) == nil || reflect.ValueOf(got).IsNil() {
 		callStack()
 		t.Errorf("Expected not nil, got '%v' (Type %v)", got, reflect.TypeOf(got))
 	}
