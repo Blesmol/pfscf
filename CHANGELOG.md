@@ -7,11 +7,15 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 ### Changed
-- Heavily restructure internal coding regarding content handling
 
 ### Removed
 
 ### Fixed
+
+## [0.8.0] - 2020-07-30
+
+### Changed
+- Heavily restructured internal coding regarding content handling
 
 ## [0.7.1] - 2020-07-18
 
