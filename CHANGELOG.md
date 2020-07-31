@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Autoshrink for `textCell`: Automatically reduce font size if text is too wide
 
 ### Changed
 - Switched template measurement unit from points to percent
