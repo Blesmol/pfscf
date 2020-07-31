@@ -42,6 +42,23 @@ func expectEqual(t *testing.T, got interface{}, exp interface{}) {
 		return
 	}
 
+	// If got is ptr to type t and exp is element of type t, then compare elements instead
+	typeGot := reflect.TypeOf(got)
+	typeExp := reflect.TypeOf(exp)
+	if typeGot != nil && typeExp != nil { // beware of nil types
+		// ensure that elem typ of got matches the type of exp
+		if typeGot.Kind() == reflect.Ptr && typeGot.Elem().Kind() == typeExp.Kind() {
+			vGot := reflect.ValueOf(got)
+			if !vGot.IsNil() {
+				vGotElem := vGot.Elem()
+				vExp := reflect.ValueOf(exp)
+				if vGotElem.Interface() == vExp.Interface() {
+					return
+				}
+			}
+		}
+	}
+
 	callStack()
 	t.Errorf("Expected '%v' (type %v), got '%v' (type %v)", exp, reflect.TypeOf(exp), got, reflect.TypeOf(got))
 }
