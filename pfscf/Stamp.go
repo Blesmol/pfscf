@@ -83,6 +83,7 @@ func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 	return
 }
 
+/*
 // getXYWHasPt transforms two sets of x/y coordinates in percent into a single
 // set of x/y coodinates and a pair of width/height values in points unit
 func (s *Stamp) getXYWHasPt(x1, y1, x2, y2 float64) (x, y, w, h float64) {
@@ -91,9 +92,13 @@ func (s *Stamp) getXYWHasPt(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 	w, h = s.pctToPt(wPct, hPct)
 	return x, y, w, h
 }
+*/
 
 // AddTextCell adds a text cell to the stamp.
-func (s *Stamp) AddTextCell(x, y, w, h float64, font string, fontsize float64, align string, text string) {
+func (s *Stamp) AddTextCell(xPct, yPct, wPct, hPct float64, font string, fontsize float64, align string, text string) {
+	x, y := s.pctToPt(xPct, yPct)
+	w, h := s.pctToPt(wPct, hPct)
+
 	s.pdf.SetFont(font, "", fontsize)
 	s.pdf.SetXY(x, y)
 	s.pdf.SetCellMargin(0)
@@ -101,7 +106,10 @@ func (s *Stamp) AddTextCell(x, y, w, h float64, font string, fontsize float64, a
 }
 
 // DrawRectangle draws a rectangle on the stamp.
-func (s *Stamp) DrawRectangle(x, y, w, h float64, style string, r, g, b int) {
+func (s *Stamp) DrawRectangle(xPct, yPct, wPct, hPct float64, style string, r, g, b int) {
+	x, y := s.pctToPt(xPct, yPct)
+	w, h := s.pctToPt(wPct, hPct)
+
 	s.pdf.SetFillColor(r, g, b)
 	s.pdf.Rect(x, y, w, h, style)
 }
@@ -109,7 +117,8 @@ func (s *Stamp) DrawRectangle(x, y, w, h float64, style string, r, g, b int) {
 // GetStringWidth returns the width of a given string
 func (s *Stamp) GetStringWidth(str string, font string, style string, fontsize float64) (result float64) {
 	s.pdf.SetFont(font, style, fontsize)
-	return s.pdf.GetStringWidth(str)
+	result, _ = s.ptToPct(s.pdf.GetStringWidth(str), 0.0)
+	return result
 }
 
 // WriteToFile writes the content of the Stamp object into a PDF file.

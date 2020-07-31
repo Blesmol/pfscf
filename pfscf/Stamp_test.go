@@ -90,6 +90,7 @@ func TestGetXYWH(t *testing.T) {
 
 }
 
+/*
 func TestStamp_GetXYWHasPt(t *testing.T) {
 	s := NewStamp(200.0, 400.0)
 
@@ -110,6 +111,7 @@ func TestStamp_GetXYWHasPt(t *testing.T) {
 		expectEqual(t, h, data.hExp)
 	}
 }
+*/
 
 func TestStamp_WriteToFile(t *testing.T) {
 
