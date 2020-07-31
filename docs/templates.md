@@ -83,23 +83,23 @@ inherit: idOfMyOtherCoolTemplate
 
 presets:
   topline:
-    y:  100
-    y2: 200
+    y:  10
+    y2: 20
   bottomline:
-    y:  400
-    y2: 500
+    y:  40
+    y2: 50
 
 content:
   name:
     type: textCell
     presets: [ topline ]
-    x: 50
-    x2: 150
+    x: 5
+    x2: 15
   date:
     type: textCell
     presets: [ bottomline ]
-    x: 200
-    x2: 230
+    x: 20
+    x2: 23
 ```
 </details>
 
@@ -166,9 +166,9 @@ playername:
   type: textCell
   desc: Player name
   x:  40
-  y:  125
-  x2: 140
-  y2: 110
+  y:  75
+  x2: 60
+  y2: 80
   font: Helvetica
   fontsize: 14
   align: CB
@@ -216,10 +216,10 @@ societyid:
   type: societyId
   desc: The players society id
   x:  40
-  y:  125
-  xpivot: 100
-  x2: 140
-  y2: 110
+  y:  75
+  xpivot: 52
+  x2: 60
+  y2: 80
   font: Helvetica
   fontsize: 14
   example: 123456-789
@@ -257,14 +257,14 @@ presets:
     font: Helvetica
     fontsize: 14
   topline:
-    y:  100
-    y2: 120
+    y:  10
+    y2: 12
     presets: [ defaultfont ]
 contents:
   name:
     type: textCell
-    x:  200
-    x2: 275
+    x:  20
+    x2: 27.5
     presets: [ topline ]
 ```
 
@@ -273,10 +273,10 @@ Resulting content:
 contents:
   name:
     type: textCell
-    x:  200
-    y:  100 # from preset 'topline'
-    x2: 275
-    y2: 120 # from preset 'topline'
+    x:  20
+    y:  10 # from preset 'topline'
+    x2: 27.5
+    y2: 12 # from preset 'topline'
     font: Helvetica  # from template 'defaultfont', indirectly inherited via 'topline'
     fontsize: 14     # from template 'defaultfont', indirectly inherited via 'topline'
 ```
@@ -304,17 +304,17 @@ presets:
     x: 50
 
   presetCoords_1:
-    y: 100
+    y: 10
     presets: [ presetX ]
 
   presetCoords_2:
-    y: 105
+    y: 12
     presets: [ presetX ]
 
 contents:
   someEntry_1:
     type: textCell
-    x: 100
+    x: 10
     presets: [ presetCoords_1 ]  # Only one preset used; original 'x' takes precedence, everything ok
 
   someEntry_2:
@@ -348,21 +348,21 @@ presets:
     fontsize: 14
 
   topline:
-    y: 100
-    y2: 200
+    y: 10
+    y2: 20
     presets: [ defaultfont ]
 
 content:
   charname:
     type: textCell
-    x:  100
-    x2: 200
+    x:  10
+    x2: 20
     presets: [ topline ]
 
   xp:
     type: textCell
-    x: 300
-    y: 300
+    x: 30
+    y: 30
 ```
 
 File 2 (inherits file 1 from above):
@@ -377,14 +377,14 @@ presets:
 content:
   playername:
     type: textCell
-    x:  300
-    x2: 400
+    x:  30
+    x2: 40
     presets: [ topline ]
 
   xp:
     type: textCell
-    x: 450
-    y: 450
+    x: 45
+    y: 45
 ```
 
 Result after inheritance was resolved:
@@ -396,26 +396,26 @@ presets:
     fontsize: 10
 
   topline:      # <= this comes from file 1
-    y: 100
-    y2: 200
+    y: 10
+    y2: 20
     presets: [ defaultfont ]
 
 content:
   charname:     # <= this comes from file 1
     type: textCell
-    x:  100
-    x2: 200
+    x:  10
+    x2: 20
     presets: [ topline ]
 
   playername:   # <= this comes from file 2
     type: textCell
-    x:  300
-    x2: 400
+    x:  30
+    x2: 40
     presets: [ topline ]
 
   xp:           # <= this comes from file 2
-    x: 450
-    y: 450
+    x: 45
+    y: 45
 ```
 
 </details>
