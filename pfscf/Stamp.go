@@ -87,11 +87,12 @@ func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 	return
 }
 
-// determineFontsize checks whether the provided text fits into the given width, if the current
+// DeriveFontsize checks whether the provided text fits into the given width, if the current
 // font and fontsize is used. If it does not fit, the size is reduced until it fits or until a
 // minimum font size is reached.
-func (s *Stamp) determineFontsize(ptWidth float64, font string, fontsize float64, text string) (result float64) {
+func (s *Stamp) DeriveFontsize(ptWidth float64, font string, fontsize float64, text string) (result float64) {
 	// TODO extend to also take height into account?
+	// TODO convert to percent and remove call from AddTextCell
 	for autoFontsize := fontsize; autoFontsize >= minFontSize; autoFontsize -= 0.25 {
 		s.pdf.SetFont(font, "", autoFontsize)
 		if s.pdf.GetStringWidth(text) <= ptWidth {
@@ -99,6 +100,18 @@ func (s *Stamp) determineFontsize(ptWidth float64, font string, fontsize float64
 		}
 	}
 	return minFontSize
+}
+
+// DeriveY2 takes two coordinates on the Y axis and the fontsize, and in case
+// the second coordinate is 0.0 will calculcate a proper y2 coordinate based
+// on y1 and the fontsize.
+func (s *Stamp) DeriveY2(y1Pct, y2Pct, fontsize float64) (y2 float64) {
+	if y2Pct != 0.0 {
+		return y2Pct
+	}
+
+	_, fontsizePct := s.ptToPct(0.0, fontsize)
+	return y1Pct - fontsizePct
 }
 
 // AddTextCell adds a text cell to the stamp.
@@ -110,8 +123,9 @@ func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fon
 
 	effectiveFontsize := fontsize
 	if autoShrink {
-		effectiveFontsize = s.determineFontsize(w, font, fontsize, text)
+		effectiveFontsize = s.DeriveFontsize(w, font, fontsize, text)
 	}
+
 	s.pdf.SetFont(font, "", effectiveFontsize)
 	s.pdf.SetXY(x, y)
 	s.pdf.SetCellMargin(0)

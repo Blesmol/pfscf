@@ -167,7 +167,8 @@ func (ce ContentTextCell) GenerateOutput(s *Stamp, value *string) (err error) {
 		return fmt.Errorf("No input value provided")
 	}
 
-	s.AddTextCell(ce.X1, ce.Y1, ce.X2, ce.Y2, ce.Font, ce.Fontsize, ce.Align, *value, true)
+	y2 := s.DeriveY2(ce.Y1, ce.Y2, ce.Fontsize)
+	s.AddTextCell(ce.X1, ce.Y1, ce.X2, y2, ce.Font, ce.Fontsize, ce.Align, *value, true)
 
 	return nil
 }
@@ -324,9 +325,12 @@ func (ce ContentSocietyID) GenerateOutput(s *Stamp, value *string) (err error) {
 	// draw white rectangle for (nearly) whole area to blank out existing dash
 	// this is currently kind of fiddly and hackish... if we blank out the
 	// complete area, then the bottom line may be gone as well, which I do not like...
-	y1, y2 := SortCoords(ce.Y1, ce.Y2)
+
+	y2 := s.DeriveY2(ce.Y1, ce.Y2, ce.Fontsize)
+
+	//y1, y2 := SortCoords(ce.Y1, ce.Y2)
 	_, yOffset := s.ptToPct(0.0, 2.0)
-	s.DrawRectangle(ce.X1, y1-yOffset, ce.X2, y2+yOffset, "F", 255, 255, 255)
+	s.DrawRectangle(ce.X1, ce.Y1-yOffset, ce.X2, y2+yOffset, "F", 255, 255, 255)
 
 	// player id
 	s.AddTextCell(ce.X1, ce.Y1, ce.XPivot-(dashWidth/2.0), ce.Y2, ce.Font, ce.Fontsize, "RB", playerID, false)

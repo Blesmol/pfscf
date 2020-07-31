@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Autoshrink for `textCell`: Automatically reduce font size if text is too wide
+- If y2 coordinate is missing or 0, then the cell height is automatically determined via font size
 
 ### Changed
 - Switched template measurement unit from points to percent

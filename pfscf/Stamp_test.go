@@ -103,7 +103,7 @@ func TestStamp_DetermineFontSize(t *testing.T) {
 		{100.0, 14.0, "fooooooooooooooooooooooo", 7.5},
 		{100.0, 14.0, "foo", 14.0},
 	} {
-		result = s.determineFontsize(data.width, "Arial", data.fontsize, data.text)
+		result = s.DeriveFontsize(data.width, "Arial", data.fontsize, data.text)
 		expectEqual(t, result, data.expectedFontsize)
 	}
 }
