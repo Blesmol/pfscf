@@ -112,6 +112,7 @@ func expectError(t *testing.T, err error, expContent ...string) {
 	if err == nil {
 		callStack()
 		t.Error("Expected an error, got nil")
+		return
 	}
 
 	for _, expPartialError := range expContent {
