@@ -143,3 +143,11 @@ func Contains(list []string, element string) (result bool) {
 	}
 	return false
 }
+
+// SortCoords takes two coordinates and returns them ordered from large to small
+func SortCoords(c1, c2 float64) (float64, float64) {
+	if c1 > c2 {
+		return c1, c2
+	}
+	return c2, c1
+}

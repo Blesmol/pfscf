@@ -102,7 +102,9 @@ func (s *Stamp) determineFontsize(ptWidth float64, font string, fontsize float64
 }
 
 // AddTextCell adds a text cell to the stamp.
-func (s *Stamp) AddTextCell(xPct, yPct, wPct, hPct float64, font string, fontsize float64, align string, text string, autoShrink bool) {
+func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fontsize float64, align string, text string, autoShrink bool) {
+	xPct, yPct, wPct, hPct := getXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
+
 	x, y := s.pctToPt(xPct, yPct)
 	w, h := s.pctToPt(wPct, hPct)
 
@@ -117,7 +119,9 @@ func (s *Stamp) AddTextCell(xPct, yPct, wPct, hPct float64, font string, fontsiz
 }
 
 // DrawRectangle draws a rectangle on the stamp.
-func (s *Stamp) DrawRectangle(xPct, yPct, wPct, hPct float64, style string, r, g, b int) {
+func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, style string, r, g, b int) {
+	xPct, yPct, wPct, hPct := getXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
+
 	x, y := s.pctToPt(xPct, yPct)
 	w, h := s.pctToPt(wPct, hPct)
 

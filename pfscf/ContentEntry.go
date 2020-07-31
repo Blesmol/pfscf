@@ -167,8 +167,7 @@ func (ce ContentTextCell) GenerateOutput(s *Stamp, value *string) (err error) {
 		return fmt.Errorf("No input value provided")
 	}
 
-	x, y, w, h := getXYWH(ce.X1, ce.Y1, ce.X2, ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, ce.Align, *value, true)
+	s.AddTextCell(ce.X1, ce.Y1, ce.X2, ce.Y2, ce.Font, ce.Fontsize, ce.Align, *value, true)
 
 	return nil
 }
@@ -252,7 +251,7 @@ func (ce ContentSocietyID) IsValid() (err error) {
 		return contentValErr(ce, err)
 	}
 
-	x, _, w, _ := getXYWH(ce.X1, ce.Y1, ce.X2, ce.Y2)
+	x, _, w, _ := getXYWH(ce.X1, 0.0, ce.X2, 0.0)
 	if ce.XPivot <= x || ce.XPivot >= (x+w) {
 		return fmt.Errorf("xpivot value must lie between x1 and x2: %v < %v < %v", ce.X1, ce.XPivot, ce.X2)
 	}
@@ -325,21 +324,18 @@ func (ce ContentSocietyID) GenerateOutput(s *Stamp, value *string) (err error) {
 	// draw white rectangle for (nearly) whole area to blank out existing dash
 	// this is currently kind of fiddly and hackish... if we blank out the
 	// complete area, then the bottom line may be gone as well, which I do not like...
-	x, y, w, h := getXYWH(ce.X1, ce.Y1, ce.X2, ce.Y2)
-	_, yOffset := s.ptToPct(0.0, 1.0)
-	s.DrawRectangle(x, y-yOffset, w, h-yOffset, "F", 255, 255, 255)
+	y1, y2 := SortCoords(ce.Y1, ce.Y2)
+	_, yOffset := s.ptToPct(0.0, 2.0)
+	s.DrawRectangle(ce.X1, y1-yOffset, ce.X2, y2+yOffset, "F", 255, 255, 255)
 
 	// player id
-	x, y, w, h = getXYWH(ce.X1, ce.Y1, ce.XPivot-(dashWidth/2.0), ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "RB", playerID, false)
+	s.AddTextCell(ce.X1, ce.Y1, ce.XPivot-(dashWidth/2.0), ce.Y2, ce.Font, ce.Fontsize, "RB", playerID, false)
 
 	// dash
-	x, y, w, h = getXYWH(ce.XPivot-(dashWidth/2), ce.Y1, ce.XPivot+(dashWidth/2), ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "CB", dash, false)
+	s.AddTextCell(ce.XPivot-(dashWidth/2), ce.Y1, ce.XPivot+(dashWidth/2), ce.Y2, ce.Font, ce.Fontsize, "CB", dash, false)
 
 	// char id
-	x, y, w, h = getXYWH(ce.XPivot+(dashWidth/2.0), ce.Y1, ce.X2, ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "LB", charID, false)
+	s.AddTextCell(ce.XPivot+(dashWidth/2.0), ce.Y1, ce.X2, ce.Y2, ce.Font, ce.Fontsize, "LB", charID, false)
 
 	return nil
 }
