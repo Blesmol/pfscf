@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func init() {
 	SetIsTestEnvironment(true)
@@ -141,16 +144,43 @@ func TestContentTextCell_BasicGetters(t *testing.T) {
 func TestContentTextCell_IsValid(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "textCell")
-		data.Font = "" // "Unset" one required value
-		tc, err := NewContentTextCell("foo", data)
-		expectNoError(t, err)
 
-		err = tc.IsValid()
-		expectError(t, err, "Missing value", "Font")
+		t.Run("missing value", func(t *testing.T) {
+			tc, _ := NewContentTextCell("foo", data)
+			tc.Font = "" // "Unset" one required value
+
+			err := tc.IsValid()
+			expectError(t, err, "Missing value", "Font")
+		})
+
+		t.Run("value out of range", func(t *testing.T) {
+			tc, _ := NewContentTextCell("foo", data)
+			tc.Y2 = 101.0
+
+			err := tc.IsValid()
+			expectError(t, err, "out of range", "Y2")
+		})
+
+		t.Run("equal x axis values", func(t *testing.T) {
+			tc, _ := NewContentTextCell("foo", data)
+			tc.X2 = tc.X1
+
+			err := tc.IsValid()
+			expectError(t, err, "Coordinates for X axis are equal")
+		})
+
+		t.Run("equal y axis values", func(t *testing.T) {
+			tc, _ := NewContentTextCell("foo", data)
+			tc.Y2 = tc.Y1
+
+			err := tc.IsValid()
+			expectError(t, err, "Coordinates for Y axis are equal")
+		})
 	})
 
 	t.Run("valid", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "textCell")
+		data.X1 = 0.0 // set something to "zero", which is also acceptable
 		tc, err := NewContentTextCell("foo", data)
 		expectNoError(t, err)
 
@@ -254,12 +284,12 @@ func TestContentTextCell_GenerateOutput(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
 		t.Run("invalid content object", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "textCell")
-			data.X1 = 0 // unset value, making this textCell invalid
+			data.Fontsize = 0.0 // unset value, making this textCell invalid
 			tc, err := NewContentTextCell("someId", data)
 			expectNoError(t, err)
 
 			err = tc.GenerateOutput(stamp, &value)
-			expectError(t, err, "Missing value", "X1")
+			expectError(t, err, "Missing value", "Fontsize")
 		})
 
 		t.Run("missing value", func(t *testing.T) {
@@ -332,37 +362,62 @@ func TestContentSocietyID_BasicGetters(t *testing.T) {
 
 func TestContentSocietyID_IsValid(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
+		data := getContentDataWithDummyData(t, "societyID")
+
 		t.Run("missing value", func(t *testing.T) {
-			data := getContentDataWithDummyData(t, "societyID")
-			data.Font = "" // "Unset" one required value
 			si, err := NewContentSocietyID("foo", data)
-			expectNoError(t, err)
+			si.Font = "" // "Unset" one required value
 
 			err = si.IsValid()
 			expectError(t, err, "Missing value")
 		})
 
-		t.Run("range violation", func(t *testing.T) {
-			data := getContentDataWithDummyData(t, "societyID")
-			data.X1 = 10.0
-			data.X2 = 20.0
-			for _, testPivot := range []float64{-1.0, 10.0, 20.0, 30.0} {
+		t.Run("xpivot range violation", func(t *testing.T) {
+			for _, testPivot := range []float64{5.0, 10.0, 20.0, 30.0} {
 				t.Logf("Testing pivot=%v", testPivot)
 				data.XPivot = testPivot
 
 				si, err := NewContentSocietyID("foo", data)
-				expectNoError(t, err)
+				si.X1 = 10.0
+				si.X2 = 20.0
 
 				err = si.IsValid()
 				expectError(t, err, "xpivot value must lie between")
 			}
 		})
+
+		t.Run("value out of range", func(t *testing.T) {
+			tc, _ := NewContentSocietyID("foo", data)
+			tc.Y2 = 101.0
+
+			err := tc.IsValid()
+			expectError(t, err, "out of range", "Y2")
+		})
+
+		t.Run("equal x axis values", func(t *testing.T) {
+			tc, _ := NewContentSocietyID("foo", data)
+			tc.X2 = tc.X1
+			tc.XPivot = tc.X1
+
+			err := tc.IsValid()
+			expectError(t, err, "Coordinates for X axis are equal")
+		})
+
+		t.Run("equal y axis values", func(t *testing.T) {
+			tc, _ := NewContentSocietyID("foo", data)
+			tc.Y2 = tc.Y1
+
+			err := tc.IsValid()
+			expectError(t, err, "Coordinates for Y axis are equal")
+		})
+
 	})
 
 	t.Run("valid", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "societyId")
 		si, err := NewContentSocietyID("foo", data)
 		expectNoError(t, err)
+		si.X1 = 0.0 // also acceptable now
 
 		err = si.IsValid()
 		expectNoError(t, err)
@@ -464,12 +519,12 @@ func TestContentSocietyID_GenerateOutput(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
 		t.Run("invalid content object", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "societyId")
-			data.X1 = 0 // unset value, making this textCell invalid
+			data.Font = "" // unset value, making this textCell invalid
 			si, err := NewContentSocietyID("someId", data)
 			expectNoError(t, err)
 
 			err = si.GenerateOutput(stamp, &validValue)
-			expectError(t, err, "Missing value", "X1")
+			expectError(t, err, "Missing value", "Font")
 		})
 
 		t.Run("missing value", func(t *testing.T) {
@@ -589,4 +644,81 @@ func TestCheckThatAllExportedFieldsAreSet(t *testing.T) {
 		err := CheckThatAllExportedFieldsAreSet(testVal)
 		expectNoError(t, err)
 	})
+}
+
+func TestCheckFieldsAreSet(t *testing.T) {
+	type testStruct struct {
+		A, b, C, d float64
+		E, F       string
+	}
+
+	t.Run("errors", func(t *testing.T) {
+		testVal := testStruct{A: 1.0, b: 2.0, E: "foo"}
+		for _, testFields := range [][]string{
+			{"A", "C"},
+			{"C"},
+			{"A", "E", "F"},
+			{"F"},
+		} {
+			err := checkFieldsAreSet(testVal, testFields...)
+			expectError(t, err, "Missing value")
+		}
+	})
+
+	t.Run("valid", func(t *testing.T) {
+		testVal := testStruct{A: 1.0, C: 3.0, E: "foo"}
+		for _, testFields := range [][]string{
+			{"A"},
+			{"C"},
+			{"A", "C"},
+			{"E"},
+			{"A", "C", "E"},
+			{},
+		} {
+			err := checkFieldsAreSet(testVal, testFields...)
+			expectNoError(t, err)
+		}
+	})
+}
+
+func TestCheckFieldsAreInRange(t *testing.T) {
+	type testStruct struct {
+		A, B, C float64
+	}
+
+	t.Run("errors", func(t *testing.T) {
+		testVal := testStruct{A: -1.0, B: 101.0}
+		for _, testFields := range [][]string{
+			{"A"},
+			{"B"},
+			{"A", "B"},
+		} {
+			err := checkFieldsAreInRange(testVal, testFields...)
+			expectError(t, err, "out of range")
+		}
+	})
+
+	t.Run("valid", func(t *testing.T) {
+		testVal := testStruct{A: 0.0, B: 50.0, C: 100.0}
+		for _, testFields := range [][]string{
+			{"A"},
+			{"B"},
+			{"C"},
+			{"A", "B", "C"},
+			{},
+		} {
+			err := checkFieldsAreInRange(testVal, testFields...)
+			expectNoError(t, err)
+		}
+	})
+}
+
+func TestContentValErr(t *testing.T) {
+	data := getContentDataWithDummyData(t, "textCell")
+	tc, err := NewContentTextCell("testId", data)
+	expectNoError(t, err)
+
+	errIn := fmt.Errorf("Test text")
+	errOut := contentValErr(tc, errIn)
+	expectError(t, errOut, "Error validating content", "testId", "Test text")
 }
