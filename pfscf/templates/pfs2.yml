@@ -7,8 +7,7 @@ presets:
 
   topline:
     presets: [defaultfont]
-    y:  16.1
-    y2: 14
+    y:  16.0
     align: CB
 
   rightbar:
@@ -19,8 +18,7 @@ presets:
 
   bottomline:
     presets: [defaultfont]
-    y:  94
-    y2: 92
+    y:  93.8
     align: CB
 
   factions:
@@ -42,17 +40,14 @@ presets:
   facline1:
     presets: [factions]
     y:  13.95
-    y2: 12.8
 
   facline2:
     presets: [factions]
     y:  16.5
-    y2: 15.4
 
   facline3:
     presets: [factions]
     y:  19.1
-    y2: 18.0
 
 content:
   player:
@@ -142,7 +137,7 @@ content:
     presets: [bottomline]
     x:  52.8
     x2: 74.0
-    example: John Doe
+    example: J. Doe
 
   gmid:
     type: textCell
