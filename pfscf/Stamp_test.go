@@ -87,31 +87,26 @@ func TestGetXYWH(t *testing.T) {
 		expectEqual(t, w, data.wExp)
 		expectEqual(t, h, data.hExp)
 	}
-
 }
 
-/*
-func TestStamp_GetXYWHasPt(t *testing.T) {
-	s := NewStamp(200.0, 400.0)
+func TestStamp_DetermineFontSize(t *testing.T) {
+	s := NewStamp(100.0, 100.0)
+
+	var result float64
 
 	for _, data := range []struct {
-		desc                                   string
-		x1, y1, x2, y2, xExp, yExp, wExp, hExp float64
+		width, fontsize  float64
+		text             string
+		expectedFontsize float64
 	}{
-		{"complete area", 0.0, 0.0, 100.0, 100.0, 0.0, 0.0, 200.0, 400.0},
-		{"Middle area", 25.0, 25.0, 75.0, 75.0, 50.0, 100.0, 100.0, 200.0},
+		{1.0, 14.0, "fooooooooooooooooooooooo", minFontSize},
+		{100.0, 14.0, "fooooooooooooooooooooooo", 7.5},
+		{100.0, 14.0, "foo", 14.0},
 	} {
-		t.Logf("%v:", data.desc)
-		t.Logf("  x1=%.1f, y1=%.1f, x2=%.1f, y2=%.1f", data.x1, data.y1, data.x2, data.y2)
-
-		x, y, w, h := s.getXYWHasPt(data.x1, data.y1, data.x2, data.y2)
-		expectEqual(t, x, data.xExp)
-		expectEqual(t, y, data.yExp)
-		expectEqual(t, w, data.wExp)
-		expectEqual(t, h, data.hExp)
+		result = s.determineFontsize(data.width, "Arial", data.fontsize, data.text)
+		expectEqual(t, result, data.expectedFontsize)
 	}
 }
-*/
 
 func TestStamp_WriteToFile(t *testing.T) {
 

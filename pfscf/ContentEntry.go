@@ -168,8 +168,7 @@ func (ce ContentTextCell) GenerateOutput(s *Stamp, value *string) (err error) {
 	}
 
 	x, y, w, h := getXYWH(ce.X1, ce.Y1, ce.X2, ce.Y2)
-
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, ce.Align, *value)
+	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, ce.Align, *value, true)
 
 	return nil
 }
@@ -332,15 +331,15 @@ func (ce ContentSocietyID) GenerateOutput(s *Stamp, value *string) (err error) {
 
 	// player id
 	x, y, w, h = getXYWH(ce.X1, ce.Y1, ce.XPivot-(dashWidth/2.0), ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "RB", playerID)
+	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "RB", playerID, false)
 
 	// dash
 	x, y, w, h = getXYWH(ce.XPivot-(dashWidth/2), ce.Y1, ce.XPivot+(dashWidth/2), ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "CB", dash)
+	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "CB", dash, false)
 
 	// char id
 	x, y, w, h = getXYWH(ce.XPivot+(dashWidth/2.0), ce.Y1, ce.X2, ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "LB", charID)
+	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "LB", charID, false)
 
 	return nil
 }
