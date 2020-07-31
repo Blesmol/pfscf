@@ -206,40 +206,4 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 			s.pdf.Text(labelXRight, labelYPos, labelText)
 		}
 	}
-
-	/*
-		for curX := float64(0); curX < s.dimX; curX += majorGap {
-			if curX < (0+borderAreaPt) || curX > (s.dimX-borderAreaPt) {
-				continue
-			}
-
-			coordString := fmt.Sprintf("x:%v", strconv.Itoa(int(curX)))
-			textWidth := s.pdf.GetStringWidth(coordString)
-			textOffset := textWidth / 2 // place in the middle of the line
-			textTopBorderMargin := labelFontSize + 2
-			textBottomBorderMargin := float64(2)
-			lineTopBorderMargin := textTopBorderMargin + 2
-			lineBottomBorderMargin := textBottomBorderMargin + labelFontSize + 2
-
-			s.pdf.Line(curX, 0+lineTopBorderMargin, curX, s.dimY-lineBottomBorderMargin)
-			s.pdf.Text(curX-textOffset, textTopBorderMargin, coordString)
-			s.pdf.Text(curX-textOffset, s.dimY-textBottomBorderMargin, coordString)
-		}
-
-		// draw major gap Y lines with labels
-		for curY := float64(0); curY < s.dimY; curY += majorGap {
-			if curY < (0+borderAreaPt) || curY > (s.dimY-borderAreaPt) {
-				continue
-			}
-
-			coordString := fmt.Sprintf("y:%v", strconv.Itoa(int(curY)))
-			textWidth := s.pdf.GetStringWidth(coordString)
-			textPosY := curY + (labelFontSize / 2) - 1
-			lineBorderMargin := textWidth + 4 // enough space for the text plus a little
-
-			s.pdf.Line(0+lineBorderMargin, curY, s.dimX-lineBorderMargin, curY)
-			s.pdf.Text(2, textPosY, coordString)
-			s.pdf.Text(s.dimX-textWidth-2, textPosY, coordString)
-		}
-	*/
 }
