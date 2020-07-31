@@ -167,9 +167,8 @@ func (ce ContentTextCell) GenerateOutput(s *Stamp, value *string) (err error) {
 		return fmt.Errorf("No input value provided")
 	}
 
-	x, y, w, h := s.getXYWHasPt(ce.X1, ce.Y1, ce.X2, ce.Y2)
-
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, ce.Align, *value)
+	x, y, w, h := getXYWH(ce.X1, ce.Y1, ce.X2, ce.Y2)
+	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, ce.Align, *value, true)
 
 	return nil
 }
@@ -321,26 +320,26 @@ func (ce ContentSocietyID) GenerateOutput(s *Stamp, value *string) (err error) {
 	charID := societyID[2]
 
 	dash := " - "
-	dashWidth, _ := s.ptToPct(s.GetStringWidth(dash, ce.Font, "", ce.Fontsize), 0.0)
+	dashWidth := s.GetStringWidth(dash, ce.Font, "", ce.Fontsize)
 
 	// draw white rectangle for (nearly) whole area to blank out existing dash
 	// this is currently kind of fiddly and hackish... if we blank out the
 	// complete area, then the bottom line may be gone as well, which I do not like...
-	x, y, w, h := s.getXYWHasPt(ce.X1, ce.Y1, ce.X2, ce.Y2)
-	yOffset := 1.0
+	x, y, w, h := getXYWH(ce.X1, ce.Y1, ce.X2, ce.Y2)
+	_, yOffset := s.ptToPct(0.0, 1.0)
 	s.DrawRectangle(x, y-yOffset, w, h-yOffset, "F", 255, 255, 255)
 
 	// player id
-	x, y, w, h = s.getXYWHasPt(ce.X1, ce.Y1, ce.XPivot-(dashWidth/2.0), ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "RB", playerID)
+	x, y, w, h = getXYWH(ce.X1, ce.Y1, ce.XPivot-(dashWidth/2.0), ce.Y2)
+	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "RB", playerID, false)
 
 	// dash
-	x, y, w, h = s.getXYWHasPt(ce.XPivot-(dashWidth/2), ce.Y1, ce.XPivot+(dashWidth/2), ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "CB", dash)
+	x, y, w, h = getXYWH(ce.XPivot-(dashWidth/2), ce.Y1, ce.XPivot+(dashWidth/2), ce.Y2)
+	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "CB", dash, false)
 
 	// char id
-	x, y, w, h = s.getXYWHasPt(ce.XPivot+(dashWidth/2.0), ce.Y1, ce.X2, ce.Y2)
-	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "LB", charID)
+	x, y, w, h = getXYWH(ce.XPivot+(dashWidth/2.0), ce.Y1, ce.X2, ce.Y2)
+	s.AddTextCell(x, y, w, h, ce.Font, ce.Fontsize, "LB", charID, false)
 
 	return nil
 }

@@ -20,6 +20,10 @@ var (
 	regexSocietyID = regexp.MustCompile(`^\s*(\d*)\s*-\s*(\d*)\s*$`)
 )
 
+const (
+	minFontSize = 4.0
+)
+
 // NewStamp creates a new Stamp object.
 func NewStamp(dimX float64, dimY float64) (s *Stamp) {
 	s = new(Stamp)
@@ -83,25 +87,40 @@ func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 	return
 }
 
-// getXYWHasPt transforms two sets of x/y coordinates in percent into a single
-// set of x/y coodinates and a pair of width/height values in points unit
-func (s *Stamp) getXYWHasPt(x1, y1, x2, y2 float64) (x, y, w, h float64) {
-	xPct, yPct, wPct, hPct := getXYWH(x1, y1, x2, y2)
-	x, y = s.pctToPt(xPct, yPct)
-	w, h = s.pctToPt(wPct, hPct)
-	return x, y, w, h
+// determineFontsize checks whether the provided text fits into the given width, if the current
+// font and fontsize is used. If it does not fit, the size is reduced until it fits or until a
+// minimum font size is reached.
+func (s *Stamp) determineFontsize(ptWidth float64, font string, fontsize float64, text string) (result float64) {
+	// TODO extend to also take height into account?
+	for autoFontsize := fontsize; autoFontsize >= minFontSize; autoFontsize -= 0.25 {
+		s.pdf.SetFont(font, "", autoFontsize)
+		if s.pdf.GetStringWidth(text) <= ptWidth {
+			return autoFontsize
+		}
+	}
+	return minFontSize
 }
 
 // AddTextCell adds a text cell to the stamp.
-func (s *Stamp) AddTextCell(x, y, w, h float64, font string, fontsize float64, align string, text string) {
-	s.pdf.SetFont(font, "", fontsize)
+func (s *Stamp) AddTextCell(xPct, yPct, wPct, hPct float64, font string, fontsize float64, align string, text string, autoShrink bool) {
+	x, y := s.pctToPt(xPct, yPct)
+	w, h := s.pctToPt(wPct, hPct)
+
+	effectiveFontsize := fontsize
+	if autoShrink {
+		effectiveFontsize = s.determineFontsize(w, font, fontsize, text)
+	}
+	s.pdf.SetFont(font, "", effectiveFontsize)
 	s.pdf.SetXY(x, y)
 	s.pdf.SetCellMargin(0)
 	s.pdf.CellFormat(w, h, text, s.cellBorder, 0, align, false, 0, "")
 }
 
 // DrawRectangle draws a rectangle on the stamp.
-func (s *Stamp) DrawRectangle(x, y, w, h float64, style string, r, g, b int) {
+func (s *Stamp) DrawRectangle(xPct, yPct, wPct, hPct float64, style string, r, g, b int) {
+	x, y := s.pctToPt(xPct, yPct)
+	w, h := s.pctToPt(wPct, hPct)
+
 	s.pdf.SetFillColor(r, g, b)
 	s.pdf.Rect(x, y, w, h, style)
 }
@@ -109,7 +128,8 @@ func (s *Stamp) DrawRectangle(x, y, w, h float64, style string, r, g, b int) {
 // GetStringWidth returns the width of a given string
 func (s *Stamp) GetStringWidth(str string, font string, style string, fontsize float64) (result float64) {
 	s.pdf.SetFont(font, style, fontsize)
-	return s.pdf.GetStringWidth(str)
+	result, _ = s.ptToPct(s.pdf.GetStringWidth(str), 0.0)
+	return result
 }
 
 // WriteToFile writes the content of the Stamp object into a PDF file.
