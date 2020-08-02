@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"reflect"
+	"regexp"
 	"strings"
 )
 
@@ -25,6 +27,8 @@ func NewContentEntry(id string, data ContentData) (ce ContentEntry, err error) {
 		return NewContentTextCell(id, data)
 	case "societyId":
 		return NewContentSocietyID(id, data)
+	case "rectangle":
+		return NewContentRectangle(id, data)
 	case "":
 		return nil, fmt.Errorf("No content type provided")
 	default:
@@ -345,6 +349,182 @@ func (ce ContentSocietyID) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
 	s.AddTextCell(ce.XPivot+(dashWidth/2.0), ce.Y1, ce.X2, y2, ce.Font, ce.Fontsize, "LB", charID, false)
 
 	return nil
+}
+
+// ---------------------------------------------------------------------------------
+
+// ContentRectangle needs a description
+type ContentRectangle struct {
+	id           string
+	description  string
+	exampleValue string
+	presets      []string
+
+	X1, Y1 float64
+	X2, Y2 float64
+	Color  string
+}
+
+// NewContentRectangle will return a content object that represents a rectangle
+func NewContentRectangle(id string, data ContentData) (ce ContentRectangle, err error) {
+	ce.id = id
+	ce.description = data.Desc
+	ce.exampleValue = data.Example
+	ce.presets = data.Presets
+
+	ce.X1 = data.X1
+	ce.Y1 = data.Y1
+	ce.X2 = data.X2
+	ce.Y2 = data.Y2
+	ce.Color = data.Color
+
+	return ce, nil
+}
+
+// ID returns the content objects ID
+func (ce ContentRectangle) ID() (id string) {
+	return ce.id
+}
+
+// Type returns the (hardcoded) type for this type of content
+func (ce ContentRectangle) Type() (contentType string) {
+	return "rectangle"
+}
+
+// ExampleValue returns the example value provided for this content object. If
+// no example was provided, an empty string is returned.
+func (ce ContentRectangle) ExampleValue() (exampleValue string) {
+	return ce.exampleValue
+}
+
+// UsageExample retuns an example call on how this content can be invoked
+// from the command line.
+func (ce ContentRectangle) UsageExample() (result string) {
+	return genericContentUsageExample(ce.id, ce.exampleValue)
+}
+
+// IsValid checks whether the current content object is valid and returns an
+// error with details if the object is not valid.
+func (ce ContentRectangle) IsValid() (err error) {
+	err = checkFieldsAreSet(ce, "Color")
+	if err != nil {
+		return contentValErr(ce, err)
+	}
+
+	err = checkFieldsAreInRange(ce, "X1", "Y1", "X2", "Y2")
+	if err != nil {
+		return contentValErr(ce, err)
+	}
+
+	if ce.X1 == ce.X2 {
+		err = fmt.Errorf("Coordinates for X axis are equal")
+		return contentValErr(ce, err)
+	}
+
+	if ce.Y1 == ce.Y2 {
+		err = fmt.Errorf("Coordinates for Y axis are equal")
+		return contentValErr(ce, err)
+	}
+
+	if _, _, _, err = parseColor(ce.Color); err != nil {
+		return contentValErr(ce, err)
+	}
+
+	return nil
+}
+
+// Describe returns a textual description of the current content object
+func (ce ContentRectangle) Describe(verbose bool) (result string) {
+	var sb strings.Builder
+
+	var description string
+	if IsSet(ce.description) {
+		description = ce.description
+	} else {
+		description = "No description available"
+	}
+
+	if !verbose {
+		fmt.Fprintf(&sb, "- %v: %v", ce.id, description)
+	} else {
+		fmt.Fprintf(&sb, "- %v\n", ce.id)
+		fmt.Fprintf(&sb, "\tDesc: %v\n", description)
+		fmt.Fprintf(&sb, "\tType: %v\n", ce.Type())
+		fmt.Fprintf(&sb, "\tExample: %v", ce.UsageExample())
+	}
+
+	return sb.String()
+}
+
+// Resolve the presets for this content object.
+func (ce ContentRectangle) Resolve(ps PresetStore) (resolvedCI ContentEntry, err error) {
+	// check that required presets are not contradicting each other
+	if err = ps.PresetsAreNotContradicting(ce.presets...); err != nil {
+		err = fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)
+		return
+	}
+
+	for _, presetID := range ce.presets {
+		preset, _ := ps.Get(presetID)
+		AddMissingValues(&ce, preset)
+	}
+
+	return ce, nil
+}
+
+// GenerateOutput generates the output for this textCell object.
+func (ce ContentRectangle) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
+	err = ce.IsValid()
+	if err != nil {
+		return err
+	}
+
+	_, hasKey := as.Get(ce.ID())
+	if !hasKey {
+		return nil // nothing to do here...
+	}
+
+	r, g, b, err := parseColor(ce.Color)
+	if err != nil {
+		return err
+	}
+
+	s.DrawRectangle(ce.X1, ce.Y1, ce.X2, ce.Y2, "F", r, g, b)
+
+	return nil
+}
+
+func parseColor(color string) (r, g, b int, err error) {
+	regexHexColorCode := regexp.MustCompile(`^[0-9a-f]{6}$`)
+
+	color = strings.ToLower(strings.TrimSpace(color))
+
+	switch color {
+	case "white":
+		return 255, 255, 255, nil
+	case "black":
+		return 0, 0, 0, nil
+	case "blue":
+		return 0, 0, 255, nil
+	case "red":
+		return 255, 0, 0, nil
+	case "green":
+		return 0, 255, 0, nil
+	}
+
+	colorCode := regexHexColorCode.FindString(color)
+	if IsSet(colorCode) {
+		colorCodeBytes := []byte(colorCode)
+		decoded := make([]byte, hex.DecodedLen(len(colorCodeBytes)))
+		_, err := hex.Decode(decoded, colorCodeBytes)
+		Assert(err == nil, fmt.Sprintf("Valid input should have been guaranteed by regexp, but instead got error: %v", err))
+		Assert(len(decoded) == 3, fmt.Sprintf("Number of resultint entries should be guaranteed by regexp, was %v instead", len(decoded)))
+
+		r, g, b = int(decoded[0]), int(decoded[1]), int(decoded[2])
+		return r, g, b, nil
+	}
+
+	return 0, 0, 0, fmt.Errorf("Unknown color: '%v'", color)
 }
 
 // ---------------------------------------------------------------------------------

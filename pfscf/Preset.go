@@ -16,6 +16,7 @@ type PresetEntry struct {
 	Font     string
 	Fontsize float64
 	Align    string
+	Color    string
 }
 
 // NewPresetEntry create a new PresetEntry object.
@@ -34,6 +35,7 @@ func NewPresetEntry(id string, data ContentData) (pe PresetEntry) {
 		Font:     data.Font,
 		Fontsize: data.Fontsize,
 		Align:    data.Align,
+		Color:    data.Color,
 	}
 	return
 }

@@ -20,6 +20,7 @@ func getContentDataWithDummyData(t *testing.T, cdType string) (cd ContentData) {
 	cd.Font = "Helvetica"
 	cd.Fontsize = 14.0
 	cd.Align = "LB"
+	cd.Color = "green"
 	cd.Example = "Some Example"
 	cd.Presets = []string{"Some Preset"}
 
@@ -514,7 +515,6 @@ func TestContentSocietyID_GenerateOutput(t *testing.T) {
 	stamp := NewStamp(100.0, 100.0)
 	testID := "someId"
 	as := getTestArgStore(testID, "12345-678")
-
 
 	t.Run("errors", func(t *testing.T) {
 		t.Run("invalid content object", func(t *testing.T) {

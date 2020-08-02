@@ -37,6 +37,7 @@ type ContentData struct {
 	Font     string   // the name of the font (if any) that should be used to display the content
 	Fontsize float64  // size of the font in points
 	Align    string   // Alignment of the content: L/C/R + T/M/B
+	Color    string   // Color code
 	Example  string   // Example value to be displayed to users
 	Presets  []string // List of presets that should be applied on this ContentData / ContentEntry
 	//Flags    *[]string

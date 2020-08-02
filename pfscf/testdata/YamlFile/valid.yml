@@ -20,6 +20,7 @@ content:
     font: my Font
     fontsize: 16.0
     align: my Align
+    color: my Color
     example: my Example
     presets: [foo]
   myOtherId:
@@ -33,5 +34,6 @@ content:
     x: 21.0
     desc: my other desc
     type: my other type
+    color: my other color
     example: my other example
     presets: [foo, bar]

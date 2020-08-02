@@ -107,6 +107,7 @@ func TestGetYamlFile(t *testing.T) {
 			expectEqual(t, c0.Font, "my Font")
 			expectEqual(t, c0.Fontsize, 16.0)
 			expectEqual(t, c0.Align, "my Align")
+			expectEqual(t, c0.Color, "my Color")
 			expectEqual(t, c0.Example, "my Example")
 
 			expectKeyExists(t, yFile.Content, "myOtherId")
@@ -122,6 +123,7 @@ func TestGetYamlFile(t *testing.T) {
 			expectEqual(t, c1.Font, "my other font")
 			expectEqual(t, c1.Fontsize, 26.0)
 			expectEqual(t, c1.Align, "my other align")
+			expectEqual(t, c1.Color, "my other color")
 			expectEqual(t, c1.Example, "my other example")
 		})
 
