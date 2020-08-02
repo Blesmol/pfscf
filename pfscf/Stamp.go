@@ -182,7 +182,7 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 
 	s.pdf.SetFont(labelFont, labelFontStyle, labelFontSize) // Used for the labels at the borders
 
-	maxLabelWidth := s.pdf.GetStringWidth("x:99%") + extraSpace // 100% won't be reached
+	maxLabelWidth := s.pdf.GetStringWidth("x:99") + extraSpace // 100% won't be reached
 	maxLabelHeight := labelFontSize + extraSpace
 
 	minX := 0.0 + maxLabelWidth
@@ -220,7 +220,7 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 		if curX >= minX && curX <= maxX {
 			s.pdf.Line(curX, minY, curX, maxY)
 
-			labelText := fmt.Sprintf("x:%v%%", strconv.Itoa(int(curPercent)))
+			labelText := fmt.Sprintf("x:%v", strconv.Itoa(int(curPercent)))
 			labelWidth := s.pdf.GetStringWidth(labelText)
 
 			labelXPos := curX - (labelWidth / 2.0) // place in middle of line
@@ -234,7 +234,7 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 		if curY >= minY && curY <= maxY {
 			s.pdf.Line(minX, curY, maxX, curY)
 
-			labelText := fmt.Sprintf("y:%v%%", strconv.Itoa(int(curPercent)))
+			labelText := fmt.Sprintf("y:%v", strconv.Itoa(int(curPercent)))
 			labelWidth := s.pdf.GetStringWidth(labelText)
 			labelXLeft := 0.0 + extraSpace
 			labelXRight := s.dimX - labelWidth
