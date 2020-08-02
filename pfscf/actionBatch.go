@@ -77,7 +77,7 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 	ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
-	var argStore ArgStore
+	var argStore *ArgStore
 	if !actionBatchCreateUseExampleValues {
 		argStore = ArgStoreFromArgs(args[2:])
 	} else {
@@ -99,17 +99,14 @@ func executeBatchFill(cmd *cobra.Command, args []string) {
 	cTmpl, err := GetTemplate(tmplName)
 	ExitOnError(err, "Error getting template")
 
-	argStores, err := GetFillInformationFromCsvFile(inCsv)
+	batchArgStores, err := GetFillInformationFromCsvFile(inCsv)
 	ExitOnError(err, "Error reading csv file")
 
 	// parse remaining arguments
 	cmdLineArgStore := ArgStoreFromArgs(args[3:])
 
-	for idx, as := range argStores {
-		// integrate cmd line arguments, overwriting existing values with same ID
-		for key, value := range cmdLineArgStore {
-			as[key] = value
-		}
+	for idx, batchArgStore := range batchArgStores {
+		cmdLineArgStore.SetParent(batchArgStore) // command line arguments have priority
 
 		pdf, err := NewPdf(inPdf)
 		ExitOnError(err, "Error opening input file '%v'", inPdf)
@@ -118,7 +115,7 @@ func executeBatchFill(cmd *cobra.Command, args []string) {
 		baseOutfile := fmt.Sprintf("Chronicle_Player_%d.pdf", playerNumber)
 		outfile := filepath.Join(outDir, baseOutfile)
 
-		err = pdf.Fill(as, cTmpl, outfile)
+		err = pdf.Fill(cmdLineArgStore, cTmpl, outfile)
 		ExitOnError(err, "Error when filling out chronicle for player %d", playerNumber)
 	}
 

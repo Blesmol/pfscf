@@ -141,7 +141,7 @@ func TestWriteTemplateToCsvFile(t *testing.T) {
 			expectNoError(t, err)
 			expectNotNil(t, ct)
 
-			as := make(ArgStore, 0)
+			as := NewArgStore(&ArgStoreInit{})
 			outfile := filepath.Join(outputDir, "nonExisting", "basic.csv")
 			err = ct.WriteTemplateToCsvFile(outfile, as, ';')
 			expectError(t, err)
@@ -152,7 +152,7 @@ func TestWriteTemplateToCsvFile(t *testing.T) {
 			expectNoError(t, err)
 			expectNotNil(t, ct)
 
-			as := make(ArgStore, 0)
+			as := NewArgStore(&ArgStoreInit{})
 			outfile := filepath.Join(outputDir, "unsupportedSeparator.csv")
 
 			err = ct.WriteTemplateToCsvFile(outfile, as, '.')
@@ -166,7 +166,7 @@ func TestWriteTemplateToCsvFile(t *testing.T) {
 			expectNoError(t, err)
 			expectNotNil(t, ct)
 
-			as := make(ArgStore, 0)
+			as := NewArgStore(&ArgStoreInit{})
 			outfile := filepath.Join(outputDir, "basic_with_semicolon.csv")
 
 			// write template to csv
@@ -189,7 +189,7 @@ func TestWriteTemplateToCsvFile(t *testing.T) {
 			expectNoError(t, err)
 			expectNotNil(t, ct)
 
-			as := make(ArgStore, 0)
+			as := NewArgStore(&ArgStoreInit{})
 			outfile := filepath.Join(outputDir, "basic_with_comma.csv")
 
 			// write template to csv
@@ -233,9 +233,9 @@ func TestWriteTemplateToCsvFile(t *testing.T) {
 			expectNoError(t, err)
 			expectNotNil(t, ct)
 
-			as := make(ArgStore, 0)
-			as["player"] = "Jack"
-			as["noExample"] = "test"
+			as := NewArgStore(&ArgStoreInit{})
+			as.Set("player", "Jack")
+			as.Set("noExample", "test")
 
 			outfile := filepath.Join(outputDir, "argStoreUserProvided.csv")
 
@@ -295,13 +295,22 @@ func TestGetFillInformationFromCsvFile(t *testing.T) {
 
 				expectEqual(t, len(argStores), 4)
 
-				expectEqual(t, argStores[0]["player"], "John")
-				expectEqual(t, argStores[0]["societyid"], "123456-789")
-				expectEqual(t, argStores[0]["char"], "Earth")
-
-				expectEqual(t, argStores[3]["player"], "Hanna")
-				expectEqual(t, argStores[3]["societyid"], "7435-432")
-				expectEqual(t, argStores[3]["char"], "Fire")
+				for _, data := range []struct {
+					argStore *ArgStore
+					key      string
+					expValue string
+				}{
+					{argStores[0], "player", "John"},
+					{argStores[0], "societyid", "123456-789"},
+					{argStores[0], "char", "Earth"},
+					{argStores[3], "player", "Hanna"},
+					{argStores[3], "societyid", "7435-432"},
+					{argStores[3], "char", "Fire"},
+				} {
+					argEntry, exists := data.argStore.Get(data.key)
+					expectTrue(t, exists)
+					expectEqual(t, argEntry, data.expValue)
+				}
 			}
 		})
 
@@ -312,11 +321,21 @@ func TestGetFillInformationFromCsvFile(t *testing.T) {
 			expectNoError(t, err)
 
 			expectEqual(t, len(argStores), 1)
-			expectEqual(t, len(argStores[0]), 3)
+			expectEqual(t, argStores[0].NumEntries(), 3)
 
-			expectEqual(t, argStores[0]["player"], "John")
-			expectEqual(t, argStores[0]["societyid"], "123456-789")
-			expectEqual(t, argStores[0]["char"], "Earth")
+			for _, data := range []struct {
+				argStore *ArgStore
+				key      string
+				expValue string
+			}{
+				{argStores[0], "player", "John"},
+				{argStores[0], "societyid", "123456-789"},
+				{argStores[0], "char", "Earth"},
+			} {
+				argEntry, exists := data.argStore.Get(data.key)
+				expectTrue(t, exists)
+				expectEqual(t, argEntry, data.expValue)
+			}
 		})
 
 		t.Run("file without players", func(t *testing.T) {
@@ -334,17 +353,24 @@ func TestGetFillInformationFromCsvFile(t *testing.T) {
 
 			expectEqual(t, len(argStores), 4)
 
-			expectEqual(t, len(argStores[0]), 2)
-			expectIsSet(t, argStores[0]["societyid"])
-			expectIsSet(t, argStores[0]["char"])
+			for _, data := range []struct {
+				argStore   *ArgStore
+				expEntries int
+				key        string
+			}{
+				{argStores[0], 2, "societyid"},
+				{argStores[0], 2, "char"},
+				{argStores[1], 2, "player"},
+				{argStores[1], 2, "char"},
+				{argStores[2], 2, "player"},
+				{argStores[2], 2, "societyid"},
+			} {
+				expectEqual(t, data.argStore.NumEntries(), data.expEntries)
 
-			expectEqual(t, len(argStores[1]), 2)
-			expectIsSet(t, argStores[1]["player"])
-			expectIsSet(t, argStores[1]["char"])
-
-			expectEqual(t, len(argStores[2]), 2)
-			expectIsSet(t, argStores[2]["player"])
-			expectIsSet(t, argStores[2]["societyid"])
+				argEntry, exists := data.argStore.Get(data.key)
+				expectTrue(t, exists)
+				expectIsSet(t, argEntry)
+			}
 		})
 
 		// currently this is only checked while stamping, so reading this in is currently not an error
@@ -357,7 +383,7 @@ func TestGetFillInformationFromCsvFile(t *testing.T) {
 	})
 }
 
-func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as ArgStore, separator rune) (argStores []ArgStore) {
+func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *ArgStore, separator rune) (argStores []*ArgStore) {
 	expectNotNil(t, ct)
 
 	outputDir := GetTempDir()
@@ -390,12 +416,12 @@ func TestCreateAndReadCsvFile(t *testing.T) {
 	expectNotNil(t, ct)
 
 	// built up test data
-	inputArgStores := make([]ArgStore, 0)
-	inputArgStores = append(inputArgStores, make(ArgStore, 0)) // empty argStore
+	inputArgStores := make([]*ArgStore, 0)
+	inputArgStores = append(inputArgStores, NewArgStore(&ArgStoreInit{})) // empty argStore
 	inputArgStores = append(inputArgStores, ArgStoreFromTemplateExamples(ct))
-	userProvidedArgStore := make(ArgStore, 0)
-	userProvidedArgStore["player"] = "Jack"
-	userProvidedArgStore["noExample"] = "test"
+	userProvidedArgStore := NewArgStore(&ArgStoreInit{})
+	userProvidedArgStore.Set("player", "Jack")
+	userProvidedArgStore.Set("noExample", "test")
 	inputArgStores = append(inputArgStores, userProvidedArgStore)
 
 	// begin tests
@@ -405,14 +431,16 @@ func TestCreateAndReadCsvFile(t *testing.T) {
 			expectNotNil(t, resultArgStores)
 
 			// only case where no result can be empty is if input was completely empty
-			expectTrue(t, len(resultArgStores) > 0 || len(inputArgStore) == 0)
+			expectTrue(t, len(resultArgStores) > 0 || inputArgStore.NumEntries() == 0)
 
 			// compare complete content
 			for _, resultArgStore := range resultArgStores {
-				expectEqual(t, len(resultArgStore), len(inputArgStore))
+				expectEqual(t, resultArgStore.NumEntries(), inputArgStore.NumEntries())
 
-				for key, value := range resultArgStore {
-					expectEqual(t, value, inputArgStore[key])
+				for _, key := range resultArgStore.GetKeys() {
+					resultValue, _ := resultArgStore.Get(key)
+					inputValue, _ := inputArgStore.Get(key)
+					expectEqual(t, resultValue, inputValue)
 				}
 			}
 		}

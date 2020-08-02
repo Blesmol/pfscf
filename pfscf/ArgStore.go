@@ -2,11 +2,22 @@ package main
 
 import (
 	"regexp"
+	"sort"
 	"strings"
 )
 
 // ArgStore holds a mapping between argument keys and values
-type ArgStore map[string]string
+type ArgStore struct {
+	store  map[string]string
+	parent *ArgStore
+}
+
+// ArgStoreInit can take parameters for initialisation of an
+// ArgStore object using NewArgStore()
+type ArgStoreInit struct {
+	initCapacity int
+	parent       *ArgStore
+}
 
 const (
 	// TODOs:
@@ -23,11 +34,84 @@ func init() {
 	argRegex = regexp.MustCompile(argPattern)
 }
 
+// NewArgStore creates a new ArgStore
+func NewArgStore(init *ArgStoreInit) *ArgStore {
+	as := ArgStore{
+		store:  make(map[string]string, init.initCapacity),
+		parent: init.parent,
+	}
+	return &as
+}
+
+// HasKey returns whether the ArgStore contains an entry with the given key.
+func (as *ArgStore) HasKey(key string) bool {
+	_, keyExists := as.store[key]
+	if !keyExists && as.HasParent() {
+		keyExists = as.parent.HasKey(key)
+	}
+	return keyExists
+}
+
+// Set adds a new value to the ArgStore using the given key.
+func (as *ArgStore) Set(key string, value string) {
+	as.store[key] = value
+}
+
+// Get looks up the given key in the ArgStore and returns the value plus a flag
+// indicating whether there is a value for the given key.
+func (as ArgStore) Get(key string) (value string, keyExists bool) {
+	value, keyExists = as.store[key]
+	if keyExists {
+		return value, true
+	}
+	if as.parent != nil {
+		return as.parent.Get(key)
+	}
+	return value, false
+}
+
+// HasParent returns whether the ArgStore already has a parent object sei
+func (as ArgStore) HasParent() bool {
+	return as.parent != nil
+}
+
+// SetParent sets the parent ArgStore for the given ArgStore. The returned bool flag
+// indicates whether an existing parent was overwritten.
+func (as *ArgStore) SetParent(parent *ArgStore) bool {
+	hasParent := as.HasParent()
+	as.parent = parent
+	return hasParent
+}
+
+// NumEntries returns the number of entries currently stored in the ArgStore
+func (as ArgStore) NumEntries() int {
+	return len(as.GetKeys())
+}
+
+// GetKeys returns a sorted list of all contained keys
+func (as ArgStore) GetKeys() (keyList []string) {
+	if as.parent != nil {
+		keyList = as.parent.GetKeys()
+	} else {
+		keyList = make([]string, 0)
+	}
+
+	for key := range as.store {
+		if !Contains(keyList, key) {
+			keyList = append(keyList, key)
+		}
+	}
+
+	sort.Strings(keyList)
+
+	return keyList
+}
+
 // ArgStoreFromArgs takes a list of provided arguments and checks
 // that they are in format "<key>=<value>". It will return
 // an error on duplicate keys.
-func ArgStoreFromArgs(args []string) (as ArgStore) {
-	as = make(ArgStore, len(args))
+func ArgStoreFromArgs(args []string) (as *ArgStore) {
+	as = NewArgStore(&ArgStoreInit{initCapacity: len(args)})
 
 	for _, arg := range args {
 		splitIdx := strings.Index(arg, "=")
@@ -38,8 +122,8 @@ func ArgStoreFromArgs(args []string) (as ArgStore) {
 		key := arg[:splitIdx]
 		value := arg[(splitIdx + 1):]
 
-		if _, exists := as[key]; !exists {
-			as[key] = value
+		if !as.HasKey(key) {
+			as.Set(key, value)
 		} else {
 			panic("Duplicate key found: " + key)
 		}
@@ -50,14 +134,14 @@ func ArgStoreFromArgs(args []string) (as ArgStore) {
 
 // ArgStoreFromTemplateExamples returns an ArgStore that is filled with
 // all the example texts contained in the provided template
-func ArgStoreFromTemplateExamples(ct *ChronicleTemplate) (as ArgStore) {
+func ArgStoreFromTemplateExamples(ct *ChronicleTemplate) (as *ArgStore) {
 	contentIDs := ct.GetContentIDs(false)
-	as = make(ArgStore, len(contentIDs))
+	as = NewArgStore(&ArgStoreInit{initCapacity: len(contentIDs)})
 
 	for _, id := range contentIDs {
 		ce, _ := ct.GetContent(id)
 		if IsSet(ce.ExampleValue()) {
-			as[id] = ce.ExampleValue()
+			as.Set(id, ce.ExampleValue())
 		}
 	}
 

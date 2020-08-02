@@ -45,7 +45,7 @@ func executeFill(cmd *cobra.Command, args []string) {
 	ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
-	var argStore ArgStore
+	var argStore *ArgStore
 	if !actionFillUseExampleValues {
 		argStore = ArgStoreFromArgs(args[3:])
 	} else {

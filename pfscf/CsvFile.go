@@ -73,7 +73,7 @@ func alignRecordLength(records *[][]string) {
 
 // WriteTemplateToCsvFile takes a chronicle template and creates a CSV file that can be used
 // as input for the "batch fill" command
-func (ct *ChronicleTemplate) WriteTemplateToCsvFile(filename string, as ArgStore, separator rune) (err error) {
+func (ct *ChronicleTemplate) WriteTemplateToCsvFile(filename string, as *ArgStore, separator rune) (err error) {
 	const numPlayers = 7
 
 	// TODO if no file extension is added, add ".csv" automatically
@@ -106,7 +106,7 @@ func (ct *ChronicleTemplate) WriteTemplateToCsvFile(filename string, as ArgStore
 		entry[0] = contentID
 
 		// check if some value was provided on the cmd line that should be filled in everywhere
-		if val, exists := as[contentID]; exists {
+		if val, exists := as.Get(contentID); exists {
 			for colIdx := 1; colIdx <= numPlayers; colIdx++ {
 				entry[colIdx] = val
 			}
@@ -132,13 +132,13 @@ func (ct *ChronicleTemplate) WriteTemplateToCsvFile(filename string, as ArgStore
 
 // GetFillInformationFromCsvFile reads a csv file and returns a list of ArgStores that
 // contain the required arguments to fill out a chronicle.
-func GetFillInformationFromCsvFile(filename string) (argStores []ArgStore, err error) {
+func GetFillInformationFromCsvFile(filename string) (argStores []*ArgStore, err error) {
 	records, err := ReadCsvFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
-	argStores = make([]ArgStore, 0)
+	argStores = make([]*ArgStore, 0)
 
 	if len(records) == 0 {
 		return argStores, nil
@@ -147,12 +147,12 @@ func GetFillInformationFromCsvFile(filename string) (argStores []ArgStore, err e
 	numPlayers := len(records[0]) - 1
 
 	for idx := 1; idx <= numPlayers; idx++ {
-		as := make(ArgStore, len(records))
+		as := NewArgStore(&ArgStoreInit{initCapacity: len(records)})
 
 		for _, record := range records {
 			key := record[0]
 			value := record[idx]
-			if _, exists := as[key]; exists {
+			if as.HasKey(key) {
 				return nil, fmt.Errorf("File '%v' contains multiple lines for content ID '%v'", filename, key)
 			}
 
@@ -161,12 +161,12 @@ func GetFillInformationFromCsvFile(filename string) (argStores []ArgStore, err e
 				if !IsSet(key) {
 					return nil, fmt.Errorf("CSV Line has content value '%v', but is missing content ID in first column", value)
 				}
-				as[key] = value
+				as.Set(key, value)
 			}
 		}
 
 		// only add if we have at least one entry here
-		if len(as) >= 1 {
+		if as.NumEntries() >= 1 {
 			argStores = append(argStores, as)
 		}
 	}

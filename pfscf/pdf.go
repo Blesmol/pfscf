@@ -160,7 +160,7 @@ func (pdf *Pdf) StampIt(stampFile string, outFile string) (err error) {
 }
 
 // Fill is the main function used to fill a PDF file.
-func (pdf *Pdf) Fill(argStore ArgStore, ct *ChronicleTemplate, outfile string) (err error) {
+func (pdf *Pdf) Fill(argStore *ArgStore, ct *ChronicleTemplate, outfile string) (err error) {
 	// prepare temporary working dir
 	workDir := GetTempDir()
 	defer os.RemoveAll(workDir)
@@ -180,7 +180,9 @@ func (pdf *Pdf) Fill(argStore ArgStore, ct *ChronicleTemplate, outfile string) (
 	}
 
 	// add content to stamp
-	for key, value := range argStore {
+	for _, key := range argStore.GetKeys() {
+		value, _ := argStore.Get(key)
+
 		//fmt.Printf("Processing Key='%v', value='%v'\n", key, value)
 
 		content, exists := ct.GetContent(key)
