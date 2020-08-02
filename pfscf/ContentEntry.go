@@ -333,13 +333,13 @@ func (ce ContentSocietyID) GenerateOutput(s *Stamp, value *string) (err error) {
 	s.DrawRectangle(ce.X1, ce.Y1-yOffset, ce.X2, y2+yOffset, "F", 255, 255, 255)
 
 	// player id
-	s.AddTextCell(ce.X1, ce.Y1, ce.XPivot-(dashWidth/2.0), ce.Y2, ce.Font, ce.Fontsize, "RB", playerID, false)
+	s.AddTextCell(ce.X1, ce.Y1, ce.XPivot-(dashWidth/2.0), y2, ce.Font, ce.Fontsize, "RB", playerID, false)
 
 	// dash
-	s.AddTextCell(ce.XPivot-(dashWidth/2), ce.Y1, ce.XPivot+(dashWidth/2), ce.Y2, ce.Font, ce.Fontsize, "CB", dash, false)
+	s.AddTextCell(ce.XPivot-(dashWidth/2), ce.Y1, ce.XPivot+(dashWidth/2), y2, ce.Font, ce.Fontsize, "CB", dash, false)
 
 	// char id
-	s.AddTextCell(ce.XPivot+(dashWidth/2.0), ce.Y1, ce.X2, ce.Y2, ce.Font, ce.Fontsize, "LB", charID, false)
+	s.AddTextCell(ce.XPivot+(dashWidth/2.0), ce.Y1, ce.X2, y2, ce.Font, ce.Fontsize, "LB", charID, false)
 
 	return nil
 }
