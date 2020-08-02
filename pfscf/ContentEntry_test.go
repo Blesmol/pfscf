@@ -31,6 +31,12 @@ func getContentDataWithDummyData(t *testing.T, cdType string) (cd ContentData) {
 	return cd
 }
 
+func getTestArgStore(key, value string) (as *ArgStore) {
+	as = NewArgStore(&ArgStoreInit{})
+	as.Set(key, value)
+	return as
+}
+
 func getTestPresetStore(t *testing.T) (ps PresetStore) {
 	ps = NewPresetStore(0)
 	var (
@@ -279,35 +285,27 @@ func TestContentTextCell_Resolve(t *testing.T) {
 
 func TestContentTextCell_GenerateOutput(t *testing.T) {
 	stamp := NewStamp(100.0, 100.0)
-	value := "foobar"
+	testID := "someId"
+	as := getTestArgStore(testID, "foobar")
 
 	t.Run("errors", func(t *testing.T) {
 		t.Run("invalid content object", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "textCell")
 			data.Fontsize = 0.0 // unset value, making this textCell invalid
-			tc, err := NewContentTextCell("someId", data)
+			tc, err := NewContentTextCell(testID, data)
 			expectNoError(t, err)
 
-			err = tc.GenerateOutput(stamp, &value)
+			err = tc.GenerateOutput(stamp, as)
 			expectError(t, err, "Missing value", "Fontsize")
-		})
-
-		t.Run("missing value", func(t *testing.T) {
-			data := getContentDataWithDummyData(t, "textCell")
-			tc, err := NewContentTextCell("someId", data)
-			expectNoError(t, err)
-
-			err = tc.GenerateOutput(stamp, nil)
-			expectError(t, err, "No input value provided")
 		})
 	})
 
 	t.Run("valid", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "textCell")
-		tc, err := NewContentTextCell("someId", data)
+		tc, err := NewContentTextCell(testID, data)
 		expectNoError(t, err)
 
-		err = tc.GenerateOutput(stamp, &value)
+		err = tc.GenerateOutput(stamp, as)
 		expectNoError(t, err)
 	})
 }
@@ -514,35 +512,29 @@ func TestContentSocietyID_Resolve(t *testing.T) {
 
 func TestContentSocietyID_GenerateOutput(t *testing.T) {
 	stamp := NewStamp(100.0, 100.0)
-	validValue := "12345-678"
+	testID := "someId"
+	as := getTestArgStore(testID, "12345-678")
+
 
 	t.Run("errors", func(t *testing.T) {
 		t.Run("invalid content object", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "societyId")
 			data.Font = "" // unset value, making this textCell invalid
-			si, err := NewContentSocietyID("someId", data)
+			si, err := NewContentSocietyID(testID, data)
 			expectNoError(t, err)
 
-			err = si.GenerateOutput(stamp, &validValue)
+			err = si.GenerateOutput(stamp, as)
 			expectError(t, err, "Missing value", "Font")
-		})
-
-		t.Run("missing value", func(t *testing.T) {
-			data := getContentDataWithDummyData(t, "societyId")
-			si, err := NewContentSocietyID("someId", data)
-			expectNoError(t, err)
-
-			err = si.GenerateOutput(stamp, nil)
-			expectError(t, err, "No input value provided")
 		})
 
 		t.Run("value with invalid format", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "societyId")
-			si, err := NewContentSocietyID("someId", data)
+			si, err := NewContentSocietyID(testID, data)
 			expectNoError(t, err)
 
 			for _, invalidSocietyID := range []string{"", "foo", "a123-456", "123-456b", "1"} {
-				err = si.GenerateOutput(stamp, &invalidSocietyID)
+				asInvalid := getTestArgStore(testID, invalidSocietyID)
+				err = si.GenerateOutput(stamp, asInvalid)
 				expectError(t, err, "does not follow the pattern")
 			}
 		})
@@ -550,11 +542,12 @@ func TestContentSocietyID_GenerateOutput(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "SocietyId")
-		si, err := NewContentSocietyID("someId", data)
+		si, err := NewContentSocietyID(testID, data)
 		expectNoError(t, err)
 
 		for _, societyID := range []string{"-", "1-", "-2", "123-456"} {
-			err = si.GenerateOutput(stamp, &societyID)
+			asValid := getTestArgStore(testID, societyID)
+			err = si.GenerateOutput(stamp, asValid)
 			expectNoError(t, err)
 		}
 	})

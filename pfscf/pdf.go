@@ -180,17 +180,10 @@ func (pdf *Pdf) Fill(argStore *ArgStore, ct *ChronicleTemplate, outfile string) 
 	}
 
 	// add content to stamp
-	for _, key := range argStore.GetKeys() {
-		value, _ := argStore.Get(key)
+	for _, key := range ct.GetContentIDs(false) {
+		content, _ := ct.GetContent(key)
 
-		//fmt.Printf("Processing Key='%v', value='%v'\n", key, value)
-
-		content, exists := ct.GetContent(key)
-		if !exists {
-			return fmt.Errorf("Found no content with key '%v'", key)
-		}
-
-		err := content.GenerateOutput(stamp, &value)
+		err := content.GenerateOutput(stamp, argStore)
 		if err != nil {
 			return err
 		}

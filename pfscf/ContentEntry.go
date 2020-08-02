@@ -15,7 +15,7 @@ type ContentEntry interface {
 	//IsValid() (err error) // Currently not required as part of interface, might change later
 	Describe(verbose bool) (result string)
 	Resolve(ps PresetStore) (resolvedCI ContentEntry, err error)
-	GenerateOutput(s *Stamp, value *string) (err error)
+	GenerateOutput(s *Stamp, as *ArgStore) (err error)
 }
 
 // NewContentEntry creates a new content entry object for the provided ContentData object.
@@ -157,18 +157,19 @@ func (ce ContentTextCell) Resolve(ps PresetStore) (resolvedCI ContentEntry, err 
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentTextCell) GenerateOutput(s *Stamp, value *string) (err error) {
+func (ce ContentTextCell) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
 	err = ce.IsValid()
 	if err != nil {
 		return err
 	}
 
-	if value == nil {
-		return fmt.Errorf("No input value provided")
+	value, hasKey := as.Get(ce.ID())
+	if !hasKey {
+		return nil // nothing to do here...
 	}
 
 	y2 := s.DeriveY2(ce.Y1, ce.Y2, ce.Fontsize)
-	s.AddTextCell(ce.X1, ce.Y1, ce.X2, y2, ce.Font, ce.Fontsize, ce.Align, *value, true)
+	s.AddTextCell(ce.X1, ce.Y1, ce.X2, y2, ce.Font, ce.Fontsize, ce.Align, value, true)
 
 	return nil
 }
@@ -300,20 +301,22 @@ func (ce ContentSocietyID) Resolve(ps PresetStore) (resolvedCI ContentEntry, err
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentSocietyID) GenerateOutput(s *Stamp, value *string) (err error) {
+func (ce ContentSocietyID) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
+	Assert(as != nil, "No ArgStore provided")
 	err = ce.IsValid()
 	if err != nil {
 		return err
 	}
 
-	if value == nil {
-		return fmt.Errorf("No input value provided")
+	value, hasKey := as.Get(ce.ID())
+	if !hasKey {
+		return nil // nothing to do here...
 	}
 
 	// check and split up provided society id value
-	societyID := regexSocietyID.FindStringSubmatch(*value)
+	societyID := regexSocietyID.FindStringSubmatch(value)
 	if len(societyID) == 0 {
-		return fmt.Errorf("Provided society ID does not follow the pattern '<player_id>-<char_id>': '%v'", *value)
+		return fmt.Errorf("Provided society ID does not follow the pattern '<player_id>-<char_id>': '%v'", value)
 	}
 	Assert(len(societyID) == 3, "Should contain the matching text plus the capturing groups")
 	playerID := societyID[1]
