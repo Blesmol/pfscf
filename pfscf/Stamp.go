@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"regexp"
 	"strconv"
 
 	"github.com/jung-kurt/gofpdf"
@@ -15,10 +14,6 @@ type Stamp struct {
 	dimY       float64
 	cellBorder string
 }
-
-var (
-	regexSocietyID = regexp.MustCompile(`^\s*(\d*)\s*-\s*(\d*)\s*$`)
-)
 
 const (
 	minFontSize = 4.0

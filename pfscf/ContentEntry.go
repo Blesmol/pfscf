@@ -8,6 +8,10 @@ import (
 	"strings"
 )
 
+var (
+	regexSocietyID = regexp.MustCompile(`^\s*(\d*)\s*-\s*(\d*)\s*$`)
+)
+
 // ContentEntry is an interface for the content. D'oh!
 type ContentEntry interface {
 	ID() string
