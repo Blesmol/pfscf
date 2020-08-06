@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	util "github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 var (
@@ -12,8 +14,8 @@ var (
 )
 
 func init() {
-	SetIsTestEnvironment(true)
-	csvTestDir = filepath.Join(GetExecutableDir(), "testdata", "CsvFile")
+	util.SetIsTestEnvironment(true)
+	csvTestDir = filepath.Join(util.GetExecutableDir(), "testdata", "CsvFile")
 }
 
 func readFileToLines(t *testing.T, filename string) (lines []string, err error) {
@@ -132,7 +134,7 @@ func TestWriteTemplateToCsvFile(t *testing.T) {
 	expectNoError(t, err)
 	expectNotNil(t, ts)
 
-	outputDir := GetTempDir()
+	outputDir := util.GetTempDir()
 	defer os.RemoveAll(outputDir)
 
 	t.Run("errors", func(t *testing.T) {
@@ -386,7 +388,7 @@ func TestGetFillInformationFromCsvFile(t *testing.T) {
 func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *ArgStore, separator rune) (argStores []*ArgStore) {
 	expectNotNil(t, ct)
 
-	outputDir := GetTempDir()
+	outputDir := util.GetTempDir()
 	defer os.RemoveAll(outputDir)
 
 	outfile := filepath.Join(outputDir, "test.csv")
@@ -408,7 +410,7 @@ func TestCreateAndReadCsvFile(t *testing.T) {
 	expectNoError(t, err)
 	expectNotNil(t, ts)
 
-	outputDir := GetTempDir()
+	outputDir := util.GetTempDir()
 	defer os.RemoveAll(outputDir)
 
 	ct, err := ts.GetTemplate("template")

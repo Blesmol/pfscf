@@ -3,6 +3,8 @@ package main
 import (
 	"path/filepath"
 	"testing"
+
+	util "github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 var (
@@ -11,8 +13,8 @@ var (
 )
 
 func init() {
-	SetIsTestEnvironment(true)
-	templateStoreTestDir = filepath.Join(GetExecutableDir(), "testdata", "TemplateStore")
+	util.SetIsTestEnvironment(true)
+	templateStoreTestDir = filepath.Join(util.GetExecutableDir(), "testdata", "TemplateStore")
 	templateStoreInheritTestDir = filepath.Join(templateStoreTestDir, "inheritance")
 }
 

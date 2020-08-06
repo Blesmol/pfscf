@@ -4,6 +4,8 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 // ArgStore holds a mapping between argument keys and values
@@ -97,7 +99,7 @@ func (as ArgStore) GetKeys() (keyList []string) {
 	}
 
 	for key := range as.store {
-		if !Contains(keyList, key) {
+		if !utils.Contains(keyList, key) {
 			keyList = append(keyList, key)
 		}
 	}
@@ -115,9 +117,9 @@ func ArgStoreFromArgs(args []string) (as *ArgStore) {
 
 	for _, arg := range args {
 		splitIdx := strings.Index(arg, "=")
-		Assert(splitIdx != -1, "No '=' found in argument")
-		Assert(splitIdx != 0, "No key found in argument")
-		Assert(splitIdx != (len(arg)-1), "No value found in argument")
+		utils.Assert(splitIdx != -1, "No '=' found in argument")
+		utils.Assert(splitIdx != 0, "No key found in argument")
+		utils.Assert(splitIdx != (len(arg)-1), "No value found in argument")
 
 		key := arg[:splitIdx]
 		value := arg[(splitIdx + 1):]
@@ -140,7 +142,7 @@ func ArgStoreFromTemplateExamples(ct *ChronicleTemplate) (as *ArgStore) {
 
 	for _, id := range contentIDs {
 		ce, _ := ct.GetContent(id)
-		if IsSet(ce.ExampleValue()) {
+		if utils.IsSet(ce.ExampleValue()) {
 			as.Set(id, ce.ExampleValue())
 		}
 	}

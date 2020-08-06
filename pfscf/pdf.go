@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 // Pdf is a wraper for a PDF file
@@ -18,7 +20,7 @@ type Pdf struct {
 
 // NewPdf creates a new Pdf object.
 func NewPdf(filename string) (p *Pdf, err error) {
-	if exists, err := IsFile(filename); !exists {
+	if exists, err := utils.IsFile(filename); !exists {
 		return nil, err
 	}
 	p = new(Pdf)
@@ -45,7 +47,7 @@ func (pdf *Pdf) AllowsPageExtraction() bool {
 // it under (but not necessarily in) the given output directory.
 // Provided page number can also be negative, then page is searched from the back.
 func (pdf *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf, err error) {
-	isDir, err := IsDir(outDir)
+	isDir, err := utils.IsDir(outDir)
 	if !isDir || err != nil {
 		return nil, fmt.Errorf("Error extracting page from file %v: %v", pdf.filename, err)
 	}
@@ -84,7 +86,7 @@ func (pdf *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf, 
 // a given PDF file
 func (pdf *Pdf) GetDimensionsInPoints() (width float64, height float64) {
 	dim, err := pdfcpuapi.PageDimsFile(pdf.filename)
-	AssertNoError(err)
+	utils.AssertNoError(err)
 	if len(dim) != 1 {
 		panic(dim)
 	}
@@ -104,7 +106,7 @@ func getPdfPageExtractionFilename(dirname, inFile, page string) (outFile string)
 // is set for the given PDF file
 func (pdf *Pdf) GetPermissionBit(bit int) (bitValue bool) {
 	perms, err := pdfcpuapi.ListPermissionsFile(pdf.filename, nil)
-	AssertNoError(err)
+	utils.AssertNoError(err)
 	if len(perms) <= 1 {
 		// no permissions return => assume true/allow as default
 		// TODO should check whether text is "Full access"
@@ -162,7 +164,7 @@ func (pdf *Pdf) StampIt(stampFile string, outFile string) (err error) {
 // Fill is the main function used to fill a PDF file.
 func (pdf *Pdf) Fill(argStore *ArgStore, ct *ChronicleTemplate, outfile string) (err error) {
 	// prepare temporary working dir
-	workDir := GetTempDir()
+	workDir := utils.GetTempDir()
 	defer os.RemoveAll(workDir)
 
 	// extract chronicle page from pdf

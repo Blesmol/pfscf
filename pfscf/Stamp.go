@@ -5,6 +5,8 @@ import (
 	"strconv"
 
 	"github.com/jung-kurt/gofpdf"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 // Stamp is a wraper for a PDF page
@@ -148,7 +150,7 @@ func (s *Stamp) GetStringWidth(str string, font string, style string, fontsize f
 // WriteToFile writes the content of the Stamp object into a PDF file.
 // The Stamp object should not be used anymore after that.
 func (s *Stamp) WriteToFile(filename string) (err error) {
-	if !IsSet(filename) {
+	if !utils.IsSet(filename) {
 		return fmt.Errorf("No filename provided")
 	}
 	return s.pdf.OutputFileAndClose(filename)
@@ -156,7 +158,7 @@ func (s *Stamp) WriteToFile(filename string) (err error) {
 
 // CreateMeasurementCoordinates overlays the stamp with a set of lines
 func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
-	Assert(majorGap > 0, "Provided gap should be greater than 0")
+	utils.Assert(majorGap > 0, "Provided gap should be greater than 0")
 
 	const (
 		labelFont      = "Arial"

@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 var (
@@ -130,7 +132,7 @@ func (ce ContentTextCell) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	var description string
-	if IsSet(ce.description) {
+	if utils.IsSet(ce.description) {
 		description = ce.description
 	} else {
 		description = "No description available"
@@ -274,7 +276,7 @@ func (ce ContentSocietyID) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	var description string
-	if IsSet(ce.description) {
+	if utils.IsSet(ce.description) {
 		description = ce.description
 	} else {
 		description = "No description available"
@@ -310,7 +312,7 @@ func (ce ContentSocietyID) Resolve(ps PresetStore) (resolvedCI ContentEntry, err
 
 // GenerateOutput generates the output for this textCell object.
 func (ce ContentSocietyID) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
-	Assert(as != nil, "No ArgStore provided")
+	utils.Assert(as != nil, "No ArgStore provided")
 	err = ce.IsValid()
 	if err != nil {
 		return err
@@ -326,7 +328,7 @@ func (ce ContentSocietyID) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
 	if len(societyID) == 0 {
 		return fmt.Errorf("Provided society ID does not follow the pattern '<player_id>-<char_id>': '%v'", value)
 	}
-	Assert(len(societyID) == 3, "Should contain the matching text plus the capturing groups")
+	utils.Assert(len(societyID) == 3, "Should contain the matching text plus the capturing groups")
 	playerID := societyID[1]
 	charID := societyID[2]
 
@@ -442,7 +444,7 @@ func (ce ContentRectangle) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	var description string
-	if IsSet(ce.description) {
+	if utils.IsSet(ce.description) {
 		description = ce.description
 	} else {
 		description = "No description available"
@@ -517,12 +519,12 @@ func parseColor(color string) (r, g, b int, err error) {
 	}
 
 	colorCode := regexHexColorCode.FindString(color)
-	if IsSet(colorCode) {
+	if utils.IsSet(colorCode) {
 		colorCodeBytes := []byte(colorCode)
 		decoded := make([]byte, hex.DecodedLen(len(colorCodeBytes)))
 		_, err := hex.Decode(decoded, colorCodeBytes)
-		Assert(err == nil, fmt.Sprintf("Valid input should have been guaranteed by regexp, but instead got error: %v", err))
-		Assert(len(decoded) == 3, fmt.Sprintf("Number of resultint entries should be guaranteed by regexp, was %v instead", len(decoded)))
+		utils.Assert(err == nil, fmt.Sprintf("Valid input should have been guaranteed by regexp, but instead got error: %v", err))
+		utils.Assert(len(decoded) == 3, fmt.Sprintf("Number of resultint entries should be guaranteed by regexp, was %v instead", len(decoded)))
 
 		r, g, b = int(decoded[0]), int(decoded[1]), int(decoded[2])
 		return r, g, b, nil
@@ -538,9 +540,9 @@ func parseColor(color string) (r, g, b int, err error) {
 // name. If that is the case and if the target field does not yet have a value set,
 // then the value from the source object is copied over.
 func AddMissingValues(target interface{}, source interface{}, ignoredFields ...string) {
-	Assert(reflect.ValueOf(source).Kind() == reflect.Struct, "Can only process structs as source")
-	Assert(reflect.ValueOf(target).Kind() == reflect.Ptr, "Target argument must be passed by ptr, as we modify it")
-	Assert(reflect.ValueOf(target).Elem().Kind() == reflect.Struct, "Can only process structs as target")
+	utils.Assert(reflect.ValueOf(source).Kind() == reflect.Struct, "Can only process structs as source")
+	utils.Assert(reflect.ValueOf(target).Kind() == reflect.Ptr, "Target argument must be passed by ptr, as we modify it")
+	utils.Assert(reflect.ValueOf(target).Elem().Kind() == reflect.Struct, "Can only process structs as target")
 
 	vSrc := reflect.ValueOf(source)
 	vDst := reflect.ValueOf(target).Elem()
@@ -550,7 +552,7 @@ func AddMissingValues(target interface{}, source interface{}, ignoredFields ...s
 		fieldName := vDst.Type().Field(i).Name
 
 		// Ignore the Presets field, as we do not want to take over values for this.
-		if Contains(ignoredFields, fieldName) { // especially filter out "Presets" and "ID"
+		if utils.Contains(ignoredFields, fieldName) { // especially filter out "Presets" and "ID"
 			continue
 		}
 
@@ -583,18 +585,18 @@ func AddMissingValues(target interface{}, source interface{}, ignoredFields ...s
 // in the passed structure is not set.
 func CheckThatAllExportedFieldsAreSet(obj interface{}) (err error) {
 	oVal := reflect.ValueOf(obj)
-	Assert(oVal.Kind() == reflect.Struct, "Can only work on structs")
+	utils.Assert(oVal.Kind() == reflect.Struct, "Can only work on structs")
 
 	unsetFields := make([]string, 0)
 	for idx := 0; idx < oVal.NumField(); idx++ {
 		fieldVal := oVal.Field(idx)
 
 		// skip unexported fields
-		if !IsExported(fieldVal) {
+		if !utils.IsExported(fieldVal) {
 			continue
 		}
 
-		if !IsSet(fieldVal.Interface()) {
+		if !utils.IsSet(fieldVal.Interface()) {
 			fieldName := reflect.TypeOf(obj).Field(idx).Name
 			unsetFields = append(unsetFields, fieldName)
 		}
@@ -609,12 +611,12 @@ func CheckThatAllExportedFieldsAreSet(obj interface{}) (err error) {
 
 func genericFieldsCheck(obj interface{}, isOk func(interface{}) bool, fieldNames ...string) (err error) {
 	oVal := reflect.ValueOf(obj)
-	Assert(oVal.Kind() == reflect.Struct, "Can only work on structs")
+	utils.Assert(oVal.Kind() == reflect.Struct, "Can only work on structs")
 
 	errFields := make([]string, 0)
 	for _, fieldName := range fieldNames {
 		fieldVal := oVal.FieldByName(fieldName)
-		Assert(fieldVal.IsValid(), fmt.Sprintf("No field with name '%v' found in struct of type '%T'", fieldName, obj))
+		utils.Assert(fieldVal.IsValid(), fmt.Sprintf("No field with name '%v' found in struct of type '%T'", fieldName, obj))
 
 		if !isOk(fieldVal.Interface()) {
 			errFields = append(errFields, fieldName)
@@ -628,7 +630,7 @@ func genericFieldsCheck(obj interface{}, isOk func(interface{}) bool, fieldNames
 }
 
 func checkFieldsAreSet(obj interface{}, fieldNames ...string) (err error) {
-	err = genericFieldsCheck(obj, IsSet, fieldNames...)
+	err = genericFieldsCheck(obj, utils.IsSet, fieldNames...)
 	if err != nil {
 		return fmt.Errorf("Missing values for the following fields: %v", err)
 	}
@@ -651,10 +653,10 @@ func checkFieldsAreInRange(obj interface{}, fieldNames ...string) (err error) {
 // values. If no example value was provided, then a string containing
 // "Not available" is returned instead.
 func genericContentUsageExample(id, exampleValue string) (result string) {
-	if !IsSet(exampleValue) {
+	if !utils.IsSet(exampleValue) {
 		return fmt.Sprintf("Not available")
 	}
-	return fmt.Sprintf("%v=%v", id, QuoteStringIfRequired(exampleValue))
+	return fmt.Sprintf("%v=%v", id, utils.QuoteStringIfRequired(exampleValue))
 }
 
 func contentValErr(ce ContentEntry, errIn error) (errOut error) {

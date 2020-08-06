@@ -2,6 +2,8 @@ package main
 
 import (
 	"github.com/spf13/cobra"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 var (
@@ -31,18 +33,18 @@ func GetFillCommand() (cmd *cobra.Command) {
 }
 
 func executeFill(cmd *cobra.Command, args []string) {
-	Assert(len(args) >= 3, "Number of arguments should be guaranteed by cobra settings")
+	utils.Assert(len(args) >= 3, "Number of arguments should be guaranteed by cobra settings")
 
 	tmplName := args[0]
 	inFile := args[1]
 	outFile := args[2]
 
 	if inFile == outFile {
-		ExitWithMessage("Input file and output file must not be identical")
+		utils.ExitWithMessage("Input file and output file must not be identical")
 	}
 
 	cTmpl, err := GetTemplate(tmplName)
-	ExitOnError(err, "Error getting template")
+	utils.ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
 	var argStore *ArgStore
@@ -53,8 +55,8 @@ func executeFill(cmd *cobra.Command, args []string) {
 	}
 
 	pdf, err := NewPdf(inFile)
-	ExitOnError(err, "Error opening input file '%v'", inFile)
+	utils.ExitOnError(err, "Error opening input file '%v'", inFile)
 
 	err = pdf.Fill(argStore, cTmpl, outFile)
-	ExitOnError(err, "Error when filling out chronicle")
+	utils.ExitOnError(err, "Error when filling out chronicle")
 }

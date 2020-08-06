@@ -8,31 +8,18 @@ import (
 	"runtime/debug"
 	"strings"
 	"testing"
+
+	util "github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 const (
 	printCallStackOnFailingTest = false
 )
 
-var (
-	isTestEnvironment = false
-)
-
 func callStack() {
 	if printCallStackOnFailingTest {
 		debug.PrintStack()
 	}
-}
-
-// IsTestEnvironment should indicate whether the current run is a test run.
-func IsTestEnvironment() bool {
-	return isTestEnvironment
-}
-
-// SetIsTestEnvironment sets a flag that indicates that we are currently in
-// a test environment.
-func SetIsTestEnvironment(isTestEnv bool) {
-	isTestEnvironment = isTestEnv
 }
 
 func expectEqual(t *testing.T, got interface{}, exp interface{}) {
@@ -136,7 +123,7 @@ func expectNoError(t *testing.T, err error) {
 func expectNotSet(t *testing.T, got interface{}) {
 	t.Helper()
 
-	if IsSet(got) {
+	if util.IsSet(got) {
 		callStack()
 		t.Errorf("Expected not set, got '%v'", got)
 	}
@@ -145,7 +132,7 @@ func expectNotSet(t *testing.T, got interface{}) {
 func expectIsSet(t *testing.T, got interface{}) {
 	t.Helper()
 
-	if !IsSet(got) {
+	if !util.IsSet(got) {
 		callStack()
 		t.Errorf("Expected value of type '%v' to be set, but was not", reflect.TypeOf(got))
 	}
@@ -159,21 +146,21 @@ func expectAllExportedSet(t *testing.T, got interface{}) {
 	case reflect.Struct:
 		for i := 0; i < vGot.NumField(); i++ {
 			field := vGot.Field(i)
-			if !IsExported(field) {
+			if !util.IsExported(field) {
 				continue // skip non-exported fields
 			}
 			t.Logf("Testing field '%v'", reflect.TypeOf(got).Field(i).Name)
 			expectAllExportedSet(t, field.Interface())
 		}
 	case reflect.Ptr:
-		if IsSet(got) {
+		if util.IsSet(got) {
 			expectAllExportedSet(t, vGot.Elem().Interface())
 		} else {
 			callStack()
 			t.Errorf("Expected to be set, but was not: %v / %v", vGot.Type(), vGot.Kind())
 		}
 	default:
-		if !IsSet(got) {
+		if !util.IsSet(got) {
 			callStack()
 			t.Errorf("Expected to be set, but was not: %v / %v", vGot.Type(), vGot.Kind())
 		}

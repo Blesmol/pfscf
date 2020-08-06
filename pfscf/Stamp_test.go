@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	util "github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 func getTextCellWithDummyData() (cd ContentData) {
@@ -125,7 +127,7 @@ func TestStamp_WriteToFile(t *testing.T) {
 		t.Run("fiii", func(t *testing.T) {
 			s := NewStamp(400.0, 400.0)
 			expectNotNil(t, s)
-			workDir := GetTempDir()
+			workDir := util.GetTempDir()
 			defer os.RemoveAll(workDir)
 			err := s.WriteToFile(filepath.Join(workDir, "stamp.pdf"))
 			expectNoError(t, err)

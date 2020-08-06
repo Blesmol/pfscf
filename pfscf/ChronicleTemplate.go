@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"strings"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 // ChronicleTemplate represents a template configuration for chronicles. It contains
@@ -20,17 +22,17 @@ type ChronicleTemplate struct {
 // an error if the YamlFile cannot be converted to a ChronicleTemplate, e.g. because
 // it is missing required entries.
 func NewChronicleTemplate(yFilename string, yFile *YamlFile) (ct *ChronicleTemplate, err error) {
-	if !IsSet(yFilename) {
+	if !utils.IsSet(yFilename) {
 		return nil, fmt.Errorf("No filename provided")
 	}
 	if yFile == nil {
 		return nil, fmt.Errorf("Provided YamlFile object is nil")
 	}
 
-	if !IsSet(yFile.ID) {
+	if !utils.IsSet(yFile.ID) {
 		return nil, fmt.Errorf("Template file '%v' does not contain an ID", yFilename)
 	}
-	if !IsSet(yFile.Description) {
+	if !utils.IsSet(yFile.Description) {
 		return nil, fmt.Errorf("Template file '%v' does not contain a description", yFilename)
 	}
 
@@ -95,7 +97,7 @@ func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
 
 	if !verbose {
 		fmt.Fprintf(&sb, "- %v", ct.ID())
-		if IsSet(ct.Description()) {
+		if utils.IsSet(ct.Description()) {
 			fmt.Fprintf(&sb, ": %v", ct.Description())
 		}
 	} else {

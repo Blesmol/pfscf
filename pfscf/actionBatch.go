@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 var (
@@ -57,7 +59,7 @@ func GetBatchCommand() (cmd *cobra.Command) {
 }
 
 func executeBatchCreate(cmd *cobra.Command, args []string) {
-	Assert(len(args) >= 2, "Number of arguments should be guaranteed by cobra settings")
+	utils.Assert(len(args) >= 2, "Number of arguments should be guaranteed by cobra settings")
 
 	tmplName := args[0]
 	outFile := args[1]
@@ -69,12 +71,12 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 	case ",":
 		separator = ','
 	default:
-		ExitWithMessage("Currently only ';' and ',' are accepted as separators")
+		utils.ExitWithMessage("Currently only ';' and ',' are accepted as separators")
 	}
 	fmt.Printf("Separator: %v", separator)
 
 	cTmpl, err := GetTemplate(tmplName)
-	ExitOnError(err, "Error getting template")
+	utils.ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
 	var argStore *ArgStore
@@ -85,11 +87,11 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 	}
 
 	err = cTmpl.WriteTemplateToCsvFile(outFile, argStore, separator)
-	ExitOnError(err, "Error writing CSV file for template %v", tmplName)
+	utils.ExitOnError(err, "Error writing CSV file for template %v", tmplName)
 }
 
 func executeBatchFill(cmd *cobra.Command, args []string) {
-	Assert(len(args) >= 4, "Number of arguments should be guaranteed by cobra settings")
+	utils.Assert(len(args) >= 4, "Number of arguments should be guaranteed by cobra settings")
 
 	tmplName := args[0]
 	inCsv := args[1]
@@ -97,10 +99,10 @@ func executeBatchFill(cmd *cobra.Command, args []string) {
 	outDir := args[3]
 
 	cTmpl, err := GetTemplate(tmplName)
-	ExitOnError(err, "Error getting template")
+	utils.ExitOnError(err, "Error getting template")
 
 	batchArgStores, err := GetFillInformationFromCsvFile(inCsv)
-	ExitOnError(err, "Error reading csv file")
+	utils.ExitOnError(err, "Error reading csv file")
 
 	// parse remaining arguments
 	cmdLineArgStore := ArgStoreFromArgs(args[3:])
@@ -109,14 +111,14 @@ func executeBatchFill(cmd *cobra.Command, args []string) {
 		cmdLineArgStore.SetParent(batchArgStore) // command line arguments have priority
 
 		pdf, err := NewPdf(inPdf)
-		ExitOnError(err, "Error opening input file '%v'", inPdf)
+		utils.ExitOnError(err, "Error opening input file '%v'", inPdf)
 
 		playerNumber := idx + 1
 		baseOutfile := fmt.Sprintf("Chronicle_Player_%d.pdf", playerNumber)
 		outfile := filepath.Join(outDir, baseOutfile)
 
 		err = pdf.Fill(cmdLineArgStore, cTmpl, outfile)
-		ExitOnError(err, "Error when filling out chronicle for player %d", playerNumber)
+		utils.ExitOnError(err, "Error when filling out chronicle for player %d", playerNumber)
 	}
 
 }

@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 // GetTemplateCommand returns the cobra command for the "fill" action.
@@ -73,7 +75,7 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 
 func executeTemplateList(cmd *cobra.Command, args []string) {
 	ts, err := GetTemplateStore()
-	ExitOnError(err, "Could not read templates")
+	utils.ExitOnError(err, "Could not read templates")
 
 	templateNames := ts.GetTemplateIDs(false)
 	fmt.Printf("\n")
@@ -88,7 +90,7 @@ func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 	templateName := args[0]
 
 	ct, err := GetTemplate(templateName)
-	ExitOnError(err, "Could not get template '%v'", templateName)
+	utils.ExitOnError(err, "Could not get template '%v'", templateName)
 
 	fmt.Printf("Template '%v'\n\n", templateName)
 	idList := ct.GetContentIDs(false)

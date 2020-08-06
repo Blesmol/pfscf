@@ -4,6 +4,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 var (
@@ -11,8 +13,8 @@ var (
 )
 
 func init() {
-	SetIsTestEnvironment(true)
-	chronicleTemplateTestDir = filepath.Join(GetExecutableDir(), "testdata", "ChronicleTemplate")
+	utils.SetIsTestEnvironment(true)
+	chronicleTemplateTestDir = filepath.Join(utils.GetExecutableDir(), "testdata", "ChronicleTemplate")
 }
 
 func getCTfromYamlFile(t *testing.T, filename string) (ct *ChronicleTemplate) {

@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -8,6 +8,21 @@ import (
 	"reflect"
 	"strings"
 )
+
+var (
+	isTestEnvironment = false
+)
+
+// IsTestEnvironment should indicate whether the current run is a test run.
+func IsTestEnvironment() bool {
+	return isTestEnvironment
+}
+
+// SetIsTestEnvironment sets a flag that indicates that we are currently in
+// a test environment.
+func SetIsTestEnvironment(isTestEnv bool) {
+	isTestEnvironment = isTestEnv
+}
 
 // Assert will throw a panic if condition is false.
 // The additional parameter is provided to panic() as argument.

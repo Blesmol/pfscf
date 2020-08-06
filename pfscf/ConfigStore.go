@@ -2,6 +2,8 @@ package main
 
 import (
 	"path/filepath"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 const (
@@ -15,7 +17,7 @@ var (
 // GetTemplatesDir returns the path below which the template files are stored.
 // In case a test environment is recognized, a different directory with testdata is returned.
 func GetTemplatesDir() (dir string) {
-	if IsTestEnvironment() {
+	if utils.IsTestEnvironment() {
 		return getTestingTemplatesDir()
 	}
 	return getProductiveTemplatesDir()
@@ -24,7 +26,7 @@ func GetTemplatesDir() (dir string) {
 // getProductiveTemplatesDir returns the path below which the
 // productive template files are stored.
 func getProductiveTemplatesDir() (dir string) {
-	return filepath.Join(GetExecutableDir(), templateDir)
+	return filepath.Join(utils.GetExecutableDir(), templateDir)
 }
 
 // getTestingTemplatesDir returns the path below which the template files
@@ -35,6 +37,6 @@ func getTestingTemplatesDir() (dir string) {
 
 // SetTestingTemplatesDir sets the global template dir in a testing environment
 func SetTestingTemplatesDir(dir string) {
-	Assert(IsTestEnvironment(), "Should only be called during tests")
+	utils.Assert(utils.IsTestEnvironment(), "Should only be called during tests")
 	templateTestDir = dir
 }

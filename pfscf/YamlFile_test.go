@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"sort"
 	"testing"
+
+	util "github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 var (
@@ -12,8 +14,8 @@ var (
 )
 
 func init() {
-	SetIsTestEnvironment(true)
-	yamlTestDir = filepath.Join(GetExecutableDir(), "testdata", "YamlFile")
+	util.SetIsTestEnvironment(true)
+	yamlTestDir = filepath.Join(util.GetExecutableDir(), "testdata", "YamlFile")
 }
 
 func TestGetYamlFile(t *testing.T) {
@@ -142,7 +144,7 @@ func TestGetYamlFile(t *testing.T) {
 			refStruct := reflect.ValueOf(c0)
 			for i := 0; i < refStruct.NumField(); i++ {
 				refField := refStruct.Field(i)
-				if refField.CanAddr() && IsSet(refField.Interface()) {
+				if refField.CanAddr() && util.IsSet(refField.Interface()) {
 					t.Errorf("Expected ContentData field '%v' to be not set, but has value '%v' instead", refStruct.Type().Field(i).Name, refField.Interface())
 				}
 			}

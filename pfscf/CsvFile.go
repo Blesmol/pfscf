@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 // ReadCsvFile reads the csv file from the provided location.
@@ -157,8 +159,8 @@ func GetFillInformationFromCsvFile(filename string) (argStores []*ArgStore, err 
 			}
 
 			// only store if there is an actual value
-			if IsSet(value) {
-				if !IsSet(key) {
+			if utils.IsSet(value) {
+				if !utils.IsSet(key) {
 					return nil, fmt.Errorf("CSV Line has content value '%v', but is missing content ID in first column", value)
 				}
 				as.Set(key, value)

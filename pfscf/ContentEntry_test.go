@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"testing"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 func init() {
-	SetIsTestEnvironment(true)
+	utils.SetIsTestEnvironment(true)
 }
 
 func getContentDataWithDummyData(t *testing.T, cdType string) (cd ContentData) {
