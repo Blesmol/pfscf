@@ -1,6 +1,10 @@
 package main
 
-import "testing"
+import (
+	"testing"
+
+	test "github.com/Blesmol/pfscf/pfscf/testutils"
+)
 
 func TestPresetEntry_IsNotContradictingWith(t *testing.T) {
 	var err error
@@ -14,17 +18,17 @@ func TestPresetEntry_IsNotContradictingWith(t *testing.T) {
 	t.Run("no self-contradiction", func(t *testing.T) {
 		// a given CE with values should not contradict itself
 		err = peAllSet.IsNotContradictingWith(peAllSet)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 	})
 
 	t.Run("empty contradicts nothing", func(t *testing.T) {
 		// a given CE with no values should contradict nothing
 		err = peEmpty.IsNotContradictingWith(peEmpty)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 		err = peAllSet.IsNotContradictingWith(peEmpty)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 		err = peEmpty.IsNotContradictingWith(peAllSet)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 	})
 
 	t.Run("non-overlapping", func(t *testing.T) {
@@ -34,7 +38,7 @@ func TestPresetEntry_IsNotContradictingWith(t *testing.T) {
 		cdRight := ContentData{X2: 2.0, Font: "font"}
 		peRight := NewPresetEntry("idRight", cdRight)
 		err = peLeft.IsNotContradictingWith(peRight)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 	})
 
 	t.Run("conflicting string attribute", func(t *testing.T) {
@@ -45,7 +49,7 @@ func TestPresetEntry_IsNotContradictingWith(t *testing.T) {
 		peRight := NewPresetEntry("idRight", cdRight)
 
 		err = peLeft.IsNotContradictingWith(peRight)
-		expectError(t, err)
+		test.ExpectError(t, err)
 	})
 
 	t.Run("conflicting float64 attribute", func(t *testing.T) {
@@ -56,6 +60,6 @@ func TestPresetEntry_IsNotContradictingWith(t *testing.T) {
 		peRight := NewPresetEntry("idRight", cdRight)
 
 		err = peLeft.IsNotContradictingWith(peRight)
-		expectError(t, err)
+		test.ExpectError(t, err)
 	})
 }

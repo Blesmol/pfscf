@@ -1,4 +1,4 @@
-package main
+package testutils
 
 import (
 	"io/ioutil"
@@ -22,7 +22,8 @@ func callStack() {
 	}
 }
 
-func expectEqual(t *testing.T, got interface{}, exp interface{}) {
+// ExpectEqual expects the provided values to be equal.
+func ExpectEqual(t *testing.T, got interface{}, exp interface{}) {
 	t.Helper()
 
 	if exp == got {
@@ -50,7 +51,8 @@ func expectEqual(t *testing.T, got interface{}, exp interface{}) {
 	t.Errorf("Expected '%v' (type %v), got '%v' (type %v)", exp, reflect.TypeOf(exp), got, reflect.TypeOf(got))
 }
 
-func expectNotEqual(t *testing.T, got interface{}, notExp interface{}) {
+// ExpectNotEqual expects the provided values to not be equal.
+func ExpectNotEqual(t *testing.T, got interface{}, notExp interface{}) {
 	t.Helper()
 
 	typeNotExp := reflect.TypeOf(notExp)
@@ -70,7 +72,8 @@ func expectNotEqual(t *testing.T, got interface{}, notExp interface{}) {
 	}
 }
 
-func expectNil(t *testing.T, got interface{}) {
+// ExpectNil expects the provided argument to be nil.
+func ExpectNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
 	t.Helper()
 
@@ -80,7 +83,8 @@ func expectNil(t *testing.T, got interface{}) {
 	}
 }
 
-func expectNotNil(t *testing.T, got interface{}) {
+// ExpectNotNil expects the provided argument to not be nil.
+func ExpectNotNil(t *testing.T, got interface{}) {
 	// do NOT use with errors! This can lead to strange results
 	t.Helper()
 
@@ -90,10 +94,10 @@ func expectNotNil(t *testing.T, got interface{}) {
 	}
 }
 
-// expectError checks that the provided error does not equal nil. If additional
+// ExpectError checks that the provided error does not equal nil. If additional
 // string arguments were passend, then it is checked that the error message
 // contains all of them.
-func expectError(t *testing.T, err error, expContent ...string) {
+func ExpectError(t *testing.T, err error, expContent ...string) {
 	t.Helper()
 
 	if err == nil {
@@ -111,7 +115,8 @@ func expectError(t *testing.T, err error, expContent ...string) {
 	}
 }
 
-func expectNoError(t *testing.T, err error) {
+// ExpectNoError expects that the provided error argument is nil.
+func ExpectNoError(t *testing.T, err error) {
 	t.Helper()
 
 	if err != nil {
@@ -120,7 +125,8 @@ func expectNoError(t *testing.T, err error) {
 	}
 }
 
-func expectNotSet(t *testing.T, got interface{}) {
+// ExpectNotSet expects that the provided argument is not set.
+func ExpectNotSet(t *testing.T, got interface{}) {
 	t.Helper()
 
 	if util.IsSet(got) {
@@ -129,7 +135,8 @@ func expectNotSet(t *testing.T, got interface{}) {
 	}
 }
 
-func expectIsSet(t *testing.T, got interface{}) {
+// ExpectIsSet expects that the provided argument is set.
+func ExpectIsSet(t *testing.T, got interface{}) {
 	t.Helper()
 
 	if !util.IsSet(got) {
@@ -138,7 +145,8 @@ func expectIsSet(t *testing.T, got interface{}) {
 	}
 }
 
-func expectAllExportedSet(t *testing.T, got interface{}) {
+// ExpectAllExportedSet expects that all exported fields in the passed struct argument are set.
+func ExpectAllExportedSet(t *testing.T, got interface{}) {
 	t.Helper()
 
 	vGot := reflect.ValueOf(got)
@@ -150,11 +158,11 @@ func expectAllExportedSet(t *testing.T, got interface{}) {
 				continue // skip non-exported fields
 			}
 			t.Logf("Testing field '%v'", reflect.TypeOf(got).Field(i).Name)
-			expectAllExportedSet(t, field.Interface())
+			ExpectAllExportedSet(t, field.Interface())
 		}
 	case reflect.Ptr:
 		if util.IsSet(got) {
-			expectAllExportedSet(t, vGot.Elem().Interface())
+			ExpectAllExportedSet(t, vGot.Elem().Interface())
 		} else {
 			callStack()
 			t.Errorf("Expected to be set, but was not: %v / %v", vGot.Type(), vGot.Kind())
@@ -167,7 +175,8 @@ func expectAllExportedSet(t *testing.T, got interface{}) {
 	}
 }
 
-func expectFileExists(t *testing.T, filename string) {
+// ExpectFileExists expects that the provided file name references an existing file.
+func ExpectFileExists(t *testing.T, filename string) {
 	t.Helper()
 
 	info, err := os.Stat(filename)
@@ -190,7 +199,8 @@ func expectFileExists(t *testing.T, filename string) {
 	}
 }
 
-func expectKeyExists(t *testing.T, tMap interface{}, key interface{}) {
+// ExpectKeyExists expects that the provided key exists in the provided map.
+func ExpectKeyExists(t *testing.T, tMap interface{}, key interface{}) {
 	t.Helper()
 
 	vMap := reflect.ValueOf(tMap)
@@ -215,7 +225,8 @@ func expectKeyExists(t *testing.T, tMap interface{}, key interface{}) {
 	t.Errorf("Key '%v' was not found in map '%v'", key, tMap)
 }
 
-func expectTrue(t *testing.T, v bool) {
+// ExpectTrue expects that the provided bool argument is true.
+func ExpectTrue(t *testing.T, v bool) {
 	t.Helper()
 
 	if !v {
@@ -224,7 +235,8 @@ func expectTrue(t *testing.T, v bool) {
 	}
 }
 
-func expectFalse(t *testing.T, v bool) {
+// ExpectFalse expects that the provided boll argument is false.
+func ExpectFalse(t *testing.T, v bool) {
 	t.Helper()
 
 	if v {
@@ -233,7 +245,8 @@ func expectFalse(t *testing.T, v bool) {
 	}
 }
 
-func expectStringContains(t *testing.T, got string, exp string) {
+// ExpectStringContains expects that the provided string contains the provided substring.
+func ExpectStringContains(t *testing.T, got string, exp string) {
 	t.Helper()
 
 	if !strings.Contains(got, exp) {
@@ -242,7 +255,8 @@ func expectStringContains(t *testing.T, got string, exp string) {
 	}
 }
 
-func expectStringContainsNot(t *testing.T, got string, exp string) {
+// ExpectStringContainsNot expects that the provided string does not contain the provided substring.
+func ExpectStringContainsNot(t *testing.T, got string, exp string) {
 	t.Helper()
 
 	if strings.Contains(got, exp) {

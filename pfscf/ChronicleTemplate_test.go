@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -22,12 +23,12 @@ func getCTfromYamlFile(t *testing.T, filename string) (ct *ChronicleTemplate) {
 
 	fileToTest := filepath.Join(chronicleTemplateTestDir, filename)
 	yFile, err := GetYamlFile(fileToTest)
-	expectNotNil(t, yFile)
-	expectNoError(t, err)
+	test.ExpectNotNil(t, yFile)
+	test.ExpectNoError(t, err)
 
 	ct, err = NewChronicleTemplate(filename, yFile)
-	expectNotNil(t, ct)
-	expectNoError(t, err)
+	test.ExpectNotNil(t, ct)
+	test.ExpectNoError(t, err)
 	return ct
 }
 
@@ -37,18 +38,18 @@ func TestNewChronicleTemplate(t *testing.T) {
 			fileToTest := filepath.Join(chronicleTemplateTestDir, "basic.yml")
 			yFile, err := GetYamlFile(fileToTest)
 
-			expectNotNil(t, yFile)
-			expectNoError(t, err)
+			test.ExpectNotNil(t, yFile)
+			test.ExpectNoError(t, err)
 
 			ct, err := NewChronicleTemplate("", yFile)
-			expectNil(t, ct)
-			expectError(t, err)
+			test.ExpectNil(t, ct)
+			test.ExpectError(t, err)
 		})
 
 		t.Run("nil file", func(t *testing.T) {
 			ct, err := NewChronicleTemplate("file.yml", nil)
-			expectNil(t, ct)
-			expectError(t, err)
+			test.ExpectNil(t, ct)
+			test.ExpectError(t, err)
 		})
 
 		t.Run("empty fields", func(t *testing.T) {
@@ -58,12 +59,12 @@ func TestNewChronicleTemplate(t *testing.T) {
 				fileToTest := filepath.Join(chronicleTemplateTestDir, filename)
 				yFile, err := GetYamlFile(fileToTest)
 
-				expectNotNil(t, yFile)
-				expectNoError(t, err)
+				test.ExpectNotNil(t, yFile)
+				test.ExpectNoError(t, err)
 
 				ct, err := NewChronicleTemplate("foo", yFile)
-				expectNil(t, ct)
-				expectError(t, err)
+				test.ExpectNil(t, ct)
+				test.ExpectError(t, err)
 			}
 		})
 
@@ -74,58 +75,58 @@ func TestNewChronicleTemplate(t *testing.T) {
 			fileToTest := filepath.Join(chronicleTemplateTestDir, "basic.yml")
 			yFile, err := GetYamlFile(fileToTest)
 
-			expectNotNil(t, yFile)
-			expectNoError(t, err)
+			test.ExpectNotNil(t, yFile)
+			test.ExpectNoError(t, err)
 
 			ct, err := NewChronicleTemplate("foo.yml", yFile)
-			expectNotNil(t, ct)
-			expectNoError(t, err)
+			test.ExpectNotNil(t, ct)
+			test.ExpectNoError(t, err)
 
-			expectEqual(t, ct.ID(), "simpleId")
-			expectEqual(t, ct.Description(), "simpleDescription")
-			expectNotSet(t, ct.Inherit())
-			expectTrue(t, strings.HasSuffix(ct.Filename(), "foo.yml"))
-			expectEqual(t, len(ct.content), 0)
-			expectEqual(t, len(ct.presets), 0)
+			test.ExpectEqual(t, ct.ID(), "simpleId")
+			test.ExpectEqual(t, ct.Description(), "simpleDescription")
+			test.ExpectNotSet(t, ct.Inherit())
+			test.ExpectTrue(t, strings.HasSuffix(ct.Filename(), "foo.yml"))
+			test.ExpectEqual(t, len(ct.content), 0)
+			test.ExpectEqual(t, len(ct.presets), 0)
 		})
 
 		t.Run("file with content", func(t *testing.T) {
 			fileToTest := filepath.Join(chronicleTemplateTestDir, "valid.yml")
 			yFile, err := GetYamlFile(fileToTest)
 
-			expectNotNil(t, yFile)
-			expectNoError(t, err)
+			test.ExpectNotNil(t, yFile)
+			test.ExpectNoError(t, err)
 
 			ct, err := NewChronicleTemplate("valid.yml", yFile)
-			expectNotNil(t, ct)
-			expectNoError(t, err)
+			test.ExpectNotNil(t, ct)
+			test.ExpectNoError(t, err)
 
-			expectEqual(t, ct.Inherit(), "otherId")
+			test.ExpectEqual(t, ct.Inherit(), "otherId")
 
 			// content
-			expectEqual(t, len(ct.content), 3)
+			test.ExpectEqual(t, len(ct.content), 3)
 			ce0, exists := ct.GetContent("c0")
-			expectTrue(t, exists)
-			expectEqual(t, ce0.Type(), "textCell")
-			expectEqual(t, ce0.ExampleValue(), "c0example")
+			test.ExpectTrue(t, exists)
+			test.ExpectEqual(t, ce0.Type(), "textCell")
+			test.ExpectEqual(t, ce0.ExampleValue(), "c0example")
 
 			ce1, exists := ct.GetContent("c1")
-			expectTrue(t, exists)
-			expectEqual(t, ce1.Type(), "societyId")
-			expectEqual(t, ce1.ExampleValue(), "c1example")
+			test.ExpectTrue(t, exists)
+			test.ExpectEqual(t, ce1.Type(), "societyId")
+			test.ExpectEqual(t, ce1.ExampleValue(), "c1example")
 			_, exists = ct.GetContent("p0")
-			expectFalse(t, exists)
+			test.ExpectFalse(t, exists)
 
 			// presets
-			expectEqual(t, len(ct.presets), 3)
+			test.ExpectEqual(t, len(ct.presets), 3)
 			p0, exists := ct.presets.Get("p0")
-			expectTrue(t, exists)
-			expectEqual(t, p0.Y1, 10.0)
+			test.ExpectTrue(t, exists)
+			test.ExpectEqual(t, p0.Y1, 10.0)
 			p1, exists := ct.presets.Get("p1")
-			expectTrue(t, exists)
-			expectEqual(t, p1.Y1, 11.0)
+			test.ExpectTrue(t, exists)
+			test.ExpectEqual(t, p1.Y1, 11.0)
 			_, exists = ct.presets.Get("c0")
-			expectFalse(t, exists)
+			test.ExpectFalse(t, exists)
 		})
 
 	})
@@ -139,21 +140,21 @@ func TestGetContentIDs(t *testing.T) {
 
 	idList := ct.GetContentIDs(true)
 
-	expectEqual(t, len(idList), 3)
+	test.ExpectEqual(t, len(idList), 3)
 
 	// as we do not yet have aliases, number of elements should be identical
-	expectEqual(t, len(ct.GetContentIDs(false)), len(ct.GetContentIDs(true)))
+	test.ExpectEqual(t, len(ct.GetContentIDs(false)), len(ct.GetContentIDs(true)))
 
 	// check that all elements returned by list actually exist in the content list
 	for _, entry := range idList {
 		_, exists := ct.GetContent(entry)
-		expectTrue(t, exists)
+		test.ExpectTrue(t, exists)
 	}
 
 	// check that elements are in expected order (as the result should be sorted)
-	expectEqual(t, idList[0], "c0")
-	expectEqual(t, idList[1], "c1")
-	expectEqual(t, idList[2], "c2")
+	test.ExpectEqual(t, idList[0], "c0")
+	test.ExpectEqual(t, idList[1], "c1")
+	test.ExpectEqual(t, idList[2], "c2")
 }
 
 func TestInheritFrom(t *testing.T) {
@@ -164,25 +165,25 @@ func TestInheritFrom(t *testing.T) {
 		ctFrom := getCTfromYamlFile(t, "inheritFromValid.yml")
 
 		err := ctTo.InheritFrom(ctFrom)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
-		expectEqual(t, len(ctTo.presets.GetIDs()), 2)
+		test.ExpectEqual(t, len(ctTo.presets.GetIDs()), 2)
 		p0, exists := ctTo.presets.Get("p0")
-		expectTrue(t, exists)
-		expectEqual(t, p0.Font, "base")
+		test.ExpectTrue(t, exists)
+		test.ExpectEqual(t, p0.Font, "base")
 		p1, exists := ctTo.presets.Get("p1")
-		expectTrue(t, exists)
-		expectEqual(t, p1.Font, "inherited")
+		test.ExpectTrue(t, exists)
+		test.ExpectEqual(t, p1.Font, "inherited")
 
-		expectEqual(t, len(ctTo.GetContentIDs(false)), 2)
+		test.ExpectEqual(t, len(ctTo.GetContentIDs(false)), 2)
 		ce0, exists := ctTo.GetContent("c0")
-		expectTrue(t, exists)
+		test.ExpectTrue(t, exists)
 		tc0 := ce0.(ContentTextCell)
-		expectEqual(t, tc0.Font, "base")
+		test.ExpectEqual(t, tc0.Font, "base")
 		ce1, exists := ctTo.GetContent("c1")
-		expectTrue(t, exists)
+		test.ExpectTrue(t, exists)
 		tc1 := ce1.(ContentTextCell)
-		expectEqual(t, tc1.Font, "inherited")
+		test.ExpectEqual(t, tc1.Font, "inherited")
 	})
 
 	t.Run("inherit from duplicate content", func(t *testing.T) {
@@ -190,7 +191,7 @@ func TestInheritFrom(t *testing.T) {
 		ctFrom := getCTfromYamlFile(t, "inheritFromDuplicateContent.yml")
 
 		err := ctTo.InheritFrom(ctFrom)
-		expectError(t, err)
+		test.ExpectError(t, err)
 	})
 
 }

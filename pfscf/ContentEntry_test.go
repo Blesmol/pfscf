@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -26,7 +27,7 @@ func getContentDataWithDummyData(t *testing.T, cdType string) (cd ContentData) {
 	cd.Example = "Some Example"
 	cd.Presets = []string{"Some Preset"}
 
-	expectAllExportedSet(t, cd) // to be sure that we also get all new fields
+	test.ExpectAllExportedSet(t, cd) // to be sure that we also get all new fields
 
 	// overvwrite type after the "expect..." check as cdType could be intentionally empty
 	cd.Type = cdType
@@ -72,14 +73,14 @@ func TestNewContentEntry(t *testing.T) {
 			data := getContentDataWithDummyData(t, "")
 			_, err := NewContentEntry("x", data)
 
-			expectError(t, err, "No content type provided")
+			test.ExpectError(t, err, "No content type provided")
 		})
 
 		t.Run("unknown type", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "foo")
 			_, err := NewContentEntry("x", data)
 
-			expectError(t, err, "Unknown content type")
+			test.ExpectError(t, err, "Unknown content type")
 		})
 	})
 
@@ -88,18 +89,18 @@ func TestNewContentEntry(t *testing.T) {
 			data := getContentDataWithDummyData(t, "textCell")
 			ce, err := NewContentEntry("textCellTest", data)
 
-			expectNoError(t, err)
-			expectEqual(t, ce.Type(), "textCell")
-			expectEqual(t, ce.ID(), "textCellTest")
+			test.ExpectNoError(t, err)
+			test.ExpectEqual(t, ce.Type(), "textCell")
+			test.ExpectEqual(t, ce.ID(), "textCellTest")
 		})
 
 		t.Run("SocietyID", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "societyId")
 			ce, err := NewContentEntry("societyIdTest", data)
 
-			expectNoError(t, err)
-			expectEqual(t, ce.Type(), "societyId")
-			expectEqual(t, ce.ID(), "societyIdTest")
+			test.ExpectNoError(t, err)
+			test.ExpectEqual(t, ce.Type(), "societyId")
+			test.ExpectEqual(t, ce.ID(), "societyIdTest")
 		})
 	})
 }
@@ -113,40 +114,40 @@ func TestNewContentTextCell(t *testing.T) {
 		data := getContentDataWithDummyData(t, "textCell")
 		tc, err := NewContentTextCell("foo", data)
 
-		expectNoError(t, err)
-		expectEqual(t, tc.id, "foo")
-		expectEqual(t, tc.description, data.Desc)
-		expectEqual(t, tc.exampleValue, data.Example)
-		expectEqual(t, len(tc.presets), len(data.Presets))
-		expectEqual(t, tc.X1, data.X1)
-		expectEqual(t, tc.Y1, data.Y1)
-		expectEqual(t, tc.X2, data.X2)
-		expectEqual(t, tc.Y2, data.Y2)
-		expectEqual(t, tc.Font, data.Font)
-		expectEqual(t, tc.Fontsize, data.Fontsize)
-		expectEqual(t, tc.Align, data.Align)
+		test.ExpectNoError(t, err)
+		test.ExpectEqual(t, tc.id, "foo")
+		test.ExpectEqual(t, tc.description, data.Desc)
+		test.ExpectEqual(t, tc.exampleValue, data.Example)
+		test.ExpectEqual(t, len(tc.presets), len(data.Presets))
+		test.ExpectEqual(t, tc.X1, data.X1)
+		test.ExpectEqual(t, tc.Y1, data.Y1)
+		test.ExpectEqual(t, tc.X2, data.X2)
+		test.ExpectEqual(t, tc.Y2, data.Y2)
+		test.ExpectEqual(t, tc.Font, data.Font)
+		test.ExpectEqual(t, tc.Fontsize, data.Fontsize)
+		test.ExpectEqual(t, tc.Align, data.Align)
 	})
 }
 
 func TestContentTextCell_BasicGetters(t *testing.T) {
 	data := getContentDataWithDummyData(t, "textCell")
 	tc, err := NewContentTextCell("foo", data)
-	expectNoError(t, err)
+	test.ExpectNoError(t, err)
 
 	t.Run("ID", func(t *testing.T) {
-		expectEqual(t, tc.ID(), "foo")
+		test.ExpectEqual(t, tc.ID(), "foo")
 	})
 
 	t.Run("Type", func(t *testing.T) {
-		expectEqual(t, tc.Type(), "textCell")
+		test.ExpectEqual(t, tc.Type(), "textCell")
 	})
 
 	t.Run("ExampleValue", func(t *testing.T) {
-		expectEqual(t, tc.ExampleValue(), "Some Example")
+		test.ExpectEqual(t, tc.ExampleValue(), "Some Example")
 	})
 
 	t.Run("UsageExample", func(t *testing.T) {
-		expectEqual(t, tc.UsageExample(), "foo=\"Some Example\"")
+		test.ExpectEqual(t, tc.UsageExample(), "foo=\"Some Example\"")
 	})
 }
 
@@ -159,7 +160,7 @@ func TestContentTextCell_IsValid(t *testing.T) {
 			tc.Font = "" // "Unset" one required value
 
 			err := tc.IsValid()
-			expectError(t, err, "Missing value", "Font")
+			test.ExpectError(t, err, "Missing value", "Font")
 		})
 
 		t.Run("value out of range", func(t *testing.T) {
@@ -167,7 +168,7 @@ func TestContentTextCell_IsValid(t *testing.T) {
 			tc.Y2 = 101.0
 
 			err := tc.IsValid()
-			expectError(t, err, "out of range", "Y2")
+			test.ExpectError(t, err, "out of range", "Y2")
 		})
 
 		t.Run("equal x axis values", func(t *testing.T) {
@@ -175,7 +176,7 @@ func TestContentTextCell_IsValid(t *testing.T) {
 			tc.X2 = tc.X1
 
 			err := tc.IsValid()
-			expectError(t, err, "Coordinates for X axis are equal")
+			test.ExpectError(t, err, "Coordinates for X axis are equal")
 		})
 
 		t.Run("equal y axis values", func(t *testing.T) {
@@ -183,7 +184,7 @@ func TestContentTextCell_IsValid(t *testing.T) {
 			tc.Y2 = tc.Y1
 
 			err := tc.IsValid()
-			expectError(t, err, "Coordinates for Y axis are equal")
+			test.ExpectError(t, err, "Coordinates for Y axis are equal")
 		})
 	})
 
@@ -191,10 +192,10 @@ func TestContentTextCell_IsValid(t *testing.T) {
 		data := getContentDataWithDummyData(t, "textCell")
 		data.X1 = 0.0 // set something to "zero", which is also acceptable
 		tc, err := NewContentTextCell("foo", data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		err = tc.IsValid()
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 	})
 }
 
@@ -202,22 +203,22 @@ func TestContentTextCell_Describe(t *testing.T) {
 	t.Run("with description and example", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "textCell")
 		tc, err := NewContentTextCell("someId", data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		t.Run("non-verbose", func(t *testing.T) {
 			desc := tc.Describe(false)
-			expectStringContains(t, desc, "someId")
-			expectStringContains(t, desc, "Some Description")
-			expectStringContainsNot(t, desc, "textCell")
-			expectStringContainsNot(t, desc, "Some Example")
+			test.ExpectStringContains(t, desc, "someId")
+			test.ExpectStringContains(t, desc, "Some Description")
+			test.ExpectStringContainsNot(t, desc, "textCell")
+			test.ExpectStringContainsNot(t, desc, "Some Example")
 		})
 
 		t.Run("verbose", func(t *testing.T) {
 			desc := tc.Describe(true)
-			expectStringContains(t, desc, "someId")
-			expectStringContains(t, desc, "Some Description")
-			expectStringContains(t, desc, "textCell")
-			expectStringContains(t, desc, "Some Example")
+			test.ExpectStringContains(t, desc, "someId")
+			test.ExpectStringContains(t, desc, "Some Description")
+			test.ExpectStringContains(t, desc, "textCell")
+			test.ExpectStringContains(t, desc, "Some Example")
 		})
 	})
 
@@ -226,20 +227,20 @@ func TestContentTextCell_Describe(t *testing.T) {
 		data.Desc = ""
 		data.Example = ""
 		tc, err := NewContentTextCell("someId", data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		t.Run("non-verbose", func(t *testing.T) {
 			desc := tc.Describe(false)
-			expectStringContains(t, desc, "someId")
-			expectStringContains(t, desc, "No description available")
-			expectStringContainsNot(t, desc, "textCell")
+			test.ExpectStringContains(t, desc, "someId")
+			test.ExpectStringContains(t, desc, "No description available")
+			test.ExpectStringContainsNot(t, desc, "textCell")
 		})
 
 		t.Run("verbose", func(t *testing.T) {
 			desc := tc.Describe(true)
-			expectStringContains(t, desc, "someId")
-			expectStringContains(t, desc, "No description available")
-			expectStringContains(t, desc, "textCell")
+			test.ExpectStringContains(t, desc, "someId")
+			test.ExpectStringContains(t, desc, "No description available")
+			test.ExpectStringContains(t, desc, "textCell")
 		})
 	})
 }
@@ -252,20 +253,20 @@ func TestContentTextCell_Resolve(t *testing.T) {
 			data := getContentDataWithDummyData(t, "textCell")
 			data.Presets = []string{"foo"}
 			tc, err := NewContentTextCell("someId", data)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 
 			_, err = tc.Resolve(ps)
-			expectError(t, err, "does not exist")
+			test.ExpectError(t, err, "does not exist")
 		})
 
 		t.Run("conflicting presets", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "textCell")
 			data.Presets = []string{"conflict1", "conflict2"}
 			tc, err := NewContentTextCell("someId", data)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 
 			_, err = tc.Resolve(ps)
-			expectError(t, err, "Contradicting data", "X1", "conflict1", "conflict2")
+			test.ExpectError(t, err, "Contradicting data", "X1", "conflict1", "conflict2")
 		})
 	})
 
@@ -274,15 +275,15 @@ func TestContentTextCell_Resolve(t *testing.T) {
 		data.Presets = []string{"sameData1", "sameData2"}
 		data.Font = "" // set an empty value to be set by presets
 		tc, err := NewContentTextCell("someId", data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		ceResolved, err := tc.Resolve(ps)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		tcResolved, castWorked := ceResolved.(ContentTextCell)
-		expectTrue(t, castWorked)
+		test.ExpectTrue(t, castWorked)
 
-		expectIsSet(t, tcResolved.Font)
+		test.ExpectIsSet(t, tcResolved.Font)
 	})
 }
 
@@ -296,20 +297,20 @@ func TestContentTextCell_GenerateOutput(t *testing.T) {
 			data := getContentDataWithDummyData(t, "textCell")
 			data.Fontsize = 0.0 // unset value, making this textCell invalid
 			tc, err := NewContentTextCell(testID, data)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 
 			err = tc.GenerateOutput(stamp, as)
-			expectError(t, err, "Missing value", "Fontsize")
+			test.ExpectError(t, err, "Missing value", "Fontsize")
 		})
 	})
 
 	t.Run("valid", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "textCell")
 		tc, err := NewContentTextCell(testID, data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		err = tc.GenerateOutput(stamp, as)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 	})
 }
 
@@ -324,40 +325,40 @@ func TestNewContentSocietyID(t *testing.T) {
 		data := getContentDataWithDummyData(t, "societyId")
 		si, err := NewContentSocietyID("foo", data)
 
-		expectNoError(t, err)
-		expectEqual(t, si.id, "foo")
-		expectEqual(t, si.description, data.Desc)
-		expectEqual(t, si.exampleValue, data.Example)
-		expectEqual(t, len(si.presets), len(data.Presets))
-		expectEqual(t, si.X1, data.X1)
-		expectEqual(t, si.Y1, data.Y1)
-		expectEqual(t, si.X2, data.X2)
-		expectEqual(t, si.Y2, data.Y2)
-		expectEqual(t, si.XPivot, data.XPivot)
-		expectEqual(t, si.Font, data.Font)
-		expectEqual(t, si.Fontsize, data.Fontsize)
+		test.ExpectNoError(t, err)
+		test.ExpectEqual(t, si.id, "foo")
+		test.ExpectEqual(t, si.description, data.Desc)
+		test.ExpectEqual(t, si.exampleValue, data.Example)
+		test.ExpectEqual(t, len(si.presets), len(data.Presets))
+		test.ExpectEqual(t, si.X1, data.X1)
+		test.ExpectEqual(t, si.Y1, data.Y1)
+		test.ExpectEqual(t, si.X2, data.X2)
+		test.ExpectEqual(t, si.Y2, data.Y2)
+		test.ExpectEqual(t, si.XPivot, data.XPivot)
+		test.ExpectEqual(t, si.Font, data.Font)
+		test.ExpectEqual(t, si.Fontsize, data.Fontsize)
 	})
 }
 
 func TestContentSocietyID_BasicGetters(t *testing.T) {
 	data := getContentDataWithDummyData(t, "societyId")
 	si, err := NewContentSocietyID("foo", data)
-	expectNoError(t, err)
+	test.ExpectNoError(t, err)
 
 	t.Run("ID", func(t *testing.T) {
-		expectEqual(t, si.ID(), "foo")
+		test.ExpectEqual(t, si.ID(), "foo")
 	})
 
 	t.Run("Type", func(t *testing.T) {
-		expectEqual(t, si.Type(), "societyId")
+		test.ExpectEqual(t, si.Type(), "societyId")
 	})
 
 	t.Run("ExampleValue", func(t *testing.T) {
-		expectEqual(t, si.ExampleValue(), "Some Example")
+		test.ExpectEqual(t, si.ExampleValue(), "Some Example")
 	})
 
 	t.Run("UsageExample", func(t *testing.T) {
-		expectEqual(t, si.UsageExample(), "foo=\"Some Example\"")
+		test.ExpectEqual(t, si.UsageExample(), "foo=\"Some Example\"")
 	})
 }
 
@@ -370,7 +371,7 @@ func TestContentSocietyID_IsValid(t *testing.T) {
 			si.Font = "" // "Unset" one required value
 
 			err = si.IsValid()
-			expectError(t, err, "Missing value")
+			test.ExpectError(t, err, "Missing value")
 		})
 
 		t.Run("xpivot range violation", func(t *testing.T) {
@@ -383,7 +384,7 @@ func TestContentSocietyID_IsValid(t *testing.T) {
 				si.X2 = 20.0
 
 				err = si.IsValid()
-				expectError(t, err, "xpivot value must lie between")
+				test.ExpectError(t, err, "xpivot value must lie between")
 			}
 		})
 
@@ -392,7 +393,7 @@ func TestContentSocietyID_IsValid(t *testing.T) {
 			tc.Y2 = 101.0
 
 			err := tc.IsValid()
-			expectError(t, err, "out of range", "Y2")
+			test.ExpectError(t, err, "out of range", "Y2")
 		})
 
 		t.Run("equal x axis values", func(t *testing.T) {
@@ -401,7 +402,7 @@ func TestContentSocietyID_IsValid(t *testing.T) {
 			tc.XPivot = tc.X1
 
 			err := tc.IsValid()
-			expectError(t, err, "Coordinates for X axis are equal")
+			test.ExpectError(t, err, "Coordinates for X axis are equal")
 		})
 
 		t.Run("equal y axis values", func(t *testing.T) {
@@ -409,7 +410,7 @@ func TestContentSocietyID_IsValid(t *testing.T) {
 			tc.Y2 = tc.Y1
 
 			err := tc.IsValid()
-			expectError(t, err, "Coordinates for Y axis are equal")
+			test.ExpectError(t, err, "Coordinates for Y axis are equal")
 		})
 
 	})
@@ -417,11 +418,11 @@ func TestContentSocietyID_IsValid(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "societyId")
 		si, err := NewContentSocietyID("foo", data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 		si.X1 = 0.0 // also acceptable now
 
 		err = si.IsValid()
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 	})
 }
 
@@ -429,22 +430,22 @@ func TestContentSocietyID_Describe(t *testing.T) {
 	t.Run("with description and example", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "societyId")
 		si, err := NewContentSocietyID("someId", data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		t.Run("non-verbose", func(t *testing.T) {
 			desc := si.Describe(false)
-			expectStringContains(t, desc, "someId")
-			expectStringContains(t, desc, "Some Description")
-			expectStringContainsNot(t, desc, "societyId")
-			expectStringContainsNot(t, desc, "Some Example")
+			test.ExpectStringContains(t, desc, "someId")
+			test.ExpectStringContains(t, desc, "Some Description")
+			test.ExpectStringContainsNot(t, desc, "societyId")
+			test.ExpectStringContainsNot(t, desc, "Some Example")
 		})
 
 		t.Run("verbose", func(t *testing.T) {
 			desc := si.Describe(true)
-			expectStringContains(t, desc, "someId")
-			expectStringContains(t, desc, "Some Description")
-			expectStringContains(t, desc, "societyId")
-			expectStringContains(t, desc, "Some Example")
+			test.ExpectStringContains(t, desc, "someId")
+			test.ExpectStringContains(t, desc, "Some Description")
+			test.ExpectStringContains(t, desc, "societyId")
+			test.ExpectStringContains(t, desc, "Some Example")
 		})
 	})
 
@@ -453,20 +454,20 @@ func TestContentSocietyID_Describe(t *testing.T) {
 		data.Desc = ""
 		data.Example = ""
 		si, err := NewContentSocietyID("someId", data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		t.Run("non-verbose", func(t *testing.T) {
 			desc := si.Describe(false)
-			expectStringContains(t, desc, "someId")
-			expectStringContains(t, desc, "No description available")
-			expectStringContainsNot(t, desc, "societyId")
+			test.ExpectStringContains(t, desc, "someId")
+			test.ExpectStringContains(t, desc, "No description available")
+			test.ExpectStringContainsNot(t, desc, "societyId")
 		})
 
 		t.Run("verbose", func(t *testing.T) {
 			desc := si.Describe(true)
-			expectStringContains(t, desc, "someId")
-			expectStringContains(t, desc, "No description available")
-			expectStringContains(t, desc, "societyId")
+			test.ExpectStringContains(t, desc, "someId")
+			test.ExpectStringContains(t, desc, "No description available")
+			test.ExpectStringContains(t, desc, "societyId")
 		})
 	})
 }
@@ -479,20 +480,20 @@ func TestContentSocietyID_Resolve(t *testing.T) {
 			data := getContentDataWithDummyData(t, "societyId")
 			data.Presets = []string{"foo"}
 			si, err := NewContentSocietyID("someId", data)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 
 			_, err = si.Resolve(ps)
-			expectError(t, err, "does not exist")
+			test.ExpectError(t, err, "does not exist")
 		})
 
 		t.Run("conflicting presets", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "societyId")
 			data.Presets = []string{"conflict1", "conflict2"}
 			si, err := NewContentSocietyID("someId", data)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 
 			_, err = si.Resolve(ps)
-			expectError(t, err, "Contradicting", "X1", "conflict1", "conflict2")
+			test.ExpectError(t, err, "Contradicting", "X1", "conflict1", "conflict2")
 		})
 	})
 
@@ -501,15 +502,15 @@ func TestContentSocietyID_Resolve(t *testing.T) {
 		data.Presets = []string{"sameData1", "sameData2"}
 		data.Font = "" // set an empty value to be set by presets
 		si, err := NewContentSocietyID("someId", data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		ceResolved, err := si.Resolve(ps)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		siResolved, castWorked := ceResolved.(ContentSocietyID)
-		expectTrue(t, castWorked)
+		test.ExpectTrue(t, castWorked)
 
-		expectIsSet(t, siResolved.Font)
+		test.ExpectIsSet(t, siResolved.Font)
 	})
 }
 
@@ -523,21 +524,21 @@ func TestContentSocietyID_GenerateOutput(t *testing.T) {
 			data := getContentDataWithDummyData(t, "societyId")
 			data.Font = "" // unset value, making this textCell invalid
 			si, err := NewContentSocietyID(testID, data)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 
 			err = si.GenerateOutput(stamp, as)
-			expectError(t, err, "Missing value", "Font")
+			test.ExpectError(t, err, "Missing value", "Font")
 		})
 
 		t.Run("value with invalid format", func(t *testing.T) {
 			data := getContentDataWithDummyData(t, "societyId")
 			si, err := NewContentSocietyID(testID, data)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 
 			for _, invalidSocietyID := range []string{"", "foo", "a123-456", "123-456b", "1"} {
 				asInvalid := getTestArgStore(testID, invalidSocietyID)
 				err = si.GenerateOutput(stamp, asInvalid)
-				expectError(t, err, "does not follow the pattern")
+				test.ExpectError(t, err, "does not follow the pattern")
 			}
 		})
 	})
@@ -545,12 +546,12 @@ func TestContentSocietyID_GenerateOutput(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		data := getContentDataWithDummyData(t, "SocietyId")
 		si, err := NewContentSocietyID(testID, data)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 
 		for _, societyID := range []string{"-", "1-", "-2", "123-456"} {
 			asValid := getTestArgStore(testID, societyID)
 			err = si.GenerateOutput(stamp, asValid)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 		}
 	})
 }
@@ -565,11 +566,11 @@ func TestAddMissingValues(t *testing.T) {
 			target := testStruct{A: 10.0, b: 11.0}
 			AddMissingValues(&target, source)
 
-			expectEqual(t, target.A, 10.0)
-			expectEqual(t, target.b, 11.0)
-			expectEqual(t, target.C, 3.0)
-			expectNotSet(t, target.d)
-			expectNotSet(t, target.E)
+			test.ExpectEqual(t, target.A, 10.0)
+			test.ExpectEqual(t, target.b, 11.0)
+			test.ExpectEqual(t, target.C, 3.0)
+			test.ExpectNotSet(t, target.d)
+			test.ExpectNotSet(t, target.E)
 		})
 
 		t.Run("supported datatypes", func(t *testing.T) {
@@ -581,12 +582,12 @@ func TestAddMissingValues(t *testing.T) {
 			target := testStruct{A: 10.0, D: "14.0"}
 			AddMissingValues(&target, source)
 
-			expectEqual(t, target.A, 10.0)
-			expectEqual(t, target.B, 2.0)
-			expectNotSet(t, target.C)
-			expectEqual(t, target.D, "14.0")
-			expectEqual(t, target.E, "5.0")
-			expectNotSet(t, target.F)
+			test.ExpectEqual(t, target.A, 10.0)
+			test.ExpectEqual(t, target.B, 2.0)
+			test.ExpectNotSet(t, target.C)
+			test.ExpectEqual(t, target.D, "14.0")
+			test.ExpectEqual(t, target.E, "5.0")
+			test.ExpectNotSet(t, target.F)
 		})
 
 		t.Run("different exported fields", func(t *testing.T) {
@@ -602,8 +603,8 @@ func TestAddMissingValues(t *testing.T) {
 
 			AddMissingValues(&target, source)
 
-			expectEqual(t, target.Common, 1.0)
-			expectNotSet(t, target.OnlyTarget)
+			test.ExpectEqual(t, target.Common, 1.0)
+			test.ExpectNotSet(t, target.OnlyTarget)
 		})
 
 		t.Run("ignore fields", func(t *testing.T) {
@@ -615,10 +616,10 @@ func TestAddMissingValues(t *testing.T) {
 
 			AddMissingValues(&target, source, "B", "C", "a", "De")
 
-			expectEqual(t, target.A, 1.0)
-			expectNotSet(t, target.B)
-			expectNotSet(t, target.C)
-			expectEqual(t, target.D, 4.0)
+			test.ExpectEqual(t, target.A, 1.0)
+			test.ExpectNotSet(t, target.B)
+			test.ExpectNotSet(t, target.C)
+			test.ExpectEqual(t, target.D, 4.0)
 		})
 	})
 }
@@ -631,13 +632,13 @@ func TestCheckThatAllExportedFieldsAreSet(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
 		testVal := testStruct{A: 1.0, b: 2.0}
 		err := CheckThatAllExportedFieldsAreSet(testVal)
-		expectError(t, err, "Missing value", "C")
+		test.ExpectError(t, err, "Missing value", "C")
 	})
 
 	t.Run("valid", func(t *testing.T) {
 		testVal := testStruct{A: 1.0, C: 3.0, d: 4.0}
 		err := CheckThatAllExportedFieldsAreSet(testVal)
-		expectNoError(t, err)
+		test.ExpectNoError(t, err)
 	})
 }
 
@@ -656,7 +657,7 @@ func TestCheckFieldsAreSet(t *testing.T) {
 			{"F"},
 		} {
 			err := checkFieldsAreSet(testVal, testFields...)
-			expectError(t, err, "Missing value")
+			test.ExpectError(t, err, "Missing value")
 		}
 	})
 
@@ -671,7 +672,7 @@ func TestCheckFieldsAreSet(t *testing.T) {
 			{},
 		} {
 			err := checkFieldsAreSet(testVal, testFields...)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 		}
 	})
 }
@@ -689,7 +690,7 @@ func TestCheckFieldsAreInRange(t *testing.T) {
 			{"A", "B"},
 		} {
 			err := checkFieldsAreInRange(testVal, testFields...)
-			expectError(t, err, "out of range")
+			test.ExpectError(t, err, "out of range")
 		}
 	})
 
@@ -703,7 +704,7 @@ func TestCheckFieldsAreInRange(t *testing.T) {
 			{},
 		} {
 			err := checkFieldsAreInRange(testVal, testFields...)
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 		}
 	})
 }
@@ -711,9 +712,9 @@ func TestCheckFieldsAreInRange(t *testing.T) {
 func TestContentValErr(t *testing.T) {
 	data := getContentDataWithDummyData(t, "textCell")
 	tc, err := NewContentTextCell("testId", data)
-	expectNoError(t, err)
+	test.ExpectNoError(t, err)
 
 	errIn := fmt.Errorf("Test text")
 	errOut := contentValErr(tc, errIn)
-	expectError(t, errOut, "Error validating content", "testId", "Test text")
+	test.ExpectError(t, errOut, "Error validating content", "testId", "Test text")
 }

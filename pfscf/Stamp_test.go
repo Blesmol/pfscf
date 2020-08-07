@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	util "github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -36,38 +37,38 @@ func getSocietyIDWithDummyData() (cd ContentData) {
 
 func TestNewStamp(t *testing.T) {
 	s := NewStamp(1.0, 2.0)
-	expectNotNil(t, s)
+	test.ExpectNotNil(t, s)
 
-	expectEqual(t, s.dimX, 1.0)
-	expectEqual(t, s.dimY, 2.0)
-	expectEqual(t, s.cellBorder, "0")
+	test.ExpectEqual(t, s.dimX, 1.0)
+	test.ExpectEqual(t, s.dimY, 2.0)
+	test.ExpectEqual(t, s.cellBorder, "0")
 }
 
 func TestStamp_SetCellBorder(t *testing.T) {
 	s := NewStamp(1.0, 1.0)
-	expectNotNil(t, s)
+	test.ExpectNotNil(t, s)
 
-	expectEqual(t, s.cellBorder, "0") // default is that no cell border should be drawn
+	test.ExpectEqual(t, s.cellBorder, "0") // default is that no cell border should be drawn
 	s.SetCellBorder(true)
-	expectEqual(t, s.cellBorder, "1")
+	test.ExpectEqual(t, s.cellBorder, "1")
 	s.SetCellBorder(false)
-	expectEqual(t, s.cellBorder, "0")
+	test.ExpectEqual(t, s.cellBorder, "0")
 }
 
 func TestStamp_PctToPt(t *testing.T) {
 	s := NewStamp(200.0, 200.0)
 
 	x, y := s.pctToPt(10.0, 10.0)
-	expectEqual(t, x, 20.0)
-	expectEqual(t, y, 20.0)
+	test.ExpectEqual(t, x, 20.0)
+	test.ExpectEqual(t, y, 20.0)
 }
 
 func TestStamp_PtToPct(t *testing.T) {
 	s := NewStamp(200.0, 200.0)
 
 	x, y := s.ptToPct(20.0, 20.0)
-	expectEqual(t, x, 10.0)
-	expectEqual(t, y, 10.0)
+	test.ExpectEqual(t, x, 10.0)
+	test.ExpectEqual(t, y, 10.0)
 }
 
 func TestGetXYWH(t *testing.T) {
@@ -84,10 +85,10 @@ func TestGetXYWH(t *testing.T) {
 		t.Logf("  x1=%.1f, y1=%.1f, x2=%.1f, y2=%.1f", data.x1, data.y1, data.x2, data.y2)
 
 		x, y, w, h := getXYWH(data.x1, data.y1, data.x2, data.y2)
-		expectEqual(t, x, data.xExp)
-		expectEqual(t, y, data.yExp)
-		expectEqual(t, w, data.wExp)
-		expectEqual(t, h, data.hExp)
+		test.ExpectEqual(t, x, data.xExp)
+		test.ExpectEqual(t, y, data.yExp)
+		test.ExpectEqual(t, w, data.wExp)
+		test.ExpectEqual(t, h, data.hExp)
 	}
 }
 
@@ -106,7 +107,7 @@ func TestStamp_DetermineFontSize(t *testing.T) {
 		{100.0, 14.0, "foo", 14.0},
 	} {
 		result = s.DeriveFontsize(data.width, "Arial", data.fontsize, data.text)
-		expectEqual(t, result, data.expectedFontsize)
+		test.ExpectEqual(t, result, data.expectedFontsize)
 	}
 }
 
@@ -115,9 +116,9 @@ func TestStamp_WriteToFile(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
 		t.Run("missing filename", func(t *testing.T) {
 			s := NewStamp(400.0, 400.0)
-			expectNotNil(t, s)
+			test.ExpectNotNil(t, s)
 			err := s.WriteToFile("")
-			expectError(t, err)
+			test.ExpectError(t, err)
 		})
 
 		// TODO invalid filename?
@@ -126,11 +127,11 @@ func TestStamp_WriteToFile(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		t.Run("fiii", func(t *testing.T) {
 			s := NewStamp(400.0, 400.0)
-			expectNotNil(t, s)
+			test.ExpectNotNil(t, s)
 			workDir := util.GetTempDir()
 			defer os.RemoveAll(workDir)
 			err := s.WriteToFile(filepath.Join(workDir, "stamp.pdf"))
-			expectNoError(t, err)
+			test.ExpectNoError(t, err)
 		})
 	})
 
