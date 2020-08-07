@@ -161,7 +161,7 @@ func (ce ContentTextCell) Resolve(ps PresetStore) (resolvedCI ContentEntry, err 
 
 	for _, presetID := range ce.presets {
 		preset, _ := ps.Get(presetID)
-		AddMissingValues(&ce, preset)
+		utils.AddMissingValues(&ce, preset)
 	}
 
 	return ce, nil
@@ -305,7 +305,7 @@ func (ce ContentSocietyID) Resolve(ps PresetStore) (resolvedCI ContentEntry, err
 
 	for _, presetID := range ce.presets {
 		preset, _ := ps.Get(presetID)
-		AddMissingValues(&ce, preset)
+		utils.AddMissingValues(&ce, preset)
 	}
 
 	return ce, nil
@@ -473,7 +473,7 @@ func (ce ContentRectangle) Resolve(ps PresetStore) (resolvedCI ContentEntry, err
 
 	for _, presetID := range ce.presets {
 		preset, _ := ps.Get(presetID)
-		AddMissingValues(&ce, preset)
+		utils.AddMissingValues(&ce, preset)
 	}
 
 	return ce, nil
@@ -535,52 +535,6 @@ func parseColor(color string) (r, g, b int, err error) {
 }
 
 // ---------------------------------------------------------------------------------
-
-// AddMissingValues iterates over the exported fields of the source object. For each
-// such fields it checks whether the target object contains a field with the same
-// name. If that is the case and if the target field does not yet have a value set,
-// then the value from the source object is copied over.
-func AddMissingValues(target interface{}, source interface{}, ignoredFields ...string) {
-	utils.Assert(reflect.ValueOf(source).Kind() == reflect.Struct, "Can only process structs as source")
-	utils.Assert(reflect.ValueOf(target).Kind() == reflect.Ptr, "Target argument must be passed by ptr, as we modify it")
-	utils.Assert(reflect.ValueOf(target).Elem().Kind() == reflect.Struct, "Can only process structs as target")
-
-	vSrc := reflect.ValueOf(source)
-	vDst := reflect.ValueOf(target).Elem()
-
-	for i := 0; i < vDst.NumField(); i++ {
-		fieldDst := vDst.Field(i)
-		fieldName := vDst.Type().Field(i).Name
-
-		// Ignore the Presets field, as we do not want to take over values for this.
-		if utils.Contains(ignoredFields, fieldName) { // especially filter out "Presets" and "ID"
-			continue
-		}
-
-		// take care to skip unexported fields
-		if !fieldDst.CanSet() {
-			continue
-		}
-
-		fieldSrc := vSrc.FieldByName(fieldName)
-
-		// skip target fields that do not exist on source side side
-		if !fieldSrc.IsValid() {
-			continue
-		}
-
-		if fieldDst.IsZero() && !fieldSrc.IsZero() {
-			switch fieldDst.Kind() {
-			case reflect.String:
-				fallthrough
-			case reflect.Float64:
-				fieldDst.Set(fieldSrc)
-			default:
-				panic(fmt.Sprintf("Unsupported datat type '%v' in struct, update function 'AddMissingValuesFrom()'", fieldDst.Kind()))
-			}
-		}
-	}
-}
 
 // CheckThatAllExportedFieldsAreSet returns an error if at least one exported field
 // in the passed structure is not set.

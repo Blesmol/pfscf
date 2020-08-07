@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"sort"
+
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 // PresetStore stores the list of presets for a single ChronicleTemplate
@@ -134,7 +136,7 @@ func (ps *PresetStore) resolveInternal(pe PresetEntry, resolved *map[string]bool
 	// now finally include values from presets into current entry
 	for _, requiredPresetID := range pe.presets {
 		requiredPreset, _ := ps.Get(requiredPresetID)
-		AddMissingValues(&pe, requiredPreset)
+		utils.AddMissingValues(&pe, requiredPreset)
 	}
 
 	// update entry stored in ChronicleTemplate, record that we are ready, and thats it.
