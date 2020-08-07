@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"sort"
+
+	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
 // TemplateStore stores multiple ChronicleTemplates and provides means
@@ -21,7 +23,7 @@ func GetTemplateStore() (ts *TemplateStore, err error) {
 // getTemplateStoreForDir takes a directory and returns a template store
 // for all entries in that directory, including its subdirectories
 func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
-	yFiles, err := GetTemplateFilesFromDir(dirName)
+	yFiles, err := yaml.GetTemplateFilesFromDir(dirName)
 	if err != nil {
 		return nil, err
 	}

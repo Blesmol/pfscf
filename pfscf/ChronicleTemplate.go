@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
 // ChronicleTemplate represents a template configuration for chronicles. It contains
@@ -21,7 +22,7 @@ type ChronicleTemplate struct {
 // NewChronicleTemplate converts a YamlFile into a ChronicleTemplate. It returns
 // an error if the YamlFile cannot be converted to a ChronicleTemplate, e.g. because
 // it is missing required entries.
-func NewChronicleTemplate(yFilename string, yFile *YamlFile) (ct *ChronicleTemplate, err error) {
+func NewChronicleTemplate(yFilename string, yFile *yaml.File) (ct *ChronicleTemplate, err error) {
 	if !utils.IsSet(yFilename) {
 		return nil, fmt.Errorf("No filename provided")
 	}

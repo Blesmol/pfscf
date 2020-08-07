@@ -6,13 +6,14 @@ import (
 
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
 func init() {
 	utils.SetIsTestEnvironment(true)
 }
 
-func getContentDataWithDummyData(t *testing.T, cdType string) (cd ContentData) {
+func getContentDataWithDummyData(t *testing.T, cdType string) (cd yaml.ContentData) {
 	cd.Type = "Dummy, replaced below"
 	cd.Desc = "Some Description"
 	cd.X1 = 12.0
@@ -44,7 +45,7 @@ func getTestArgStore(key, value string) (as *ArgStore) {
 func getTestPresetStore(t *testing.T) (ps PresetStore) {
 	ps = NewPresetStore(0)
 	var (
-		data ContentData
+		data yaml.ContentData
 		pe   PresetEntry
 	)
 

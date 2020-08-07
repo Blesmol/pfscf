@@ -4,12 +4,13 @@ import (
 	"testing"
 
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
+	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
 func TestPresetEntry_IsNotContradictingWith(t *testing.T) {
 	var err error
 
-	cdEmpty := ContentData{}
+	cdEmpty := yaml.ContentData{}
 	peEmpty := NewPresetEntry("idEmpty", cdEmpty)
 
 	cdAllSet := getContentDataWithDummyData(t, "type")
@@ -33,9 +34,9 @@ func TestPresetEntry_IsNotContradictingWith(t *testing.T) {
 
 	t.Run("non-overlapping", func(t *testing.T) {
 		// Have two partly-set objects with non-overlapping content
-		cdLeft := ContentData{X1: 1.0, Desc: "desc"}
+		cdLeft := yaml.ContentData{X1: 1.0, Desc: "desc"}
 		peLeft := NewPresetEntry("idLeft", cdLeft)
-		cdRight := ContentData{X2: 2.0, Font: "font"}
+		cdRight := yaml.ContentData{X2: 2.0, Font: "font"}
 		peRight := NewPresetEntry("idRight", cdRight)
 		err = peLeft.IsNotContradictingWith(peRight)
 		test.ExpectNoError(t, err)

@@ -1,4 +1,4 @@
-package main
+package yaml
 
 import (
 	"path/filepath"
@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
-	util "github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 var (
@@ -15,8 +15,8 @@ var (
 )
 
 func init() {
-	util.SetIsTestEnvironment(true)
-	yamlTestDir = filepath.Join(util.GetExecutableDir(), "testdata", "YamlFile")
+	utils.SetIsTestEnvironment(true)
+	yamlTestDir = filepath.Join(utils.GetExecutableDir(), "testdata")
 }
 
 func TestGetYamlFile(t *testing.T) {
@@ -145,7 +145,7 @@ func TestGetYamlFile(t *testing.T) {
 			refStruct := reflect.ValueOf(c0)
 			for i := 0; i < refStruct.NumField(); i++ {
 				refField := refStruct.Field(i)
-				if refField.CanAddr() && util.IsSet(refField.Interface()) {
+				if refField.CanAddr() && utils.IsSet(refField.Interface()) {
 					t.Errorf("test.Expected ContentData field '%v' to be not set, but has value '%v' instead", refStruct.Type().Field(i).Name, refField.Interface())
 				}
 			}
@@ -157,7 +157,7 @@ func TestGetTemplateFilenamesFromDir(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
 		t.Run("non-existant dir", func(t *testing.T) {
 			dirToTest := filepath.Join(yamlTestDir, "doesNotExist")
-			fileNames, err := GetTemplateFilenamesFromDir(dirToTest)
+			fileNames, err := getTemplateFilenamesFromDir(dirToTest)
 
 			test.ExpectError(t, err)
 			test.ExpectNil(t, fileNames)
@@ -167,7 +167,7 @@ func TestGetTemplateFilenamesFromDir(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		t.Run("nested dirs", func(t *testing.T) {
 			dirToTest := filepath.Join(yamlTestDir, "nestedDirs")
-			fileNames, err := GetTemplateFilenamesFromDir(dirToTest)
+			fileNames, err := getTemplateFilenamesFromDir(dirToTest)
 
 			test.ExpectNoError(t, err)
 			test.ExpectEqual(t, len(fileNames), 5)

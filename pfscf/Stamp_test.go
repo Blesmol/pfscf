@@ -7,9 +7,10 @@ import (
 
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
-func getTextCellWithDummyData() (cd ContentData) {
+func getTextCellWithDummyData() (cd yaml.ContentData) {
 	cd.Type = "textCell"
 	cd.X1 = 12.0
 	cd.Y1 = 12.0
@@ -22,7 +23,7 @@ func getTextCellWithDummyData() (cd ContentData) {
 	return cd
 }
 
-func getSocietyIDWithDummyData() (cd ContentData) {
+func getSocietyIDWithDummyData() (cd yaml.ContentData) {
 	cd.Type = "societyId"
 	cd.X1 = 12.0
 	cd.Y1 = 12.0

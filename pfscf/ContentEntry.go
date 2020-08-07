@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
 var (
@@ -27,7 +28,7 @@ type ContentEntry interface {
 }
 
 // NewContentEntry creates a new content entry object for the provided ContentData object.
-func NewContentEntry(id string, data ContentData) (ce ContentEntry, err error) {
+func NewContentEntry(id string, data yaml.ContentData) (ce ContentEntry, err error) {
 	switch data.Type {
 	case "textCell":
 		return NewContentTextCell(id, data)
@@ -60,7 +61,7 @@ type ContentTextCell struct {
 }
 
 // NewContentTextCell will return a content object that represents a text cell
-func NewContentTextCell(id string, data ContentData) (ce ContentTextCell, err error) {
+func NewContentTextCell(id string, data yaml.ContentData) (ce ContentTextCell, err error) {
 	// TODO return error for values that are set here besides the required ones
 
 	ce.id = id
@@ -201,7 +202,7 @@ type ContentSocietyID struct {
 }
 
 // NewContentSocietyID will return a content object that represents a society ID
-func NewContentSocietyID(id string, data ContentData) (si ContentSocietyID, err error) {
+func NewContentSocietyID(id string, data yaml.ContentData) (si ContentSocietyID, err error) {
 	si.id = id
 	si.description = data.Desc
 	si.exampleValue = data.Example
@@ -372,7 +373,7 @@ type ContentRectangle struct {
 }
 
 // NewContentRectangle will return a content object that represents a rectangle
-func NewContentRectangle(id string, data ContentData) (ce ContentRectangle, err error) {
+func NewContentRectangle(id string, data yaml.ContentData) (ce ContentRectangle, err error) {
 	ce.id = id
 	ce.description = data.Desc
 	ce.exampleValue = data.Example

@@ -7,6 +7,7 @@ import (
 
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
 var (
@@ -22,7 +23,7 @@ func getCTfromYamlFile(t *testing.T, filename string) (ct *ChronicleTemplate) {
 	t.Helper()
 
 	fileToTest := filepath.Join(chronicleTemplateTestDir, filename)
-	yFile, err := GetYamlFile(fileToTest)
+	yFile, err := yaml.GetYamlFile(fileToTest)
 	test.ExpectNotNil(t, yFile)
 	test.ExpectNoError(t, err)
 
@@ -36,7 +37,7 @@ func TestNewChronicleTemplate(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
 		t.Run("no filename", func(t *testing.T) {
 			fileToTest := filepath.Join(chronicleTemplateTestDir, "basic.yml")
-			yFile, err := GetYamlFile(fileToTest)
+			yFile, err := yaml.GetYamlFile(fileToTest)
 
 			test.ExpectNotNil(t, yFile)
 			test.ExpectNoError(t, err)
@@ -57,7 +58,7 @@ func TestNewChronicleTemplate(t *testing.T) {
 
 			for _, filename := range filenames {
 				fileToTest := filepath.Join(chronicleTemplateTestDir, filename)
-				yFile, err := GetYamlFile(fileToTest)
+				yFile, err := yaml.GetYamlFile(fileToTest)
 
 				test.ExpectNotNil(t, yFile)
 				test.ExpectNoError(t, err)
@@ -73,7 +74,7 @@ func TestNewChronicleTemplate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		t.Run("basic valid file", func(t *testing.T) {
 			fileToTest := filepath.Join(chronicleTemplateTestDir, "basic.yml")
-			yFile, err := GetYamlFile(fileToTest)
+			yFile, err := yaml.GetYamlFile(fileToTest)
 
 			test.ExpectNotNil(t, yFile)
 			test.ExpectNoError(t, err)
@@ -92,7 +93,7 @@ func TestNewChronicleTemplate(t *testing.T) {
 
 		t.Run("file with content", func(t *testing.T) {
 			fileToTest := filepath.Join(chronicleTemplateTestDir, "valid.yml")
-			yFile, err := GetYamlFile(fileToTest)
+			yFile, err := yaml.GetYamlFile(fileToTest)
 
 			test.ExpectNotNil(t, yFile)
 			test.ExpectNoError(t, err)

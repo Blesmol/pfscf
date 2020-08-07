@@ -1,4 +1,4 @@
-package main
+package yaml
 
 import (
 	"fmt"
@@ -14,8 +14,8 @@ const (
 	templateFilePattern = ".+\\.yml$"
 )
 
-// YamlFile represents the structure of a yaml template file
-type YamlFile struct {
+// File represents the structure of a yaml template file
+type File struct {
 	ID          string                 // Name by which this template should be identified
 	Description string                 // The description of this template
 	Inherit     string                 // ID of the template that should be inherited
@@ -44,8 +44,8 @@ type ContentData struct {
 }
 
 // GetYamlFile reads the yaml file from the provided location.
-func GetYamlFile(filename string) (yFile *YamlFile, err error) {
-	yFile = new(YamlFile)
+func GetYamlFile(filename string) (yFile *File, err error) {
+	yFile = new(File)
 
 	fileData, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -60,10 +60,10 @@ func GetYamlFile(filename string) (yFile *YamlFile, err error) {
 	return yFile, nil
 }
 
-// GetTemplateFilenamesFromDir takes a directory name as input and returns a list of names
+// getTemplateFilenamesFromDir takes a directory name as input and returns a list of names
 // of all template files within that dir and its subdirectories. All returned paths are
 // prefixed with the provided path argument.
-func GetTemplateFilenamesFromDir(dirName string) (yamlFilenames []string, err error) {
+func getTemplateFilenamesFromDir(dirName string) (yamlFilenames []string, err error) {
 	tmplFileRegex := regexp.MustCompile(templateFilePattern)
 
 	files, err := ioutil.ReadDir(dirName)
@@ -73,7 +73,7 @@ func GetTemplateFilenamesFromDir(dirName string) (yamlFilenames []string, err er
 
 	for _, file := range files {
 		if file.IsDir() {
-			tmplFilesInSubDir, err := GetTemplateFilenamesFromDir(filepath.Join(dirName, file.Name()))
+			tmplFilesInSubDir, err := getTemplateFilenamesFromDir(filepath.Join(dirName, file.Name()))
 			if err != nil {
 				return nil, err
 			}
@@ -89,13 +89,13 @@ func GetTemplateFilenamesFromDir(dirName string) (yamlFilenames []string, err er
 // GetTemplateFilesFromDir takes a directory name as input and returns a list of
 // YamlFile objects that hold the contents of all yaml files contained in that
 // directory and its subdirectories.
-func GetTemplateFilesFromDir(dirName string) (yamlFiles map[string]*YamlFile, err error) {
-	fileList, err := GetTemplateFilenamesFromDir(dirName)
+func GetTemplateFilesFromDir(dirName string) (yamlFiles map[string]*File, err error) {
+	fileList, err := getTemplateFilenamesFromDir(dirName)
 	if err != nil {
 		return nil, err
 	}
 
-	yamlFiles = make(map[string]*YamlFile, len(fileList))
+	yamlFiles = make(map[string]*File, len(fileList))
 	for _, filename := range fileList {
 		yFile, err := GetYamlFile(filename)
 		if err != nil {

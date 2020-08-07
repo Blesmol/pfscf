@@ -5,6 +5,7 @@ import (
 	"reflect"
 
 	"github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
 // PresetEntry represents an entry in the 'preset' section
@@ -23,7 +24,7 @@ type PresetEntry struct {
 
 // NewPresetEntry create a new PresetEntry object.
 // TODO Throw error in case of unused fields from ContentData that are set.
-func NewPresetEntry(id string, data ContentData) (pe PresetEntry) {
+func NewPresetEntry(id string, data yaml.ContentData) (pe PresetEntry) {
 	utils.Assert(utils.IsSet(id), "ID should always be present here")
 	pe = PresetEntry{
 		id:      id,
