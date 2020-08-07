@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	util "github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 // PresetEntry represents an entry in the 'preset' section
@@ -24,7 +24,7 @@ type PresetEntry struct {
 // NewPresetEntry create a new PresetEntry object.
 // TODO Throw error in case of unused fields from ContentData that are set.
 func NewPresetEntry(id string, data ContentData) (pe PresetEntry) {
-	util.Assert(util.IsSet(id), "ID should always be present here")
+	utils.Assert(utils.IsSet(id), "ID should always be present here")
 	pe = PresetEntry{
 		id:      id,
 		presets: data.Presets,
@@ -55,7 +55,7 @@ func (pe PresetEntry) IsNotContradictingWith(other PresetEntry) (err error) {
 		fieldRight := vRight.Field(i)
 		fieldName := vLeft.Type().Field(i).Name
 
-		if !util.IsExported(fieldLeft) {
+		if !utils.IsExported(fieldLeft) {
 			continue // skip non-exported fields
 		}
 

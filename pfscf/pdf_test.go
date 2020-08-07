@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
-	util "github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 var (
@@ -15,8 +15,8 @@ var (
 )
 
 func init() {
-	util.SetIsTestEnvironment(true)
-	pdfTestDir = filepath.Join(util.GetExecutableDir(), "testdata", "pdf")
+	utils.SetIsTestEnvironment(true)
+	pdfTestDir = filepath.Join(utils.GetExecutableDir(), "testdata", "pdf")
 }
 
 func TestNewPdf(t *testing.T) {
@@ -74,7 +74,7 @@ func TestExtractPage(t *testing.T) {
 		test.ExpectNotNil(t, inPdf)
 		test.ExpectNoError(t, err)
 
-		workDir := util.GetTempDir()
+		workDir := utils.GetTempDir()
 		defer os.RemoveAll(workDir)
 
 		for _, pageIndex := range []int{-5, 0, 5} {
@@ -91,7 +91,7 @@ func TestExtractPage(t *testing.T) {
 		test.ExpectNoError(t, err)
 
 		for _, pageIndex := range []int{-4, -1, 1, 4} {
-			workDir := util.GetTempDir()
+			workDir := utils.GetTempDir()
 			defer os.RemoveAll(workDir)
 
 			extractedPdf, err := inPdf.ExtractPage(pageIndex, workDir)

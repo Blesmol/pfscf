@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
-	util "github.com/Blesmol/pfscf/pfscf/utils"
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 func getTextCellWithDummyData() (cd ContentData) {
@@ -128,7 +128,7 @@ func TestStamp_WriteToFile(t *testing.T) {
 		t.Run("fiii", func(t *testing.T) {
 			s := NewStamp(400.0, 400.0)
 			test.ExpectNotNil(t, s)
-			workDir := util.GetTempDir()
+			workDir := utils.GetTempDir()
 			defer os.RemoveAll(workDir)
 			err := s.WriteToFile(filepath.Join(workDir, "stamp.pdf"))
 			test.ExpectNoError(t, err)
