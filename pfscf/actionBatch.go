@@ -101,7 +101,7 @@ func executeBatchFill(cmd *cobra.Command, args []string) {
 	cTmpl, err := GetTemplate(tmplName)
 	utils.ExitOnError(err, "Error getting template")
 
-	batchArgStores, err := GetFillInformationFromCsvFile(inCsv)
+	batchArgStores, err := GetArgStoresFromCsvFile(inCsv)
 	utils.ExitOnError(err, "Error reading csv file")
 
 	// parse remaining arguments

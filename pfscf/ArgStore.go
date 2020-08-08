@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 	"sort"
 	"strings"
@@ -148,4 +149,48 @@ func ArgStoreFromTemplateExamples(ct *ChronicleTemplate) (as *ArgStore) {
 	}
 
 	return as
+}
+
+// GetArgStoresFromCsvFile reads a csv file and returns a list of ArgStores that
+// contain the required arguments to fill out a chronicle.
+func GetArgStoresFromCsvFile(filename string) (argStores []*ArgStore, err error) {
+	records, err := ReadCsvFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	argStores = make([]*ArgStore, 0)
+
+	if len(records) == 0 {
+		return argStores, nil
+	}
+
+	numPlayers := len(records[0]) - 1
+
+	for idx := 1; idx <= numPlayers; idx++ {
+		as := NewArgStore(&ArgStoreInit{initCapacity: len(records)})
+
+		for _, record := range records {
+			key := record[0]
+			value := record[idx]
+			if as.HasKey(key) {
+				return nil, fmt.Errorf("File '%v' contains multiple lines for content ID '%v'", filename, key)
+			}
+
+			// only store if there is an actual value
+			if utils.IsSet(value) {
+				if !utils.IsSet(key) {
+					return nil, fmt.Errorf("CSV Line has content value '%v', but is missing content ID in first column", value)
+				}
+				as.Set(key, value)
+			}
+		}
+
+		// only add if we have at least one entry here
+		if as.NumEntries() >= 1 {
+			argStores = append(argStores, as)
+		}
+	}
+
+	return argStores, nil
 }

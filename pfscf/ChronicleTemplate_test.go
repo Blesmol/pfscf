@@ -288,3 +288,68 @@ func TestWriteToCsvFile(t *testing.T) {
 		})
 	})
 }
+
+func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *ArgStore, separator rune) (argStores []*ArgStore) {
+	test.ExpectNotNil(t, ct)
+
+	outputDir := utils.GetTempDir()
+	defer os.RemoveAll(outputDir)
+
+	outfile := filepath.Join(outputDir, "test.csv")
+
+	// write template to csv
+	err := ct.WriteToCsvFile(outfile, separator, as)
+	test.ExpectNoError(t, err)
+
+	// read csv back in
+	argStores, err = GetArgStoresFromCsvFile(outfile)
+	test.ExpectNotNil(t, argStores)
+	test.ExpectNoError(t, err)
+
+	return argStores
+}
+
+func TestCreateAndReadCsvFile(t *testing.T) {
+	ts, err := getTemplateStoreForDir(filepath.Join(csvTestDir, "templates"))
+	test.ExpectNoError(t, err)
+	test.ExpectNotNil(t, ts)
+
+	outputDir := utils.GetTempDir()
+	defer os.RemoveAll(outputDir)
+
+	ct, err := ts.GetTemplate("template")
+	test.ExpectNoError(t, err)
+	test.ExpectNotNil(t, ct)
+
+	// built up test data
+	inputArgStores := make([]*ArgStore, 0)
+	inputArgStores = append(inputArgStores, NewArgStore(&ArgStoreInit{})) // empty argStore
+	inputArgStores = append(inputArgStores, ArgStoreFromTemplateExamples(ct))
+	userProvidedArgStore := NewArgStore(&ArgStoreInit{})
+	userProvidedArgStore.Set("player", "Jack")
+	userProvidedArgStore.Set("noExample", "test")
+	inputArgStores = append(inputArgStores, userProvidedArgStore)
+
+	// begin tests
+	for _, inputArgStore := range inputArgStores {
+		for _, separator := range []rune{';', ','} {
+			resultArgStores := writeTemplateToFileAndReadBackIn(t, ct, inputArgStore, separator)
+			test.ExpectNotNil(t, resultArgStores)
+
+			// only case where no result can be empty is if input was completely empty
+			test.ExpectTrue(t, len(resultArgStores) > 0 || inputArgStore.NumEntries() == 0)
+
+			// compare complete content
+			for _, resultArgStore := range resultArgStores {
+				test.ExpectEqual(t, resultArgStore.NumEntries(), inputArgStore.NumEntries())
+
+				for _, key := range resultArgStore.GetKeys() {
+					resultValue, _ := resultArgStore.Get(key)
+					inputValue, _ := inputArgStore.Get(key)
+					test.ExpectEqual(t, resultValue, inputValue)
+				}
+			}
+		}
+
+	}
+}
