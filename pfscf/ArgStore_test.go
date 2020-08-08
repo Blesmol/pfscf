@@ -5,26 +5,36 @@ import (
 	"testing"
 
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
+
+var (
+	argStoreTestDir string
+)
+
+func init() {
+	utils.SetIsTestEnvironment(true)
+	argStoreTestDir = filepath.Join(utils.GetExecutableDir(), "testdata", "ArgStore")
+}
 
 func TestGetArgStoresFromCsvFile(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
 		t.Run("non-existing file", func(t *testing.T) {
-			filename := filepath.Join(csvTestDir, "nonExisting.csv")
+			filename := filepath.Join(argStoreTestDir, "nonExisting.csv")
 			as, err := GetArgStoresFromCsvFile(filename)
 			test.ExpectNil(t, as)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("content without ID", func(t *testing.T) {
-			filename := filepath.Join(csvTestDir, "contentWithoutId.csv")
+			filename := filepath.Join(argStoreTestDir, "contentWithoutId.csv")
 			as, err := GetArgStoresFromCsvFile(filename)
 			test.ExpectNil(t, as)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("duplicate content id", func(t *testing.T) {
-			filename := filepath.Join(csvTestDir, "duplicateContent.csv")
+			filename := filepath.Join(argStoreTestDir, "duplicateContent.csv")
 			as, err := GetArgStoresFromCsvFile(filename)
 			test.ExpectNil(t, as)
 			test.ExpectError(t, err)
@@ -33,7 +43,7 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		t.Run("empty file", func(t *testing.T) {
-			filename := filepath.Join(csvTestDir, "emptyFile.csv")
+			filename := filepath.Join(argStoreTestDir, "emptyFile.csv")
 			argStores, err := GetArgStoresFromCsvFile(filename)
 			test.ExpectNotNil(t, argStores)
 			test.ExpectNoError(t, err)
@@ -42,7 +52,7 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 		t.Run("basic file", func(t *testing.T) {
 			for _, baseFilename := range []string{"validBasicSemicolon.csv", "validBasicComma.csv"} {
 				t.Logf("Filename is '%v'", baseFilename)
-				filename := filepath.Join(csvTestDir, baseFilename)
+				filename := filepath.Join(argStoreTestDir, baseFilename)
 				argStores, err := GetArgStoresFromCsvFile(filename)
 				test.ExpectNotNil(t, argStores)
 				test.ExpectNoError(t, err)
@@ -69,7 +79,7 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 		})
 
 		t.Run("empty lines and comment lines", func(t *testing.T) {
-			filename := filepath.Join(csvTestDir, "emptyLines.csv")
+			filename := filepath.Join(argStoreTestDir, "emptyLines.csv")
 			argStores, err := GetArgStoresFromCsvFile(filename)
 			test.ExpectNotNil(t, argStores)
 			test.ExpectNoError(t, err)
@@ -93,14 +103,14 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 		})
 
 		t.Run("file without players", func(t *testing.T) {
-			filename := filepath.Join(csvTestDir, "noPlayers.csv")
+			filename := filepath.Join(argStoreTestDir, "noPlayers.csv")
 			as, err := GetArgStoresFromCsvFile(filename)
 			test.ExpectNotNil(t, as)
 			test.ExpectNoError(t, err)
 		})
 
 		t.Run("file with missing values", func(t *testing.T) {
-			filename := filepath.Join(csvTestDir, "validWithSomeMissingValues.csv")
+			filename := filepath.Join(argStoreTestDir, "validWithSomeMissingValues.csv")
 			argStores, err := GetArgStoresFromCsvFile(filename)
 			test.ExpectNotNil(t, argStores)
 			test.ExpectNoError(t, err)
@@ -129,7 +139,7 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 
 		// currently this is only checked while stamping, so reading this in is currently not an error
 		t.Run("invalid society id", func(t *testing.T) {
-			filename := filepath.Join(csvTestDir, "invalidSocietyId.csv")
+			filename := filepath.Join(argStoreTestDir, "invalidSocietyId.csv")
 			as, err := GetArgStoresFromCsvFile(filename)
 			test.ExpectNotNil(t, as)
 			test.ExpectNoError(t, err)

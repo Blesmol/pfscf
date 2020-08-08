@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Blesmol/pfscf/pfscf/csv"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
@@ -168,11 +169,10 @@ func (ct *ChronicleTemplate) WriteToCsvFile(filename string, separator rune, as 
 		records = append(records, entry)
 	}
 
-	err = CsvWriteFile(filename, separator, records)
+	err = csv.WriteFile(filename, separator, records)
 	if err != nil {
 		return err
 	}
 
 	return nil
 }
-

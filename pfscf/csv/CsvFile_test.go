@@ -1,4 +1,4 @@
-package main
+package csv
 
 import (
 	"os"
@@ -15,7 +15,7 @@ var (
 
 func init() {
 	utils.SetIsTestEnvironment(true)
-	csvTestDir = filepath.Join(utils.GetExecutableDir(), "testdata", "CsvFile")
+	csvTestDir = filepath.Join(utils.GetExecutableDir(), "testdata")
 }
 
 func TestReadCsvFile(t *testing.T) {
@@ -118,13 +118,13 @@ func TestWriteFile(t *testing.T) {
 	t.Run("errors", func(t *testing.T) {
 		t.Run("non-existing target dir", func(t *testing.T) {
 			outfile := filepath.Join(outputDir, "nonExisting", "basic.csv")
-			err := CsvWriteFile(outfile, ';', data)
+			err := WriteFile(outfile, ';', data)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("invalid separator", func(t *testing.T) {
 			outfile := filepath.Join(outputDir, "invalid_separator.csv")
-			err := CsvWriteFile(outfile, 'g', data)
+			err := WriteFile(outfile, 'g', data)
 			test.ExpectError(t, err, "Unsupported separator")
 		})
 	})
@@ -133,7 +133,7 @@ func TestWriteFile(t *testing.T) {
 		t.Run("separators", func(t *testing.T) {
 			t.Run("semicolon", func(t *testing.T) {
 				outfile := filepath.Join(outputDir, "separator_semicolon.csv")
-				err := CsvWriteFile(outfile, ';', data)
+				err := WriteFile(outfile, ';', data)
 				test.ExpectNoError(t, err)
 
 				// read csv back in for content check
@@ -145,7 +145,7 @@ func TestWriteFile(t *testing.T) {
 			})
 			t.Run("comma", func(t *testing.T) {
 				outfile := filepath.Join(outputDir, "separator_comma.csv")
-				err := CsvWriteFile(outfile, ',', data)
+				err := WriteFile(outfile, ',', data)
 				test.ExpectNoError(t, err)
 
 				// read csv back in for content check
@@ -158,7 +158,7 @@ func TestWriteFile(t *testing.T) {
 		})
 		t.Run("empty data", func(t *testing.T) {
 			outfile := filepath.Join(outputDir, "empty.csv")
-			err := CsvWriteFile(outfile, ',', [][]string{})
+			err := WriteFile(outfile, ',', [][]string{})
 			test.ExpectNoError(t, err)
 
 			// read csv back in for content check

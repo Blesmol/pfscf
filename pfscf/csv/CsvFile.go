@@ -1,4 +1,4 @@
-package main
+package csv
 
 import (
 	"bytes"
@@ -71,9 +71,8 @@ func alignRecordLength(records *[][]string) {
 	}
 }
 
-// CsvWriteFile creates a CSV file with the provided 2-dimensional array as content.
-// TODO rename to WriteFile
-func CsvWriteFile(filename string, separator rune, data [][]string) (err error) {
+// WriteFile creates a CSV file with the provided 2-dimensional array as content.
+func WriteFile(filename string, separator rune, data [][]string) (err error) {
 
 	if separator != ';' && separator != ',' {
 		return fmt.Errorf("Unsupported separator provided; only ';' and ',' are currently supported")

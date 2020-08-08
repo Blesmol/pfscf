@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/Blesmol/pfscf/pfscf/csv"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -154,7 +155,7 @@ func ArgStoreFromTemplateExamples(ct *ChronicleTemplate) (as *ArgStore) {
 // GetArgStoresFromCsvFile reads a csv file and returns a list of ArgStores that
 // contain the required arguments to fill out a chronicle.
 func GetArgStoresFromCsvFile(filename string) (argStores []*ArgStore, err error) {
-	records, err := ReadCsvFile(filename)
+	records, err := csv.ReadCsvFile(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -166,6 +167,7 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*ArgStore, err error)
 	}
 
 	numPlayers := len(records[0]) - 1
+
 
 	for idx := 1; idx <= numPlayers; idx++ {
 		as := NewArgStore(&ArgStoreInit{initCapacity: len(records)})

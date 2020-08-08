@@ -198,7 +198,7 @@ func TestInheritFrom(t *testing.T) {
 }
 
 func TestWriteToCsvFile(t *testing.T) {
-	ts, err := getTemplateStoreForDir(filepath.Join(csvTestDir, "templates"))
+	ts, err := getTemplateStoreForDir(filepath.Join(chronicleTemplateTestDir, "templates"))
 	test.ExpectNoError(t, err)
 	test.ExpectNotNil(t, ts)
 
@@ -310,7 +310,7 @@ func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *A
 }
 
 func TestCreateAndReadCsvFile(t *testing.T) {
-	ts, err := getTemplateStoreForDir(filepath.Join(csvTestDir, "templates"))
+	ts, err := getTemplateStoreForDir(filepath.Join(chronicleTemplateTestDir, "templates"))
 	test.ExpectNoError(t, err)
 	test.ExpectNotNil(t, ts)
 
