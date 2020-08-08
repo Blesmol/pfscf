@@ -73,12 +73,9 @@ func alignRecordLength(records *[][]string) {
 	}
 }
 
-// WriteTemplateToCsvFile takes a chronicle template and creates a CSV file that can be used
-// as input for the "batch fill" command
-func (ct *ChronicleTemplate) WriteTemplateToCsvFile(filename string, as *ArgStore, separator rune) (err error) {
-	const numPlayers = 7
-
-	// TODO if no file extension is added, add ".csv" automatically
+// CsvWriteFile creates a CSV file with the provided 2-dimensional array as content.
+// TODO rename to WriteFile
+func CsvWriteFile(filename string, separator rune, data [][]string) (err error) {
 
 	if separator != ';' && separator != ',' {
 		return fmt.Errorf("Unsupported separator provided; only ';' and ',' are currently supported")
@@ -90,38 +87,11 @@ func (ct *ChronicleTemplate) WriteTemplateToCsvFile(filename string, as *ArgStor
 	}
 	defer file.Close()
 
-	records := [][]string{
-		{"#ID", ct.ID()},
-		{"#Description", ct.Description()},
-		{"#"},
-		{"#Players"}, // will be filled below with labels
-	}
-	for idx := 1; idx <= numPlayers; idx++ {
-		outerIdx := len(records) - 1
-		records[outerIdx] = append(records[outerIdx], fmt.Sprintf("Player %d", idx))
-	}
-
-	for _, contentID := range ct.GetContentIDs(false) {
-		// entry should be large enough for id column + 7 players
-		entry := make([]string, numPlayers+1)
-
-		entry[0] = contentID
-
-		// check if some value was provided on the cmd line that should be filled in everywhere
-		if val, exists := as.Get(contentID); exists {
-			for colIdx := 1; colIdx <= numPlayers; colIdx++ {
-				entry[colIdx] = val
-			}
-		}
-
-		records = append(records, entry)
-	}
-
 	csvw := csv.NewWriter(file)
 	csvw.Comma = separator
 	csvw.UseCRLF = false // TODO do we need to adapt this based on the OS?
 
-	for _, record := range records {
+	for _, record := range data {
 		err = csvw.Write(record)
 		if err != nil {
 			return err

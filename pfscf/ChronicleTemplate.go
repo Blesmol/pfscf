@@ -135,3 +135,44 @@ func (ct *ChronicleTemplate) Resolve() (err error) {
 	}
 	return nil
 }
+
+// WriteToCsvFile creates a CSV file out of the current chronicle template than can be used
+// as input for the "batch fill" command
+func (ct *ChronicleTemplate) WriteToCsvFile(filename string, separator rune, as *ArgStore) (err error) {
+	const numPlayers = 7
+
+	records := [][]string{
+		{"#ID", ct.ID()},
+		{"#Description", ct.Description()},
+		{"#"},
+		{"#Players"}, // will be filled below with labels
+	}
+	for idx := 1; idx <= numPlayers; idx++ {
+		outerIdx := len(records) - 1
+		records[outerIdx] = append(records[outerIdx], fmt.Sprintf("Player %d", idx))
+	}
+
+	for _, contentID := range ct.GetContentIDs(false) {
+		// entry should be large enough for id column + 7 players
+		entry := make([]string, numPlayers+1)
+
+		entry[0] = contentID
+
+		// check if some value was provided on the cmd line that should be filled in everywhere
+		if val, exists := as.Get(contentID); exists {
+			for colIdx := 1; colIdx <= numPlayers; colIdx++ {
+				entry[colIdx] = val
+			}
+		}
+
+		records = append(records, entry)
+	}
+
+	err = CsvWriteFile(filename, separator, records)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+

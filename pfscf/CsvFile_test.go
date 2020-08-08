@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"os"
 	"path/filepath"
 	"testing"
@@ -17,29 +16,6 @@ var (
 func init() {
 	utils.SetIsTestEnvironment(true)
 	csvTestDir = filepath.Join(utils.GetExecutableDir(), "testdata", "CsvFile")
-}
-
-func readFileToLines(t *testing.T, filename string) (lines []string, err error) {
-	t.Helper()
-
-	lines = make([]string, 0)
-
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	lineScanner := bufio.NewScanner(file)
-	for lineScanner.Scan() {
-		lines = append(lines, lineScanner.Text())
-	}
-
-	if lineScanner.Err() != nil {
-		return nil, lineScanner.Err()
-	}
-
-	return lines, nil
 }
 
 func TestReadCsvFile(t *testing.T) {
@@ -130,128 +106,65 @@ func TestAlignRecordLength(t *testing.T) {
 	}
 }
 
-func TestWriteTemplateToCsvFile(t *testing.T) {
-	ts, err := getTemplateStoreForDir(filepath.Join(csvTestDir, "templates"))
-	test.ExpectNoError(t, err)
-	test.ExpectNotNil(t, ts)
-
+func TestWriteFile(t *testing.T) {
 	outputDir := utils.GetTempDir()
 	defer os.RemoveAll(outputDir)
 
-	t.Run("errors", func(t *testing.T) {
-		t.Run("Non-existing target dir", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
-			test.ExpectNoError(t, err)
-			test.ExpectNotNil(t, ct)
+	data := [][]string{
+		{"foo1"},
+		{"bar;1", "bar,2"},
+	}
 
-			as := NewArgStore(&ArgStoreInit{})
+	t.Run("errors", func(t *testing.T) {
+		t.Run("non-existing target dir", func(t *testing.T) {
 			outfile := filepath.Join(outputDir, "nonExisting", "basic.csv")
-			err = ct.WriteTemplateToCsvFile(outfile, as, ';')
+			err := CsvWriteFile(outfile, ';', data)
 			test.ExpectError(t, err)
 		})
 
-		t.Run("unsupported separator", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
-			test.ExpectNoError(t, err)
-			test.ExpectNotNil(t, ct)
-
-			as := NewArgStore(&ArgStoreInit{})
-			outfile := filepath.Join(outputDir, "unsupportedSeparator.csv")
-
-			err = ct.WriteTemplateToCsvFile(outfile, as, '.')
-			test.ExpectError(t, err)
+		t.Run("invalid separator", func(t *testing.T) {
+			outfile := filepath.Join(outputDir, "invalid_separator.csv")
+			err := CsvWriteFile(outfile, 'g', data)
+			test.ExpectError(t, err, "Unsupported separator")
 		})
 	})
 
 	t.Run("valid", func(t *testing.T) {
-		t.Run("basic with semicolon", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
-			test.ExpectNoError(t, err)
-			test.ExpectNotNil(t, ct)
+		t.Run("separators", func(t *testing.T) {
+			t.Run("semicolon", func(t *testing.T) {
+				outfile := filepath.Join(outputDir, "separator_semicolon.csv")
+				err := CsvWriteFile(outfile, ';', data)
+				test.ExpectNoError(t, err)
 
-			as := NewArgStore(&ArgStoreInit{})
-			outfile := filepath.Join(outputDir, "basic_with_semicolon.csv")
+				// read csv back in for content check
+				lines, err := utils.ReadFileToLines(outfile)
+				test.ExpectNoError(t, err)
+				test.ExpectEqual(t, len(lines), 2)
+				test.ExpectStringContains(t, lines[0], "foo1")
+				test.ExpectEqual(t, lines[1], "\"bar;1\";bar,2")
+			})
+			t.Run("comma", func(t *testing.T) {
+				outfile := filepath.Join(outputDir, "separator_comma.csv")
+				err := CsvWriteFile(outfile, ',', data)
+				test.ExpectNoError(t, err)
 
-			// write template to csv
-			err = ct.WriteTemplateToCsvFile(outfile, as, ';')
-			test.ExpectNoError(t, err)
-
-			// try to read the same csv back in (as text) for some basic content check
-			lines, err := readFileToLines(t, outfile)
-			test.ExpectNoError(t, err)
-			test.ExpectEqual(t, len(lines), 8)
-			test.ExpectStringContains(t, lines[0], "ID")
-			test.ExpectStringContains(t, lines[0], "template") // ID of the template
-			test.ExpectEqual(t, lines[3], "#Players;Player 1;Player 2;Player 3;Player 4;Player 5;Player 6;Player 7")
-			test.ExpectEqual(t, lines[6], "player;;;;;;;")
-			test.ExpectEqual(t, lines[7], "societyid;;;;;;;")
+				// read csv back in for content check
+				lines, err := utils.ReadFileToLines(outfile)
+				test.ExpectNoError(t, err)
+				test.ExpectEqual(t, len(lines), 2)
+				test.ExpectStringContains(t, lines[0], "foo1")
+				test.ExpectEqual(t, lines[1], "bar;1,\"bar,2\"")
+			})
 		})
-
-		t.Run("basic with comma", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
-			test.ExpectNoError(t, err)
-			test.ExpectNotNil(t, ct)
-
-			as := NewArgStore(&ArgStoreInit{})
-			outfile := filepath.Join(outputDir, "basic_with_comma.csv")
-
-			// write template to csv
-			err = ct.WriteTemplateToCsvFile(outfile, as, ',')
+		t.Run("empty data", func(t *testing.T) {
+			outfile := filepath.Join(outputDir, "empty.csv")
+			err := CsvWriteFile(outfile, ',', [][]string{})
 			test.ExpectNoError(t, err)
 
-			// try to read the same csv back in (as text) for some basic content check
-			lines, err := readFileToLines(t, outfile)
+			// read csv back in for content check
+			lines, err := utils.ReadFileToLines(outfile)
 			test.ExpectNoError(t, err)
-			test.ExpectEqual(t, len(lines), 8)
-			test.ExpectStringContains(t, lines[0], "ID")
-			test.ExpectStringContains(t, lines[0], "template") // ID of the template
-			test.ExpectEqual(t, lines[3], "#Players,Player 1,Player 2,Player 3,Player 4,Player 5,Player 6,Player 7")
-			test.ExpectEqual(t, lines[6], "player,,,,,,,")
-			test.ExpectEqual(t, lines[7], "societyid,,,,,,,")
-		})
-
-		t.Run("fill with example values", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
-			test.ExpectNoError(t, err)
-			test.ExpectNotNil(t, ct)
-
-			as := ArgStoreFromTemplateExamples(ct)
-
-			outfile := filepath.Join(outputDir, "argStoreExamples.csv")
-
-			// write template to csv
-			err = ct.WriteTemplateToCsvFile(outfile, as, ';')
-			test.ExpectNoError(t, err)
-
-			// try to read the same csv back in (as text) for some basic content check
-			lines, err := readFileToLines(t, outfile)
-			test.ExpectNoError(t, err)
-			test.ExpectStringContains(t, lines[5], "noExample;;;")
-			test.ExpectStringContains(t, lines[6], "player;Bob;Bob;")
-			test.ExpectStringContains(t, lines[7], "societyid;12345-678;12345-678;")
-		})
-
-		t.Run("fill with user-provided values", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
-			test.ExpectNoError(t, err)
-			test.ExpectNotNil(t, ct)
-
-			as := NewArgStore(&ArgStoreInit{})
-			as.Set("player", "Jack")
-			as.Set("noExample", "test")
-
-			outfile := filepath.Join(outputDir, "argStoreUserProvided.csv")
-
-			// write template to csv
-			err = ct.WriteTemplateToCsvFile(outfile, as, ';')
-			test.ExpectNoError(t, err)
-
-			// try to read the same csv back in (as text) for some basic content check
-			lines, err := readFileToLines(t, outfile)
-			test.ExpectNoError(t, err)
-			test.ExpectStringContains(t, lines[5], "noExample;test;test;")
-			test.ExpectStringContains(t, lines[6], "player;Jack;Jack;")
-			test.ExpectStringContains(t, lines[7], "societyid;;;")
+			test.ExpectEqual(t, len(lines), 0)
 		})
 	})
 }
@@ -395,7 +308,7 @@ func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *A
 	outfile := filepath.Join(outputDir, "test.csv")
 
 	// write template to csv
-	err := ct.WriteTemplateToCsvFile(outfile, as, separator)
+	err := ct.WriteToCsvFile(outfile, separator, as)
 	test.ExpectNoError(t, err)
 
 	// read csv back in

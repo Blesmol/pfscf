@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -213,3 +214,24 @@ func AddMissingValues(target interface{}, source interface{}, ignoredFields ...s
 	}
 }
 
+// ReadFileToLines reads in the given file and returns the content as string array of lines
+func ReadFileToLines(filename string) (lines []string, err error) {
+	lines = make([]string, 0)
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	lineScanner := bufio.NewScanner(file)
+	for lineScanner.Scan() {
+		lines = append(lines, lineScanner.Text())
+	}
+
+	if lineScanner.Err() != nil {
+		return nil, lineScanner.Err()
+	}
+
+	return lines, nil
+}

@@ -65,6 +65,7 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 	outFile := args[1]
 
 	var separator rune
+	// TODO remove check completely, just use first rune in separator string
 	switch actionBatchCreateSeparator {
 	case ";":
 		separator = ';'
@@ -73,7 +74,6 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 	default:
 		utils.ExitWithMessage("Currently only ';' and ',' are accepted as separators")
 	}
-	fmt.Printf("Separator: %v", separator)
 
 	cTmpl, err := GetTemplate(tmplName)
 	utils.ExitOnError(err, "Error getting template")
@@ -86,7 +86,7 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 		argStore = ArgStoreFromTemplateExamples(cTmpl)
 	}
 
-	err = cTmpl.WriteTemplateToCsvFile(outFile, argStore, separator)
+	err = cTmpl.WriteToCsvFile(outFile, separator, argStore)
 	utils.ExitOnError(err, "Error writing CSV file for template %v", tmplName)
 }
 
