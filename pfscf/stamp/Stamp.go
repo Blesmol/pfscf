@@ -1,4 +1,4 @@
-package main
+package stamp
 
 import (
 	"fmt"
@@ -57,16 +57,16 @@ func (s *Stamp) pctToPt(x, y float64) (xPt, yPt float64) {
 	return s.dimX * (x / 100.0), s.dimY * (y / 100.0)
 }
 
-// ptToPct converts the provided point coordinates into percent
+// PtToPct converts the provided point coordinates into percent
 // coordinates for the current stamp object.
 // A value of, e.g. 10% will be returned as 10.0, not as 0.10
-func (s *Stamp) ptToPct(x, y float64) (xPct, yPct float64) {
+func (s *Stamp) PtToPct(x, y float64) (xPct, yPct float64) {
 	return (100.0 / s.dimX) * x, (100.0 / s.dimY) * y
 }
 
-// getXYWH transforms two sets of x/y coordinates into a single set of
+// GetXYWH transforms two sets of x/y coordinates into a single set of
 // x/y coordinates and a pair of width/height values.
-func getXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
+func GetXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
 	if x1 < x2 {
 		x = x1
 		w = x2 - x1
@@ -107,13 +107,13 @@ func (s *Stamp) DeriveY2(y1Pct, y2Pct, fontsize float64) (y2 float64) {
 		return y2Pct
 	}
 
-	_, fontsizePct := s.ptToPct(0.0, fontsize)
+	_, fontsizePct := s.PtToPct(0.0, fontsize)
 	return y1Pct - fontsizePct
 }
 
 // AddTextCell adds a text cell to the stamp.
 func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fontsize float64, align string, text string, autoShrink bool) {
-	xPct, yPct, wPct, hPct := getXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
+	xPct, yPct, wPct, hPct := GetXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	x, y := s.pctToPt(xPct, yPct)
 	w, h := s.pctToPt(wPct, hPct)
@@ -131,7 +131,7 @@ func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fon
 
 // DrawRectangle draws a rectangle on the stamp.
 func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, style string, r, g, b int) {
-	xPct, yPct, wPct, hPct := getXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
+	xPct, yPct, wPct, hPct := GetXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	x, y := s.pctToPt(xPct, yPct)
 	w, h := s.pctToPt(wPct, hPct)
@@ -143,7 +143,7 @@ func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, style string, 
 // GetStringWidth returns the width of a given string
 func (s *Stamp) GetStringWidth(str string, font string, style string, fontsize float64) (result float64) {
 	s.pdf.SetFont(font, style, fontsize)
-	result, _ = s.ptToPct(s.pdf.GetStringWidth(str), 0.0)
+	result, _ = s.PtToPct(s.pdf.GetStringWidth(str), 0.0)
 	return result
 }
 

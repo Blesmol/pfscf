@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/Blesmol/pfscf/pfscf/stamp"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
@@ -24,7 +25,7 @@ type ContentEntry interface {
 	//IsValid() (err error) // Currently not required as part of interface, might change later
 	Describe(verbose bool) (result string)
 	Resolve(ps PresetStore) (resolvedCI ContentEntry, err error)
-	GenerateOutput(s *Stamp, as *ArgStore) (err error)
+	GenerateOutput(s *stamp.Stamp, as *ArgStore) (err error)
 }
 
 // NewContentEntry creates a new content entry object for the provided ContentData object.
@@ -168,7 +169,7 @@ func (ce ContentTextCell) Resolve(ps PresetStore) (resolvedCI ContentEntry, err 
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentTextCell) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
+func (ce ContentTextCell) GenerateOutput(s *stamp.Stamp, as *ArgStore) (err error) {
 	err = ce.IsValid()
 	if err != nil {
 		return err
@@ -264,7 +265,7 @@ func (ce ContentSocietyID) IsValid() (err error) {
 		return contentValErr(ce, err)
 	}
 
-	x, _, w, _ := getXYWH(ce.X1, 0.0, ce.X2, 0.0)
+	x, _, w, _ := stamp.GetXYWH(ce.X1, 0.0, ce.X2, 0.0)
 	if ce.XPivot <= x || ce.XPivot >= (x+w) {
 		return fmt.Errorf("xpivot value must lie between x1 and x2: %v < %v < %v", ce.X1, ce.XPivot, ce.X2)
 	}
@@ -312,7 +313,7 @@ func (ce ContentSocietyID) Resolve(ps PresetStore) (resolvedCI ContentEntry, err
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentSocietyID) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
+func (ce ContentSocietyID) GenerateOutput(s *stamp.Stamp, as *ArgStore) (err error) {
 	utils.Assert(as != nil, "No ArgStore provided")
 	err = ce.IsValid()
 	if err != nil {
@@ -343,7 +344,7 @@ func (ce ContentSocietyID) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
 	y2 := s.DeriveY2(ce.Y1, ce.Y2, ce.Fontsize)
 
 	//y1, y2 := SortCoords(ce.Y1, ce.Y2)
-	_, yOffset := s.ptToPct(0.0, 2.0)
+	_, yOffset := s.PtToPct(0.0, 2.0)
 	s.DrawRectangle(ce.X1, ce.Y1-yOffset, ce.X2, y2+yOffset, "F", 255, 255, 255)
 
 	// player id
@@ -480,7 +481,7 @@ func (ce ContentRectangle) Resolve(ps PresetStore) (resolvedCI ContentEntry, err
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentRectangle) GenerateOutput(s *Stamp, as *ArgStore) (err error) {
+func (ce ContentRectangle) GenerateOutput(s *stamp.Stamp, as *ArgStore) (err error) {
 	err = ce.IsValid()
 	if err != nil {
 		return err

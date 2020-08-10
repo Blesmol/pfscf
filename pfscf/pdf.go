@@ -9,6 +9,7 @@ import (
 
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
 
+	"github.com/Blesmol/pfscf/pfscf/stamp"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -175,7 +176,7 @@ func (pdf *Pdf) Fill(argStore *ArgStore, ct *ChronicleTemplate, outfile string) 
 	width, height := extractedPage.GetDimensionsInPoints()
 
 	// create stamp
-	stamp := NewStamp(width, height)
+	stamp := stamp.NewStamp(width, height)
 
 	if drawCellBorder { // TODO use function parameter rather than global variable
 		stamp.SetCellBorder(true)

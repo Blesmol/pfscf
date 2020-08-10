@@ -1,4 +1,4 @@
-package main
+package stamp
 
 import (
 	"os"
@@ -67,7 +67,7 @@ func TestStamp_PctToPt(t *testing.T) {
 func TestStamp_PtToPct(t *testing.T) {
 	s := NewStamp(200.0, 200.0)
 
-	x, y := s.ptToPct(20.0, 20.0)
+	x, y := s.PtToPct(20.0, 20.0)
 	test.ExpectEqual(t, x, 10.0)
 	test.ExpectEqual(t, y, 10.0)
 }
@@ -85,7 +85,7 @@ func TestGetXYWH(t *testing.T) {
 		t.Logf("%v:", data.desc)
 		t.Logf("  x1=%.1f, y1=%.1f, x2=%.1f, y2=%.1f", data.x1, data.y1, data.x2, data.y2)
 
-		x, y, w, h := getXYWH(data.x1, data.y1, data.x2, data.y2)
+		x, y, w, h := GetXYWH(data.x1, data.y1, data.x2, data.y2)
 		test.ExpectEqual(t, x, data.xExp)
 		test.ExpectEqual(t, y, data.yExp)
 		test.ExpectEqual(t, w, data.wExp)

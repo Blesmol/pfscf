@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/Blesmol/pfscf/pfscf/stamp"
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
@@ -289,7 +290,7 @@ func TestContentTextCell_Resolve(t *testing.T) {
 }
 
 func TestContentTextCell_GenerateOutput(t *testing.T) {
-	stamp := NewStamp(100.0, 100.0)
+	stamp := stamp.NewStamp(100.0, 100.0)
 	testID := "someId"
 	as := getTestArgStore(testID, "foobar")
 
@@ -516,7 +517,7 @@ func TestContentSocietyID_Resolve(t *testing.T) {
 }
 
 func TestContentSocietyID_GenerateOutput(t *testing.T) {
-	stamp := NewStamp(100.0, 100.0)
+	stamp := stamp.NewStamp(100.0, 100.0)
 	testID := "someId"
 	as := getTestArgStore(testID, "12345-678")
 
@@ -558,7 +559,6 @@ func TestContentSocietyID_GenerateOutput(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------------
-
 
 func TestCheckThatAllExportedFieldsAreSet(t *testing.T) {
 	type testStruct struct {
