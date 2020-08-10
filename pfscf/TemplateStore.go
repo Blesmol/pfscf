@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/Blesmol/pfscf/pfscf/cfg"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
@@ -17,7 +18,7 @@ type TemplateStore struct {
 // contained in the main template directory. If some error showed up during reading and
 // parsing files, resolving dependencies etc, then nil is returned together with an error.
 func GetTemplateStore() (ts *TemplateStore, err error) {
-	return getTemplateStoreForDir(GetTemplatesDir())
+	return getTemplateStoreForDir(cfg.GetTemplatesDir())
 }
 
 // getTemplateStoreForDir takes a directory and returns a template store

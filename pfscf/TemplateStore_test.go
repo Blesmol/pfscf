@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/Blesmol/pfscf/pfscf/cfg"
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
@@ -170,7 +171,7 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 }
 
 func TestGetTemplateStore(t *testing.T) {
-	SetTestingTemplatesDir(filepath.Join(templateStoreTestDir, "valid"))
+	cfg.SetTestingTemplatesDir(filepath.Join(templateStoreTestDir, "valid"))
 	ts, err := GetTemplateStore()
 
 	test.ExpectNotNil(t, ts)
@@ -205,7 +206,7 @@ func TestTemplateStore_GetTemplate(t *testing.T) {
 }
 
 func TestGetTemplate(t *testing.T) {
-	SetTestingTemplatesDir(filepath.Join(templateStoreTestDir, "valid"))
+	cfg.SetTestingTemplatesDir(filepath.Join(templateStoreTestDir, "valid"))
 
 	ct, err := GetTemplate("non-existant")
 	test.ExpectNil(t, ct)
