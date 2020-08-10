@@ -65,7 +65,7 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 	outFile := args[1]
 
 	var separator rune
-	// TODO remove check completely, just use first rune in separator string
+	// TODO remove check completely, just use first rune in separator string. Or forward as string instead of rune, and there check length and values.
 	switch actionBatchCreateSeparator {
 	case ";":
 		separator = ';'
@@ -81,10 +81,11 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 	// parse remaining arguments
 	var argStore *ArgStore
 	if !actionBatchCreateUseExampleValues {
-		argStore = ArgStoreFromArgs(args[2:])
+		argStore, err = NewArgStore(ArgStoreInit{args: args[2:]})
 	} else {
-		argStore = ArgStoreFromTemplateExamples(cTmpl)
+		argStore, err = NewArgStore(ArgStoreInit{args: cTmpl.GetExampleArguments()})
 	}
+	utils.ExitOnError(err, "Error processing command line arguments")
 
 	err = cTmpl.WriteToCsvFile(outFile, separator, argStore)
 	utils.ExitOnError(err, "Error writing CSV file for template %v", tmplName)
@@ -105,7 +106,8 @@ func executeBatchFill(cmd *cobra.Command, args []string) {
 	utils.ExitOnError(err, "Error reading csv file")
 
 	// parse remaining arguments
-	cmdLineArgStore := ArgStoreFromArgs(args[3:])
+	cmdLineArgStore, err := NewArgStore(ArgStoreInit{args: args[3:]})
+	utils.ExitOnError(err, "Error processing command line arguments")
 
 	for idx, batchArgStore := range batchArgStores {
 		cmdLineArgStore.SetParent(batchArgStore) // command line arguments have priority

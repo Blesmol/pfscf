@@ -38,7 +38,7 @@ func getContentDataWithDummyData(t *testing.T, cdType string) (cd yaml.ContentDa
 }
 
 func getTestArgStore(key, value string) (as *ArgStore) {
-	as = NewArgStore(&ArgStoreInit{})
+	as, _ = NewArgStore(ArgStoreInit{})
 	as.Set(key, value)
 	return as
 }

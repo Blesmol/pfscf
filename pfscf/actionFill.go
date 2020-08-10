@@ -49,10 +49,11 @@ func executeFill(cmd *cobra.Command, args []string) {
 	// parse remaining arguments
 	var argStore *ArgStore
 	if !actionFillUseExampleValues {
-		argStore = ArgStoreFromArgs(args[3:])
+		argStore, err = NewArgStore(ArgStoreInit{args: args[3:]})
 	} else {
-		argStore = ArgStoreFromTemplateExamples(cTmpl)
+		argStore, err = NewArgStore(ArgStoreInit{args: cTmpl.GetExampleArguments()})
 	}
+	utils.ExitOnError(err, "Eror processing command line arguments")
 
 	pdf, err := NewPdf(inFile)
 	utils.ExitOnError(err, "Error opening input file '%v'", inFile)

@@ -111,6 +111,22 @@ func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
 	return sb.String()
 }
 
+// GetExampleArguments returns an array containing all keys and example values for everything that
+// has an example value. The result can be passed to the ArgStore.
+// TODO test this
+func (ct *ChronicleTemplate) GetExampleArguments() (result []string) {
+	result = make([]string, 0)
+	contentIDs := ct.GetContentIDs(false)
+
+	for _, id := range contentIDs {
+		ce, _ := ct.GetContent(id)
+		if utils.IsSet(ce.ExampleValue()) {
+			result = append(result, fmt.Sprintf("%v=%v", id, ce.ExampleValue()))
+		}
+	}
+	return result
+}
+
 // InheritFrom inherits the content and preset entries from another
 // ChronicleTemplate object. An error is returned in case a content
 // entry exists in both objects. In case a preset object exists in

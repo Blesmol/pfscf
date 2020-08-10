@@ -21,6 +21,7 @@ type ArgStore struct {
 type ArgStoreInit struct {
 	initCapacity int
 	parent       *ArgStore
+	args         []string
 }
 
 const (
@@ -39,12 +40,54 @@ func init() {
 }
 
 // NewArgStore creates a new ArgStore
-func NewArgStore(init *ArgStoreInit) *ArgStore {
-	as := ArgStore{
-		store:  make(map[string]string, init.initCapacity),
+// TODO test this
+func NewArgStore(init ArgStoreInit) (as *ArgStore, err error) {
+	var initialCapacity int
+	if utils.IsSet(init.initCapacity) {
+		initialCapacity = init.initCapacity
+	} else {
+		initialCapacity = len(init.args)
+	}
+
+	localAs := ArgStore{
+		store:  make(map[string]string, initialCapacity),
 		parent: init.parent,
 	}
-	return &as
+
+	for _, arg := range init.args {
+		key, value, err := splitArgument(arg)
+		if err != nil {
+			return nil, err
+		}
+
+		if !localAs.HasKey(key) {
+			localAs.Set(key, value)
+		} else {
+			return nil, fmt.Errorf("Duplicate key '%v' found", key)
+		}
+	}
+
+	return &localAs, nil
+}
+
+// splitArgument takes an arugment string and tries to split it up in key and value parts.
+// TODO test this
+func splitArgument(arg string) (key, value string, err error) {
+	splitIdx := strings.Index(arg, "=")
+
+	switch splitIdx {
+	case -1:
+		return "", "", fmt.Errorf("No '=' separator found in argument '%v'", arg)
+	case 0:
+		return "", "", fmt.Errorf("No key found in argument '%v'", arg)
+	case len(arg) - 1:
+		return "", "", fmt.Errorf("No value found in argument '%v'", arg)
+	}
+
+	key = arg[:splitIdx]
+	value = arg[(splitIdx + 1):]
+
+	return key, value, nil
 }
 
 // HasKey returns whether the ArgStore contains an entry with the given key.
@@ -111,47 +154,6 @@ func (as ArgStore) GetKeys() (keyList []string) {
 	return keyList
 }
 
-// ArgStoreFromArgs takes a list of provided arguments and checks
-// that they are in format "<key>=<value>". It will return
-// an error on duplicate keys.
-func ArgStoreFromArgs(args []string) (as *ArgStore) {
-	as = NewArgStore(&ArgStoreInit{initCapacity: len(args)})
-
-	for _, arg := range args {
-		splitIdx := strings.Index(arg, "=")
-		utils.Assert(splitIdx != -1, "No '=' found in argument")
-		utils.Assert(splitIdx != 0, "No key found in argument")
-		utils.Assert(splitIdx != (len(arg)-1), "No value found in argument")
-
-		key := arg[:splitIdx]
-		value := arg[(splitIdx + 1):]
-
-		if !as.HasKey(key) {
-			as.Set(key, value)
-		} else {
-			panic("Duplicate key found: " + key)
-		}
-	}
-
-	return as
-}
-
-// ArgStoreFromTemplateExamples returns an ArgStore that is filled with
-// all the example texts contained in the provided template
-func ArgStoreFromTemplateExamples(ct *ChronicleTemplate) (as *ArgStore) {
-	contentIDs := ct.GetContentIDs(false)
-	as = NewArgStore(&ArgStoreInit{initCapacity: len(contentIDs)})
-
-	for _, id := range contentIDs {
-		ce, _ := ct.GetContent(id)
-		if utils.IsSet(ce.ExampleValue()) {
-			as.Set(id, ce.ExampleValue())
-		}
-	}
-
-	return as
-}
-
 // GetArgStoresFromCsvFile reads a csv file and returns a list of ArgStores that
 // contain the required arguments to fill out a chronicle.
 func GetArgStoresFromCsvFile(filename string) (argStores []*ArgStore, err error) {
@@ -168,9 +170,11 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*ArgStore, err error)
 
 	numPlayers := len(records[0]) - 1
 
-
 	for idx := 1; idx <= numPlayers; idx++ {
-		as := NewArgStore(&ArgStoreInit{initCapacity: len(records)})
+		as, err := NewArgStore(ArgStoreInit{initCapacity: len(records)})
+		if err != nil {
+
+		}
 
 		for _, record := range records {
 			key := record[0]
