@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -32,12 +33,12 @@ func GetFillCommand() (cmd *cobra.Command) {
 	return fillCmd
 }
 
-func executeFill(cmd *cobra.Command, args []string) {
-	utils.Assert(len(args) >= 3, "Number of arguments should be guaranteed by cobra settings")
+func executeFill(cmd *cobra.Command, cmdArgs []string) {
+	utils.Assert(len(cmdArgs) >= 3, "Number of arguments should be guaranteed by cobra settings")
 
-	tmplName := args[0]
-	inFile := args[1]
-	outFile := args[2]
+	tmplName := cmdArgs[0]
+	inFile := cmdArgs[1]
+	outFile := cmdArgs[2]
 
 	if inFile == outFile {
 		utils.ExitWithMessage("Input file and output file must not be identical")
@@ -47,11 +48,11 @@ func executeFill(cmd *cobra.Command, args []string) {
 	utils.ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
-	var argStore *ArgStore
+	var argStore *args.ArgStore
 	if !actionFillUseExampleValues {
-		argStore, err = NewArgStore(ArgStoreInit{args: args[3:]})
+		argStore, err = args.NewArgStore(args.ArgStoreInit{Args: cmdArgs[3:]})
 	} else {
-		argStore, err = NewArgStore(ArgStoreInit{args: cTmpl.GetExampleArguments()})
+		argStore, err = args.NewArgStore(args.ArgStoreInit{Args: cTmpl.GetExampleArguments()})
 	}
 	utils.ExitOnError(err, "Eror processing command line arguments")
 

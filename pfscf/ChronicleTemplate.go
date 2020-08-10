@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/csv"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
@@ -155,7 +156,7 @@ func (ct *ChronicleTemplate) Resolve() (err error) {
 
 // WriteToCsvFile creates a CSV file out of the current chronicle template than can be used
 // as input for the "batch fill" command
-func (ct *ChronicleTemplate) WriteToCsvFile(filename string, separator rune, as *ArgStore) (err error) {
+func (ct *ChronicleTemplate) WriteToCsvFile(filename string, separator rune, as *args.ArgStore) (err error) {
 	const numPlayers = 7
 
 	records := [][]string{

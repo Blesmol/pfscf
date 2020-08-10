@@ -1,4 +1,4 @@
-package main
+package args
 
 import (
 	"path/filepath"
@@ -14,7 +14,7 @@ var (
 
 func init() {
 	utils.SetIsTestEnvironment(true)
-	argStoreTestDir = filepath.Join(utils.GetExecutableDir(), "testdata", "ArgStore")
+	argStoreTestDir = filepath.Join(utils.GetExecutableDir(), "testdata")
 }
 
 func TestGetArgStoresFromCsvFile(t *testing.T) {

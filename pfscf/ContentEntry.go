@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
@@ -25,7 +26,7 @@ type ContentEntry interface {
 	//IsValid() (err error) // Currently not required as part of interface, might change later
 	Describe(verbose bool) (result string)
 	Resolve(ps PresetStore) (resolvedCI ContentEntry, err error)
-	GenerateOutput(s *stamp.Stamp, as *ArgStore) (err error)
+	GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error)
 }
 
 // NewContentEntry creates a new content entry object for the provided ContentData object.
@@ -169,7 +170,7 @@ func (ce ContentTextCell) Resolve(ps PresetStore) (resolvedCI ContentEntry, err 
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentTextCell) GenerateOutput(s *stamp.Stamp, as *ArgStore) (err error) {
+func (ce ContentTextCell) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
 	err = ce.IsValid()
 	if err != nil {
 		return err
@@ -313,7 +314,7 @@ func (ce ContentSocietyID) Resolve(ps PresetStore) (resolvedCI ContentEntry, err
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentSocietyID) GenerateOutput(s *stamp.Stamp, as *ArgStore) (err error) {
+func (ce ContentSocietyID) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
 	utils.Assert(as != nil, "No ArgStore provided")
 	err = ce.IsValid()
 	if err != nil {
@@ -481,7 +482,7 @@ func (ce ContentRectangle) Resolve(ps PresetStore) (resolvedCI ContentEntry, err
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentRectangle) GenerateOutput(s *stamp.Stamp, as *ArgStore) (err error) {
+func (ce ContentRectangle) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
 	err = ce.IsValid()
 	if err != nil {
 		return err

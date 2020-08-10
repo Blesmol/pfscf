@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -58,11 +59,11 @@ func GetBatchCommand() (cmd *cobra.Command) {
 	return batchCmd
 }
 
-func executeBatchCreate(cmd *cobra.Command, args []string) {
-	utils.Assert(len(args) >= 2, "Number of arguments should be guaranteed by cobra settings")
+func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
+	utils.Assert(len(cmdArgs) >= 2, "Number of arguments should be guaranteed by cobra settings")
 
-	tmplName := args[0]
-	outFile := args[1]
+	tmplName := cmdArgs[0]
+	outFile := cmdArgs[1]
 
 	var separator rune
 	// TODO remove check completely, just use first rune in separator string. Or forward as string instead of rune, and there check length and values.
@@ -79,11 +80,11 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 	utils.ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
-	var argStore *ArgStore
+	var argStore *args.ArgStore
 	if !actionBatchCreateUseExampleValues {
-		argStore, err = NewArgStore(ArgStoreInit{args: args[2:]})
+		argStore, err = args.NewArgStore(args.ArgStoreInit{Args: cmdArgs[2:]})
 	} else {
-		argStore, err = NewArgStore(ArgStoreInit{args: cTmpl.GetExampleArguments()})
+		argStore, err = args.NewArgStore(args.ArgStoreInit{Args: cTmpl.GetExampleArguments()})
 	}
 	utils.ExitOnError(err, "Error processing command line arguments")
 
@@ -91,22 +92,22 @@ func executeBatchCreate(cmd *cobra.Command, args []string) {
 	utils.ExitOnError(err, "Error writing CSV file for template %v", tmplName)
 }
 
-func executeBatchFill(cmd *cobra.Command, args []string) {
-	utils.Assert(len(args) >= 4, "Number of arguments should be guaranteed by cobra settings")
+func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
+	utils.Assert(len(cmdArgs) >= 4, "Number of arguments should be guaranteed by cobra settings")
 
-	tmplName := args[0]
-	inCsv := args[1]
-	inPdf := args[2]
-	outDir := args[3]
+	tmplName := cmdArgs[0]
+	inCsv := cmdArgs[1]
+	inPdf := cmdArgs[2]
+	outDir := cmdArgs[3]
 
 	cTmpl, err := GetTemplate(tmplName)
 	utils.ExitOnError(err, "Error getting template")
 
-	batchArgStores, err := GetArgStoresFromCsvFile(inCsv)
+	batchArgStores, err := args.GetArgStoresFromCsvFile(inCsv)
 	utils.ExitOnError(err, "Error reading csv file")
 
 	// parse remaining arguments
-	cmdLineArgStore, err := NewArgStore(ArgStoreInit{args: args[3:]})
+	cmdLineArgStore, err := args.NewArgStore(args.ArgStoreInit{Args: cmdArgs[3:]})
 	utils.ExitOnError(err, "Error processing command line arguments")
 
 	for idx, batchArgStore := range batchArgStores {

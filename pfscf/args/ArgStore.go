@@ -1,4 +1,4 @@
-package main
+package args
 
 import (
 	"fmt"
@@ -19,9 +19,9 @@ type ArgStore struct {
 // ArgStoreInit can take parameters for initialisation of an
 // ArgStore object using NewArgStore()
 type ArgStoreInit struct {
-	initCapacity int
-	parent       *ArgStore
-	args         []string
+	InitCapacity int
+	Parent       *ArgStore
+	Args         []string
 }
 
 const (
@@ -43,18 +43,18 @@ func init() {
 // TODO test this
 func NewArgStore(init ArgStoreInit) (as *ArgStore, err error) {
 	var initialCapacity int
-	if utils.IsSet(init.initCapacity) {
-		initialCapacity = init.initCapacity
+	if utils.IsSet(init.InitCapacity) {
+		initialCapacity = init.InitCapacity
 	} else {
-		initialCapacity = len(init.args)
+		initialCapacity = len(init.Args)
 	}
 
 	localAs := ArgStore{
 		store:  make(map[string]string, initialCapacity),
-		parent: init.parent,
+		parent: init.Parent,
 	}
 
-	for _, arg := range init.args {
+	for _, arg := range init.Args {
 		key, value, err := splitArgument(arg)
 		if err != nil {
 			return nil, err
@@ -171,7 +171,7 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*ArgStore, err error)
 	numPlayers := len(records[0]) - 1
 
 	for idx := 1; idx <= numPlayers; idx++ {
-		as, err := NewArgStore(ArgStoreInit{initCapacity: len(records)})
+		as, err := NewArgStore(ArgStoreInit{InitCapacity: len(records)})
 		if err != nil {
 
 		}

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Blesmol/pfscf/pfscf/args"
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
@@ -211,7 +212,7 @@ func TestWriteToCsvFile(t *testing.T) {
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
-			as, err := NewArgStore(ArgStoreInit{})
+			as, err := args.NewArgStore(args.ArgStoreInit{})
 			test.ExpectNoError(t, err)
 			outfile := filepath.Join(outputDir, "unsupportedSeparator.csv")
 
@@ -226,7 +227,7 @@ func TestWriteToCsvFile(t *testing.T) {
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
-			as, err := NewArgStore(ArgStoreInit{})
+			as, err := args.NewArgStore(args.ArgStoreInit{})
 			test.ExpectNoError(t, err)
 			outfile := filepath.Join(outputDir, "basic.csv")
 
@@ -250,7 +251,7 @@ func TestWriteToCsvFile(t *testing.T) {
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
-			as, err := NewArgStore(ArgStoreInit{args: ct.GetExampleArguments()})
+			as, err := args.NewArgStore(args.ArgStoreInit{Args: ct.GetExampleArguments()})
 			test.ExpectNoError(t, err)
 			outfile := filepath.Join(outputDir, "argStoreExamples.csv")
 
@@ -271,7 +272,7 @@ func TestWriteToCsvFile(t *testing.T) {
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
-			as, err := NewArgStore(ArgStoreInit{})
+			as, err := args.NewArgStore(args.ArgStoreInit{})
 			test.ExpectNoError(t, err)
 			as.Set("player", "Jack")
 			as.Set("noExample", "test")
@@ -292,7 +293,7 @@ func TestWriteToCsvFile(t *testing.T) {
 	})
 }
 
-func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *ArgStore, separator rune) (argStores []*ArgStore) {
+func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *args.ArgStore, separator rune) (argStores []*args.ArgStore) {
 	test.ExpectNotNil(t, ct)
 
 	outputDir := utils.GetTempDir()
@@ -305,7 +306,7 @@ func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *A
 	test.ExpectNoError(t, err)
 
 	// read csv back in
-	argStores, err = GetArgStoresFromCsvFile(outfile)
+	argStores, err = args.GetArgStoresFromCsvFile(outfile)
 	test.ExpectNotNil(t, argStores)
 	test.ExpectNoError(t, err)
 
@@ -325,20 +326,20 @@ func TestCreateAndReadCsvFile(t *testing.T) {
 	test.ExpectNotNil(t, ct)
 
 	// built up test data
-	inputArgStores := make([]*ArgStore, 0)
+	inputArgStores := make([]*args.ArgStore, 0)
 
 	// empty argStore
-	as, err := NewArgStore(ArgStoreInit{})
+	as, err := args.NewArgStore(args.ArgStoreInit{})
 	test.ExpectNoError(t, err)
 	inputArgStores = append(inputArgStores, as)
 
 	// argStore with example values
-	as, err = NewArgStore(ArgStoreInit{args: ct.GetExampleArguments()})
+	as, err = args.NewArgStore(args.ArgStoreInit{Args: ct.GetExampleArguments()})
 	test.ExpectNoError(t, err)
 	inputArgStores = append(inputArgStores, as)
 
 	// user-provided argStore
-	as, err = NewArgStore(ArgStoreInit{args: []string{"player=Jack", "noExample=test"}})
+	as, err = args.NewArgStore(args.ArgStoreInit{Args: []string{"player=Jack", "noExample=test"}})
 	test.ExpectNoError(t, err)
 	inputArgStores = append(inputArgStores, as)
 

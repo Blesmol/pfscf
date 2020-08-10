@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
@@ -37,8 +38,8 @@ func getContentDataWithDummyData(t *testing.T, cdType string) (cd yaml.ContentDa
 	return cd
 }
 
-func getTestArgStore(key, value string) (as *ArgStore) {
-	as, _ = NewArgStore(ArgStoreInit{})
+func getTestArgStore(key, value string) (as *args.ArgStore) {
+	as, _ = args.NewArgStore(args.ArgStoreInit{})
 	as.Set(key, value)
 	return as
 }
