@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"sort"
+
+	"github.com/Blesmol/pfscf/pfscf/preset"
 )
 
 // ContentStore stores the list of ContentEntries for a single ChronicleTemplate
@@ -52,7 +54,7 @@ func (cs *ContentStore) InheritFrom(other ContentStore) (err error) {
 }
 
 // Resolve resolves preset requirements for all entries in the ContentStore
-func (cs *ContentStore) Resolve(ps PresetStore) (err error) {
+func (cs *ContentStore) Resolve(ps preset.Store) (err error) {
 	for _, ci := range *cs {
 		resolvedCI, err := ci.Resolve(ps)
 		if err != nil {

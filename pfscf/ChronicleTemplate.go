@@ -6,6 +6,7 @@ import (
 
 	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/csv"
+	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
@@ -18,7 +19,7 @@ type ChronicleTemplate struct {
 	inherit     string
 	yFilename   string // filename of the originating yaml file
 	content     ContentStore
-	presets     PresetStore
+	presets     preset.Store
 }
 
 // NewChronicleTemplate converts a YamlFile into a ChronicleTemplate. It returns
@@ -54,9 +55,9 @@ func NewChronicleTemplate(yFilename string, yFile *yaml.File) (ct *ChronicleTemp
 		}
 	}
 
-	ct.presets = NewPresetStore(len(yFile.Presets))
+	ct.presets = preset.NewStore()
 	for id, entry := range yFile.Presets {
-		ct.presets.Set(id, NewPresetEntry(id, entry))
+		ct.presets.Add(preset.NewEntry(id, entry))
 	}
 
 	return ct, nil

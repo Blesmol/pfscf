@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
@@ -25,7 +26,7 @@ type ContentEntry interface {
 	UsageExample() string
 	//IsValid() (err error) // Currently not required as part of interface, might change later
 	Describe(verbose bool) (result string)
-	Resolve(ps PresetStore) (resolvedCI ContentEntry, err error)
+	Resolve(ps preset.Store) (resolvedCI ContentEntry, err error)
 	GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error)
 }
 
@@ -154,7 +155,7 @@ func (ce ContentTextCell) Describe(verbose bool) (result string) {
 }
 
 // Resolve the presets for this content object.
-func (ce ContentTextCell) Resolve(ps PresetStore) (resolvedCI ContentEntry, err error) {
+func (ce ContentTextCell) Resolve(ps preset.Store) (resolvedCI ContentEntry, err error) {
 	// check that required presets are not contradicting each other
 	if err = ps.PresetsAreNotContradicting(ce.presets...); err != nil {
 		err = fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)
@@ -298,7 +299,7 @@ func (ce ContentSocietyID) Describe(verbose bool) (result string) {
 }
 
 // Resolve the presets for this content object.
-func (ce ContentSocietyID) Resolve(ps PresetStore) (resolvedCI ContentEntry, err error) {
+func (ce ContentSocietyID) Resolve(ps preset.Store) (resolvedCI ContentEntry, err error) {
 	// check that required presets are not contradicting each other
 	if err = ps.PresetsAreNotContradicting(ce.presets...); err != nil {
 		err = fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)
@@ -466,7 +467,7 @@ func (ce ContentRectangle) Describe(verbose bool) (result string) {
 }
 
 // Resolve the presets for this content object.
-func (ce ContentRectangle) Resolve(ps PresetStore) (resolvedCI ContentEntry, err error) {
+func (ce ContentRectangle) Resolve(ps preset.Store) (resolvedCI ContentEntry, err error) {
 	// check that required presets are not contradicting each other
 	if err = ps.PresetsAreNotContradicting(ce.presets...); err != nil {
 		err = fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)

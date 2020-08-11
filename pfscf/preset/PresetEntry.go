@@ -1,4 +1,4 @@
-package main
+package preset
 
 import (
 	"fmt"
@@ -8,8 +8,8 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
-// PresetEntry represents an entry in the 'preset' section
-type PresetEntry struct {
+// Entry represents an entry in the 'preset' section
+type Entry struct {
 	id      string
 	presets []string
 
@@ -22,11 +22,11 @@ type PresetEntry struct {
 	Color    string
 }
 
-// NewPresetEntry create a new PresetEntry object.
+// NewEntry create a new PresetEntry object.
 // TODO Throw error in case of unused fields from ContentData that are set.
-func NewPresetEntry(id string, data yaml.ContentData) (pe PresetEntry) {
+func NewEntry(id string, data yaml.ContentData) (pe Entry) {
 	utils.Assert(utils.IsSet(id), "ID should always be present here")
-	pe = PresetEntry{
+	pe = Entry{
 		id:      id,
 		presets: data.Presets,
 
@@ -47,7 +47,7 @@ func NewPresetEntry(id string, data yaml.ContentData) (pe PresetEntry) {
 // contradicting or not. They are not contradicting if all values that are set
 // (i.e. contain a non-zero value) within the objects contain the same value.
 // One exception to this is the "Presets" list, which is ignored here.
-func (pe PresetEntry) IsNotContradictingWith(other PresetEntry) (err error) {
+func (pe Entry) IsNotContradictingWith(other Entry) (err error) {
 	vLeft := reflect.ValueOf(pe)
 	vRight := reflect.ValueOf(other)
 

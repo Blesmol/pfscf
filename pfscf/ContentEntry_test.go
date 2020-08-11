@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
@@ -44,28 +45,28 @@ func getTestArgStore(key, value string) (as *args.ArgStore) {
 	return as
 }
 
-func getTestPresetStore(t *testing.T) (ps PresetStore) {
-	ps = NewPresetStore(0)
+func getTestPresetStore(t *testing.T) (ps preset.Store) {
+	ps = preset.NewStore()
 	var (
 		data yaml.ContentData
-		pe   PresetEntry
+		pe   preset.Entry
 	)
 
 	// Add two new presets with same data
 	data = getContentDataWithDummyData(t, "unusedType")
-	pe = NewPresetEntry("sameData1", data)
-	ps.Set(pe.id, pe)
-	pe = NewPresetEntry("sameData2", data)
-	ps.Set(pe.id, pe)
+	pe = preset.NewEntry("sameData1", data)
+	ps.Add(pe)
+	pe = preset.NewEntry("sameData2", data)
+	ps.Add(pe)
 
 	// add two conflicting presets
 	data = getContentDataWithDummyData(t, "unusedType")
 	data.X1 = 10.0
-	pe = NewPresetEntry("conflict1", data)
-	ps.Set(pe.id, pe)
+	pe = preset.NewEntry("conflict1", data)
+	ps.Add(pe)
 	data.X1 = 11.0
-	pe = NewPresetEntry("conflict2", data)
-	ps.Set(pe.id, pe)
+	pe = preset.NewEntry("conflict2", data)
+	ps.Add(pe)
 
 	return ps
 }

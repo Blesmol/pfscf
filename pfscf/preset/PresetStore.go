@@ -1,4 +1,4 @@
-package main
+package preset
 
 import (
 	"fmt"
@@ -7,16 +7,16 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
-// PresetStore stores the list of presets for a single ChronicleTemplate
-type PresetStore map[string]PresetEntry
+// Store stores the list of presets for a single ChronicleTemplate
+type Store map[string]Entry
 
-// NewPresetStore creates a new PresetStore object with the provided initial capacity
-func NewPresetStore(initialCapacity int) (ps PresetStore) {
-	return make(PresetStore, initialCapacity)
+// NewStore creates a new PresetStore object with the provided initial capacity
+func NewStore() (ps Store) {
+	return make(Store, 0)
 }
 
 // GetIDs returns the list of IDs for the Presets currently stored in this PresetStore
-func (ps PresetStore) GetIDs() (idList []string) {
+func (ps Store) GetIDs() (idList []string) {
 	idList = make([]string, 0, len(ps))
 	for id := range ps {
 		idList = append(idList, id)
@@ -26,32 +26,31 @@ func (ps PresetStore) GetIDs() (idList []string) {
 }
 
 // Get returns the PresetEntry matching the provided id.
-func (ps PresetStore) Get(id string) (pe PresetEntry, exists bool) {
+func (ps Store) Get(id string) (pe Entry, exists bool) {
 	pe, exists = ps[id]
 	return
 }
 
-// Set adds or updates the entry with the specified ID in the PresetStore to
+// Add adds or updates the entry with the specified ID in the PresetStore to
 // the provided PresetEntry
-// TODO the PresetEntry already contains an id... why not simply take this from there?
-func (ps *PresetStore) Set(id string, pe PresetEntry) {
-	(*ps)[id] = pe
+func (ps *Store) Add(pe Entry) {
+	(*ps)[pe.id] = pe
 }
 
 // InheritFrom copies over entries from another PresetStore that do not yet
 // exist in the current PresetStore
-func (ps *PresetStore) InheritFrom(other PresetStore) {
+func (ps *Store) InheritFrom(other Store) {
 	// get presets from other object and intentionally ignore duplicates
 	for id, otherEntry := range other {
 		if _, exists := ps.Get(id); !exists {
-			ps.Set(id, otherEntry)
+			ps.Add(otherEntry)
 		}
 	}
 }
 
 // PresetsAreNotContradicting takes an arbitrary number of preset IDs and
 // checks each combination of them on whether they are contradicting or not.
-func (ps PresetStore) PresetsAreNotContradicting(IDs ...string) (err error) {
+func (ps Store) PresetsAreNotContradicting(IDs ...string) (err error) {
 	// ensure that all provided IDs exist. Even before checking the number of arguments
 	for _, id := range IDs {
 		_, exists := ps.Get(id)
@@ -89,7 +88,7 @@ func (ps PresetStore) PresetsAreNotContradicting(IDs ...string) (err error) {
 }
 
 // Resolve resolves inherited values between presets
-func (ps *PresetStore) Resolve() (err error) {
+func (ps *Store) Resolve() (err error) {
 	resolved := make(map[string]bool)
 	for _, pe := range *ps {
 		if err := ps.resolveInternal(pe, &resolved); err != nil {
@@ -101,7 +100,7 @@ func (ps *PresetStore) Resolve() (err error) {
 }
 
 // resolveInternal recursively resolves all presets
-func (ps *PresetStore) resolveInternal(pe PresetEntry, resolved *map[string]bool, resolveChain ...string) (err error) {
+func (ps *Store) resolveInternal(pe Entry, resolved *map[string]bool, resolveChain ...string) (err error) {
 	// check if already resolved
 	if _, exists := (*resolved)[pe.id]; exists {
 		return nil
@@ -140,7 +139,7 @@ func (ps *PresetStore) resolveInternal(pe PresetEntry, resolved *map[string]bool
 	}
 
 	// update entry stored in ChronicleTemplate, record that we are ready, and thats it.
-	ps.Set(pe.id, pe)
+	ps.Add(pe)
 	(*resolved)[pe.id] = true
 
 	return nil
