@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -76,7 +77,7 @@ func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitWithMessage("Currently only ';' and ',' are accepted as separators")
 	}
 
-	cTmpl, err := GetTemplate(tmplName)
+	cTmpl, err := template.Get(tmplName)
 	utils.ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
@@ -100,7 +101,7 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 	inPdf := cmdArgs[2]
 	outDir := cmdArgs[3]
 
-	cTmpl, err := GetTemplate(tmplName)
+	cTmpl, err := template.Get(tmplName)
 	utils.ExitOnError(err, "Error getting template")
 
 	batchArgStores, err := args.GetArgStoresFromCsvFile(inCsv)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -74,14 +75,14 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 }
 
 func executeTemplateList(cmd *cobra.Command, args []string) {
-	ts, err := GetTemplateStore()
+	ts, err := template.GetStore()
 	utils.ExitOnError(err, "Could not read templates")
 
 	templateNames := ts.GetTemplateIDs(false)
 	fmt.Printf("\n")
 	fmt.Printf("List of available templates:\n\n")
 	for _, templateName := range templateNames {
-		template, _ := ts.GetTemplate(templateName)
+		template, _ := ts.Get(templateName)
 		fmt.Println(template.Describe(flags.verbose))
 	}
 }
@@ -89,7 +90,7 @@ func executeTemplateList(cmd *cobra.Command, args []string) {
 func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 	templateName := args[0]
 
-	ct, err := GetTemplate(templateName)
+	ct, err := template.Get(templateName)
 	utils.ExitOnError(err, "Could not get template '%v'", templateName)
 
 	fmt.Printf("Template '%v'\n\n", templateName)

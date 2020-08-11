@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -44,7 +45,7 @@ func executeFill(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitWithMessage("Input file and output file must not be identical")
 	}
 
-	cTmpl, err := GetTemplate(tmplName)
+	cTmpl, err := template.Get(tmplName)
 	utils.ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments

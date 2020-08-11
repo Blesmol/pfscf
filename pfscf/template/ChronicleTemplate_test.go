@@ -1,4 +1,4 @@
-package main
+package template
 
 import (
 	"os"
@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/content"
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
@@ -181,11 +182,11 @@ func TestInheritFrom(t *testing.T) {
 		test.ExpectEqual(t, len(ctTo.GetContentIDs(false)), 2)
 		ce0, exists := ctTo.GetContent("c0")
 		test.ExpectTrue(t, exists)
-		tc0 := ce0.(ContentTextCell)
+		tc0 := ce0.(content.TextCell)
 		test.ExpectEqual(t, tc0.Font, "base")
 		ce1, exists := ctTo.GetContent("c1")
 		test.ExpectTrue(t, exists)
-		tc1 := ce1.(ContentTextCell)
+		tc1 := ce1.(content.TextCell)
 		test.ExpectEqual(t, tc1.Font, "inherited")
 	})
 
@@ -199,7 +200,7 @@ func TestInheritFrom(t *testing.T) {
 }
 
 func TestWriteToCsvFile(t *testing.T) {
-	ts, err := getTemplateStoreForDir(filepath.Join(chronicleTemplateTestDir, "templates"))
+	ts, err := getStoreForDir(filepath.Join(chronicleTemplateTestDir, "templates"))
 	test.ExpectNoError(t, err)
 	test.ExpectNotNil(t, ts)
 
@@ -208,7 +209,7 @@ func TestWriteToCsvFile(t *testing.T) {
 
 	t.Run("errors", func(t *testing.T) {
 		t.Run("error during csv writing", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
+			ct, err := ts.Get("template")
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
@@ -223,7 +224,7 @@ func TestWriteToCsvFile(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		t.Run("basic", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
+			ct, err := ts.Get("template")
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
@@ -247,7 +248,7 @@ func TestWriteToCsvFile(t *testing.T) {
 		})
 
 		t.Run("fill with example values", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
+			ct, err := ts.Get("template")
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
@@ -268,7 +269,7 @@ func TestWriteToCsvFile(t *testing.T) {
 		})
 
 		t.Run("fill with user-provided values", func(t *testing.T) {
-			ct, err := ts.GetTemplate("template")
+			ct, err := ts.Get("template")
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
@@ -314,14 +315,14 @@ func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *a
 }
 
 func TestCreateAndReadCsvFile(t *testing.T) {
-	ts, err := getTemplateStoreForDir(filepath.Join(chronicleTemplateTestDir, "templates"))
+	ts, err := getStoreForDir(filepath.Join(chronicleTemplateTestDir, "templates"))
 	test.ExpectNoError(t, err)
 	test.ExpectNotNil(t, ts)
 
 	outputDir := utils.GetTempDir()
 	defer os.RemoveAll(outputDir)
 
-	ct, err := ts.GetTemplate("template")
+	ct, err := ts.Get("template")
 	test.ExpectNoError(t, err)
 	test.ExpectNotNil(t, ct)
 

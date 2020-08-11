@@ -1,10 +1,11 @@
-package main
+package template
 
 import (
 	"fmt"
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/content"
 	"github.com/Blesmol/pfscf/pfscf/csv"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/utils"
@@ -18,7 +19,7 @@ type ChronicleTemplate struct {
 	description string
 	inherit     string
 	yFilename   string // filename of the originating yaml file
-	content     ContentStore
+	content     content.Store
 	presets     preset.Store
 }
 
@@ -47,9 +48,9 @@ func NewChronicleTemplate(yFilename string, yFile *yaml.File) (ct *ChronicleTemp
 	ct.inherit = yFile.Inherit
 	ct.yFilename = yFilename
 
-	ct.content = NewContentStore(len(yFile.Content))
+	ct.content = content.NewContentStore(len(yFile.Content))
 	for id, entry := range yFile.Content {
-		ct.content[id], err = NewContentEntry(id, entry)
+		ct.content[id], err = content.NewContentEntry(id, entry)
 		if err != nil {
 			return nil, err
 		}
@@ -85,7 +86,7 @@ func (ct ChronicleTemplate) Filename() string {
 
 // GetContent returns the ContentEntry object matching the provided id
 // from the current ChronicleTemplate
-func (ct ChronicleTemplate) GetContent(id string) (ci ContentEntry, exists bool) {
+func (ct ChronicleTemplate) GetContent(id string) (ci content.Entry, exists bool) {
 	return ct.content.Get(id)
 }
 

@@ -1,4 +1,4 @@
-package main
+package content
 
 import (
 	"encoding/hex"
@@ -18,20 +18,20 @@ var (
 	regexSocietyID = regexp.MustCompile(`^\s*(\d*)\s*-\s*(\d*)\s*$`)
 )
 
-// ContentEntry is an interface for the content. D'oh!
-type ContentEntry interface {
+// Entry is an interface for the content. D'oh!
+type Entry interface {
 	ID() string
 	Type() string
 	ExampleValue() string
 	UsageExample() string
 	//IsValid() (err error) // Currently not required as part of interface, might change later
 	Describe(verbose bool) (result string)
-	Resolve(ps preset.Store) (resolvedCI ContentEntry, err error)
+	Resolve(ps preset.Store) (resolvedCI Entry, err error)
 	GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error)
 }
 
 // NewContentEntry creates a new content entry object for the provided ContentData object.
-func NewContentEntry(id string, data yaml.ContentData) (ce ContentEntry, err error) {
+func NewContentEntry(id string, data yaml.ContentData) (ce Entry, err error) {
 	switch data.Type {
 	case "textCell":
 		return NewContentTextCell(id, data)
@@ -48,9 +48,9 @@ func NewContentEntry(id string, data yaml.ContentData) (ce ContentEntry, err err
 
 // ---------------------------------------------------------------------------------
 
-// ContentTextCell is the final type to implement textCells.
+// TextCell is the final type to implement textCells.
 // TODO switch to pointers to distinguish between unset values and zero values?
-type ContentTextCell struct {
+type TextCell struct {
 	id           string
 	description  string
 	exampleValue string
@@ -64,7 +64,7 @@ type ContentTextCell struct {
 }
 
 // NewContentTextCell will return a content object that represents a text cell
-func NewContentTextCell(id string, data yaml.ContentData) (ce ContentTextCell, err error) {
+func NewContentTextCell(id string, data yaml.ContentData) (ce TextCell, err error) {
 	// TODO return error for values that are set here besides the required ones
 
 	ce.id = id
@@ -84,30 +84,30 @@ func NewContentTextCell(id string, data yaml.ContentData) (ce ContentTextCell, e
 }
 
 // ID returns the content objects ID
-func (ce ContentTextCell) ID() (id string) {
+func (ce TextCell) ID() (id string) {
 	return ce.id
 }
 
 // Type returns the (hardcoded) type for this type of content
-func (ce ContentTextCell) Type() (contentType string) {
+func (ce TextCell) Type() (contentType string) {
 	return "textCell"
 }
 
 // ExampleValue returns the example value provided for this content object. If
 // no example was provided, an empty string is returned.
-func (ce ContentTextCell) ExampleValue() (exampleValue string) {
+func (ce TextCell) ExampleValue() (exampleValue string) {
 	return ce.exampleValue
 }
 
 // UsageExample retuns an example call on how this content can be invoked
 // from the command line.
-func (ce ContentTextCell) UsageExample() (result string) {
+func (ce TextCell) UsageExample() (result string) {
 	return genericContentUsageExample(ce.id, ce.exampleValue)
 }
 
 // IsValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce ContentTextCell) IsValid() (err error) {
+func (ce TextCell) IsValid() (err error) {
 	err = checkFieldsAreSet(ce, "Font", "Fontsize")
 	if err != nil {
 		return contentValErr(ce, err)
@@ -132,7 +132,7 @@ func (ce ContentTextCell) IsValid() (err error) {
 }
 
 // Describe returns a textual description of the current content object
-func (ce ContentTextCell) Describe(verbose bool) (result string) {
+func (ce TextCell) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	var description string
@@ -155,7 +155,7 @@ func (ce ContentTextCell) Describe(verbose bool) (result string) {
 }
 
 // Resolve the presets for this content object.
-func (ce ContentTextCell) Resolve(ps preset.Store) (resolvedCI ContentEntry, err error) {
+func (ce TextCell) Resolve(ps preset.Store) (resolvedCI Entry, err error) {
 	// check that required presets are not contradicting each other
 	if err = ps.PresetsAreNotContradicting(ce.presets...); err != nil {
 		err = fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)
@@ -171,7 +171,7 @@ func (ce ContentTextCell) Resolve(ps preset.Store) (resolvedCI ContentEntry, err
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentTextCell) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
+func (ce TextCell) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
 	err = ce.IsValid()
 	if err != nil {
 		return err
@@ -190,8 +190,8 @@ func (ce ContentTextCell) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err
 
 // ---------------------------------------------------------------------------------
 
-// ContentSocietyID is the final type to implement societyIDs.
-type ContentSocietyID struct {
+// SocietyID is the final type to implement societyIDs.
+type SocietyID struct {
 	id           string
 	description  string
 	exampleValue string
@@ -205,7 +205,7 @@ type ContentSocietyID struct {
 }
 
 // NewContentSocietyID will return a content object that represents a society ID
-func NewContentSocietyID(id string, data yaml.ContentData) (si ContentSocietyID, err error) {
+func NewContentSocietyID(id string, data yaml.ContentData) (si SocietyID, err error) {
 	si.id = id
 	si.description = data.Desc
 	si.exampleValue = data.Example
@@ -223,30 +223,30 @@ func NewContentSocietyID(id string, data yaml.ContentData) (si ContentSocietyID,
 }
 
 // ID returns the content objects ID
-func (ce ContentSocietyID) ID() (id string) {
+func (ce SocietyID) ID() (id string) {
 	return ce.id
 }
 
 // Type returns the (hardcoded) type for this type of content
-func (ce ContentSocietyID) Type() (contentType string) {
+func (ce SocietyID) Type() (contentType string) {
 	return "societyId"
 }
 
 // ExampleValue returns the example value provided for this content object. If
 // no example was provided, an empty string is returned.
-func (ce ContentSocietyID) ExampleValue() (exampleValue string) {
+func (ce SocietyID) ExampleValue() (exampleValue string) {
 	return ce.exampleValue
 }
 
 // UsageExample retuns an example call on how this content can be invoked
 // from the command line.
-func (ce ContentSocietyID) UsageExample() (result string) {
+func (ce SocietyID) UsageExample() (result string) {
 	return genericContentUsageExample(ce.id, ce.exampleValue)
 }
 
 // IsValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce ContentSocietyID) IsValid() (err error) {
+func (ce SocietyID) IsValid() (err error) {
 	err = checkFieldsAreSet(ce, "Font", "Fontsize")
 	if err != nil {
 		return contentValErr(ce, err)
@@ -276,7 +276,7 @@ func (ce ContentSocietyID) IsValid() (err error) {
 }
 
 // Describe returns a textual description of the current content object
-func (ce ContentSocietyID) Describe(verbose bool) (result string) {
+func (ce SocietyID) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	var description string
@@ -299,7 +299,7 @@ func (ce ContentSocietyID) Describe(verbose bool) (result string) {
 }
 
 // Resolve the presets for this content object.
-func (ce ContentSocietyID) Resolve(ps preset.Store) (resolvedCI ContentEntry, err error) {
+func (ce SocietyID) Resolve(ps preset.Store) (resolvedCI Entry, err error) {
 	// check that required presets are not contradicting each other
 	if err = ps.PresetsAreNotContradicting(ce.presets...); err != nil {
 		err = fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)
@@ -315,7 +315,7 @@ func (ce ContentSocietyID) Resolve(ps preset.Store) (resolvedCI ContentEntry, er
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentSocietyID) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
+func (ce SocietyID) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
 	utils.Assert(as != nil, "No ArgStore provided")
 	err = ce.IsValid()
 	if err != nil {
@@ -363,8 +363,8 @@ func (ce ContentSocietyID) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (er
 
 // ---------------------------------------------------------------------------------
 
-// ContentRectangle needs a description
-type ContentRectangle struct {
+// Rectangle needs a description
+type Rectangle struct {
 	id           string
 	description  string
 	exampleValue string
@@ -376,7 +376,7 @@ type ContentRectangle struct {
 }
 
 // NewContentRectangle will return a content object that represents a rectangle
-func NewContentRectangle(id string, data yaml.ContentData) (ce ContentRectangle, err error) {
+func NewContentRectangle(id string, data yaml.ContentData) (ce Rectangle, err error) {
 	ce.id = id
 	ce.description = data.Desc
 	ce.exampleValue = data.Example
@@ -392,30 +392,30 @@ func NewContentRectangle(id string, data yaml.ContentData) (ce ContentRectangle,
 }
 
 // ID returns the content objects ID
-func (ce ContentRectangle) ID() (id string) {
+func (ce Rectangle) ID() (id string) {
 	return ce.id
 }
 
 // Type returns the (hardcoded) type for this type of content
-func (ce ContentRectangle) Type() (contentType string) {
+func (ce Rectangle) Type() (contentType string) {
 	return "rectangle"
 }
 
 // ExampleValue returns the example value provided for this content object. If
 // no example was provided, an empty string is returned.
-func (ce ContentRectangle) ExampleValue() (exampleValue string) {
+func (ce Rectangle) ExampleValue() (exampleValue string) {
 	return ce.exampleValue
 }
 
 // UsageExample retuns an example call on how this content can be invoked
 // from the command line.
-func (ce ContentRectangle) UsageExample() (result string) {
+func (ce Rectangle) UsageExample() (result string) {
 	return genericContentUsageExample(ce.id, ce.exampleValue)
 }
 
 // IsValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce ContentRectangle) IsValid() (err error) {
+func (ce Rectangle) IsValid() (err error) {
 	err = checkFieldsAreSet(ce, "Color")
 	if err != nil {
 		return contentValErr(ce, err)
@@ -444,7 +444,7 @@ func (ce ContentRectangle) IsValid() (err error) {
 }
 
 // Describe returns a textual description of the current content object
-func (ce ContentRectangle) Describe(verbose bool) (result string) {
+func (ce Rectangle) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	var description string
@@ -467,7 +467,7 @@ func (ce ContentRectangle) Describe(verbose bool) (result string) {
 }
 
 // Resolve the presets for this content object.
-func (ce ContentRectangle) Resolve(ps preset.Store) (resolvedCI ContentEntry, err error) {
+func (ce Rectangle) Resolve(ps preset.Store) (resolvedCI Entry, err error) {
 	// check that required presets are not contradicting each other
 	if err = ps.PresetsAreNotContradicting(ce.presets...); err != nil {
 		err = fmt.Errorf("Error resolving content '%v': %v", ce.ID(), err)
@@ -483,7 +483,7 @@ func (ce ContentRectangle) Resolve(ps preset.Store) (resolvedCI ContentEntry, er
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce ContentRectangle) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
+func (ce Rectangle) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
 	err = ce.IsValid()
 	if err != nil {
 		return err
@@ -617,6 +617,6 @@ func genericContentUsageExample(id, exampleValue string) (result string) {
 	return fmt.Sprintf("%v=%v", id, utils.QuoteStringIfRequired(exampleValue))
 }
 
-func contentValErr(ce ContentEntry, errIn error) (errOut error) {
+func contentValErr(ce Entry, errIn error) (errOut error) {
 	return fmt.Errorf("Error validating content '%v': %v", ce.ID(), errIn)
 }

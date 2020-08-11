@@ -1,4 +1,4 @@
-package main
+package content
 
 /*
 func TestContentStore_Resolve(t *testing.T) {

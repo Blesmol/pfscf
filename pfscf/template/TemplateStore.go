@@ -1,4 +1,4 @@
-package main
+package template
 
 import (
 	"fmt"
@@ -8,28 +8,28 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
-// TemplateStore stores multiple ChronicleTemplates and provides means
+// Store stores multiple ChronicleTemplates and provides means
 // to retrieve them by name.
-type TemplateStore struct {
+type Store struct {
 	templates map[string]*ChronicleTemplate // Store as ptrs so that it is easier to modify them do things like aliasing
 }
 
-// GetTemplateStore returns a template store that is already filled with all templates
+// GetStore returns a template store that is already filled with all templates
 // contained in the main template directory. If some error showed up during reading and
 // parsing files, resolving dependencies etc, then nil is returned together with an error.
-func GetTemplateStore() (ts *TemplateStore, err error) {
-	return getTemplateStoreForDir(cfg.GetTemplatesDir())
+func GetStore() (ts *Store, err error) {
+	return getStoreForDir(cfg.GetTemplatesDir())
 }
 
-// getTemplateStoreForDir takes a directory and returns a template store
+// getStoreForDir takes a directory and returns a template store
 // for all entries in that directory, including its subdirectories
-func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
+func getStoreForDir(dirName string) (ts *Store, err error) {
 	yFiles, err := yaml.GetTemplateFilesFromDir(dirName)
 	if err != nil {
 		return nil, err
 	}
 
-	ts = new(TemplateStore)
+	ts = new(Store)
 	ts.templates = make(map[string]*ChronicleTemplate)
 
 	// put basic yaml files as ChronicleTemplates into the store
@@ -56,7 +56,7 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 
 	// resolve presets and content
 	for _, templateID := range ts.GetTemplateIDs(false) {
-		template, _ := ts.GetTemplate(templateID)
+		template, _ := ts.Get(templateID)
 
 		if err = template.Resolve(); err != nil {
 			return nil, err
@@ -68,7 +68,7 @@ func getTemplateStoreForDir(dirName string) (ts *TemplateStore, err error) {
 
 // resolveInheritance is responsible for resolving template inheritance by copying entries
 // from the content and the presets section to other templates.
-func resolveInheritance(ts *TemplateStore, ct *ChronicleTemplate, resolvedIDs *map[string]bool, resolveChain ...string) (err error) {
+func resolveInheritance(ts *Store, ct *ChronicleTemplate, resolvedIDs *map[string]bool, resolveChain ...string) (err error) {
 	// check if we have already seen that entry
 	if _, exists := (*resolvedIDs)[ct.ID()]; exists {
 		return nil
@@ -89,7 +89,7 @@ func resolveInheritance(ts *TemplateStore, ct *ChronicleTemplate, resolvedIDs *m
 	}
 
 	inheritedID := ct.Inherit()
-	inheritedCe, err := ts.GetTemplate(inheritedID)
+	inheritedCe, err := ts.Get(inheritedID)
 	if err != nil {
 		return err
 	}
@@ -113,7 +113,7 @@ func resolveInheritance(ts *TemplateStore, ct *ChronicleTemplate, resolvedIDs *m
 }
 
 // GetTemplateIDs returns a sorted list of keys contained in this TemplateStore
-func (ts *TemplateStore) GetTemplateIDs(includeAliases bool) (keyList []string) {
+func (ts *Store) GetTemplateIDs(includeAliases bool) (keyList []string) {
 	keyList = make([]string, 0, len(ts.templates))
 	for key, entry := range ts.templates {
 		if includeAliases || key == entry.ID() {
@@ -124,9 +124,9 @@ func (ts *TemplateStore) GetTemplateIDs(includeAliases bool) (keyList []string) 
 	return keyList
 }
 
-// GetTemplate returns the template with the specified name from the TemplateStore, or
+// Get returns the template with the specified name from the TemplateStore, or
 // an error if no template with that name exists
-func (ts *TemplateStore) GetTemplate(templateID string) (ct *ChronicleTemplate, err error) {
+func (ts *Store) Get(templateID string) (ct *ChronicleTemplate, err error) {
 	ct, exists := ts.templates[templateID]
 
 	if !exists {
@@ -135,15 +135,15 @@ func (ts *TemplateStore) GetTemplate(templateID string) (ct *ChronicleTemplate, 
 	return ct, nil
 }
 
-// GetTemplate returns the template with the specified name, or
+// Get returns the template with the specified name, or
 // an error if no template with that name exists. This is merely a
 // convenience wrapper to avoid the need to create a TemplateStore
 // object just for receiving a single template.
-func GetTemplate(templateID string) (ct *ChronicleTemplate, err error) {
-	ts, err := GetTemplateStore()
+func Get(templateID string) (ct *ChronicleTemplate, err error) {
+	ts, err := GetStore()
 	if err != nil {
 		return nil, err
 	}
 
-	return ts.GetTemplate(templateID)
+	return ts.Get(templateID)
 }

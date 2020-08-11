@@ -1,4 +1,4 @@
-package main
+package template
 
 import (
 	"path/filepath"
@@ -24,37 +24,37 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 
 	t.Run("errors", func(t *testing.T) {
 		t.Run("non-existant dir", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "non-existant dir"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreTestDir, "non-existant dir"))
 			test.ExpectNil(t, ts)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("malformed file", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "malformedFile"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreTestDir, "malformedFile"))
 			test.ExpectNil(t, ts)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("file without description", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "invalidFile"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreTestDir, "invalidFile"))
 			test.ExpectNil(t, ts)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("files with duplicate IDs", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "duplicateIDs"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreTestDir, "duplicateIDs"))
 			test.ExpectNil(t, ts)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("invalid presets", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "invalidPresets"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreTestDir, "invalidPresets"))
 			test.ExpectNil(t, ts)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("invalid content", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "invalidContent"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreTestDir, "invalidContent"))
 			test.ExpectNil(t, ts)
 			test.ExpectError(t, err)
 		})
@@ -62,7 +62,7 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		t.Run("empty dir", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "emptyDir"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreTestDir, "emptyDir"))
 			test.ExpectNotNil(t, ts)
 			test.ExpectNoError(t, err)
 			if ts != nil {
@@ -71,16 +71,16 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 		})
 
 		t.Run("valid", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "valid"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreTestDir, "valid"))
 			test.ExpectNotNil(t, ts)
 			test.ExpectNoError(t, err)
 			if ts != nil {
 				test.ExpectEqual(t, len(ts.GetTemplateIDs(true)), 2)
-				ct, err := ts.GetTemplate("parent")
+				ct, err := ts.Get("parent")
 				test.ExpectNotNil(t, ct)
 				test.ExpectNoError(t, err)
 
-				ct, err = ts.GetTemplate("child")
+				ct, err = ts.Get("child")
 				test.ExpectNotNil(t, ct)
 				test.ExpectNoError(t, err)
 			}
@@ -89,7 +89,7 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 
 	t.Run("inheritance", func(t *testing.T) {
 		t.Run("basic validity", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreInheritTestDir, "basicValid"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreInheritTestDir, "basicValid"))
 			test.ExpectNotNil(t, ts)
 			test.ExpectNoError(t, err)
 			if ts == nil {
@@ -98,7 +98,7 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 
 			test.ExpectEqual(t, len(ts.GetTemplateIDs(false)), 6)
 			t.Run("id_a", func(t *testing.T) {
-				ctA, err := ts.GetTemplate("id_a")
+				ctA, err := ts.Get("id_a")
 				test.ExpectNoError(t, err)
 				test.ExpectNotSet(t, ctA.Inherit())
 
@@ -112,7 +112,7 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 			})
 
 			t.Run("id_c", func(t *testing.T) {
-				ctC, err := ts.GetTemplate("id_c")
+				ctC, err := ts.Get("id_c")
 				test.ExpectNoError(t, err)
 				test.ExpectEqual(t, ctC.Inherit(), "id_a")
 
@@ -130,7 +130,7 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 			})
 
 			t.Run("id_d", func(t *testing.T) {
-				ctD, err := ts.GetTemplate("id_d")
+				ctD, err := ts.Get("id_d")
 				test.ExpectNoError(t, err)
 				test.ExpectEqual(t, ctD.Inherit(), "id_c")
 
@@ -151,19 +151,19 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 		})
 
 		t.Run("cyclic inheritance across multiple files", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreInheritTestDir, "cyclicDep"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreInheritTestDir, "cyclicDep"))
 			test.ExpectNil(t, ts)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("cyclic inheritance from self", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreInheritTestDir, "fromSelf"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreInheritTestDir, "fromSelf"))
 			test.ExpectNil(t, ts)
 			test.ExpectError(t, err)
 		})
 
 		t.Run("invalid dependency", func(t *testing.T) {
-			ts, err := getTemplateStoreForDir(filepath.Join(templateStoreInheritTestDir, "fromNonExisting"))
+			ts, err := getStoreForDir(filepath.Join(templateStoreInheritTestDir, "fromNonExisting"))
 			test.ExpectNil(t, ts)
 			test.ExpectError(t, err)
 		})
@@ -172,33 +172,33 @@ func TestGetTemplateStoreForDir(t *testing.T) {
 
 func TestGetTemplateStore(t *testing.T) {
 	cfg.SetTestingTemplatesDir(filepath.Join(templateStoreTestDir, "valid"))
-	ts, err := GetTemplateStore()
+	ts, err := GetStore()
 
 	test.ExpectNotNil(t, ts)
 	test.ExpectNoError(t, err)
 	if ts != nil {
 		test.ExpectTrue(t, len(ts.GetTemplateIDs(false)) > 0)
 
-		ct, err := ts.GetTemplate("parent")
+		ct, err := ts.Get("parent")
 		test.ExpectNotNil(t, ct)
 		test.ExpectNoError(t, err)
 	}
 }
 
 func TestTemplateStore_GetTemplate(t *testing.T) {
-	ts, err := getTemplateStoreForDir(filepath.Join(templateStoreTestDir, "valid"))
+	ts, err := getStoreForDir(filepath.Join(templateStoreTestDir, "valid"))
 	test.ExpectNotNil(t, ts)
 	test.ExpectNoError(t, err)
 	if ts != nil {
-		ct, err := ts.GetTemplate("parent")
+		ct, err := ts.Get("parent")
 		test.ExpectNotNil(t, ct)
 		test.ExpectNoError(t, err)
 
-		ct, err = ts.GetTemplate("foo")
+		ct, err = ts.Get("foo")
 		test.ExpectNil(t, ct)
 		test.ExpectError(t, err)
 
-		ct, err = ts.GetTemplate("")
+		ct, err = ts.Get("")
 		test.ExpectNil(t, ct)
 		test.ExpectError(t, err)
 	}
@@ -208,11 +208,11 @@ func TestTemplateStore_GetTemplate(t *testing.T) {
 func TestGetTemplate(t *testing.T) {
 	cfg.SetTestingTemplatesDir(filepath.Join(templateStoreTestDir, "valid"))
 
-	ct, err := GetTemplate("non-existant")
+	ct, err := Get("non-existant")
 	test.ExpectNil(t, ct)
 	test.ExpectError(t, err)
 
-	ct, err = GetTemplate("parent")
+	ct, err = Get("parent")
 	test.ExpectNotNil(t, ct)
 	test.ExpectNoError(t, err)
 }

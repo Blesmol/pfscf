@@ -1,4 +1,4 @@
-package main
+package content
 
 import (
 	"fmt"
@@ -7,16 +7,16 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/preset"
 )
 
-// ContentStore stores the list of ContentEntries for a single ChronicleTemplate
-type ContentStore map[string]ContentEntry
+// Store stores the list of ContentEntries for a single ChronicleTemplate
+type Store map[string]Entry
 
 // NewContentStore creates a new ContentStore object with the provided initial capacity
-func NewContentStore(initialCapacity int) (cs ContentStore) {
-	return make(ContentStore, initialCapacity)
+func NewContentStore(initialCapacity int) (cs Store) {
+	return make(Store, initialCapacity)
 }
 
 // GetIDs returns the list of IDs for the Presets currently stored in this PresetStore
-func (cs ContentStore) GetIDs(includeAliases bool) (idList []string) {
+func (cs Store) GetIDs(includeAliases bool) (idList []string) {
 	idList = make([]string, 0, len(cs))
 	for id, entry := range cs {
 		if includeAliases || id == entry.ID() {
@@ -28,20 +28,20 @@ func (cs ContentStore) GetIDs(includeAliases bool) (idList []string) {
 }
 
 // Get returns the ContentEntry matching the provided id.
-func (cs ContentStore) Get(id string) (ce ContentEntry, exists bool) {
+func (cs Store) Get(id string) (ce Entry, exists bool) {
 	ce, exists = cs[id]
 	return
 }
 
 // Set adds or updates the entry with the specified ID in the ContentStore to
 // the provided ContentEntry
-func (cs *ContentStore) Set(id string, ce ContentEntry) {
+func (cs *Store) Set(id string, ce Entry) {
 	(*cs)[id] = ce
 }
 
 // InheritFrom copies over entries from another ContentStore. An error is thrown
 // if an entry already exists in both ContentStores.
-func (cs *ContentStore) InheritFrom(other ContentStore) (err error) {
+func (cs *Store) InheritFrom(other Store) (err error) {
 	// get content from other object and throw error on duplicates
 	for id, otherEntry := range other {
 		if _, exists := cs.Get(id); exists {
@@ -54,7 +54,7 @@ func (cs *ContentStore) InheritFrom(other ContentStore) (err error) {
 }
 
 // Resolve resolves preset requirements for all entries in the ContentStore
-func (cs *ContentStore) Resolve(ps preset.Store) (err error) {
+func (cs *Store) Resolve(ps preset.Store) (err error) {
 	for _, ci := range *cs {
 		resolvedCI, err := ci.Resolve(ps)
 		if err != nil {

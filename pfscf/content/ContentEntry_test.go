@@ -1,4 +1,4 @@
-package main
+package content
 
 import (
 	"fmt"
@@ -284,7 +284,7 @@ func TestContentTextCell_Resolve(t *testing.T) {
 		ceResolved, err := tc.Resolve(ps)
 		test.ExpectNoError(t, err)
 
-		tcResolved, castWorked := ceResolved.(ContentTextCell)
+		tcResolved, castWorked := ceResolved.(TextCell)
 		test.ExpectTrue(t, castWorked)
 
 		test.ExpectIsSet(t, tcResolved.Font)
@@ -511,7 +511,7 @@ func TestContentSocietyID_Resolve(t *testing.T) {
 		ceResolved, err := si.Resolve(ps)
 		test.ExpectNoError(t, err)
 
-		siResolved, castWorked := ceResolved.(ContentSocietyID)
+		siResolved, castWorked := ceResolved.(SocietyID)
 		test.ExpectTrue(t, castWorked)
 
 		test.ExpectIsSet(t, siResolved.Font)

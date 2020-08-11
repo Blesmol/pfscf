@@ -11,6 +11,7 @@ import (
 
 	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
+	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -164,7 +165,7 @@ func (pdf *Pdf) StampIt(stampFile string, outFile string) (err error) {
 }
 
 // Fill is the main function used to fill a PDF file.
-func (pdf *Pdf) Fill(argStore *args.ArgStore, ct *ChronicleTemplate, outfile string) (err error) {
+func (pdf *Pdf) Fill(argStore *args.ArgStore, ct *template.ChronicleTemplate, outfile string) (err error) {
 	// prepare temporary working dir
 	workDir := utils.GetTempDir()
 	defer os.RemoveAll(workDir)
