@@ -5,14 +5,13 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/Blesmol/pfscf/pfscf/cfg"
+	"github.com/Blesmol/pfscf/pfscf/cmd"
 )
 
 var (
 	version = "dev"
-
-	flags struct {
-		verbose bool
-	}
 )
 
 func main() {
@@ -22,11 +21,11 @@ func main() {
 		Short: "The Pathfinder Society Chronicle Tagger v" + version,
 	}
 
-	RootCmd.PersistentFlags().BoolVarP(&flags.verbose, "verbose", "v", false, "verbose output")
+	RootCmd.PersistentFlags().BoolVarP(&cfg.Global.Verbose, "verbose", "v", false, "verbose output")
 
-	RootCmd.AddCommand(GetFillCommand())
-	RootCmd.AddCommand(GetTemplateCommand())
-	RootCmd.AddCommand(GetBatchCommand())
+	RootCmd.AddCommand(cmd.GetFillCommand())
+	RootCmd.AddCommand(cmd.GetTemplateCommand())
+	RootCmd.AddCommand(cmd.GetBatchCommand())
 
 	err := RootCmd.Execute()
 	if err != nil {
