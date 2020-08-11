@@ -82,11 +82,11 @@ func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
 	utils.ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
-	var argStore *args.ArgStore
+	var argStore *args.Store
 	if !actionBatchCreateUseExampleValues {
-		argStore, err = args.NewArgStore(args.ArgStoreInit{Args: cmdArgs[2:]})
+		argStore, err = args.NewStore(args.StoreInit{Args: cmdArgs[2:]})
 	} else {
-		argStore, err = args.NewArgStore(args.ArgStoreInit{Args: cTmpl.GetExampleArguments()})
+		argStore, err = args.NewStore(args.StoreInit{Args: cTmpl.GetExampleArguments()})
 	}
 	utils.ExitOnError(err, "Error processing command line arguments")
 
@@ -109,7 +109,7 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 	utils.ExitOnError(err, "Error reading csv file")
 
 	// parse remaining arguments
-	cmdLineArgStore, err := args.NewArgStore(args.ArgStoreInit{Args: cmdArgs[3:]})
+	cmdLineArgStore, err := args.NewStore(args.StoreInit{Args: cmdArgs[3:]})
 	utils.ExitOnError(err, "Error processing command line arguments")
 
 	for idx, batchArgStore := range batchArgStores {

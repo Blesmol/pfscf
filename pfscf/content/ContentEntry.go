@@ -27,7 +27,7 @@ type Entry interface {
 	//IsValid() (err error) // Currently not required as part of interface, might change later
 	Describe(verbose bool) (result string)
 	Resolve(ps preset.Store) (resolvedCI Entry, err error)
-	GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error)
+	GenerateOutput(s *stamp.Stamp, as *args.Store) (err error)
 }
 
 // NewContentEntry creates a new content entry object for the provided ContentData object.
@@ -171,7 +171,7 @@ func (ce TextCell) Resolve(ps preset.Store) (resolvedCI Entry, err error) {
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce TextCell) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
+func (ce TextCell) GenerateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	err = ce.IsValid()
 	if err != nil {
 		return err
@@ -315,7 +315,7 @@ func (ce SocietyID) Resolve(ps preset.Store) (resolvedCI Entry, err error) {
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce SocietyID) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
+func (ce SocietyID) GenerateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	utils.Assert(as != nil, "No ArgStore provided")
 	err = ce.IsValid()
 	if err != nil {
@@ -483,7 +483,7 @@ func (ce Rectangle) Resolve(ps preset.Store) (resolvedCI Entry, err error) {
 }
 
 // GenerateOutput generates the output for this textCell object.
-func (ce Rectangle) GenerateOutput(s *stamp.Stamp, as *args.ArgStore) (err error) {
+func (ce Rectangle) GenerateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	err = ce.IsValid()
 	if err != nil {
 		return err

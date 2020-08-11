@@ -213,7 +213,7 @@ func TestWriteToCsvFile(t *testing.T) {
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
-			as, err := args.NewArgStore(args.ArgStoreInit{})
+			as, err := args.NewStore(args.StoreInit{})
 			test.ExpectNoError(t, err)
 			outfile := filepath.Join(outputDir, "unsupportedSeparator.csv")
 
@@ -228,7 +228,7 @@ func TestWriteToCsvFile(t *testing.T) {
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
-			as, err := args.NewArgStore(args.ArgStoreInit{})
+			as, err := args.NewStore(args.StoreInit{})
 			test.ExpectNoError(t, err)
 			outfile := filepath.Join(outputDir, "basic.csv")
 
@@ -252,7 +252,7 @@ func TestWriteToCsvFile(t *testing.T) {
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
-			as, err := args.NewArgStore(args.ArgStoreInit{Args: ct.GetExampleArguments()})
+			as, err := args.NewStore(args.StoreInit{Args: ct.GetExampleArguments()})
 			test.ExpectNoError(t, err)
 			outfile := filepath.Join(outputDir, "argStoreExamples.csv")
 
@@ -273,7 +273,7 @@ func TestWriteToCsvFile(t *testing.T) {
 			test.ExpectNoError(t, err)
 			test.ExpectNotNil(t, ct)
 
-			as, err := args.NewArgStore(args.ArgStoreInit{})
+			as, err := args.NewStore(args.StoreInit{})
 			test.ExpectNoError(t, err)
 			as.Set("player", "Jack")
 			as.Set("noExample", "test")
@@ -294,7 +294,7 @@ func TestWriteToCsvFile(t *testing.T) {
 	})
 }
 
-func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *args.ArgStore, separator rune) (argStores []*args.ArgStore) {
+func writeTemplateToFileAndReadBackIn(t *testing.T, ct *ChronicleTemplate, as *args.Store, separator rune) (argStores []*args.Store) {
 	test.ExpectNotNil(t, ct)
 
 	outputDir := utils.GetTempDir()
@@ -327,20 +327,20 @@ func TestCreateAndReadCsvFile(t *testing.T) {
 	test.ExpectNotNil(t, ct)
 
 	// built up test data
-	inputArgStores := make([]*args.ArgStore, 0)
+	inputArgStores := make([]*args.Store, 0)
 
 	// empty argStore
-	as, err := args.NewArgStore(args.ArgStoreInit{})
+	as, err := args.NewStore(args.StoreInit{})
 	test.ExpectNoError(t, err)
 	inputArgStores = append(inputArgStores, as)
 
 	// argStore with example values
-	as, err = args.NewArgStore(args.ArgStoreInit{Args: ct.GetExampleArguments()})
+	as, err = args.NewStore(args.StoreInit{Args: ct.GetExampleArguments()})
 	test.ExpectNoError(t, err)
 	inputArgStores = append(inputArgStores, as)
 
 	// user-provided argStore
-	as, err = args.NewArgStore(args.ArgStoreInit{Args: []string{"player=Jack", "noExample=test"}})
+	as, err = args.NewStore(args.StoreInit{Args: []string{"player=Jack", "noExample=test"}})
 	test.ExpectNoError(t, err)
 	inputArgStores = append(inputArgStores, as)
 

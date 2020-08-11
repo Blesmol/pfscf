@@ -60,7 +60,7 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 				test.ExpectEqual(t, len(argStores), 4)
 
 				for _, data := range []struct {
-					argStore *ArgStore
+					argStore *Store
 					key      string
 					expValue string
 				}{
@@ -88,7 +88,7 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 			test.ExpectEqual(t, argStores[0].NumEntries(), 3)
 
 			for _, data := range []struct {
-				argStore *ArgStore
+				argStore *Store
 				key      string
 				expValue string
 			}{
@@ -118,7 +118,7 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 			test.ExpectEqual(t, len(argStores), 4)
 
 			for _, data := range []struct {
-				argStore   *ArgStore
+				argStore   *Store
 				expEntries int
 				key        string
 			}{

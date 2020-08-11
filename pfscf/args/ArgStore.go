@@ -10,17 +10,17 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
-// ArgStore holds a mapping between argument keys and values
-type ArgStore struct {
+// Store holds a mapping between argument keys and values
+type Store struct {
 	store  map[string]string
-	parent *ArgStore
+	parent *Store
 }
 
-// ArgStoreInit can take parameters for initialisation of an
+// StoreInit can take parameters for initialisation of an
 // ArgStore object using NewArgStore()
-type ArgStoreInit struct {
+type StoreInit struct {
 	InitCapacity int
-	Parent       *ArgStore
+	Parent       *Store
 	Args         []string
 }
 
@@ -39,9 +39,9 @@ func init() {
 	argRegex = regexp.MustCompile(argPattern)
 }
 
-// NewArgStore creates a new ArgStore
+// NewStore creates a new ArgStore
 // TODO test this
-func NewArgStore(init ArgStoreInit) (as *ArgStore, err error) {
+func NewStore(init StoreInit) (as *Store, err error) {
 	var initialCapacity int
 	if utils.IsSet(init.InitCapacity) {
 		initialCapacity = init.InitCapacity
@@ -49,7 +49,7 @@ func NewArgStore(init ArgStoreInit) (as *ArgStore, err error) {
 		initialCapacity = len(init.Args)
 	}
 
-	localAs := ArgStore{
+	localAs := Store{
 		store:  make(map[string]string, initialCapacity),
 		parent: init.Parent,
 	}
@@ -91,7 +91,7 @@ func splitArgument(arg string) (key, value string, err error) {
 }
 
 // HasKey returns whether the ArgStore contains an entry with the given key.
-func (as *ArgStore) HasKey(key string) bool {
+func (as *Store) HasKey(key string) bool {
 	_, keyExists := as.store[key]
 	if !keyExists && as.HasParent() {
 		keyExists = as.parent.HasKey(key)
@@ -100,13 +100,13 @@ func (as *ArgStore) HasKey(key string) bool {
 }
 
 // Set adds a new value to the ArgStore using the given key.
-func (as *ArgStore) Set(key string, value string) {
+func (as *Store) Set(key string, value string) {
 	as.store[key] = value
 }
 
 // Get looks up the given key in the ArgStore and returns the value plus a flag
 // indicating whether there is a value for the given key.
-func (as ArgStore) Get(key string) (value string, keyExists bool) {
+func (as Store) Get(key string) (value string, keyExists bool) {
 	value, keyExists = as.store[key]
 	if keyExists {
 		return value, true
@@ -118,25 +118,25 @@ func (as ArgStore) Get(key string) (value string, keyExists bool) {
 }
 
 // HasParent returns whether the ArgStore already has a parent object sei
-func (as ArgStore) HasParent() bool {
+func (as Store) HasParent() bool {
 	return as.parent != nil
 }
 
 // SetParent sets the parent ArgStore for the given ArgStore. The returned bool flag
 // indicates whether an existing parent was overwritten.
-func (as *ArgStore) SetParent(parent *ArgStore) bool {
+func (as *Store) SetParent(parent *Store) bool {
 	hasParent := as.HasParent()
 	as.parent = parent
 	return hasParent
 }
 
 // NumEntries returns the number of entries currently stored in the ArgStore
-func (as ArgStore) NumEntries() int {
+func (as Store) NumEntries() int {
 	return len(as.GetKeys())
 }
 
 // GetKeys returns a sorted list of all contained keys
-func (as ArgStore) GetKeys() (keyList []string) {
+func (as Store) GetKeys() (keyList []string) {
 	if as.parent != nil {
 		keyList = as.parent.GetKeys()
 	} else {
@@ -156,13 +156,13 @@ func (as ArgStore) GetKeys() (keyList []string) {
 
 // GetArgStoresFromCsvFile reads a csv file and returns a list of ArgStores that
 // contain the required arguments to fill out a chronicle.
-func GetArgStoresFromCsvFile(filename string) (argStores []*ArgStore, err error) {
+func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 	records, err := csv.ReadCsvFile(filename)
 	if err != nil {
 		return nil, err
 	}
 
-	argStores = make([]*ArgStore, 0)
+	argStores = make([]*Store, 0)
 
 	if len(records) == 0 {
 		return argStores, nil
@@ -171,7 +171,7 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*ArgStore, err error)
 	numPlayers := len(records[0]) - 1
 
 	for idx := 1; idx <= numPlayers; idx++ {
-		as, err := NewArgStore(ArgStoreInit{InitCapacity: len(records)})
+		as, err := NewStore(StoreInit{InitCapacity: len(records)})
 		if err != nil {
 
 		}

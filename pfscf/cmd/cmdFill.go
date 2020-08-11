@@ -49,11 +49,11 @@ func executeFill(cmd *cobra.Command, cmdArgs []string) {
 	utils.ExitOnError(err, "Error getting template")
 
 	// parse remaining arguments
-	var argStore *args.ArgStore
+	var argStore *args.Store
 	if !cmdFillUseExampleValues {
-		argStore, err = args.NewArgStore(args.ArgStoreInit{Args: cmdArgs[3:]})
+		argStore, err = args.NewStore(args.StoreInit{Args: cmdArgs[3:]})
 	} else {
-		argStore, err = args.NewArgStore(args.ArgStoreInit{Args: cTmpl.GetExampleArguments()})
+		argStore, err = args.NewStore(args.StoreInit{Args: cTmpl.GetExampleArguments()})
 	}
 	utils.ExitOnError(err, "Eror processing command line arguments")
 
