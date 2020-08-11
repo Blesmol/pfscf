@@ -1,4 +1,4 @@
-package main
+package pdf
 
 import (
 	"io/ioutil"
@@ -16,20 +16,20 @@ var (
 
 func init() {
 	utils.SetIsTestEnvironment(true)
-	pdfTestDir = filepath.Join(utils.GetExecutableDir(), "testdata", "pdf")
+	pdfTestDir = filepath.Join(utils.GetExecutableDir(), "testdata")
 }
 
 func TestNewPdf(t *testing.T) {
 	t.Run("non-existant file", func(t *testing.T) {
 		fileToTest := filepath.Join(pdfTestDir, "nonExistantFile.pdf")
-		pdf, err := NewPdf(fileToTest)
+		pdf, err := NewFile(fileToTest)
 
 		test.ExpectNil(t, pdf)
 		test.ExpectError(t, err)
 	})
 
 	t.Run("directory instead of file", func(t *testing.T) {
-		pdf, err := NewPdf(pdfTestDir)
+		pdf, err := NewFile(pdfTestDir)
 
 		test.ExpectNil(t, pdf)
 		test.ExpectError(t, err)
@@ -37,7 +37,7 @@ func TestNewPdf(t *testing.T) {
 
 	t.Run("valid one-page file", func(t *testing.T) {
 		fileToTest := filepath.Join(pdfTestDir, "OnePage.pdf")
-		pdf, err := NewPdf(fileToTest)
+		pdf, err := NewFile(fileToTest)
 
 		test.ExpectNotNil(t, pdf)
 		test.ExpectNoError(t, err)
@@ -46,7 +46,7 @@ func TestNewPdf(t *testing.T) {
 
 	t.Run("valid four-pages file", func(t *testing.T) {
 		fileToTest := filepath.Join(pdfTestDir, "FourPages.pdf")
-		pdf, err := NewPdf(fileToTest)
+		pdf, err := NewFile(fileToTest)
 
 		test.ExpectNotNil(t, pdf)
 		test.ExpectNoError(t, err)
@@ -57,7 +57,7 @@ func TestNewPdf(t *testing.T) {
 func TestExtractPage(t *testing.T) {
 	t.Run("invalid output directory", func(t *testing.T) {
 		inputFile := filepath.Join(pdfTestDir, "FourPages.pdf")
-		inPdf, err := NewPdf(inputFile)
+		inPdf, err := NewFile(inputFile)
 		test.ExpectNotNil(t, inPdf)
 		test.ExpectNoError(t, err)
 
@@ -70,7 +70,7 @@ func TestExtractPage(t *testing.T) {
 
 	t.Run("invalid page number", func(t *testing.T) {
 		inputFile := filepath.Join(pdfTestDir, "FourPages.pdf")
-		inPdf, err := NewPdf(inputFile)
+		inPdf, err := NewFile(inputFile)
 		test.ExpectNotNil(t, inPdf)
 		test.ExpectNoError(t, err)
 
@@ -86,7 +86,7 @@ func TestExtractPage(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		inputFile := filepath.Join(pdfTestDir, "FourPages.pdf")
-		inPdf, err := NewPdf(inputFile)
+		inPdf, err := NewFile(inputFile)
 		test.ExpectNotNil(t, inPdf)
 		test.ExpectNoError(t, err)
 

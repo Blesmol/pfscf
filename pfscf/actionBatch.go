@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/pdf"
 	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
@@ -114,7 +115,7 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 	for idx, batchArgStore := range batchArgStores {
 		cmdLineArgStore.SetParent(batchArgStore) // command line arguments have priority
 
-		pdf, err := NewPdf(inPdf)
+		pdf, err := pdf.NewFile(inPdf)
 		utils.ExitOnError(err, "Error opening input file '%v'", inPdf)
 
 		playerNumber := idx + 1

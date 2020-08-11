@@ -1,4 +1,4 @@
-package main
+package pdf
 
 import (
 	"fmt"
@@ -15,71 +15,93 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
-// Pdf is a wraper for a PDF file
-type Pdf struct {
+// File is a wraper for a PDF file
+type File struct {
 	filename string
 	numPages int
+	flags    struct {
+		// TODO move flags into config store?
+		drawCellBorder bool
+		drawGrid       bool
+	}
 }
 
-// NewPdf creates a new Pdf object.
-func NewPdf(filename string) (p *Pdf, err error) {
+// NewFile creates a new Pdf object.
+func NewFile(filename string) (p *File, err error) {
 	if exists, err := utils.IsFile(filename); !exists {
 		return nil, err
 	}
-	p = new(Pdf)
+
+	p = new(File)
 	p.filename = filename
 	p.numPages, err = pdfcpuapi.PageCountFile(p.filename)
 	if err != nil {
 		return nil, err
 	}
+
+	p.flags.drawCellBorder = false
+	p.flags.drawGrid = false
+
 	return p, nil
 }
 
+// SetFlag sets a flag on this PdfFile object
+func (pf *File) SetFlag(flagName string, value bool) {
+	switch flagName {
+	case "drawCellBorder":
+		pf.flags.drawCellBorder = value
+	case "drawGrid":
+		pf.flags.drawGrid = value
+	default:
+		panic(fmt.Sprintf("Unknown flag name '%v'", flagName))
+	}
+}
+
 // Filename returns the filename of the given PDF
-func (pdf *Pdf) Filename() (filename string) {
-	return pdf.filename
+func (pf *File) Filename() (filename string) {
+	return pf.filename
 }
 
 // AllowsPageExtraction checks whether the permissions contained in the
 // PDF file allow to extract pages from it
-func (pdf *Pdf) AllowsPageExtraction() bool {
-	return pdf.GetPermissionBit(4) == true && pdf.GetPermissionBit(11) == true
+func (pf *File) AllowsPageExtraction() bool {
+	return pf.GetPermissionBit(4) == true && pf.GetPermissionBit(11) == true
 }
 
 // ExtractPage extracts a single page from the input file and stores
 // it under (but not necessarily in) the given output directory.
 // Provided page number can also be negative, then page is searched from the back.
-func (pdf *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf, err error) {
+func (pf *File) ExtractPage(pageNumber int, outDir string) (extractedPage *File, err error) {
 	isDir, err := utils.IsDir(outDir)
 	if !isDir || err != nil {
-		return nil, fmt.Errorf("Error extracting page from file %v: %v", pdf.filename, err)
+		return nil, fmt.Errorf("Error extracting page from file %v: %v", pf.filename, err)
 	}
 
 	// check PDF permissions
-	if !pdf.AllowsPageExtraction() {
-		return nil, fmt.Errorf("File %v does not allow page extraction", pdf.filename)
+	if !pf.AllowsPageExtraction() {
+		return nil, fmt.Errorf("File %v does not allow page extraction", pf.filename)
 	}
 
 	// Function accepts negative page numbers, thus calculate real page number
 	var realPageNumber int
 	if pageNumber < 0 {
-		realPageNumber = pdf.numPages + /*negative*/ pageNumber + 1 // as -1 is the last page
+		realPageNumber = pf.numPages + /*negative*/ pageNumber + 1 // as -1 is the last page
 	} else {
 		realPageNumber = pageNumber
 	}
-	if realPageNumber <= 0 || realPageNumber > pdf.numPages {
-		return nil, fmt.Errorf("Page number %v is out of bounds for file %v", realPageNumber, pdf.filename)
+	if realPageNumber <= 0 || realPageNumber > pf.numPages {
+		return nil, fmt.Errorf("Page number %v is out of bounds for file %v", realPageNumber, pf.filename)
 	}
 
 	realPageNumberStr := strconv.Itoa(realPageNumber)
-	err = pdfcpuapi.ExtractPagesFile(pdf.filename, outDir, []string{realPageNumberStr}, nil)
+	err = pdfcpuapi.ExtractPagesFile(pf.filename, outDir, []string{realPageNumberStr}, nil)
 	if err != nil {
-		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, pdf.filename, err)
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, pf.filename, err)
 	}
 
-	extractedPdf, err := NewPdf(getPdfPageExtractionFilename(outDir, pdf.filename, realPageNumberStr))
+	extractedPdf, err := NewFile(getPdfPageExtractionFilename(outDir, pf.filename, realPageNumberStr))
 	if err != nil {
-		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, pdf.filename, err)
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, pf.filename, err)
 	}
 
 	return extractedPdf, nil
@@ -87,8 +109,8 @@ func (pdf *Pdf) ExtractPage(pageNumber int, outDir string) (extractedPage *Pdf, 
 
 // GetDimensionsInPoints returns the width and height of the first page in
 // a given PDF file
-func (pdf *Pdf) GetDimensionsInPoints() (width float64, height float64) {
-	dim, err := pdfcpuapi.PageDimsFile(pdf.filename)
+func (pf *File) GetDimensionsInPoints() (width float64, height float64) {
+	dim, err := pdfcpuapi.PageDimsFile(pf.filename)
 	utils.AssertNoError(err)
 	if len(dim) != 1 {
 		panic(dim)
@@ -107,8 +129,8 @@ func getPdfPageExtractionFilename(dirname, inFile, page string) (outFile string)
 
 // GetPermissionBit checks whether the given permission bit
 // is set for the given PDF file
-func (pdf *Pdf) GetPermissionBit(bit int) (bitValue bool) {
-	perms, err := pdfcpuapi.ListPermissionsFile(pdf.filename, nil)
+func (pf *File) GetPermissionBit(bit int) (bitValue bool) {
+	perms, err := pdfcpuapi.ListPermissionsFile(pf.filename, nil)
 	utils.AssertNoError(err)
 	if len(perms) <= 1 {
 		// no permissions return => assume true/allow as default
@@ -147,7 +169,7 @@ func (pdf *Pdf) GetPermissionBit(bit int) (bitValue bool) {
 }
 
 // StampIt stamps the given PDF file with the given stamp
-func (pdf *Pdf) StampIt(stampFile string, outFile string) (err error) {
+func (pf *File) StampIt(stampFile string, outFile string) (err error) {
 	onTop := true     // stamps go on top, watermarks do not
 	updateWM := false // should the new watermark be added or an existing one updated?
 
@@ -156,7 +178,7 @@ func (pdf *Pdf) StampIt(stampFile string, outFile string) (err error) {
 		return err
 	}
 
-	err = pdfcpuapi.AddWatermarksFile(pdf.filename, outFile, nil, wm, nil)
+	err = pdfcpuapi.AddWatermarksFile(pf.filename, outFile, nil, wm, nil)
 	if err != nil {
 		return err
 	}
@@ -165,13 +187,13 @@ func (pdf *Pdf) StampIt(stampFile string, outFile string) (err error) {
 }
 
 // Fill is the main function used to fill a PDF file.
-func (pdf *Pdf) Fill(argStore *args.ArgStore, ct *template.ChronicleTemplate, outfile string) (err error) {
+func (pf *File) Fill(argStore *args.ArgStore, ct *template.ChronicleTemplate, outfile string) (err error) {
 	// prepare temporary working dir
 	workDir := utils.GetTempDir()
 	defer os.RemoveAll(workDir)
 
 	// extract chronicle page from pdf
-	extractedPage, err := pdf.ExtractPage(-1, workDir)
+	extractedPage, err := pf.ExtractPage(-1, workDir)
 	if err != nil {
 		return err
 	}
@@ -180,7 +202,7 @@ func (pdf *Pdf) Fill(argStore *args.ArgStore, ct *template.ChronicleTemplate, ou
 	// create stamp
 	stamp := stamp.NewStamp(width, height)
 
-	if drawCellBorder { // TODO use function parameter rather than global variable
+	if pf.flags.drawCellBorder {
 		stamp.SetCellBorder(true)
 	}
 
@@ -194,7 +216,7 @@ func (pdf *Pdf) Fill(argStore *args.ArgStore, ct *template.ChronicleTemplate, ou
 		}
 	}
 
-	if drawGrid { // TODO use argument rather than global variable
+	if pf.flags.drawGrid {
 		stamp.CreateMeasurementCoordinates(5, 1)
 	}
 

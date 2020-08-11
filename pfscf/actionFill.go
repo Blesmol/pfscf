@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/pdf"
 	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
@@ -57,9 +58,11 @@ func executeFill(cmd *cobra.Command, cmdArgs []string) {
 	}
 	utils.ExitOnError(err, "Eror processing command line arguments")
 
-	pdf, err := NewPdf(inFile)
+	pf, err := pdf.NewFile(inFile)
+	pf.SetFlag("drawCellBorder", drawCellBorder)
+	pf.SetFlag("drawGrid", drawGrid)
 	utils.ExitOnError(err, "Error opening input file '%v'", inFile)
 
-	err = pdf.Fill(argStore, cTmpl, outFile)
+	err = pf.Fill(argStore, cTmpl, outFile)
 	utils.ExitOnError(err, "Error when filling out chronicle")
 }
