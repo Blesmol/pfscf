@@ -10,6 +10,7 @@ import (
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/cfg"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
@@ -19,11 +20,6 @@ import (
 type File struct {
 	filename string
 	numPages int
-	flags    struct {
-		// TODO move flags into config store?
-		drawCellBorder bool
-		drawGrid       bool
-	}
 }
 
 // NewFile creates a new Pdf object.
@@ -39,22 +35,7 @@ func NewFile(filename string) (p *File, err error) {
 		return nil, err
 	}
 
-	p.flags.drawCellBorder = false
-	p.flags.drawGrid = false
-
 	return p, nil
-}
-
-// SetFlag sets a flag on this PdfFile object
-func (pf *File) SetFlag(flagName string, value bool) {
-	switch flagName {
-	case "drawCellBorder":
-		pf.flags.drawCellBorder = value
-	case "drawGrid":
-		pf.flags.drawGrid = value
-	default:
-		panic(fmt.Sprintf("Unknown flag name '%v'", flagName))
-	}
 }
 
 // Filename returns the filename of the given PDF
@@ -202,7 +183,7 @@ func (pf *File) Fill(argStore *args.ArgStore, ct *template.ChronicleTemplate, ou
 	// create stamp
 	stamp := stamp.NewStamp(width, height)
 
-	if pf.flags.drawCellBorder {
+	if cfg.Global.DrawCellBorder {
 		stamp.SetCellBorder(true)
 	}
 
@@ -216,7 +197,7 @@ func (pf *File) Fill(argStore *args.ArgStore, ct *template.ChronicleTemplate, ou
 		}
 	}
 
-	if pf.flags.drawGrid {
+	if cfg.Global.DrawGrid {
 		stamp.CreateMeasurementCoordinates(5, 1)
 	}
 

@@ -1,10 +1,11 @@
-package main
+package cmd
 
 import (
 	"fmt"
 
 	"github.com/spf13/cobra"
 
+	"github.com/Blesmol/pfscf/pfscf/cfg"
 	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
@@ -83,7 +84,7 @@ func executeTemplateList(cmd *cobra.Command, args []string) {
 	fmt.Printf("List of available templates:\n\n")
 	for _, templateName := range templateNames {
 		template, _ := ts.Get(templateName)
-		fmt.Println(template.Describe(flags.verbose))
+		fmt.Println(template.Describe(cfg.Global.Verbose))
 	}
 }
 
@@ -97,7 +98,7 @@ func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 	idList := ct.GetContentIDs(false)
 	for _, id := range idList {
 		ce, _ := ct.GetContent(id)
-		fmt.Println(ce.Describe(flags.verbose))
+		fmt.Println(ce.Describe(cfg.Global.Verbose))
 	}
 }
 

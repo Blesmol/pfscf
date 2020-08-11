@@ -12,7 +12,24 @@ const (
 
 var (
 	templateTestDir string
+
+	// Global holds global config flags
+	Global globalFlags
 )
+
+type globalFlags struct {
+	Verbose        bool
+	DrawCellBorder bool
+	DrawGrid       bool
+}
+
+func init() {
+	Global = globalFlags{
+		Verbose:        false,
+		DrawCellBorder: false,
+		DrawGrid:       false,
+	}
+}
 
 // GetTemplatesDir returns the path below which the template files are stored.
 // In case a test environment is recognized, a different directory with testdata is returned.
