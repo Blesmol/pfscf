@@ -22,12 +22,12 @@ jobs:
 
       -
         name: Build
-        run: go build -v .
-        with:
-          workdir: pfscf
+        run: |
+            cd pfscf
+            go build -v .
 
       -
         name: Test
-        run: go test -v ./...
-        with:
-          workdir: pfscf
+        run: |
+            cd pfscf
+            go test -v ./...
