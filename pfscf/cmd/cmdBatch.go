@@ -78,8 +78,12 @@ func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitWithMessage("Currently only ';' and ',' are accepted as separators")
 	}
 
-	cTmpl, err := template.Get(tmplName)
-	utils.ExitOnError(err, "Error getting template")
+	ts, err := template.GetStore()
+	utils.ExitOnError(err, "Error retrieving templates")
+	cTmpl, exists := ts.Get(tmplName)
+	if !exists {
+		utils.ExitWithMessage("Template '%v' not found", tmplName)
+	}
 
 	// parse remaining arguments
 	var argStore *args.Store
@@ -102,8 +106,12 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 	inPdf := cmdArgs[2]
 	outDir := cmdArgs[3]
 
-	cTmpl, err := template.Get(tmplName)
-	utils.ExitOnError(err, "Error getting template")
+	ts, err := template.GetStore()
+	utils.ExitOnError(err, "Error retrieving templates")
+	cTmpl, exists := ts.Get(tmplName)
+	if !exists {
+		utils.ExitWithMessage("Template '%v' not found", tmplName)
+	}
 
 	batchArgStores, err := args.GetArgStoresFromCsvFile(inCsv)
 	utils.ExitOnError(err, "Error reading csv file")

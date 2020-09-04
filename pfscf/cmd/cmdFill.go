@@ -45,8 +45,12 @@ func executeFill(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitWithMessage("Input file and output file must not be identical")
 	}
 
-	cTmpl, err := template.Get(tmplName)
-	utils.ExitOnError(err, "Error getting template")
+	ts, err := template.GetStore()
+	utils.ExitOnError(err, "Error retrieving templates")
+	cTmpl, exists := ts.Get(tmplName)
+	if !exists {
+		utils.ExitWithMessage("Template '%v' not found", tmplName)
+	}
 
 	// parse remaining arguments
 	var argStore *args.Store

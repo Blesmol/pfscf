@@ -79,7 +79,7 @@ func executeTemplateList(cmd *cobra.Command, args []string) {
 	ts, err := template.GetStore()
 	utils.ExitOnError(err, "Could not read templates")
 
-	templateNames := ts.GetTemplateIDs(false)
+	templateNames := ts.GetTemplateIDs()
 	fmt.Printf("\n")
 	fmt.Printf("List of available templates:\n\n")
 	for _, templateName := range templateNames {
@@ -91,15 +91,16 @@ func executeTemplateList(cmd *cobra.Command, args []string) {
 func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 	templateName := args[0]
 
-	ct, err := template.Get(templateName)
-	utils.ExitOnError(err, "Could not get template '%v'", templateName)
+	ts, err := template.GetStore()
+	utils.ExitOnError(err, "Could not read templates")
+
+	ct, exists := ts.Get(templateName)
+	if !exists {
+		utils.ExitWithMessage("Coud not find template '%v'", templateName)
+	}
 
 	fmt.Printf("Template '%v'\n\n", templateName)
-	idList := ct.GetContentIDs(false)
-	for _, id := range idList {
-		ce, _ := ct.GetContent(id)
-		fmt.Println(ce.Describe(cfg.Global.Verbose))
-	}
+	fmt.Printf(ct.DescribeParams(cfg.Global.Verbose))
 }
 
 func executeTemplateValidate(cmd *cobra.Command, args []string) {
