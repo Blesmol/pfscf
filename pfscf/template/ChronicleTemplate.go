@@ -8,6 +8,7 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/content"
 	"github.com/Blesmol/pfscf/pfscf/csv"
 	"github.com/Blesmol/pfscf/pfscf/preset"
+	"github.com/Blesmol/pfscf/pfscf/stamp"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
@@ -191,6 +192,20 @@ func (ct *ChronicleTemplate) WriteToCsvFile(filename string, separator rune, as 
 	err = csv.WriteFile(filename, separator, records)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// GenerateOutput adds the content of this chronicle template to the provided stamp.
+func (ct *ChronicleTemplate) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (err error) {
+	for _, key := range ct.GetContentIDs(false) {
+		content, _ := ct.GetContent(key)
+
+		err := content.GenerateOutput(stamp, argStore)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
