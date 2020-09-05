@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strconv"
-	"strings"
 
+	"github.com/pdfcpu/pdfcpu/pkg/api"
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
@@ -74,13 +73,25 @@ func (pf *File) ExtractPage(pageNumber int, outDir string) (extractedPage *File,
 		return nil, fmt.Errorf("Page number %v is out of bounds for file %v", realPageNumber, pf.filename)
 	}
 
-	realPageNumberStr := strconv.Itoa(realPageNumber)
-	err = pdfcpuapi.ExtractPagesFile(pf.filename, outDir, []string{realPageNumberStr}, nil)
+	// Create PDF context
+	ctx, err := pdfcpuapi.ReadContextFile(pf.filename)
 	if err != nil {
 		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, pf.filename, err)
 	}
 
-	extractedPdf, err := NewFile(getPdfPageExtractionFilename(outDir, pf.filename, realPageNumberStr))
+	// Extract requested page
+	ctxNew, err := ctx.ExtractPage(realPageNumber)
+	if err != nil {
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, pf.filename, err)
+	}
+
+	// Write context to file
+	outFile := filepath.Join(outDir, "extracted.pdf")
+	if err := api.WriteContextFile(ctxNew, outFile); err != nil {
+		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, pf.filename, err)
+	}
+
+	extractedPdf, err := NewFile(outFile)
 	if err != nil {
 		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, pf.filename, err)
 	}
@@ -97,15 +108,6 @@ func (pf *File) GetDimensionsInPoints() (width float64, height float64) {
 		panic(dim)
 	}
 	return dim[0].Width, dim[0].Height
-}
-
-// getPdfPageExtractionFilename returns the path and filename of the target
-// file if a single page was extracted.
-func getPdfPageExtractionFilename(dirname, inFile, page string) (outFile string) {
-	inFileWithoutDir := filepath.Base(inFile)
-	inFileBase := strings.TrimSuffix(inFileWithoutDir, filepath.Ext(inFileWithoutDir))
-	localFilename := strings.Join([]string{inFileBase, "_page_", page, ".pdf"}, "")
-	return filepath.Join(dirname, localFilename)
 }
 
 // GetPermissionBit checks whether the given permission bit
