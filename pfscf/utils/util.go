@@ -120,6 +120,9 @@ func IsDir(dirname string) (exists bool, err error) {
 // in case of a non-nil pointer it also checks whether the referenced value is
 // not the zero value
 func IsSet(val interface{}) (result bool) {
+	if reflect.TypeOf(val) == nil {
+		return false
+	}
 	x := reflect.ValueOf(val)
 	if x.Kind() == reflect.Ptr {
 		return !(x.IsNil() || x.Elem().IsZero())
