@@ -7,34 +7,7 @@ import (
 
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 	"github.com/Blesmol/pfscf/pfscf/utils"
-	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
-
-func getTextCellWithDummyData() (cd yaml.ContentData) {
-	cd.Type = "textCell"
-	cd.X1 = 12.0
-	cd.Y1 = 12.0
-	cd.X2 = 24.0
-	cd.Y2 = 24.0
-	cd.Font = "Helvetica"
-	cd.Fontsize = 14.0
-	cd.Align = "LB"
-
-	return cd
-}
-
-func getSocietyIDWithDummyData() (cd yaml.ContentData) {
-	cd.Type = "societyId"
-	cd.X1 = 12.0
-	cd.Y1 = 12.0
-	cd.XPivot = 16.0
-	cd.X2 = 24.0
-	cd.Y2 = 24.0
-	cd.Font = "Helvetica"
-	cd.Fontsize = 14.0
-
-	return cd
-}
 
 func TestNewStamp(t *testing.T) {
 	s := NewStamp(1.0, 2.0)
