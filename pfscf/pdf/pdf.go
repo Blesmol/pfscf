@@ -110,14 +110,18 @@ func (pf *File) GetDimensionsInPoints() (width float64, height float64) {
 	return dim[0].Width, dim[0].Height
 }
 
+func isBitSet(bitfield *uint16, pos int) bool {
+	val := *bitfield & (1 << pos)
+	return (val > 0)
+}
+
 // GetPermissionBit checks whether the given permission bit
 // is set for the given PDF file
 func (pf *File) GetPermissionBit(bit int) (bitValue bool) {
-	perms, err := pdfcpuapi.ListPermissionsFile(pf.filename, nil)
+	perms, err := pdfcpuapi.GetPermissionsFile(pf.filename, nil)
 	utils.AssertNoError(err)
-	if len(perms) <= 1 {
+	if perms == nil {
 		// no permissions return => assume true/allow as default
-		// TODO should check whether text is "Full access"
 		return true
 	}
 
@@ -139,15 +143,8 @@ func (pf *File) GetPermissionBit(bit int) (bitValue bool) {
 	// - Bit 11: modify(rev>=3)
 	// - Bit 12: print high-level(rev>=3)
 
-	/*
-		fmt.Printf("Permissions:\n")
-		for _, val := range perms {
-			fmt.Printf("- %v\n", val)
-		}
-	*/
-
-	// TODO add proper permission check. As first conservatie approach assume
-	// that if permissions are present, then nothing is allowed
+	// TODO find out which exact permissions are required and need to be checked.
+	// As first conservatie approach assume that if permissions are present, then nothing is allowed
 	return false
 }
 
