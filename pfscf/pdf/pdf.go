@@ -104,7 +104,7 @@ func (pf *File) GetDimensionsInPoints() (width float64, height float64) {
 func getPdfPageExtractionFilename(dirname, inFile, page string) (outFile string) {
 	inFileWithoutDir := filepath.Base(inFile)
 	inFileBase := strings.TrimSuffix(inFileWithoutDir, filepath.Ext(inFileWithoutDir))
-	localFilename := strings.Join([]string{inFileBase, "_", page, ".pdf"}, "")
+	localFilename := strings.Join([]string{inFileBase, "_page_", page, ".pdf"}, "")
 	return filepath.Join(dirname, localFilename)
 }
 
