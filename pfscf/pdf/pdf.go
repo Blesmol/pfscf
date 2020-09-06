@@ -187,7 +187,9 @@ func (pf *File) Fill(argStore *args.Store, ct *template.ChronicleTemplate, outfi
 	}
 
 	// add content to stamp
-	ct.GenerateOutput(stamp, argStore)
+	if err = ct.GenerateOutput(stamp, argStore); err != nil {
+		return err
+	}
 
 	if cfg.Global.DrawGrid {
 		stamp.CreateMeasurementCoordinates(5, 1)
