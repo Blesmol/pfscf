@@ -109,7 +109,7 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 	utils.ExitOnError(err, "Error reading csv file")
 
 	// parse remaining arguments
-	cmdLineArgStore, err := args.NewStore(args.StoreInit{Args: cmdArgs[3:]})
+	cmdLineArgStore, err := args.NewStore(args.StoreInit{Args: cmdArgs[4:]})
 	utils.ExitOnError(err, "Error processing command line arguments")
 
 	for idx, batchArgStore := range batchArgStores {
