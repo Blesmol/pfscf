@@ -15,6 +15,7 @@ type Stamp struct {
 	dimX       float64
 	dimY       float64
 	cellBorder string
+	canvas     canvas
 }
 
 const (
@@ -27,6 +28,8 @@ func NewStamp(dimX float64, dimY float64) (s *Stamp) {
 
 	s.dimX = dimX
 	s.dimY = dimY
+
+	s.canvas = newCanvas(0.0, 0.0, dimX, dimY)
 
 	s.SetCellBorder(false)
 
@@ -50,38 +53,21 @@ func (s *Stamp) SetCellBorder(shouldDrawBorder bool) {
 	}
 }
 
-// pctToPt converts the provided percent coordinates into absolute
-// point coordinates for the current stamp object.
-// A value of, e.g. 10% should be passed as 10.0, not as 0.10
-func (s *Stamp) pctToPt(x, y float64) (xPt, yPt float64) {
-	return s.dimX * (x / 100.0), s.dimY * (y / 100.0)
+func (s *Stamp) shouldDrawCellBorder() bool {
+	return s.cellBorder == "1"
 }
 
-// PtToPct converts the provided point coordinates into percent
-// coordinates for the current stamp object.
-// A value of, e.g. 10% will be returned as 10.0, not as 0.10
-func (s *Stamp) PtToPct(x, y float64) (xPct, yPct float64) {
-	return (100.0 / s.dimX) * x, (100.0 / s.dimY) * y
+// AddCanvas adds another canvas to set a smaller canvas on this stamp.
+func (s *Stamp) AddCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) {
+	if s.shouldDrawCellBorder() {
+		s.DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct, "D", 0, 255, 0, 0, 0, 0)
+	}
+	s.canvas = s.canvas.getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct)
 }
 
-// GetXYWH transforms two sets of x/y coordinates into a single set of
-// x/y coordinates and a pair of width/height values.
-func GetXYWH(x1, y1, x2, y2 float64) (x, y, w, h float64) {
-	if x1 < x2 {
-		x = x1
-		w = x2 - x1
-	} else {
-		x = x2
-		w = x1 - x2
-	}
-	if y1 < y2 {
-		y = y1
-		h = y2 - y1
-	} else {
-		y = y2
-		h = y1 - y2
-	}
-	return
+// RemoveCanvas removes the newest canvas from this stamp.
+func (s *Stamp) RemoveCanvas() {
+	s.canvas = s.canvas.getParentCanvas()
 }
 
 // DeriveFontsize checks whether the provided text fits into the given width, if the current
@@ -102,49 +88,40 @@ func (s *Stamp) DeriveFontsize(ptWidth float64, font string, fontsize float64, t
 // DeriveY2 takes two coordinates on the Y axis and the fontsize, and in case
 // the second coordinate is 0.0 will calculcate a proper y2 coordinate based
 // on y1 and the fontsize.
-func (s *Stamp) DeriveY2(y1Pct, y2Pct, fontsize float64) (y2 float64) {
+func (s *Stamp) DeriveY2(y1Pct, y2Pct, fontsizePt float64) (y2 float64) {
 	if y2Pct != 0.0 {
 		return y2Pct
 	}
 
-	_, fontsizePct := s.PtToPct(0.0, fontsize)
+	_, fontsizePct := s.canvas.relPtToPct(0.0, fontsizePt)
 	return y1Pct - fontsizePct
 }
 
 // AddTextCell adds a text cell to the stamp.
 func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fontsize float64, align string, text string, autoShrink bool) {
-	xPct, yPct, wPct, hPct := GetXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
-
-	x, y := s.pctToPt(xPct, yPct)
-	w, h := s.pctToPt(wPct, hPct)
+	xPt, yPt, wPt, hPt := s.canvas.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	effectiveFontsize := fontsize
 	if autoShrink {
-		effectiveFontsize = s.DeriveFontsize(w, font, fontsize, text)
+		effectiveFontsize = s.DeriveFontsize(wPt, font, fontsize, text)
 	}
 
 	s.pdf.SetFont(font, "", effectiveFontsize)
-	s.pdf.SetXY(x, y)
+	s.pdf.SetXY(xPt, yPt)
 	s.pdf.SetCellMargin(0)
-	s.pdf.CellFormat(w, h, text, s.cellBorder, 0, align, false, 0, "")
+	if s.shouldDrawCellBorder() {
+		s.pdf.SetDrawColor(0, 0, 0)
+	}
+	s.pdf.CellFormat(wPt, hPt, text, s.cellBorder, 0, align, false, 0, "")
 }
 
 // DrawRectangle draws a rectangle on the stamp.
-func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, style string, r, g, b int) {
-	xPct, yPct, wPct, hPct := GetXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
+func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, style string, dr, dg, db int, fr, fg, fb int) {
+	xPt, yPt, wPt, hPt := s.canvas.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
 
-	x, y := s.pctToPt(xPct, yPct)
-	w, h := s.pctToPt(wPct, hPct)
-
-	s.pdf.SetFillColor(r, g, b)
-	s.pdf.Rect(x, y, w, h, style)
-}
-
-// GetStringWidth returns the width of a given string
-func (s *Stamp) GetStringWidth(str string, font string, style string, fontsize float64) (result float64) {
-	s.pdf.SetFont(font, style, fontsize)
-	result, _ = s.PtToPct(s.pdf.GetStringWidth(str), 0.0)
-	return result
+	s.pdf.SetDrawColor(dr, dg, db)
+	s.pdf.SetFillColor(fr, fg, fb)
+	s.pdf.Rect(xPt, yPt, wPt, hPt, style)
 }
 
 // WriteToFile writes the content of the Stamp object into a PDF file.
@@ -153,6 +130,7 @@ func (s *Stamp) WriteToFile(filename string) (err error) {
 	if !utils.IsSet(filename) {
 		return fmt.Errorf("No filename provided")
 	}
+	// TODO invalidate object as part of this call
 	return s.pdf.OutputFileAndClose(filename)
 }
 
@@ -194,7 +172,7 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 		s.pdf.SetLineWidth(minorLineWidth)
 
 		for curPercent := 0.0; curPercent <= 100.0; curPercent += minorGap {
-			curX, curY := s.pctToPt(curPercent, curPercent)
+			curX, curY := s.canvas.relPctToPt(curPercent, curPercent)
 
 			if curX >= minX && curX <= maxX {
 				s.pdf.Line(curX, minY, curX, maxY)
@@ -212,7 +190,7 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 
 	// draw major gap X lines with labels
 	for curPercent := 0.0; curPercent <= 100.0; curPercent += majorGap {
-		curX, curY := s.pctToPt(curPercent, curPercent)
+		curX, curY := s.canvas.relPctToPt(curPercent, curPercent)
 
 		if curX >= minX && curX <= maxX {
 			s.pdf.Line(curX, minY, curX, maxY)

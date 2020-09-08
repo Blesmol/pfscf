@@ -102,10 +102,16 @@ presets:
     y:  16.0
     align: CB
 
+  rightbarcanvas:
+    x:  78.4
+    y:  35.0
+    x2: 93.9
+    y2: 90.8
+
   rightbar:
     presets: [defaultfont]
-    x:  78.4
-    x2: 93.9
+    x:    0.0
+    x2: 100.0
     align: CM
 
   bottomline:
@@ -182,29 +188,32 @@ content:
         x2: 65.8
         align: LB
 
-  - value: param:xp
-    type: textCell
-    presets: [rightbar]
-    y:  39.7
-    y2: 42.7
+  - type: canvas
+    presets: [rightbarcanvas]
+    content:
+      - value: param:xp
+        type: textCell
+        presets: [rightbar]
+        y:   8.4
+        y2: 13.9
 
-  - value: param:gp
-    type: textCell
-    presets: [rightbar]
-    y:  53.7
-    y2: 56.8
+      - value: param:gp
+        type: textCell
+        presets: [rightbar]
+        y:  33.5
+        y2: 38.9
 
-  - value: param:income
-    type: textCell
-    presets: [rightbar]
-    y:  58.3
-    y2: 61.4
+      - value: param:income
+        type: textCell
+        presets: [rightbar]
+        y:  41.8
+        y2: 47.3
 
-  - value: param:fame
-    type: textCell
-    presets: [rightbar]
-    y:  81.6
-    y2: 84.6
+      - value: param:fame
+        type: textCell
+        presets: [rightbar]
+        y:  83.6
+        y2: 89.0
 
   - value: param:event
     type: textCell

@@ -33,6 +33,9 @@ func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 	case typeTrigger:
 		s.e = newTrigger()
 		err = unmarshal(s.e)
+	case typeCanvas:
+		s.e = newCanvas()
+		err = unmarshal(s.e)
 	default:
 		err = fmt.Errorf("Unknown content type: '%v'", ety.Type)
 	}
