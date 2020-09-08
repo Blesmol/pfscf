@@ -11,10 +11,13 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Switched template measurement unit from points to percent
 - Empty/missing coordinates are now treated as 0
+- Update golang dependencies
+- Add missing error check during content generation
 
 ### Removed
 
 ### Fixed
+- Fixed wrong handling of command line arguments in batch mode
 
 ## [0.8.0] - 2020-07-30
 
