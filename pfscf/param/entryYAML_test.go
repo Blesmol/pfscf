@@ -15,7 +15,7 @@ func TestEntryYAML_UnmarshalYAML(t *testing.T) {
 			{"malformed yaml", "foo: bar: foo", "mapping values are not allowed"},
 			{"missing type", "example: foo", "Missing or empty 'type' field"},
 			{"empty type", "type:", "Missing or empty 'type' field"},
-			{"unknown type", "type: foobar", "Unknown type: 'foobar'"},
+			{"unknown type", "type: foobar", "Unknown parameter type: 'foobar'"},
 			{"list instead of string 1", "type: [ foo bar ]", "cannot unmarshal"},
 			{"list instead of string 2", "type: text\nexample: [ foo bar ]", "cannot unmarshal"},
 		}

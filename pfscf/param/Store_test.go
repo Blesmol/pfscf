@@ -38,7 +38,7 @@ func TestStore_UnmarshalYAML(t *testing.T) {
 		var store Store
 		err := yaml.Unmarshal(yamlInput, &store)
 
-		test.ExpectError(t, err, "Unknown type")
+		test.ExpectError(t, err, "Unknown parameter type")
 	})
 
 	t.Run("valid", func(t *testing.T) {

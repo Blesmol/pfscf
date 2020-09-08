@@ -34,7 +34,7 @@ func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 		s.e = newTrigger()
 		err = unmarshal(s.e)
 	default:
-		err = fmt.Errorf("Unknown type: '%v'", ety.Type)
+		err = fmt.Errorf("Unknown content type: '%v'", ety.Type)
 	}
 	if err != nil {
 		return err

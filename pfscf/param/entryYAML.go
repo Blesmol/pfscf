@@ -33,7 +33,7 @@ func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 		err = unmarshal(&e)
 		s.e = &e
 	default:
-		err = fmt.Errorf("Unknown type: '%v'", ety.Type)
+		err = fmt.Errorf("Unknown parameter type: '%v'", ety.Type)
 	}
 	if err != nil {
 		return err
