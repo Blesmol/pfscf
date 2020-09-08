@@ -1,5 +1,97 @@
 id: pfs2
 description: Pathfinder 2 Society Chronicle
+
+parameters:
+  player:
+    type: text
+    description: Player name
+    example: Bob
+
+  char:
+    type: text
+    description: Players character name
+    example: Stormageddon
+
+  societyid:
+    type: societyid
+    description: Pathfinder Society ID
+    example: 123456-2001
+
+  xp:
+    type: text
+    description: Experience points
+    example: 4
+
+  gp:
+    type: text
+    description: Gold pieces
+    example: 4gp 2sp
+
+  income:
+    type: text
+    description: Earned income
+    example: 8cp
+
+  fame:
+    type: text
+    description: Fame
+    example: 4
+
+  event:
+    type: text
+    description: Event name
+    example: PaizoCon
+
+  eventcode:
+    type: text
+    description: Event code
+    example: 1234
+
+  date:
+    type: text
+    description: The date on which the game session took place
+    example: 27.06.2020
+
+  gm:
+    type: text
+    description: Gamemasters name
+    example: J. Doe
+
+  gmid:
+    type: text
+    description: Gamemasters PFS ID
+    example: 654321
+
+  fac1name:
+    type: text
+    description: Faction 1 Name
+    example: Grand Archive
+
+  fac1rep:
+    type: text
+    description: Faction 1 Reputation points
+    example: 4
+
+  fac2name:
+    type: text
+    description: Faction 2 Name
+    example: Grand Archive
+
+  fac2rep:
+    type: text
+    description: Faction 2 Reputation points
+    example: 4
+
+  fac3name:
+    type: text
+    description: Faction 3 Name
+    example: Grand Archive
+
+  fac3rep:
+    type: text
+    description: Faction 3 Reputation points
+    example: 4
+
 presets:
   defaultfont:
     font: Helvetica
@@ -50,135 +142,120 @@ presets:
     y:  19.1
 
 content:
-  player:
+  - value: param:player
     type: textCell
-    desc: Player name
     presets: [topline]
     x:  6.9
     x2: 23.6
-    example: Bob
 
-  char:
+  - value: param:char
     type: textCell
-    desc: Players character name
     presets: [topline]
     x:  27.7
     x2: 44.8
-    example: Stormageddon
 
-  societyid:
-    type: societyId
-    desc: PFS Player ID
-    presets: [topline]
-    x:  45.8
-    xpivot: 57.5
-    x2: 65.8
-    example: 123456-2001
+  - type: trigger
+    trigger: param:societyid
+    content:
+      - type: rectangle
+        color: white
+        x:  57.0
+        y:  15.7
+        x2: 59.5
+        y2: 14.5
+      - value: param:societyid.player
+        type: textCell
+        presets: [topline]
+        x:  45.8
+        x2: 56.8
+        align: RB
+      - value: "-"
+        type: textCell
+        presets: [topline]
+        x:  56.8
+        x2: 58.5
+        align: CB
+      - value: param:societyid.char
+        type: textCell
+        presets: [topline]
+        x:  58.5
+        x2: 65.8
+        align: LB
 
-  xp:
+  - value: param:xp
     type: textCell
-    desc: Experience points
     presets: [rightbar]
     y:  39.7
     y2: 42.7
-    example: 4
 
-  gp:
+  - value: param:gp
     type: textCell
-    desc: Gold pieces
     presets: [rightbar]
     y:  53.7
     y2: 56.8
-    example: 4gp 2sp
 
-  income:
+  - value: param:income
     type: textCell
-    desc: Earned income
     presets: [rightbar]
     y:  58.3
     y2: 61.4
-    example: 8cp
 
-  fame:
+  - value: param:fame
     type: textCell
-    desc: Fame
     presets: [rightbar]
     y:  81.6
     y2: 84.6
-    example: 4
 
-  event:
+  - value: param:event
     type: textCell
-    desc: Event name
     presets: [bottomline]
     x:   7.1
     x2: 23.7
-    example: PaizoCon
 
-  eventcode:
+  - value: param:eventcode
     type: textCell
-    desc: Event code
     presets: [bottomline]
     x:  26.2
     x2: 35.2
-    example: 1234
 
-  date:
+  - value: param:date
     type: textCell
-    desc: The date on which the game session took place
     presets: [bottomline]
     x:  37.6
     x2: 50.4
-    example: 27.06.2020
 
-  gm:
+  - value: param:gm
     type: textCell
-    desc: Gamemasters name
     presets: [bottomline]
     x:  52.8
     x2: 74.0
-    example: J. Doe
 
-  gmid:
+  - value: param:gmid
     type: textCell
-    desc: Gamemasters PFS ID
     presets: [bottomline]
     x:  76.4
     x2: 93.4
-    example: 654321
 
-  fac1name:
+  - value: param:fac1name
     type: textCell
-    desc: Faction 1 Name
     presets: [faccol1, facline1]
-    example: Grand Archive
 
-  fac1rep:
+  - value: param:fac1rep
     type: textCell
-    desc: Faction 1 Reputation points
     presets: [faccol2, facline1]
-    example: 4
 
-  fac2name:
+  - value: param:fac2name
     type: textCell
-    desc: Faction 2 Name
     presets: [faccol1, facline2]
-    example: Grand Archive
 
-  fac2rep:
+  - value: param:fac2rep
     type: textCell
-    desc: Faction 2 Reputation points
     presets: [faccol2, facline2]
-    example: 4
 
-  fac3name:
+  - value: param:fac3name
     type: textCell
-    desc: Faction 3 Name
     presets: [faccol1, facline3]
-    example: Grand Archive
 
-  fac3rep:
+  - value: param:fac3rep
     type: textCell
-    desc: Faction 3 Reputation points
     presets: [faccol2, facline3]
-    example: 4

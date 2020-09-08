@@ -1,0 +1,342 @@
+id: sfs
+description: Starfinder Society Chronicle
+
+parameters:
+  player:
+    type: text
+    description: Player name
+    example: Bob
+
+  char:
+    type: text
+    description: Players character name
+    example: Stormageddon
+
+  societyid:
+    type: societyid
+    description: Starfinder Society ID
+    example: 123456-701
+
+  faction:
+    type: text
+    description: Players faction
+    example: Dataphiles
+
+  xp:
+    type: text
+    description: Experience points
+    example: 4
+
+  credits:
+    type: text
+    description: Credits garnered
+    example: 696
+
+  dayjob:
+    type: text
+    description: Earned income
+    example: 123
+
+  fame:
+    type: text
+    description: Fame
+    example: 4
+
+  event:
+    type: text
+    description: Event name
+    example: PaizoCon
+
+  eventcode:
+    type: text
+    description: Event code
+    example: 1234
+
+  date:
+    type: text
+    description: The date on which the game session took place
+    example: 27.06.2020
+
+  gm:
+    type: text
+    description: Gamemasters name
+    example: J. Doe
+
+  gmid:
+    type: text
+    description: Gamemasters PFS ID
+    example: 654321
+
+  gminitials:
+    type: text
+    description: Gamemaster initials
+    example: JD
+
+  fac1name:
+    type: text
+    description: Faction 1 Name
+    example: Dataphiles
+
+  fac1rep:
+    type: text
+    description: Faction 1 Reputation points
+    example: 4
+
+  fac2name:
+    type: text
+    description: Faction 2 Name
+    example: Wayfinders
+
+  fac2rep:
+    type: text
+    description: Faction 2 Reputation points
+    example: 4
+
+  fac3name:
+    type: text
+    description: Faction 3 Name
+    example: Second Seekers
+
+  fac3rep:
+    type: text
+    description: Faction 3 Reputation points
+    example: 4
+
+  infamy:
+    type: text
+    description: Infamy
+    example: 4
+
+presets:
+  defaultfont:
+    font: Helvetica
+    fontsize: 14
+
+  topline:
+    presets: [defaultfont]
+    y:  16.9
+    align: CB
+
+  rightbar:
+    presets: [defaultfont]
+    x:  78.4
+    x2: 94.1
+    align: CM
+
+  rightbarprefixedfield:
+    presets: [rightbar]
+    x: 80.0
+
+  rightbargmvalues:
+    presets: [rightbarprefixedfield]
+    x2: 88.8
+    align: CB
+
+  rightbargminits:
+    presets: [rightbar]
+    x: 88.8
+    align: CM
+
+  bottomline:
+    presets: [defaultfont]
+    y:  93.8
+    align: CB
+
+  factions:
+    presets: [defaultfont]
+    fontsize: 10.0
+
+  facnamecol1:
+    presets: [factions]
+    x:  12.5
+    x2: 26.9
+    align: CB
+
+  facnamecol2:
+    presets: [factions]
+    x:  47.1
+    x2: 61.3
+    align: CB
+
+  facrepcol1:
+    presets: [factions]
+    x:  35.1
+    x2: 37.8
+    align: CB
+
+  facrepcol2:
+    presets: [factions]
+    x:  69.6
+    x2: 72.3
+    align: CB
+
+  facline1:
+    presets: [factions]
+    y:  86.0
+
+  facline2:
+    presets: [factions]
+    y:  88.0
+
+content:
+  - value: param:player
+    type: textCell
+    presets: [topline]
+    x:  7.3
+    x2: 20.7
+
+  - value: param:char
+    type: textCell
+    presets: [topline]
+    x:  25.8
+    x2: 42.8
+
+  - type: trigger
+    trigger: param:societyid
+    content:
+      - type: rectangle
+        color: white
+        x:  56.0
+        y:  15.0
+        x2: 59.0
+        y2: 16.5
+      - value: param:societyid.player
+        type: textCell
+        presets: [topline]
+        x:  44.8
+        x2: 55.9
+        align: RB
+      - value: "-"
+        type: textCell
+        presets: [topline]
+        x:  56.0
+        x2: 57.4
+        align: CB
+      - value: param:societyid.char
+        type: textCell
+        presets: [topline]
+        x:  57.5
+        x2: 64.8
+        align: LB
+
+  - value: param:faction
+    type: textCell
+    presets: [topline]
+    x:  66.9
+    x2: 74.3
+
+  - type: trigger
+    trigger: param:xp
+    content:
+      - value: param:xp
+        type: textCell
+        presets: [rightbargmvalues]
+        y:  38.5
+        y2: 41.1
+      - value: param:gminitials
+        type: textCell
+        presets: [rightbargminits]
+        y:  39.7
+        y2: 41.1
+
+  - type: trigger
+    trigger: param:fame
+    content:
+      - value: param:fame
+        type: textCell
+        presets: [rightbargmvalues]
+        y:  52.3
+        y2: 54.9
+      - value: param:gminitials
+        type: textCell
+        presets: [rightbargminits]
+        y:  53.5
+        y2: 54.9
+
+  - type: trigger
+    trigger: param:credits
+    content:
+      - value: param:credits
+        type: textCell
+        presets: [rightbargmvalues]
+        y:  71.0
+        #y:  72.2
+        y2: 73.5
+      - value: param:gminitials
+        type: textCell
+        presets: [rightbargminits]
+        y:  72.2
+        y2: 73.5
+
+  - type: trigger
+    trigger: param:dayjob
+    content:
+      - value: param:dayjob
+        type: textCell
+        presets: [rightbargmvalues]
+        y:  75.4
+        y2: 78.1
+      - value: param:gminitials
+        type: textCell
+        presets: [rightbargminits]
+        y:  76.6
+        y2: 78.1
+
+  - value: param:event
+    type: textCell
+    presets: [bottomline]
+    x:   7.1
+    x2: 23.7
+
+  - value: param:eventcode
+    type: textCell
+    presets: [bottomline]
+    x:  26.2
+    x2: 35.2
+
+  - value: param:date
+    type: textCell
+    presets: [bottomline]
+    x:  37.6
+    x2: 50.4
+
+  - value: param:gm
+    type: textCell
+    presets: [bottomline]
+    x:  52.8
+    x2: 74.0
+
+  - value: param:gmid
+    type: textCell
+    presets: [bottomline]
+    x:  76.4
+    x2: 93.4
+
+  - value: param:fac1name
+    type: textCell
+    presets: [facline1, facnamecol1]
+
+  - value: param:fac1rep
+    type: textCell
+    presets: [facline1, facrepcol1]
+
+  - value: param:fac2name
+    type: textCell
+    presets: [facline2, facnamecol1]
+
+  - value: param:fac2rep
+    type: textCell
+    presets: [facline2, facrepcol1]
+
+  - value: param:fac3name
+    type: textCell
+    presets: [facline1, facnamecol2]
+
+  - value: param:fac3rep
+    type: textCell
+    presets: [facline1, facrepcol2]
+
+  - value: param:infamy
+    type: textCell
+    presets: [facline2, facnamecol2]
+
