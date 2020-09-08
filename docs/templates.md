@@ -1,4 +1,4 @@
-# Creating Template Files for Pfscf
+# Creating Template Files for Pfscf (Outdated)
 
 After some time of using pfscf, you might be tempted to create your own templates or modify existing ones.
 Or you are just curious on what is currently supported by pfscf.
