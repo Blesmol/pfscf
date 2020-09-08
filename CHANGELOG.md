@@ -7,14 +7,22 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Autoshrink for `textCell`: Automatically reduce font size if text is too wide
 - If y2 coordinate is missing or 0, then the cell height is automatically determined via font size
+- New template section `parameters`: No longer integrated into content entries. This allows for reusing parameters in a sheet, e.g. GM initials on a Starfinder chronicle
+- Content type `rectangle`: Finally drawing colored boxes!
+- Content type `trigger`: Can be used to conditionally print other content entries when a specific argument is provided
+- Chronicle Template for Starfinder
 
 ### Changed
 - Switched template measurement unit from points to percent
 - Empty/missing coordinates are now treated as 0
 - Update golang dependencies
 - Add missing error check during content generation
+- Content entries do no longer have an ID
+- Content type `textCell` now also supports static values not related to any passed arguments
+- Basically replaced the complete internal data structures and data handling
 
 ### Removed
+- Content type `societyid`
 
 ### Fixed
 - Fixed wrong handling of command line arguments in batch mode
