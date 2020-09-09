@@ -39,7 +39,6 @@ func (s *Store) Get(id string) (e Entry, exists bool) {
 
 // UnmarshalYAML unmarshals a Parameter Store
 func (s *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
-	fmt.Printf("param unmarshal\n")
 	type storeYAML map[string]entryYAML
 
 	sy := make(storeYAML, 0)
