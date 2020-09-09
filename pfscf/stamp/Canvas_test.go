@@ -6,14 +6,14 @@ import (
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 )
 
-func TestCanvas_pctToPt(t *testing.T) {
+func TestCanvas_relPctToPt(t *testing.T) {
 	testData := []struct {
 		c              canvas
 		xPct, yPct     float64
 		xPtExp, yPtExp float64
 	}{
 		{newCanvas(0.0, 0.0, 200.0, 200.0), 10.0, 10.0, 20.0, 20.0},
-		{newCanvas(100.0, 100.0, 200.0, 200.0), 10.0, 10.0, 120.0, 120.0},
+		{newCanvas(100.0, 100.0, 200.0, 200.0), 10.0, 10.0, 20.0, 20.0},
 	}
 
 	for _, tt := range testData {
