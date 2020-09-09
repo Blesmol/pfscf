@@ -29,43 +29,6 @@ func TestStamp_SetCellBorder(t *testing.T) {
 	test.ExpectEqual(t, s.cellBorder, "0")
 }
 
-func TestStamp_PctToPt(t *testing.T) {
-	s := NewStamp(200.0, 200.0)
-
-	x, y := s.pctToPt(10.0, 10.0)
-	test.ExpectEqual(t, x, 20.0)
-	test.ExpectEqual(t, y, 20.0)
-}
-
-func TestStamp_PtToPct(t *testing.T) {
-	s := NewStamp(200.0, 200.0)
-
-	x, y := s.PtToPct(20.0, 20.0)
-	test.ExpectEqual(t, x, 10.0)
-	test.ExpectEqual(t, y, 10.0)
-}
-
-func TestGetXYWH(t *testing.T) {
-
-	for _, data := range []struct {
-		desc                                   string
-		x1, y1, x2, y2, xExp, yExp, wExp, hExp float64
-	}{
-		{"x1/y1 smaller than x2/y2", 0.0, 1.0, 100.0, 101.0, 0.0, 1.0, 100.0, 100.0},
-		{"x1/y1 greater than x2/y2", 100.0, 101.0, 0.0, 1.0, 0.0, 1.0, 100.0, 100.0},
-		{"x1/y1 equal to x2/y2", 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0},
-	} {
-		t.Logf("%v:", data.desc)
-		t.Logf("  x1=%.1f, y1=%.1f, x2=%.1f, y2=%.1f", data.x1, data.y1, data.x2, data.y2)
-
-		x, y, w, h := GetXYWH(data.x1, data.y1, data.x2, data.y2)
-		test.ExpectEqual(t, x, data.xExp)
-		test.ExpectEqual(t, y, data.yExp)
-		test.ExpectEqual(t, w, data.wExp)
-		test.ExpectEqual(t, h, data.hExp)
-	}
-}
-
 func TestStamp_DetermineFontSize(t *testing.T) {
 	s := NewStamp(100.0, 100.0)
 

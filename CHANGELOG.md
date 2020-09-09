@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - New template section `parameters`: No longer integrated into content entries. This allows for reusing parameters in a sheet, e.g. GM initials on a Starfinder chronicle
 - Content type `rectangle`: Finally drawing colored boxes!
 - Content type `trigger`: Can be used to conditionally print other content entries when a specific argument is provided
+- Content type `canvas`: Allows to reduce the drawing canvas. Required for easily adapting PFS2 chronicle templates if the right sidebar has different coordinates again
 - Chronicle Template for Starfinder
 
 ### Changed

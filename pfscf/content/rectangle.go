@@ -91,7 +91,7 @@ func (ce *rectangle) generateOutput(s *stamp.Stamp, as *args.Store) (err error) 
 		return err
 	}
 
-	s.DrawRectangle(ce.X, ce.Y, ce.X2, ce.Y2, "F", r, g, b)
+	s.DrawRectangle(ce.X, ce.Y, ce.X2, ce.Y2, "F", 0, 0, 0, r, g, b)
 
 	return nil
 }
