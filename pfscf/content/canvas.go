@@ -74,8 +74,6 @@ func (ce *canvas) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 		return err
 	}
 
-	// TODO print cell border?
-
 	s.AddCanvas(ce.X, ce.Y, ce.X2, ce.Y2)
 	defer s.RemoveCanvas()
 
