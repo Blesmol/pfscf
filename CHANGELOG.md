@@ -5,13 +5,24 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [v0.9.0] - 2020-09-10
+
+### Added
 - Autoshrink for `textCell`: Automatically reduce font size if text is too wide
 - If y2 coordinate is missing or 0, then the cell height is automatically determined via font size
 - New template section `parameters`: No longer integrated into content entries. This allows for reusing parameters in a sheet, e.g. GM initials on a Starfinder chronicle
 - Content type `rectangle`: Finally drawing colored boxes!
 - Content type `trigger`: Can be used to conditionally print other content entries when a specific argument is provided
 - Content type `canvas`: Allows to reduce the drawing canvas. Required for easily adapting PFS2 chronicle templates if the right sidebar has different coordinates again
-- Chronicle Template for Starfinder
+- Chronicle template for Starfinder
+- Several chronicle templates for Pathfinder 2 where the right sidebar had a different position in the released sheets
 
 ### Changed
 - Switched template measurement unit from points to percent
@@ -27,18 +38,19 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fixed wrong handling of command line arguments in batch mode
+- Yaml files with empty sections like `presets:` left the underlying data structure uninitialized due to unexpected behavior in go-yaml module. Workaround was implemented.
 
-## [0.8.0] - 2020-07-30
+## [v0.8.0] - 2020-07-30
 
 ### Changed
 - Heavily restructured internal coding regarding content handling
 
-## [0.7.1] - 2020-07-18
+## [v0.7.1] - 2020-07-18
 
 ### Changed
 - Changed source code structure on disk and goreleaser config
 
-## [0.7.0] - 2020-07-16
+## [v0.7.0] - 2020-07-16
 
 ### Added
 - Documentation on how to write templates
@@ -54,7 +66,7 @@ All notable changes to this project will be documented in this file.
 - #33: Now correctly only reads files with .yml extension, not with .yml~ or .ymla
 - Action `template describe -v` now works again
 
-## [0.6.0] - 2020-07-08
+## [v0.6.0] - 2020-07-08
 
 ### Added
 - New content type `societyid`. This is specifically meant for printing a PFS society id following the pattern `<player_id>-<char_id>`, e.g. 123456-789. This is easier to use than providing both values separately, and also allows better formatting / placement.
@@ -62,7 +74,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Template `pfs2` now provides a `societyid` entry instead of separate `playerid` and `charid` entries. These were removed.
 
-## [0.5.0] - 2020-07-07
+## [v0.5.0] - 2020-07-07
 
 ### Added
 - Template inheritance mechanism
@@ -75,7 +87,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - The `default` section is no longer supported / usable
 
-## [0.4.0] - 2020-07-02
+## [v0.4.0] - 2020-07-02
 
 ### Added
 - Align wording: An  `ID` is no longer sometimes called `Name`
@@ -90,19 +102,19 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Now printing filename if an error occurs during reading a yaml file
 
-## [0.3.2] - 2020-06-27
+## [v0.3.2] - 2020-06-27
 
 ### Added
 - Short aliases for cmd line commands, e.g. `f` for `fill`, `t` for `template`
 - `verbose` flag and output for `template list` and `template describe`
 - Provide example values in verbose output of `template describe`
 
-## [0.3.1] - 2020-06-26
+## [v0.3.1] - 2020-06-26
 
 ### Added
 - First version of `template describe` command
 
-## [0.3.0] - 2020-06-26
+## [v0.3.0] - 2020-06-26
 
 ### Added
 - Proper handling of template files
@@ -112,7 +124,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Allow to execute `pfsct` command when in a different directory
 
-## [0.2.0] - 2020-06-24
+## [v0.2.0] - 2020-06-24
 
 ### Added
 - Check whether required template fields are present
@@ -122,7 +134,7 @@ All notable changes to this project will be documented in this file.
 - Configs are now named templates, and thus the `config` subdir was renamed to `template` as well
 - Yaml unmarshalling now set to strict
 
-## [0.1] - 2020-06-20
+## [v0.1] - 2020-06-20
 
 ### Added
 - First more or less working version that can fill out chronicles for PFS2
