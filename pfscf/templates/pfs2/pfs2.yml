@@ -102,10 +102,12 @@ presets:
     y:  16.0
     align: CB
 
-  rightbarcanvas:
+  rightbarposx:
     x:  78.4
-    y:  35.0
     x2: 93.9
+
+  rightbarposy:
+    y:  35.0
     y2: 90.8
 
   rightbar:
@@ -189,7 +191,7 @@ content:
         align: LB
 
   - type: canvas
-    presets: [rightbarcanvas]
+    presets: [rightbarposx, rightbarposy]
     content:
       - value: param:xp
         type: textCell

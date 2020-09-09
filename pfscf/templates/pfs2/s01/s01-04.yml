@@ -1,0 +1,10 @@
+id: pfs2.s1-04
+description: "PFS2 #1-04: Bandits of Immenwood"
+inherit: pfs2.s01
+
+presets:
+  # by the way, paizo provided a faulty sheet where
+  # the "starting XP" field is missing at the top
+  rightbarposy:
+    y:  27.1
+    y2: 90.8

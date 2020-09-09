@@ -1,0 +1,8 @@
+id: pfs2.s1-18
+description: "PFS2 #1-18: Lodge of the Living God"
+inherit: pfs2.s01
+
+presets:
+  rightbarposy:
+    y:  28.6
+    y2: 90.8
