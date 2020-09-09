@@ -186,8 +186,8 @@ func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
 		}
 	} else {
 		fmt.Fprintf(&sb, "- %v\n", ct.ID)
-		fmt.Fprintf(&sb, "\tDesc: %v\n", ct.Description)
-		fmt.Fprintf(&sb, "\tFile: %v", ct.filename)
+		fmt.Fprintf(&sb, "\tDescription: %v\n", ct.Description)
+		fmt.Fprintf(&sb, "\tFile: %v\n", ct.filename)
 	}
 
 	return sb.String()
