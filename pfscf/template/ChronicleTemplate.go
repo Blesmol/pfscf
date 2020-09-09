@@ -39,6 +39,23 @@ func templateErrf(ct *ChronicleTemplate, msg string, args ...interface{}) (errOu
 	return fmt.Errorf("Template '%v': "+msg, ct.ID, args)
 }
 
+// ensureStoresAreInitialized is a workaround for the behavior of the stupid f... yaml library.
+// If a section like "parameters:" is present, but empty, it will not be unmarshalled, and the
+// underlying data structure will be ZEROed. So the stores will be uninitialized. Even if they
+// were initialized before the unmarshalling. Yeah, great.
+// See https://github.com/go-yaml/yaml/issues/395 , might be fixed with go-yaml v3 in the future.
+func (ct *ChronicleTemplate) ensureStoresAreInitialized() {
+	if ct.Parameters == nil {
+		ct.Parameters = param.NewStore()
+	}
+	if ct.Presets == nil {
+		ct.Presets = preset.NewStore()
+	}
+	if ct.Content == nil {
+		ct.Content = content.NewStore()
+	}
+}
+
 // GetExampleArguments returns an array containing all keys and example values for all parameters.
 // The result can be passed to the ArgStore.
 func (ct *ChronicleTemplate) GetExampleArguments() (result []string) {

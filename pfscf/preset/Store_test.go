@@ -10,12 +10,12 @@ import (
 )
 
 func Test_newStore(t *testing.T) {
-	s := newStore()
+	s := NewStore()
 	test.ExpectEqual(t, len(s), 0)
 }
 
 func TestStore_addGet(t *testing.T) {
-	store := newStore()
+	store := NewStore()
 
 	_, exists := store.Get("id")
 	test.ExpectFalse(t, exists)
@@ -98,7 +98,7 @@ func TestStore_InheritFrom(t *testing.T) {
 			t.Logf("Testing: %v", tt.title)
 
 			// construct source store
-			sSource := newStore()
+			sSource := NewStore()
 			for _, id := range tt.sourceIDs {
 				e := newEntry()
 				e.values["source"] = 1
@@ -106,7 +106,7 @@ func TestStore_InheritFrom(t *testing.T) {
 			}
 
 			// construct target store
-			sTarget := newStore()
+			sTarget := NewStore()
 			for _, id := range tt.targetIDs {
 				e := newEntry()
 				e.values["target"] = 1
@@ -132,7 +132,7 @@ func TestStore_InheritFrom(t *testing.T) {
 }
 
 func TestStore_PresetsAreNotContradicting(t *testing.T) {
-	store := newStore()
+	store := NewStore()
 
 	someValue := 1
 

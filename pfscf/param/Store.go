@@ -12,7 +12,8 @@ import (
 // Store stores a list of parameter descriptions
 type Store map[string]Entry
 
-func newStore() (s Store) {
+// NewStore creates a new store.
+func NewStore() (s Store) {
 	s = make(Store, 0)
 	return s
 }
@@ -24,7 +25,9 @@ func (s *Store) add(id string, e Entry) {
 		utils.Assert(false, "As we only call this from a map in yaml, duplicates should not occur")
 	}
 
-	e.setID(id)
+	if !utils.IsSet(e.ID()) {
+		e.setID(id)
+	}
 	(*s)[id] = e
 }
 
@@ -36,6 +39,7 @@ func (s *Store) Get(id string) (e Entry, exists bool) {
 
 // UnmarshalYAML unmarshals a Parameter Store
 func (s *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+	fmt.Printf("param unmarshal\n")
 	type storeYAML map[string]entryYAML
 
 	sy := make(storeYAML, 0)
@@ -45,7 +49,7 @@ func (s *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 		return err
 	}
 
-	*s = newStore()
+	*s = NewStore()
 	for key, value := range sy {
 		s.add(key, value.e)
 	}

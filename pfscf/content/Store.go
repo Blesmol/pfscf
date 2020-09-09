@@ -9,7 +9,8 @@ import (
 // Store stores a list of parameter descriptions
 type Store []Entry
 
-func newStore() (s Store) {
+// NewStore creates a new store.
+func NewStore() (s Store) {
 	s = make(Store, 0)
 	return s
 }
@@ -47,7 +48,7 @@ func (store *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 		return err
 	}
 
-	*store = newStore()
+	*store = NewStore()
 	for _, ey := range sy {
 		store.add(ey.e)
 	}
@@ -78,7 +79,7 @@ func (store *Store) IsValid() (err error) {
 }
 
 func (store *Store) deepCopy() (copy Store) {
-	copy = newStore()
+	copy = NewStore()
 	for _, entry := range *store {
 		copy.add(entry.deepCopy())
 	}

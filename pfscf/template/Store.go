@@ -58,6 +58,7 @@ func getStoreForDir(dir string) (store *Store, err error) {
 		if err != nil {
 			return nil, err
 		}
+		ct.ensureStoresAreInitialized() // workaround for bug / shitty behavior in go-yaml
 
 		// check for duplicate IDs
 		if other, exists := store.Get(ct.ID); exists {

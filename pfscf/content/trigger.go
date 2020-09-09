@@ -17,7 +17,7 @@ type trigger struct {
 
 func newTrigger() *trigger {
 	var ce trigger
-	ce.Content = newStore()
+	ce.Content = NewStore()
 	return &ce
 }
 

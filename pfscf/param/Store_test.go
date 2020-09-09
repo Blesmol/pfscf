@@ -9,7 +9,7 @@ import (
 )
 
 func TestStore_AddGet(t *testing.T) {
-	store := newStore()
+	store := NewStore()
 
 	_, exists := store.Get("id")
 	test.ExpectFalse(t, exists)

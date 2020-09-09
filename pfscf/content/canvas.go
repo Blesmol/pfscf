@@ -21,7 +21,7 @@ type canvas struct {
 
 func newCanvas() *canvas {
 	var ce canvas
-	ce.Content = newStore()
+	ce.Content = NewStore()
 	ce.Presets = make([]string, 0)
 	return &ce
 }

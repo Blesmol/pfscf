@@ -9,7 +9,8 @@ import (
 // Store stores a set of preset entries
 type Store map[string]*Entry
 
-func newStore() (s Store) {
+// NewStore creates a new store.
+func NewStore() (s Store) {
 	s = make(Store, 0)
 	return s
 }
@@ -37,7 +38,7 @@ func (s Store) Get(id string) (e Entry, exists bool) {
 // UnmarshalYAML unmarshals a Parameter Store
 func (s *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	type storeYaml Store
-	sy := storeYaml(newStore()) // avoid unmarshalling recursion
+	sy := storeYaml(NewStore()) // avoid unmarshalling recursion
 
 	err = unmarshal(&sy)
 	if err != nil {
@@ -45,7 +46,7 @@ func (s *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	}
 
 	// create return value and copy over content from temporary object
-	*s = newStore()
+	*s = NewStore()
 	for key, value := range sy {
 		if value != nil {
 			s.add(key, value)
