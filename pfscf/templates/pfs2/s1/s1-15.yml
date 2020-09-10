@@ -1,0 +1,8 @@
+id: pfs2.s1-15
+description: "#1-15: The Blooming Catastrophe"
+inherit: pfs2.s1
+
+presets:
+  rightbarposy:
+    y:  27.7
+    y2: 90.8

@@ -1,6 +1,6 @@
 id: pfs2.s1-04
-description: "PFS2 #1-04: Bandits of Immenwood"
-inherit: pfs2.s01
+description: "#1-04: Bandits of Immenwood"
+inherit: pfs2.s1
 
 presets:
   # by the way, paizo provided a faulty sheet where

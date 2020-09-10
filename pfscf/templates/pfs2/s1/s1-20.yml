@@ -1,6 +1,6 @@
 id: pfs2.s1-20
-description: "PFS2 #1-20: The Lost Legend"
-inherit: pfs2.s01
+description: "#1-20: The Lost Legend"
+inherit: pfs2.s1
 
 presets:
   rightbarposy:

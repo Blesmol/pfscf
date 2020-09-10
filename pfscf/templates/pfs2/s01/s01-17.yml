@@ -1,8 +1,0 @@
-id: pfs2.s1-17
-description: "PFS2 #1-17: Perennial Crown 2: The Thorned Monarch"
-inherit: pfs2.s01
-
-presets:
-  rightbarposy:
-    y:  28.6
-    y2: 90.8
