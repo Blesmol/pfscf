@@ -1,6 +1,6 @@
 # The Pathfinder Society Chronicle Filler (pfscf)
 
-The "Pathfinder Society Chronicle Filler" (or short: pfscf) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle sheets for the Pathfinder Roleplaying Game from [Paizo Inc](https://paizo.com).
+The "Pathfinder Society Chronicle Filler" (or short: pfscf) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle sheets for the Pathfinder and Starfinder Roleplaying Games from [Paizo Inc](https://paizo.com).
 
 You can download the program in the [Releases section](https://github.com/Blesmol/pfscf/releases).
 
@@ -14,19 +14,21 @@ Usage:
   pfscf [command]
 
 Available Commands:
-  fill        Fill a single chronicle sheet
+  batch       Fill out multiple chronicles in one go
+  fill        Fill out a single chronicle sheet
   help        Help about any command
   template    Various actions on templates: list, describe, etc
 
 Flags:
-  -h, --help   help for pfscf
+  -h, --help      help for pfscf
+  -v, --verbose   verbose output
 
 Use "pfscf [command] --help" for more information about a command.
 ```
 
 ### Fill out a single chronicle
 
-Filling out a single Pathfinder Society chronicle sheet can be done with the `fill` subcommand.
+Filling out a single Pathfinder/Starfinder Society chronicle sheet can be done with the `fill` subcommand.
 
 #### Example Call
 ```
@@ -79,7 +81,7 @@ You can always get the complete list for a template by calling `pfscf template d
 
 ### Fill out multiple chronicles (e.g. for a complete group)
 
-Not yet supported, unless you repeat the "Fill out a single chronicle" section for each member of the group. But I want to include some batch mode in the future as well.
+There is a batch mode for this where you can first create a csv file out of a chronicle (`pfscf batch create pfs2 mySession.csv`, open the csv file with, e.g., Excel, LibreOffice or any text editor, provide the details for the group, and then generate a bunch of filled-out chronicles with one run (`pfscf batch fill pfs2 mySession.csv myEmptySheet.pdf outputDir/`).
 
 ### Writing your own templates
 
@@ -89,7 +91,7 @@ Please see the [Documentation on writing your own templates](docs/templates.md)
 
 * **Q: What types of chronicles are supported at the moment?**
 
-  **A:** At the moment only the chronicles for Pathfinder 2. In the near future most likely also Starfinder and Pathfinder 1. Although the latter will be more complicated, as Paizo seems to have changed the chronicle layout between seaons.
+  **A:** At the moment the chronicles for Pathfinder 2 and Starfinder are supported. Pathfinder 1 is in general also possible, but I did not yet have time to provide the proper configuration. Also Pathfinder 1 may take some more time, as Paizo seems to have changed the chronicle layout between seaons.
 
 * **Q: I have a Society scenario and want to use pfscf on that. But it keeps complaining that some operation is not allowed because of PDF permissions on that file. What should I do?**
 
@@ -97,7 +99,7 @@ Please see the [Documentation on writing your own templates](docs/templates.md)
 
 * **Q: What about scenario-specific options? For example, I have this one scenario where I need an easy way to strike out boons that the group did not get.**
 
-  **A:** Actually, that is on my roadmap and I have some ideas for this. However, neither do I own all Society scenarios nor do I have enough time to provide the config for multiple dozens of scenarios that I own. But... contributions are welcome! When this feature is available, then no programming skills will be required for providing a scenario-specific config. Just a text editor and some time to fiddle out the coordinates for all the relevant parts. And what do I also have on the roadmap? An auto-updater for such configs! So if people would contribute scenario-specific configs, then other people don't need to update their installation of pfscf every two weeks, but just call the program with some yet-to-be-determined parameter (think of `pfscf update-config`) and you get the latest and greatest scenario-specific config automatically downloaded to your computer.
+  **A:** The program already supports in general to have scenario-specific options. However, neither do I own all Society scenarios nor do I have enough time to provide the config for multiple dozens of scenarios that I own. But... contributions are welcome! When this feature is available, then no programming skills will be required for providing a scenario-specific config. Just a text editor and some time to fiddle out the coordinates for all the relevant parts. And what do I also have on the roadmap? An auto-updater for such configs! So if people would contribute scenario-specific configs, then other people don't need to update their installation of pfscf every two weeks, but just call the program with some yet-to-be-determined parameter (think of `pfscf update-config`) and you get the latest and greatest scenario-specific config automatically downloaded to your computer.
 
 * **Q: Oh noes! I have found a bug! I HAVE FOUND A BUG!!1!**
 
