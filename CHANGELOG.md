@@ -5,16 +5,22 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## [v0.9.1] - 2020-09-11
+
+### Added
 - Basic stubs for all PFS2 season 1 scenarios plus quests
 - Templates now try to do some basic auto-guessing on possible page margins to reduce the number of cases where values on the produced sheet are misaligned.
 - Text is now also automatically shrunk if a textcell is not high enough
 
 ### Changed
 - Template listing (`pfscf template list`) now shows inheritance relations
-
-### Removed
-
-### Fixed
 
 ## [v0.9.0] - 2020-09-10
 
