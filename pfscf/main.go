@@ -18,7 +18,7 @@ func main() {
 
 	RootCmd := &cobra.Command{
 		Use:   "pfscf",
-		Short: "The Pathfinder Society Chronicle Tagger v" + version,
+		Short: "The Pathfinder Society Chronicle Filler (v" + version +")",
 	}
 
 	RootCmd.PersistentFlags().BoolVarP(&cfg.Global.Verbose, "verbose", "v", false, "verbose output")
