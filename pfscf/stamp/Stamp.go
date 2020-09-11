@@ -57,6 +57,11 @@ func (s *Stamp) shouldDrawCellBorder() bool {
 	return s.cellBorder == "1"
 }
 
+// GetDimensions returns the x/y dimensions of this stamp
+func (s *Stamp) GetDimensions() (x, y float64) {
+	return s.dimX, s.dimY
+}
+
 // AddCanvas adds another canvas to set a smaller canvas on this stamp.
 func (s *Stamp) AddCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) {
 	if s.shouldDrawCellBorder() {

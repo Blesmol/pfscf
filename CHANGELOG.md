@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Templates now try to do some basic auto-guessing on possible page margins to reduce the number of cases where values on the produced sheet are misaligned.
 
 ### Changed
 - Template listing (`pfscf template list`) now shows inheritance relations

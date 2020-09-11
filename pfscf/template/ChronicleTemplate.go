@@ -2,6 +2,8 @@ package template
 
 import (
 	"fmt"
+	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
@@ -13,11 +15,21 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
+const (
+	floatGroupPattern  = `(\d+(?:\.(?:(?:\d*))?)?)` // should match floating point numbers, e.g. 2, 1., 45.123
+	aspectRatioPattern = `^\s*` + floatGroupPattern + `\s*:\s*` + floatGroupPattern + `\s*$`
+)
+
+var (
+	regexAspectRatio = regexp.MustCompile(aspectRatioPattern)
+)
+
 // ChronicleTemplate is the new approach for the Chronicle Template
 type ChronicleTemplate struct {
 	ID          string
 	Description string
 	Inherit     string
+	Aspectratio string
 	Parameters  param.Store
 	Presets     preset.Store
 	Content     content.Store
@@ -76,6 +88,10 @@ func (ct *ChronicleTemplate) inheritFrom(otherCT *ChronicleTemplate) (err error)
 	ct.Presets.InheritFrom(otherCT.Presets)
 
 	ct.Content.InheritFrom(otherCT.Content)
+
+	if !utils.IsSet(ct.Aspectratio) {
+		ct.Aspectratio = otherCT.Aspectratio
+	}
 
 	return nil
 }
@@ -148,6 +164,16 @@ func (ct *ChronicleTemplate) GenerateOutput(stamp *stamp.Stamp, argStore *args.S
 		return err
 	}
 
+	if utils.IsSet(ct.Aspectratio) {
+		xMarginPct, yMarginPct, err := ct.guessMarginsFromAspectRatio(stamp)
+		if err != nil {
+			return err
+		}
+
+		stamp.AddCanvas(0.0+xMarginPct/2, 0.0+yMarginPct/2, 100.0-xMarginPct/2, 100-yMarginPct/2)
+		defer stamp.RemoveCanvas()
+	}
+
 	// pass to content store to generate output
 	if err = ct.Content.GenerateOutput(stamp, localArgStore); err != nil {
 		return err
@@ -159,6 +185,12 @@ func (ct *ChronicleTemplate) GenerateOutput(stamp *stamp.Stamp, argStore *args.S
 // IsValid checks whether a given chronicle is valid. This should only be called
 // after resolve() was called on this template.
 func (ct *ChronicleTemplate) IsValid() (err error) {
+	if utils.IsSet(ct.Aspectratio) {
+		if _, _, err = parseAspectRatio(ct.Aspectratio); err != nil {
+			return templateErr(ct, err)
+		}
+	}
+
 	if !utils.IsSet(ct.Description) {
 		return templateErrf(ct, "Missing description")
 	}
@@ -197,4 +229,54 @@ func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
 // this chronicle template. It returns the description as a multi-line string.
 func (ct *ChronicleTemplate) DescribeParams(verbose bool) (result string) {
 	return ct.Parameters.Describe(verbose)
+}
+
+func parseAspectRatio(input string) (x, y float64, err error) {
+	match := regexAspectRatio.FindStringSubmatch(input)
+	if len(match) == 0 {
+		err = fmt.Errorf("Provided aspect ratio does not follow pattern '<x>:<y>': %v", input)
+		return
+	}
+
+	if x, err = strconv.ParseFloat(match[1], 64); err != nil {
+		err = fmt.Errorf("Error parsing X part of aspect ratio '%v': %v", match[1], err)
+	}
+
+	if y, err = strconv.ParseFloat(match[2], 64); err != nil {
+		err = fmt.Errorf("Error parsing Y part of aspect ratio '%v': %v", match[2], err)
+	}
+
+	return x, y, nil
+}
+
+// guessMarginsFromAspectRatio tries to calculate possible document margins from the provided
+// aspect ratio. Assumption is that the PDF content will not be squeezed or stretched in any
+// direction. So if the aspect ration differs this must mean than margins were added somewhere.
+// The following function should correctly calculate the margins from the aspect ratio if
+// margins were only added on the x axis OR the y axis, not on both.
+func (ct *ChronicleTemplate) guessMarginsFromAspectRatio(stamp *stamp.Stamp) (xMarginPct, yMarginPct float64, err error) {
+	sx, sy := stamp.GetDimensions()
+	arx, ary, err := parseAspectRatio(ct.Aspectratio)
+	if err != nil {
+		return
+	}
+
+	haveAR := sx / sy
+	wantAR := arx / ary
+
+	switch {
+	case wantAR > haveAR: // y axis has a margin
+		f := sx * ary / arx
+		g := (100.0 * f) / sy
+		marginPct := 100 - g
+		return 0.0, marginPct, nil
+	case wantAR < haveAR: // x axis has a margin
+		f := arx * sy / ary
+		g := (100.0 * f) / sx
+		marginPct := 100.0 - g
+		//fmt.Printf("f: %.6f, g: %.6f, h: %.6f, test: %.6f\n", f, g, h, 100.0*609.9/612.0)
+		return marginPct, 0.0, nil
+	}
+
+	return 0.0, 0.0, nil // no margins, fits perfect
 }
