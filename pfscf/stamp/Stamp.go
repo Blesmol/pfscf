@@ -78,13 +78,23 @@ func (s *Stamp) RemoveCanvas() {
 // DeriveFontsize checks whether the provided text fits into the given width, if the current
 // font and fontsize is used. If it does not fit, the size is reduced until it fits or until a
 // minimum font size is reached.
-func (s *Stamp) DeriveFontsize(ptWidth float64, font string, fontsize float64, text string) (result float64) {
-	// TODO extend to also take height into account?
+func (s *Stamp) DeriveFontsize(cellWidthPt, cellHeightPt float64, font string, fontsize float64, text string) (result float64) {
 	// TODO convert to percent and remove call from AddTextCell
-	for autoFontsize := fontsize; autoFontsize >= minFontSize; autoFontsize -= 0.25 {
-		s.pdf.SetFont(font, "", autoFontsize)
-		if s.pdf.GetStringWidth(text) <= ptWidth {
-			return autoFontsize
+
+	currentFontsize := fontsize
+
+	if cellHeightPt < currentFontsize {
+		if cellHeightPt > minFontSize {
+			currentFontsize = cellHeightPt
+		} else {
+			currentFontsize = minFontSize
+		}
+	}
+
+	for ; currentFontsize >= minFontSize; currentFontsize -= 0.25 {
+		s.pdf.SetFont(font, "", currentFontsize)
+		if s.pdf.GetStringWidth(text) <= cellWidthPt {
+			return currentFontsize
 		}
 	}
 	return minFontSize
@@ -108,7 +118,7 @@ func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fon
 
 	effectiveFontsize := fontsize
 	if autoShrink {
-		effectiveFontsize = s.DeriveFontsize(wPt, font, fontsize, text)
+		effectiveFontsize = s.DeriveFontsize(wPt, hPt, font, fontsize, text)
 	}
 
 	s.pdf.SetFont(font, "", effectiveFontsize)

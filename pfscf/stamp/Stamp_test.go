@@ -34,17 +34,19 @@ func TestStamp_DetermineFontSize(t *testing.T) {
 
 	var result float64
 
-	for _, data := range []struct {
-		width, fontsize  float64
-		text             string
-		expectedFontsize float64
+	for _, tt := range []struct {
+		width, height, fontsize float64
+		text                    string
+		expectedFontsize        float64
 	}{
-		{1.0, 14.0, "fooooooooooooooooooooooo", minFontSize},
-		{100.0, 14.0, "fooooooooooooooooooooooo", 7.5},
-		{100.0, 14.0, "foo", 14.0},
+		{1.0, 16.0, 14.0, "fooooooooooooooooooooooo", minFontSize},
+		{100.0, 16.0, 14.0, "fooooooooooooooooooooooo", 7.5},
+		{100.0, 16.0, 14.0, "foo", 14.0},
+		{100.0, 10.0, 14.0, "foo", 10.0},
+		{100.0,  2.0, 14.0, "foo", minFontSize},
 	} {
-		result = s.DeriveFontsize(data.width, "Arial", data.fontsize, data.text)
-		test.ExpectEqual(t, result, data.expectedFontsize)
+		result = s.DeriveFontsize(tt.width, tt.height, "Arial", tt.fontsize, tt.text)
+		test.ExpectEqual(t, result, tt.expectedFontsize)
 	}
 }
 
