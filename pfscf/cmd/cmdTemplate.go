@@ -80,7 +80,7 @@ func executeTemplateList(cmd *cobra.Command, args []string) {
 	utils.ExitOnError(err, "Could not read templates")
 
 	fmt.Printf("List of available templates:\n\n")
-	fmt.Printf(ts.ListTemplates(cfg.Global.Verbose))
+	fmt.Printf(ts.ListTemplates())
 }
 
 func executeTemplateDescribe(cmd *cobra.Command, args []string) {

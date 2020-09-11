@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 ### Changed
+- Template listing (`pfscf template list`) now shows inheritance relations
 
 ### Removed
 

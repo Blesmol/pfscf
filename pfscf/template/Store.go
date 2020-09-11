@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/cfg"
+	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
 )
 
@@ -165,15 +166,44 @@ func (store *Store) isValid() (err error) {
 	return nil
 }
 
+func (store *Store) getTemplatesInheritingFrom(parentID string) (childIDs []string) {
+	childIDs = make([]string, 0)
+
+	for key, template := range *store {
+		if (!utils.IsSet(parentID) && !utils.IsSet(template.Inherit)) ||
+			(template.Inherit == parentID) {
+			childIDs = append(childIDs, key)
+		}
+	}
+	sort.Strings(childIDs)
+
+	return childIDs
+}
+
 // ListTemplates lists the available templates. Result is returned as multi-line string.
-func (store *Store) ListTemplates(verbose bool) (result string) {
+func (store *Store) ListTemplates() (result string) {
 	var sb strings.Builder
 
-	templateNames := store.GetTemplateIDs()
-	for _, templateName := range templateNames {
-		template, _ := store.Get(templateName)
-		fmt.Fprintf(&sb, "%v\n", template.Describe(cfg.Global.Verbose))
+	completeList := store.listTemplatesInheritingFrom("")
+	for _, line := range completeList {
+		fmt.Fprintf(&sb, "%v\n", line)
 	}
 
 	return sb.String()
+}
+
+func (store *Store) listTemplatesInheritingFrom(parentID string) (result []string) {
+	result = make([]string, 0)
+
+	for _, childID := range store.getTemplatesInheritingFrom(parentID) {
+		template, _ := store.Get(childID)
+		result = append(result, fmt.Sprintf("- %v: %v", template.ID, template.Description))
+
+		childrenDesc := store.listTemplatesInheritingFrom(childID)
+		for _, childDesc := range childrenDesc {
+			result = append(result, fmt.Sprintf("  %v", childDesc))
+		}
+	}
+
+	return result
 }
