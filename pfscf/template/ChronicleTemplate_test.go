@@ -67,3 +67,40 @@ content:
 		test.ExpectNoError(t, err)
 	})
 }
+
+func TestParseAspectRatio(t *testing.T) {
+	t.Run("errors", func(t *testing.T) {
+		testData := []struct{ input, errString string }{
+			{":", "does not follow pattern"},
+			{"1:", "does not follow pattern"},
+			{":1", "does not follow pattern"},
+			{"1:asdsa", "does not follow pattern"},
+		}
+
+		for _, tt := range testData {
+			t.Logf("Testing input '%v'", tt.input)
+			_, _, err := parseAspectRatio(tt.input)
+			test.ExpectError(t, err, tt.errString)
+		}
+	})
+
+	t.Run("valid", func(t *testing.T) {
+		testData := []struct {
+			input      string
+			xExp, yExp float64
+		}{
+			{"1:2", 1.0, 2.0},
+			{"1.:2.", 1.0, 2.0},
+			{"1.23:2.34", 1.23, 2.34},
+			{"  1.23  :   2.34   ", 1.23, 2.34},
+		}
+
+		for _, tt := range testData {
+			t.Logf("Testing input '%v'", tt.input)
+			x, y, err := parseAspectRatio(tt.input)
+			test.ExpectNoError(t, err)
+			test.ExpectEqual(t, x, tt.xExp)
+			test.ExpectEqual(t, y, tt.yExp)
+		}
+	})
+}
