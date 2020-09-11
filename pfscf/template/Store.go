@@ -3,6 +3,7 @@ package template
 import (
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/cfg"
 	"github.com/Blesmol/pfscf/pfscf/yaml"
@@ -162,4 +163,17 @@ func (store *Store) isValid() (err error) {
 		}
 	}
 	return nil
+}
+
+// ListTemplates lists the available templates. Result is returned as multi-line string.
+func (store *Store) ListTemplates(verbose bool) (result string) {
+	var sb strings.Builder
+
+	templateNames := store.GetTemplateIDs()
+	for _, templateName := range templateNames {
+		template, _ := store.Get(templateName)
+		fmt.Fprintf(&sb, "%v\n", template.Describe(cfg.Global.Verbose))
+	}
+
+	return sb.String()
 }
