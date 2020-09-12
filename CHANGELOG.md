@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 ### Changed
+- Releases for macOS now have "macOS" in their name instead of "Darwin" for clarification"
 
 ### Removed
 
