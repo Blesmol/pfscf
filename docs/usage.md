@@ -1,10 +1,40 @@
 # Using Pfscf
 
 ## Table of Contents
+* [Installation](#installation)
+* [Quickstart](#quickstart)
 * [Filling Out a Single Chronicle](#filling-out-a-single-chronicle)
 * [Finding the Right Chronicle Template](#finding-the-right-chronicle-template)
 * [Extracting a Chronicle PDF from a Scenario](#extracting-a-chronicle-pdf-from-a-scenario)
 * [Troubleshooting](#troubleshooting)
+
+## Installation
+
+You can download the latest release from the [Releases section](https://github.com/Blesmol/pfscf/releases). Currently there are zipped packages for Windows, macOS/Darwin and Linux. Download the release for your currently used operating system and extract into a new folder. The important things in this directory are the `pfscf` executable and the `templates` directory. The executable is, of course, the program to run this whole thing, whereas the `templates` directory contains the configuration files for the chronicle sheets, so that the program knows what to print where on the resulting sheet.
+
+The program itself is a command line application. This means that e.g. on Windows you have to use the Windows command prompt or the Windows PowerShell to run this. You should also find a file `openCmdHere.bat` in the installation directory that will on windows open a cmd prompt window in the directory where the program is installed.
+
+## Quickstart
+
+1. [Download the program](https://github.com/Blesmol/pfscf/releases) and extract into a new folder. For details see the [installation instructions](#installation).
+2. Get a blank society chronicle as single-paged PDF file. I'd suggest to follow the instructions in [this chapter](#extracting-a-chronicle-pdf-from-a-scenario). Put the resulting PDF page in the same directory to which you extracted `pfscf`.
+3. Open a command line prompt / terminal in this directory. Can on windows be done by double-clicking the `openCmdHere.bat` file.
+4. Call the program to find whether your scenario is already explicitly supported, based on the scenario title. See the example below where we want to check for PFS2 scenario "#1-06: Lost on the Spirit Road"
+   ```
+   $ pfscf template search lost
+
+   Matching Templates:
+   - pfs2.s1-06: #1-06: Lost on the Spirit Road
+   - pfs2.s1-20: #1-20: The Lost Legend
+
+   ```
+   The important part in the test result is the template id at the beginning of the line. Here this would be `pfs2.s1-06`
+5. Call the program again, to fill your first chronicle. Lets stick with the example:
+   ```
+   $ pfscf fill pfs2.s1-06 myBlankChronicle.pdf chronicleForBob.pdf player=Bob char="The Bobbynator" societyid=123456-2001 xp=4 gp=10
+   ```
+6. Open up the resulting PDF file in a PDF viewer of your choice and have a look!
+
 
 ## Filling Out a Single Chronicle
 
