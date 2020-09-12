@@ -51,8 +51,8 @@ Flags:
 ```
 
 Required arguments:
-* `<template>`: The name of the template to use. The template defines what you can put on the chronicle and where it is put. Currently the only supported template is `pfs2`, so always use that value.
-* `<infile>`: The name of the input PDF file. This should be a single-paged PDF file that contains a chronicle sheet from a Pathfinder Society scenario. And I'm currently relying on that the page in this file has the same dimensions as in the original PDFs.
+* `<template>`: The name of the template to use. The template defines what you can put on the chronicle and where it is put.
+* `<infile>`: The name of the input PDF file. This should be a single-paged PDF file that contains a chronicle sheet from a Pathfinder Society scenario.
 * `<outfile>`: The file to which the finished chronicle should be saved.
 
 After the required arguments, you need to provide info on what should go into the chronicle. This is done by providing key/value pairs with format `<key>=<value>`.
