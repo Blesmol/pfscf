@@ -1,0 +1,8 @@
+id: pfs2.littleTrouble
+description: "Little Trouble in Big Absalom"
+inherit: pfs2.specials
+
+presets:
+  rightbarposy:
+    y:  29.0
+    y2: 90.8
