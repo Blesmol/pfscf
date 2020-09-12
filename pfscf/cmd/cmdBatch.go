@@ -46,7 +46,7 @@ func GetBatchCommand() (cmd *cobra.Command) {
 	batchCmd.AddCommand(batchCreateCmd)
 
 	batchFillCmd := &cobra.Command{
-		Use:     "fill <template> <csv_file> <input_pdf> <output_dir> [<content_id>=<value> ...]",
+		Use:     "fill <template> <csv_file> <input_pdf> <output_dir> [<param_id>=<value> ...]",
 		Aliases: []string{"f"},
 
 		Short: "Fill multiple templates with values read from a csv file",

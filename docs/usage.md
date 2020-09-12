@@ -19,7 +19,7 @@ Everything set so far? Good! Then we can get serious now... ok, lets do this!
 
 To fill out a chronicle, you have to call `pfscf` with the `fill` command. The call in general looks as follows:
 ```
-pfscf fill <template> <infile> <outfile> [<param_name>=<value> ...]
+pfscf fill <template> <infile> <outfile> [<param_id>=<value> ...]
 ```
 
 And here is an example on how an actual call could look like:
