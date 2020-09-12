@@ -36,7 +36,7 @@ checksum:
 snapshot:
   name_template: "{{ .Version }}-next"
 changelog:
-  sort: asc
+  skip: false
   filters:
     exclude:
     - '^doc:'
