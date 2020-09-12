@@ -30,6 +30,7 @@ archives:
   files:
     - templates/**/*
     - ../CHANGELOG.md
+    - ../LICENSE
 checksum:
   name_template: 'checksums.txt'
 snapshot:
