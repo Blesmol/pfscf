@@ -48,29 +48,33 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 	}
 	templateCmd.AddCommand(templateDescribeCmd)
 
-	templateValidateCmd := &cobra.Command{
-		Use:     "validate <template>",
-		Aliases: []string{"v"},
+	/*
+		templateValidateCmd := &cobra.Command{
+			Use:     "validate <template>",
+			Aliases: []string{"v"},
 
-		Short: "Validate a specific template",
-		//Long:  "TBD",
+			Short: "Validate a specific template",
+			//Long:  "TBD",
 
-		Args: cobra.ExactArgs(1),
+			Args: cobra.ExactArgs(1),
 
-		Run: executeTemplateValidate,
-	}
-	templateCmd.AddCommand(templateValidateCmd)
+			Run: executeTemplateValidate,
+		}
+		templateCmd.AddCommand(templateValidateCmd)
+	*/
 
-	templateUpdateCmd := &cobra.Command{
-		Use:     "update",
-		Aliases: []string{"u"},
+	/*
+		templateUpdateCmd := &cobra.Command{
+			Use:     "update",
+			Aliases: []string{"u"},
 
-		Short: "Update the locally available templates",
-		Long:  "Update the locally available templates with the latest templates from the central github repository",
+			Short: "Update the locally available templates",
+			Long:  "Update the locally available templates with the latest templates from the central github repository",
 
-		Run: executeTemplateUpdate,
-	}
-	templateCmd.AddCommand(templateUpdateCmd)
+			Run: executeTemplateUpdate,
+		}
+		templateCmd.AddCommand(templateUpdateCmd)
+	*/
 
 	return templateCmd
 }
