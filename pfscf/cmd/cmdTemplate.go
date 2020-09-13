@@ -48,6 +48,19 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 	}
 	templateCmd.AddCommand(templateDescribeCmd)
 
+	templateSearchCmd := &cobra.Command{
+		Use:     "search <search term>",
+		Aliases: []string{"s"},
+
+		Short: "Search for templates",
+		Long:  "Search for specific templates by listing all templates where the id or description match the provided search term. The search is case-insensitive.",
+
+		Args: cobra.MinimumNArgs(1),
+
+		Run: executeTemplateSearch,
+	}
+	templateCmd.AddCommand(templateSearchCmd)
+
 	/*
 		templateValidateCmd := &cobra.Command{
 			Use:     "validate <template>",
@@ -100,6 +113,18 @@ func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 
 	fmt.Printf("Template '%v'\n\n", templateName)
 	fmt.Printf(ct.DescribeParams(cfg.Global.Verbose))
+}
+
+func executeTemplateSearch(cmd *cobra.Command, args []string) {
+	ts, err := template.GetStore()
+	utils.ExitOnError(err, "Could not read templates")
+
+	if matchDesc, foundMatch := ts.SearchForTemplates(args...); foundMatch {
+		fmt.Printf("Matching Templates:\n")
+		fmt.Println(matchDesc)
+	} else {
+		fmt.Println("Found no matching templates")
+	}
 }
 
 func executeTemplateValidate(cmd *cobra.Command, args []string) {

@@ -207,3 +207,40 @@ func (store *Store) listTemplatesInheritingFrom(parentID string) (result []strin
 
 	return result
 }
+
+// SearchForTemplates takes one or multiple keywords and searches for templates
+// where all these keywords are included in the description or the id.
+// The search is case-insensitive.
+// Result is returned as multi-line string.
+func (store *Store) SearchForTemplates(keywords ...string) (result string, foundMatch bool) {
+	if len(keywords) == 0 {
+		return "No keywords provided", false
+	}
+
+	// convert all keywords to lower-case
+	lowerKW := make([]string, 0)
+	for _, kw := range keywords {
+		lowerKW = append(lowerKW, strings.ToLower(kw))
+	}
+
+	var sb strings.Builder
+	foundSomething := false
+	for key, template := range *store {
+		if termsContainAllKeywords(strings.ToLower(key), strings.ToLower(template.Description), lowerKW...) {
+			foundSomething = true
+			fmt.Fprintf(&sb, "- %v: %v\n", template.ID, template.Description)
+		}
+	}
+
+	return sb.String(), foundSomething
+}
+
+func termsContainAllKeywords(termA, termB string, keywords ...string) bool {
+	for _, kw := range keywords {
+		if !strings.Contains(termA, kw) && !strings.Contains(termB, kw) {
+			return false
+		}
+	}
+
+	return true
+}
