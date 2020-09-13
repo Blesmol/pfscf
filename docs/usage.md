@@ -4,6 +4,7 @@
 * [Installation](#installation)
 * [Quickstart](#quickstart)
 * [Filling Out a Single Chronicle](#filling-out-a-single-chronicle)
+* [Filling Out Multiple Chronicles](#filling-out-multiple-chronicles)
 * [Finding the Right Chronicle Template](#finding-the-right-chronicle-template)
 * [Extracting a Chronicle PDF from a Scenario](#extracting-a-chronicle-pdf-from-a-scenario)
 * [Troubleshooting](#troubleshooting)
@@ -61,6 +62,44 @@ Worked so far? Great, you've created your first filled chronicle using `pfscf`! 
 
 Now you probably want to add some more stuff than just the things shown in the example above. To get the complete list of supported values for a specific chronicle, please call `pfscf template describe <template>`. This will display a list of all the supported parameters that you can use to fill out your chronicle. If you use a specialized chronicle template, e.g. template `pfs2.s1-06` from above, instead of the more generic templates like `pfs2`, you might get additional options, e.g. for striking out specific boons or other scenario-specific content.
 
+## Filling Out Multiple Chronicles
+
+To fill out multiple chronicles in one go, e.g. to create all chronicles for a single game session, a batch mode is included. Using this mode is (I hope) rather easy and consists of two steps that are described below.
+
+### Create a CSV File Out of a Chronicle Template
+
+First you have to create a CSV file (CSV: Comma-separated values) for the chronicle template that you want to use. If you do not yet know which chronicle template to use, have a look at [this section](#finding-the-right-chronicle-template).
+
+CSV was selected here because then you can then easily use other programs like Excel or LibreOffice Calc to open this file and modify it. If you have one of the listed programs, chances are good that all you have to do is double-click on the CSV file and the correct program will open up automatically. Of course it is also possible to modify the CSV file with any texteditor of your choice.
+
+You can create a CSV file for a specific scenario with the `pfscf batch create <template> <outputFile>` command.
+```
+$ pfscf batch create pfs2.s1-06 mySession.csv
+```
+
+The resulting CSV file will contain entries for all parameters supported by the selected chronicle template, like player name, society id and scenario-specific boons if they are already supported. It includes columns for up to 7 players, but you can easily add or remove columns here.
+
+If you want to have some parameters already prefilled, you can provide additional arguments during CSV creation:
+```
+$ pfscf batch create pfs2.s1-06 mySession.csv event="PaizoCon" date=2020-09-12" gm="J. Doe" gmid="123456"
+```
+
+### Creating Filled Chronicles From a CSV File
+
+So now you have already created a CSV file that contains information about your players, and now want to use that to fill out chronicles, one for each player? Great, thats what I'm talking about! For this there is the `pfscf batch fill` command, or short `pfscf b f`. The complete command with arguments is ` pfscf batch fill <template> <csv_file> <input_pdf> <output_dir> [<param_id>=<value> ...]`. An example call looks as follows:
+
+```
+$ pfscf batch fill pfs2.s1-06 mySession.csv s106_blank.pdf outputDir
+Creating file outputDir\Chronicle_Player_1.pdf
+Creating file outputDir\Chronicle_Player_2.pdf
+Creating file outputDir\Chronicle_Player_3.pdf
+Creating file outputDir\Chronicle_Player_4.pdf
+Creating file outputDir\Chronicle_Player_5.pdf
+Creating file outputDir\Chronicle_Player_6.pdf
+Creating file outputDir\Chronicle_Player_7.pdf
+```
+
+This would then create one file per player in the specified output directory. In the example, you would have files `outputDir/Chronicle_Player_1.pdf` to `outputDir/Chronicle_Player_7.pdf`. Chronicles will only be generated if at least one value is set in the CSV file for that player.
 
 ## Finding the Right Chronicle Template
 
