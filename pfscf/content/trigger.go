@@ -12,12 +12,12 @@ const (
 
 type trigger struct {
 	Trigger string
-	Content Store
+	Content ListStore
 }
 
 func newTrigger() *trigger {
 	var ce trigger
-	ce.Content = NewStore()
+	ce.Content = NewListStore()
 	return &ce
 }
 

@@ -6,28 +6,28 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 )
 
-// Store stores a list of parameter descriptions
-type Store []Entry
+// ListStore stores a list of parameter descriptions
+type ListStore []Entry
 
-// NewStore creates a new store.
-func NewStore() (s Store) {
-	s = make(Store, 0)
+// NewListStore creates a new store.
+func NewListStore() (s ListStore) {
+	s = make(ListStore, 0)
 	return s
 }
 
-func (store *Store) add(entry Entry) {
+func (store *ListStore) add(entry Entry) {
 	*store = append(*store, entry)
 }
 
 // InheritFrom copies over entries from another Store.
-func (store *Store) InheritFrom(other Store) {
+func (store *ListStore) InheritFrom(other ListStore) {
 	for _, otherEntry := range other {
 		store.add(otherEntry.deepCopy())
 	}
 }
 
 // Resolve resolves preset requirements for all entries in the ContentStore
-func (store *Store) Resolve(ps preset.Store) (err error) {
+func (store *ListStore) Resolve(ps preset.Store) (err error) {
 	for _, entry := range *store {
 		if err := entry.resolve(ps); err != nil {
 			return err
@@ -37,8 +37,8 @@ func (store *Store) Resolve(ps preset.Store) (err error) {
 	return nil
 }
 
-// UnmarshalYAML unmarshals a Content Store
-func (store *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+// UnmarshalYAML unmarshals a Content List Store
+func (store *ListStore) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	type storeYAML []entryYAML
 
 	sy := make(storeYAML, 0)
@@ -48,7 +48,7 @@ func (store *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 		return err
 	}
 
-	*store = NewStore()
+	*store = NewListStore()
 	for _, ey := range sy {
 		store.add(ey.e)
 	}
@@ -57,7 +57,7 @@ func (store *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 }
 
 // GenerateOutput generates the output for the current content store into the provided stamp
-func (store *Store) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (err error) {
+func (store *ListStore) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (err error) {
 	for _, entry := range *store {
 		if err = entry.generateOutput(stamp, argStore); err != nil {
 			return err
@@ -69,7 +69,7 @@ func (store *Store) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (er
 // IsValid validates whether all content entries are valid. This means, e.g., that
 // the already contain all required values. Thus this should only be called after
 // the store was resolved.
-func (store *Store) IsValid() (err error) {
+func (store *ListStore) IsValid() (err error) {
 	for _, entry := range *store {
 		if err = entry.isValid(); err != nil {
 			return err
@@ -78,8 +78,8 @@ func (store *Store) IsValid() (err error) {
 	return nil
 }
 
-func (store *Store) deepCopy() (copy Store) {
-	copy = NewStore()
+func (store *ListStore) deepCopy() (copy ListStore) {
+	copy = NewListStore()
 	for _, entry := range *store {
 		copy.add(entry.deepCopy())
 	}

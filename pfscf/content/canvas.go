@@ -15,13 +15,13 @@ const (
 type canvas struct {
 	X, Y    float64
 	X2, Y2  float64
-	Content Store
+	Content ListStore
 	Presets []string
 }
 
 func newCanvas() *canvas {
 	var ce canvas
-	ce.Content = NewStore()
+	ce.Content = NewListStore()
 	ce.Presets = make([]string, 0)
 	return &ce
 }
