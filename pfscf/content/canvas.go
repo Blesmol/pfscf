@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 )
@@ -28,7 +29,7 @@ func newCanvas() *canvas {
 
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce *canvas) isValid() (err error) {
+func (ce *canvas) isValid(paramStore *param.Store) (err error) {
 	err = checkFieldsAreInRange(ce, "X", "Y", "X2", "Y2")
 	if err != nil {
 		return contentValErr(ce, err)
@@ -44,7 +45,7 @@ func (ce *canvas) isValid() (err error) {
 		return contentValErr(ce, err)
 	}
 
-	return ce.Content.IsValid()
+	return ce.Content.IsValid(paramStore)
 }
 
 // resolve the presets for this content object.
@@ -69,11 +70,6 @@ func (ce *canvas) resolve(ps preset.Store) (err error) {
 
 // generateOutput generates the output for this canvas object.
 func (ce *canvas) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
-	err = ce.isValid()
-	if err != nil {
-		return err
-	}
-
 	s.AddCanvas(ce.X, ce.Y, ce.X2, ce.Y2)
 	defer s.RemoveCanvas()
 

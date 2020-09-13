@@ -3,6 +3,7 @@ package content
 import (
 	"testing"
 
+	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 )
@@ -26,12 +27,13 @@ func getTextCellWithDummyData(presets ...string) (tc *textCell) {
 }
 
 func TestTextCell_IsValid(t *testing.T) {
+	paramStore := param.NewStore()
 	t.Run("errors", func(t *testing.T) {
 		t.Run("missing value", func(t *testing.T) {
 			tc := getTextCellWithDummyData()
 			tc.Font = "" // "Unset" one required value
 
-			err := tc.isValid()
+			err := tc.isValid(&paramStore)
 			test.ExpectError(t, err, "Missing value", "Font")
 		})
 
@@ -39,7 +41,7 @@ func TestTextCell_IsValid(t *testing.T) {
 			tc := getTextCellWithDummyData()
 			tc.Y2 = 101.0
 
-			err := tc.isValid()
+			err := tc.isValid(&paramStore)
 			test.ExpectError(t, err, "out of range", "Y2")
 		})
 
@@ -47,7 +49,7 @@ func TestTextCell_IsValid(t *testing.T) {
 			tc := getTextCellWithDummyData()
 			tc.X2 = tc.X
 
-			err := tc.isValid()
+			err := tc.isValid(&paramStore)
 			test.ExpectError(t, err, "Coordinates for X axis are equal")
 		})
 
@@ -55,7 +57,7 @@ func TestTextCell_IsValid(t *testing.T) {
 			tc := getTextCellWithDummyData()
 			tc.Y2 = tc.Y
 
-			err := tc.isValid()
+			err := tc.isValid(&paramStore)
 			test.ExpectError(t, err, "Coordinates for Y axis are equal")
 		})
 	})
@@ -64,7 +66,7 @@ func TestTextCell_IsValid(t *testing.T) {
 		tc := getTextCellWithDummyData()
 		tc.X = 0.0 // set something to "zero", which is also acceptable
 
-		err := tc.isValid()
+		err := tc.isValid(&paramStore)
 		test.ExpectNoError(t, err)
 	})
 }
@@ -104,16 +106,6 @@ func TestTextCell_generateOutput(t *testing.T) {
 	testArgName := "someId"
 	testArgValue := "foobar"
 	as := getTestArgStore(testArgName, testArgValue)
-
-	t.Run("errors", func(t *testing.T) {
-		t.Run("invalid content object", func(t *testing.T) {
-			tc := getTextCellWithDummyData()
-			tc.Value = "" // unset value, making this textCell invalid
-
-			err := tc.generateOutput(stamp, as)
-			test.ExpectError(t, err, "Missing value", "Value")
-		})
-	})
 
 	t.Run("valid", func(t *testing.T) {
 		tc := getTextCellWithDummyData()

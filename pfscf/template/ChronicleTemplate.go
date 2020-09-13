@@ -199,7 +199,7 @@ func (ct *ChronicleTemplate) IsValid() (err error) {
 		return templateErr(ct, err)
 	}
 
-	if err = ct.Content.IsValid(); err != nil {
+	if err = ct.Content.IsValid(&ct.Parameters); err != nil {
 		return templateErr(ct, err)
 	}
 

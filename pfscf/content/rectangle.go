@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 	"github.com/Blesmol/pfscf/pfscf/utils"
@@ -33,7 +34,7 @@ func newRectangle() *rectangle {
 
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce *rectangle) isValid() (err error) {
+func (ce *rectangle) isValid(paramStore *param.Store) (err error) {
 	err = checkFieldsAreSet(ce, "Color")
 	if err != nil {
 		return contentValErr(ce, err)
@@ -92,11 +93,6 @@ func (ce *rectangle) resolve(ps preset.Store) (err error) {
 
 // generateOutput generates the output for this textCell object.
 func (ce *rectangle) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
-	err = ce.isValid()
-	if err != nil {
-		return err
-	}
-
 	r, g, b, err := parseColor(ce.Color)
 	if err != nil {
 		return err

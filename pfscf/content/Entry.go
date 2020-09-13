@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 	"github.com/Blesmol/pfscf/pfscf/utils"
@@ -18,7 +19,7 @@ var (
 
 // Entry is an interface for the content. D'oh!
 type Entry interface {
-	isValid() (err error)
+	isValid(*param.Store) (err error)
 	resolve(ps preset.Store) (err error)
 	generateOutput(s *stamp.Stamp, as *args.Store) (err error)
 	deepCopy() Entry

@@ -2,6 +2,7 @@ package content
 
 import (
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 )
@@ -21,12 +22,12 @@ func newTrigger() *trigger {
 	return &ce
 }
 
-func (ce *trigger) isValid() (err error) {
+func (ce *trigger) isValid(paramStore *param.Store) (err error) {
 	err = checkFieldsAreSet(ce, "Trigger")
 	if err != nil {
 		return contentValErr(ce, err)
 	}
-	return ce.Content.IsValid()
+	return ce.Content.IsValid(paramStore)
 }
 
 // resolve the presets for this content object.
@@ -36,11 +37,6 @@ func (ce *trigger) resolve(ps preset.Store) (err error) {
 
 // generateOutput generates the output for this textCell object.
 func (ce *trigger) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
-	err = ce.isValid()
-	if err != nil {
-		return err
-	}
-
 	// will be triggered by any non-nil value
 	value := getValue(ce.Trigger, as)
 	if value == nil {

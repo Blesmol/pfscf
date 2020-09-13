@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 )
@@ -32,7 +33,7 @@ func newTextCell() *textCell {
 
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce *textCell) isValid() (err error) {
+func (ce *textCell) isValid(paramStore *param.Store) (err error) {
 	err = checkFieldsAreSet(ce, "Value", "Font", "Fontsize")
 	if err != nil {
 		return contentValErr(ce, err)
@@ -78,11 +79,6 @@ func (ce *textCell) resolve(ps preset.Store) (err error) {
 
 // generateOutput generates the output for this textCell object.
 func (ce *textCell) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
-	err = ce.isValid()
-	if err != nil {
-		return err
-	}
-
 	value := getValue(ce.Value, as)
 	if value == nil {
 		return nil // nothing to do here...

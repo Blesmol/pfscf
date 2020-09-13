@@ -2,6 +2,7 @@ package content
 
 import (
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 )
@@ -69,9 +70,9 @@ func (store *ListStore) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store)
 // IsValid validates whether all content entries are valid. This means, e.g., that
 // the already contain all required values. Thus this should only be called after
 // the store was resolved.
-func (store *ListStore) IsValid() (err error) {
+func (store *ListStore) IsValid(paramStore *param.Store) (err error) {
 	for _, entry := range *store {
-		if err = entry.isValid(); err != nil {
+		if err = entry.isValid(paramStore); err != nil {
 			return err
 		}
 	}
