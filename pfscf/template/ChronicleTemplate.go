@@ -32,7 +32,7 @@ type ChronicleTemplate struct {
 	Aspectratio string
 	Parameters  param.Store
 	Presets     preset.Store
-	Content     content.Store
+	Content     content.ListStore
 
 	filename string // filename of the originating yaml file
 }
@@ -64,7 +64,7 @@ func (ct *ChronicleTemplate) ensureStoresAreInitialized() {
 		ct.Presets = preset.NewStore()
 	}
 	if ct.Content == nil {
-		ct.Content = content.NewStore()
+		ct.Content = content.NewListStore()
 	}
 }
 

@@ -12,10 +12,10 @@ func TestStore_InheritFrom(t *testing.T) {
 		tc.X = 1.0
 		tc.Presets = []string{"foo", "bar"}
 
-		s1 := NewStore()
+		s1 := NewListStore()
 		s1.add(&tc)
 
-		s2 := NewStore()
+		s2 := NewListStore()
 		s2.InheritFrom(s1)
 
 		tcStore1 := s1[0].(*textCell)
