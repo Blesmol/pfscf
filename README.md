@@ -2,9 +2,11 @@
 
 The "Pathfinder Society Chronicle Filler" (or short: pfscf) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle sheets for the Pathfinder and Starfinder Roleplaying Games from [Paizo Inc](https://paizo.com).
 
-You can download the program in the [Releases section](https://github.com/Blesmol/pfscf/releases).
+You can download the program in the [Releases section](https://github.com/Blesmol/pfscf/releases). The downloaded archives should be extracted into a new directory. For details, please have a look at the [installation instructions](docs/usage.md#installation).
 
-## Usage
+## Short Usage Overview
+
+For detailed instructions on how to use this, have a look at the [Usage documentation](docs/usage.md).
 
 ```
 $ pfscf
@@ -32,60 +34,12 @@ Filling out a single Pathfinder/Starfinder Society chronicle sheet can be done w
 
 #### Example Call
 ```
-$ pfscf fill pfs2 s103_chronicle.pdf s103_for_bob.pdf player=Bob char="The Bobbynator" xp=4
+$ pfscf fill pfs2 s103_blank_chronicle.pdf s103_for_bob.pdf player=Bob char="The Bobbynator" xp=4
 ```
-
-#### Proper explanation
-
-```
-$ pfscf fill -h
-Fill a single chronicle sheet with parameters provided on the command line.
-
-Usage:
-  pfscf fill <template> <infile> <outfile> [flags]
-
-Flags:
-  -c, --cellBorder   Draw the cell borders of all added fields
-  -g, --grid         Draw a coordinate grid on the output file
-  -h, --help         help for fill
-```
-
-Required arguments:
-* `<template>`: The name of the template to use. The template defines what you can put on the chronicle and where it is put.
-* `<infile>`: The name of the input PDF file. This should be a single-paged PDF file that contains a chronicle sheet from a Pathfinder Society scenario.
-* `<outfile>`: The file to which the finished chronicle should be saved.
-
-After the required arguments, you need to provide info on what should go into the chronicle. This is done by providing key/value pairs with format `<key>=<value>`.
-
-Currently, the following keys are supported for config `pfs2`:
-* `player`: Player name
-* `char`: Character name
-* `societyid`: Pathfinder Society ID, e.g. `123456-2001`
-* `xp`: Experience Points
-* `gp`: Gold Pieces
-* `dj`: Dayjob / Income
-* `fame`: Fame
-* `event`: Name of the PFS event
-* `code`: Event code
-* `date`: The date on which the session occurred
-* `gm`: Name / Signature of the Gamemaster
-* `gmid`: PFS Player ID of the Gamemaster
-* `fac1name`: Name of faction 1
-* `fac1rep`: Reputation for faction 1
-* `fac2name`: Name of faction 2
-* `fac2rep`: Reputation for faction 2
-* `fac3name`: Name of faction 3
-* `fac3rep`: Reputation for faction 3
-
-You can always get the complete list for a template by calling `pfscf template describe <template>`
-
-### Fill out multiple chronicles (e.g. for a complete group)
-
-There is a batch mode for this where you can first create a csv file out of a chronicle (`pfscf batch create pfs2 mySession.csv`, open the csv file with, e.g., Excel, LibreOffice or any text editor, provide the details for the group, and then generate a bunch of filled-out chronicles with one run (`pfscf batch fill pfs2 mySession.csv myEmptySheet.pdf outputDir/`).
 
 ### Writing your own templates
 
-Please see the [Documentation on writing your own templates](docs/templates.md)
+Please see the [Documentation on writing your own templates](docs/templates.md). **This documentation is currently outdated and needs some serious rework! In case you are still interested, have a look at the existing templates in the `templates/` subdir**
 
 ## FAQ
 
