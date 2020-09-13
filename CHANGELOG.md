@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Release now includes a batch file that, when executed via clicking from windows explorer, will open a cmd prompt in the current directory. This should make it easier for windows users to use a command line application like pfscf.
 
 ### Changed
 - Releases for macOS now have "macOS" in their name instead of "Darwin" for clarification"
