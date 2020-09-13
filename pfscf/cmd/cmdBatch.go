@@ -130,6 +130,7 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 		baseOutfile := fmt.Sprintf("Chronicle_Player_%d.pdf", playerNumber)
 		outfile := filepath.Join(outDir, baseOutfile)
 
+		fmt.Printf("Creating file %v\n", outfile)
 		err = pdf.Fill(cmdLineArgStore, cTmpl, outfile)
 		utils.ExitOnError(err, "Error when filling out chronicle for player %d", playerNumber)
 	}
