@@ -48,29 +48,46 @@ func GetTemplateCommand() (cmd *cobra.Command) {
 	}
 	templateCmd.AddCommand(templateDescribeCmd)
 
-	templateValidateCmd := &cobra.Command{
-		Use:     "validate <template>",
-		Aliases: []string{"v"},
+	templateSearchCmd := &cobra.Command{
+		Use:     "search <search term>",
+		Aliases: []string{"s"},
 
-		Short: "Validate a specific template",
-		//Long:  "TBD",
+		Short: "Search for templates",
+		Long:  "Search for specific templates by listing all templates where the id or description match the provided search term. The search is case-insensitive.",
 
-		Args: cobra.ExactArgs(1),
+		Args: cobra.MinimumNArgs(1),
 
-		Run: executeTemplateValidate,
+		Run: executeTemplateSearch,
 	}
-	templateCmd.AddCommand(templateValidateCmd)
+	templateCmd.AddCommand(templateSearchCmd)
 
-	templateUpdateCmd := &cobra.Command{
-		Use:     "update",
-		Aliases: []string{"u"},
+	/*
+		templateValidateCmd := &cobra.Command{
+			Use:     "validate <template>",
+			Aliases: []string{"v"},
 
-		Short: "Update the locally available templates",
-		Long:  "Update the locally available templates with the latest templates from the central github repository",
+			Short: "Validate a specific template",
+			//Long:  "TBD",
 
-		Run: executeTemplateUpdate,
-	}
-	templateCmd.AddCommand(templateUpdateCmd)
+			Args: cobra.ExactArgs(1),
+
+			Run: executeTemplateValidate,
+		}
+		templateCmd.AddCommand(templateValidateCmd)
+	*/
+
+	/*
+		templateUpdateCmd := &cobra.Command{
+			Use:     "update",
+			Aliases: []string{"u"},
+
+			Short: "Update the locally available templates",
+			Long:  "Update the locally available templates with the latest templates from the central github repository",
+
+			Run: executeTemplateUpdate,
+		}
+		templateCmd.AddCommand(templateUpdateCmd)
+	*/
 
 	return templateCmd
 }
@@ -96,6 +113,18 @@ func executeTemplateDescribe(cmd *cobra.Command, args []string) {
 
 	fmt.Printf("Template '%v'\n\n", templateName)
 	fmt.Printf(ct.DescribeParams(cfg.Global.Verbose))
+}
+
+func executeTemplateSearch(cmd *cobra.Command, args []string) {
+	ts, err := template.GetStore()
+	utils.ExitOnError(err, "Could not read templates")
+
+	if matchDesc, foundMatch := ts.SearchForTemplates(args...); foundMatch {
+		fmt.Printf("Matching Templates:\n")
+		fmt.Println(matchDesc)
+	} else {
+		fmt.Println("Found no matching templates")
+	}
 }
 
 func executeTemplateValidate(cmd *cobra.Command, args []string) {
