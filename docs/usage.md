@@ -43,7 +43,7 @@ To fill out a chronicle, you will basically need to things to start:
   * `pfs2` for Pathfinder 2
   * `sfs` for Starfinder
   * Pathfinder 1 is not yet supported
-2. An empty chronicle to be filled. This should be in PDF format and contain only a single page. For information on how to create such a file if you have purchased and downloaded a scenario PDF file from Paizo, read the [section on how to extract a chronicle PDF](#extracting-a-chronicle-pdf-from-a-scenario).
+2. An empty chronicle to be filled. This should be in PDF format and consist of only a single page. For information on how to create such a file if you have purchased and downloaded a scenario PDF file from Paizo, read the [section on how to extract a chronicle PDF](#extracting-a-chronicle-pdf-from-a-scenario).
 
 Everything set so far? Good! Then we can get serious now... ok, lets do this!
 
@@ -59,7 +59,7 @@ pfscf fill pfs2 s103_blank.pdf s103_bob player=Bob char="The Bobbynator" society
 
 Worked so far? Great, you've created your first filled chronicle using `pfscf`! But if something did not go as expected, weird error messages coming up or the resulting PDF looks somehow wrong, then please have a look at section [Troubleshooting](#troubleshooting).
 
-Now you probably want to add some more stuff than just the things shown in the example above. To get the complete list of supported values for a specific chronicle, please call `pfscf template describe <template>`
+Now you probably want to add some more stuff than just the things shown in the example above. To get the complete list of supported values for a specific chronicle, please call `pfscf template describe <template>`. This will display a list of all the supported parameters that you can use to fill out your chronicle. If you use a specialized chronicle template, e.g. template `pfs2.s1-06` from above, instead of the more generic templates like `pfs2`, you might get additional options, e.g. for striking out specific boons or other scenario-specific content.
 
 
 ## Finding the Right Chronicle Template
