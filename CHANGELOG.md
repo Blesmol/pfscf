@@ -5,17 +5,24 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- Release now includes a batch file that, when executed via clicking from windows explorer, will open a cmd prompt in the current directory. This should make it easier for windows users to use a command line application like pfscf.
-- New subcommand `template search` to search for templates based on search terms.
-- New content type `choice` for things like choosing the subtier
 
 ### Changed
-- Releases for macOS now have "macOS" in their name instead of "Darwin" for clarification
 
 ### Removed
 
 ### Fixed
 
+## v0.9.2 - 2020-09-13
+
+### Added
+- Release now includes a batch file that, when executed via clicking from windows explorer, will open a cmd prompt in the current directory. This should make it easier for windows users to use a command line application like pfscf.
+- New subcommand `template search` to search for templates based on search terms.
+- New content type `choice` for things like choosing the subtier
+- New and improved documentation on usage
+
+### Changed
+- Releases for macOS now have "macOS" in their name instead of "Darwin" for clarification
+ 
 ## v0.9.1 - 2020-09-11
 
 ### Added
