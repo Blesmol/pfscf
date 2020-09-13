@@ -65,7 +65,8 @@ func (s *Stamp) GetDimensions() (x, y float64) {
 // AddCanvas adds another canvas to set a smaller canvas on this stamp.
 func (s *Stamp) AddCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) {
 	if s.shouldDrawCellBorder() {
-		s.DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct, "D", 0, 255, 0, 0, 0, 0)
+		s.DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct, "D", 0, 255, 0, 0, 0, 0, 1.0)
+		s.pdf.GetAlpha()
 	}
 	s.canvas = s.canvas.getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct)
 }
@@ -131,8 +132,12 @@ func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fon
 }
 
 // DrawRectangle draws a rectangle on the stamp.
-func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, style string, dr, dg, db int, fr, fg, fb int) {
+func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, style string, dr, dg, db int, fr, fg, fb int, opacity float64) {
 	xPt, yPt, wPt, hPt := s.canvas.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
+
+	oldAlpha, oldBlendMode := s.pdf.GetAlpha()
+	s.pdf.SetAlpha(opacity, "Normal")
+	defer s.pdf.SetAlpha(oldAlpha, oldBlendMode)
 
 	s.pdf.SetDrawColor(dr, dg, db)
 	s.pdf.SetFillColor(fr, fg, fb)

@@ -21,6 +21,7 @@ type rectangle struct {
 	X, Y    float64
 	X2, Y2  float64
 	Color   string
+	Opacity float64 // TODO convert to ptr
 	Presets []string
 }
 
@@ -57,6 +58,11 @@ func (ce *rectangle) isValid() (err error) {
 		return contentValErr(ce, err)
 	}
 
+	if ce.Opacity < 0.0 || ce.Opacity > 1.0 {
+		err = fmt.Errorf("Opacity value outside of range 0.0 to 1.0: %v", ce.Opacity)
+		return contentValErr(ce, err)
+	}
+
 	return nil
 }
 
@@ -76,6 +82,11 @@ func (ce *rectangle) resolve(ps preset.Store) (err error) {
 		}
 	}
 
+	// defaults
+	if !utils.IsSet(ce.Opacity) {
+		ce.Opacity = 1.0
+	}
+
 	return nil
 }
 
@@ -91,7 +102,7 @@ func (ce *rectangle) generateOutput(s *stamp.Stamp, as *args.Store) (err error) 
 		return err
 	}
 
-	s.DrawRectangle(ce.X, ce.Y, ce.X2, ce.Y2, "F", 0, 0, 0, r, g, b)
+	s.DrawRectangle(ce.X, ce.Y, ce.X2, ce.Y2, "F", 0, 0, 0, r, g, b, ce.Opacity)
 
 	return nil
 }

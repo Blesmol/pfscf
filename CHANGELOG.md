@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Content type `rectangle` now has a new field `opacity` to allow semi-transparent regions. Accepted values are from 0.0 (0%, transparent) to 1.0 (100%, fully opaque).
 
 ### Changed
 
