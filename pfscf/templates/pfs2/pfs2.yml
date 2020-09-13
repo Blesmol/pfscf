@@ -93,6 +93,11 @@ parameters:
     description: Faction 3 Reputation points
     example: 4
 
+  tier:
+    type: text
+    description: "Players' tier ('low' or 'high')"
+    example: low
+
 presets:
   defaultfont:
     font: Helvetica
@@ -149,6 +154,19 @@ presets:
   facline3:
     presets: [factions]
     y:  19.1
+
+  middleboxposx:
+    x:   8.2
+    x2: 76.2
+
+  middleboxposy:
+    y:  48.5
+    y2: 80.9
+
+  items:
+    x:   0.5
+    x2: 38.0
+    color: white
 
 content:
   - value: param:player
@@ -271,3 +289,20 @@ content:
   - value: param:fac3rep
     type: textCell
     presets: [faccol2, facline3]
+
+  - type: canvas
+    presets: [middleboxposx, middleboxposy]
+    content:
+      - type: choice
+        choice: param:tier
+        content:
+          low:
+            type: rectangle
+            presets: [items]
+            y:  51.0
+            y2: 99.0
+          high:
+            type: rectangle
+            presets: [items]
+            y:   1.0
+            y2: 49.0
