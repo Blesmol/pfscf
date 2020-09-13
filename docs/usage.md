@@ -64,9 +64,38 @@ Now you probably want to add some more stuff than just the things shown in the e
 
 ## Finding the Right Chronicle Template
 
-Short version: Call `pfscf template list` and have a look at the resulting list
+To find the right template for your chronicle, you can basically do two things: Display the complete list of supported templates, or use the builtin search function to search for a specific template
 
-TBD
+### Display list of templates
+
+To display the complete list of supported templates, execute command `pfscf template list` (or short: `pfscf t l`)
+```
+$ pfscf template list
+List of available templates:
+
+- pfs2: Pathfinder 2 Society Chronicle
+  - pfs2.quests: PFS2 Quests
+    - pfs2.q01: Quest #01: The Sandstone Secret
+	[...]
+  - pfs2.s1: PFS2 Season 1: Year of the Open Road
+    - pfs2.s1-00: #1-00: Origin of the Open Road
+    - pfs2.s1-01: #1-01: The Absalom Initiation
+	[...]
+  - pfs2.specials: Specials
+    - pfs2.littleTrouble: Little Trouble in Big Absalom
+- sfs: Starfinder Society Chronicle
+```
+
+### Search for template
+
+To search for a specific template, you can use the command `pfscf template search <search terms>` (or short: `pfscf t s <search terms>`). This will display all chronicle templates where all of the terms appear in the template description and template id. The search is case-insensitive.
+```
+$ pfscf template search star pfs2
+Matching Templates:
+- pfs2.s1-09: #1-09: Star-Crossed Voyages
+- pfs2.s1-24: #1-24: Lightning Strikes, Stars Fall
+- pfs2.s1-23: #1-23: The Star-Crossed Court
+```
 
 ## Extracting a Chronicle PDF from a Scenario
 
