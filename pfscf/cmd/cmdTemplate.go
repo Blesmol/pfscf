@@ -121,7 +121,7 @@ func executeTemplateSearch(cmd *cobra.Command, args []string) {
 
 	if matchDesc, foundMatch := ts.SearchForTemplates(args...); foundMatch {
 		fmt.Printf("Matching Templates:\n")
-		fmt.Println(matchDesc)
+		fmt.Print(matchDesc)
 	} else {
 		fmt.Println("Found no matching templates")
 	}
