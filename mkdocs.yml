@@ -1,0 +1,6 @@
+site_name: The Pathfinder Society Chronicle Filler
+theme: material
+nav:
+  - usage.md
+  - templates.md
+ 
