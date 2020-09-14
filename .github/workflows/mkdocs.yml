@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - doc
     paths:
       - 'docs/**'
 jobs:
