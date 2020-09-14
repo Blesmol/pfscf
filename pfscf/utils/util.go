@@ -260,3 +260,49 @@ func OpenWithDefaultViewer(file string) (err error) {
 
 	return err
 }
+
+// GenericFieldsCheck provides a generic way to check multiple fields of a struct at once.
+func GenericFieldsCheck(obj interface{}, isOk func(interface{}) bool, fieldNames ...string) (err error) {
+	oVal := reflect.ValueOf(obj)
+	if oVal.Kind() == reflect.Ptr {
+		oVal = oVal.Elem()
+	}
+	Assert(oVal.Kind() == reflect.Struct, "Can only work on structs or pointers to structs")
+
+	errFields := make([]string, 0)
+	for _, fieldName := range fieldNames {
+		fieldVal := oVal.FieldByName(fieldName)
+		Assert(fieldVal.IsValid(), fmt.Sprintf("No field with name '%v' found in struct of type '%T'", fieldName, obj))
+
+		if !isOk(fieldVal.Interface()) {
+			errFields = append(errFields, fieldName)
+		}
+	}
+
+	if len(errFields) > 0 {
+		return fmt.Errorf("%v", errFields)
+	}
+	return nil
+}
+
+// CheckFieldsAreSet checks whether all provided struct fields have a non-zero value.
+func CheckFieldsAreSet(obj interface{}, fieldNames ...string) (err error) {
+	err = GenericFieldsCheck(obj, IsSet, fieldNames...)
+	if err != nil {
+		return fmt.Errorf("Missing values for the following fields: %v", err)
+	}
+	return nil
+}
+
+// CheckFieldsAreInRange checks that all provided struct fields are within a given range.
+func CheckFieldsAreInRange(obj interface{}, min, max float64, fieldNames ...string) (err error) {
+	isOk := func(obj interface{}) bool {
+		fObj := obj.(float64)
+		return fObj >= min && fObj <= max
+	}
+	err = GenericFieldsCheck(obj, isOk, fieldNames...)
+	if err != nil {
+		return fmt.Errorf("Values for the following fields are out of range %.2f-%.2f: %v", min, max, err)
+	}
+	return nil
+}

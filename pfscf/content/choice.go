@@ -5,6 +5,7 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 const (
@@ -24,7 +25,7 @@ func newChoice() *choice {
 
 func (ce *choice) isValid(paramStore *param.Store) (err error) {
 	// TODO arg paramStore to isValid to be able to validate against parameters
-	err = checkFieldsAreSet(ce, "Choice")
+	err = utils.CheckFieldsAreSet(ce, "Choice")
 	if err != nil {
 		return contentValErr(ce, err)
 	}

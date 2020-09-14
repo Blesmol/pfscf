@@ -7,6 +7,7 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 const (
@@ -30,7 +31,7 @@ func newCanvas() *canvas {
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
 func (ce *canvas) isValid(paramStore *param.Store) (err error) {
-	err = checkFieldsAreInRange(ce, "X", "Y", "X2", "Y2")
+	err = utils.CheckFieldsAreInRange(ce, 0.0, 100.0, "X", "Y", "X2", "Y2")
 	if err != nil {
 		return contentValErr(ce, err)
 	}

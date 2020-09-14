@@ -35,12 +35,12 @@ func newRectangle() *rectangle {
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
 func (ce *rectangle) isValid(paramStore *param.Store) (err error) {
-	err = checkFieldsAreSet(ce, "Color")
+	err = utils.CheckFieldsAreSet(ce, "Color")
 	if err != nil {
 		return contentValErr(ce, err)
 	}
 
-	err = checkFieldsAreInRange(ce, "X", "Y", "X2", "Y2")
+	err = utils.CheckFieldsAreInRange(ce, 0.0, 100.0, "X", "Y", "X2", "Y2")
 	if err != nil {
 		return contentValErr(ce, err)
 	}

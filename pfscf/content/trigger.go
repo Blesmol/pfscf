@@ -5,6 +5,7 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
+	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
 const (
@@ -23,7 +24,7 @@ func newTrigger() *trigger {
 }
 
 func (ce *trigger) isValid(paramStore *param.Store) (err error) {
-	err = checkFieldsAreSet(ce, "Trigger")
+	err = utils.CheckFieldsAreSet(ce, "Trigger")
 	if err != nil {
 		return contentValErr(ce, err)
 	}

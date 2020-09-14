@@ -30,49 +30,6 @@ func contentValErr(ce Entry, errIn error) (errOut error) {
 	return fmt.Errorf("Error validating content: %v; complete content entry is: %v", errIn, ce)
 }
 
-func genericFieldsCheck(obj interface{}, isOk func(interface{}) bool, fieldNames ...string) (err error) {
-	oVal := reflect.ValueOf(obj)
-	if oVal.Kind() == reflect.Ptr {
-		oVal = oVal.Elem()
-	}
-	utils.Assert(oVal.Kind() == reflect.Struct, "Can only work on structs or pointers to structs")
-
-	errFields := make([]string, 0)
-	for _, fieldName := range fieldNames {
-		fieldVal := oVal.FieldByName(fieldName)
-		utils.Assert(fieldVal.IsValid(), fmt.Sprintf("No field with name '%v' found in struct of type '%T'", fieldName, obj))
-
-		if !isOk(fieldVal.Interface()) {
-			errFields = append(errFields, fieldName)
-		}
-	}
-
-	if len(errFields) > 0 {
-		return fmt.Errorf("%v", errFields)
-	}
-	return nil
-}
-
-func checkFieldsAreSet(obj interface{}, fieldNames ...string) (err error) {
-	err = genericFieldsCheck(obj, utils.IsSet, fieldNames...)
-	if err != nil {
-		return fmt.Errorf("Missing values for the following fields: %v", err)
-	}
-	return nil
-}
-
-func checkFieldsAreInRange(obj interface{}, fieldNames ...string) (err error) {
-	isOk := func(obj interface{}) bool {
-		fObj := obj.(float64)
-		return fObj >= 0.0 && fObj <= 100.0
-	}
-	err = genericFieldsCheck(obj, isOk, fieldNames...)
-	if err != nil {
-		return fmt.Errorf("Values for the following fields are out of range: %v", err)
-	}
-	return nil
-}
-
 func fillPublicFieldsFromPreset(target interface{}, pe *preset.Entry, ignoredFields ...string) (err error) {
 	// assumption: target is pointer to struct
 	utils.Assert(reflect.ValueOf(target).Kind() == reflect.Ptr, "Target argument must be passed by ptr, as we modify it")
