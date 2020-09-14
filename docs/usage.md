@@ -128,16 +128,3 @@ Matching Templates:
 - pfs2.s1-23: #1-23: The Star-Crossed Court
 ```
 
-## Troubleshooting
-
-* **Problem: The values in the right sidebar (xp, credits/gold, ...) are misplaced**
-
-  **Answer:** Chronicles for different scenarios might have sidebars with a different size and thus need some minor adaptions to the template configuration. First check whether there already exists a specialized template for your scenario (`pfscf template list`) and try using that one. If this does not help, you could either [try to fix the configuration yourself](templates.md) or send me the chronicle via [email](mailto:github@pecebe.de) and I will see what I can do.
-
-* **Problem: All values on my chronicle are misplaced**
-
-  **Answer:** This can happen if your input chronicle PDF file has slightly different dimensions than expected. There is only so much that can be done for auto-correcting this on side of `pfscf`. The best advice that can be given at the moment is to have a look at section [Getting Blank Chronicle Sheets](extraction.md), follow the steps described there and see if that helps.
-
-* **Problem:**
-
-  **Answer:**
