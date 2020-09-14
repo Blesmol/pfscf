@@ -2,11 +2,13 @@
 
 The "Pathfinder Society Chronicle Filler" (or short: pfscf) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle sheets for the Pathfinder and Starfinder Roleplaying Games from [Paizo Inc](https://paizo.com).
 
-You can download the program in the [Releases section](https://github.com/Blesmol/pfscf/releases). The downloaded archives should be extracted into a new directory. For details, please have a look at the [installation instructions](docs/usage.md#installation).
+You can download the program in the [Releases section](https://github.com/Blesmol/pfscf/releases). The downloaded archives should be extracted into a new directory. For details, please have a look at the [installation instructions](https://blesmol.github.io/pfscf/installation/).
+
+The complete documentation for this project is stored [here](https://blesmol.github.io/pfscf/).
 
 ## Short Usage Overview
 
-For detailed instructions on how to use this, have a look at the [Usage documentation](docs/usage.md).
+For detailed instructions on how to use this, have a look at the [Usage documentation](https://blesmol.github.io/pfscf/usage/).
 
 ```
 $ pfscf
@@ -39,7 +41,7 @@ $ pfscf fill pfs2 s103_blank_chronicle.pdf s103_for_bob.pdf player=Bob char="The
 
 ### Writing your own templates
 
-Please see the [Documentation on writing your own templates](docs/templates.md). **This documentation is currently outdated and needs some serious rework! In case you are still interested, have a look at the existing templates in the `templates/` subdir**
+Please see the [Documentation on writing your own templates](https://blesmol.github.io/pfscf/templates/). **This documentation is currently outdated and needs some serious rework! In case you are still interested, have a look at the existing templates in the `templates/` subdir**
 
 ## FAQ
 
