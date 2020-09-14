@@ -410,6 +410,7 @@ content:
 Let's be honest from the beginning: Finding the correct coordinates for adding own content is always fiddly and a lot of try-and-error.
 However, there are a few ways to make life easier here.
 There are currently three options for the `pfscf fill` command to support finding the correct coordinates:
+
 * `--cellBorder` (short: `-c`)
 * `--exampleValues` (short: `-e`)
 * `--grid` (short: `-g`)
