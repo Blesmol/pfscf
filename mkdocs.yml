@@ -3,5 +3,6 @@ theme: material
 nav:
   - index.md
   - usage.md
+  - extraction.md
   - templates.md
  

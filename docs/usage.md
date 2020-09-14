@@ -9,7 +9,7 @@ The program itself is a command line application. This means that e.g. on Window
 ## Quickstart
 
 1. [Download the program](https://github.com/Blesmol/pfscf/releases) and extract into a new folder. For details see the [installation instructions](#installation).
-2. Get a blank society chronicle as single-paged PDF file. I'd suggest to follow the instructions in [this chapter](#extracting-a-chronicle-pdf-from-a-scenario). Put the resulting PDF page in the same directory to which you extracted `pfscf`.
+2. Get a blank society chronicle as single-paged PDF file. I'd suggest to follow [these instructions](extraction.md). Put the resulting PDF page in the same directory to which you extracted `pfscf`.
 3. Open a command line prompt / terminal in this directory. Can on windows be done by double-clicking the `openCmdHere.bat` file.
 4. Call the program to find whether your scenario is already explicitly supported, based on the scenario title. See the example below where we want to check for PFS2 scenario "#1-06: Lost on the Spirit Road"
    ```
@@ -31,11 +31,12 @@ The program itself is a command line application. This means that e.g. on Window
 ## Filling Out a Single Chronicle
 
 To fill out a chronicle, you will basically need to things to start:
+
 1. The ID of the template to use for filling the chronicle. Details can be found in [this section](#finding-the-right-chronicle-template), but when in doubt or you just want to get this going, simply use the following:
   * `pfs2` for Pathfinder 2
   * `sfs` for Starfinder
   * Pathfinder 1 is not yet supported
-2. An empty chronicle to be filled. This should be in PDF format and consist of only a single page. For information on how to create such a file if you have purchased and downloaded a scenario PDF file from Paizo, read the [section on how to extract a chronicle PDF](#extracting-a-chronicle-pdf-from-a-scenario).
+2. An empty chronicle to be filled. This should be in PDF format and consist of only a single page. For information on how to create such a file if you have purchased and downloaded a scenario PDF file from Paizo, read the [section on how to extract a chronicle PDF](extraction.md).
 
 Everything set so far? Good! Then we can get serious now... ok, lets do this!
 
@@ -127,29 +128,6 @@ Matching Templates:
 - pfs2.s1-23: #1-23: The Star-Crossed Court
 ```
 
-## Extracting a Chronicle PDF from a Scenario
-
-### Windows
-
-TBD using the windows PDF writer and Adobe Acrobat Reader
-
-Short step-by-step version for the moment
-1. Open scenario PDF using the Acrobat Reader
-2. Switch to last page that contains the chronicle
-3. Open print dialog
-4. Select printer "Microsoft Print to PDF"
-5. Select "Print pages: Current"
-6. Select "Fit"
-7. Print
-
-### MacOS
-
-TBD, thankful for tipps
-
-### Linux
-
-TBD, thankful for tipps
-
 ## Troubleshooting
 
 * **Problem: The values in the right sidebar (xp, credits/gold, ...) are misplaced**
@@ -158,7 +136,7 @@ TBD, thankful for tipps
 
 * **Problem: All values on my chronicle are misplaced**
 
-  **Answer:** This can happen if your input chronicle PDF file has slightly different dimensions than expected. There is only so much that can be done for auto-correcting this on side of `pfscf`. The best advice that can be given at the moment is to have a look at section [Extracting a Chronicle PDF from a Scenario](#extracting-a-chronicle-pdf-from-a-scenario), follow the steps described there and see if that helps.
+  **Answer:** This can happen if your input chronicle PDF file has slightly different dimensions than expected. There is only so much that can be done for auto-correcting this on side of `pfscf`. The best advice that can be given at the moment is to have a look at section [Getting Blank Chronicle Sheets](extraction.md), follow the steps described there and see if that helps.
 
 * **Problem:**
 
