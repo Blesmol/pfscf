@@ -5,22 +5,6 @@ Or you are just curious on what is currently supported by pfscf.
 Besides, it's always useful to provide proper documentation.
 Even if perhaps only for the reason to show that the weird behavior for something might be actually intended!
 
-## Table of Contents
-* [Template Structure on Disk](#template-structure-on-disk)
-* [Template File Format](#template-file-format)
-    * [YAML Format](#yaml-format)
-	* [File Layout](#file-layout)
-* [Content Types](#content-types)
-    * [Generic Content Entry Structure](#generic-content-entry-structure)
-	* [Type "textCell"](#type-textcell)
-    * [Type "societyId"](#type-societyid)
-* [Presets Mechanism](#presets-mechanism)
-* [Template Inheritance](#template-inheritance)
-* [Finding the Correct Coordinates](#finding-the-correct-coordinates)
-* [Other Formatting Options](#other-formatting-options)
-    * [Text Alignment](#text-alignment)
-	* [Fonts](#fonts)
-
 ## Template Structure on Disk
 
 The template files are stored in a folder `templates` that is located in the same folder as the pfscf executable file.
@@ -122,6 +106,7 @@ A content entry has a specific structure and set of fields.
 The different types listed below use only a subset of these fields.
 
 The available fields are as follows:
+
 | Field      | Description                                                                                              | Input type |
 |:-----------|:---------------------------------------------------------------------------------------------------------|:----------:|
 | `type`     | The name of the type of this content entry. The currently supported types are described below            | Text       |
@@ -473,6 +458,7 @@ The order of the alignment values does not matter, e.g. both `RT` and `TR` will 
 ### Fonts
 
 The list of fonts that can currently be used is as follows:
+
 * Arial
 * Courier
 * Helvetica

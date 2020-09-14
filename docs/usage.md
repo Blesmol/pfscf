@@ -1,14 +1,5 @@
 # Using Pfscf
 
-## Table of Contents
-* [Installation](#installation)
-* [Quickstart](#quickstart)
-* [Filling Out a Single Chronicle](#filling-out-a-single-chronicle)
-* [Filling Out Multiple Chronicles](#filling-out-multiple-chronicles)
-* [Finding the Right Chronicle Template](#finding-the-right-chronicle-template)
-* [Extracting a Chronicle PDF from a Scenario](#extracting-a-chronicle-pdf-from-a-scenario)
-* [Troubleshooting](#troubleshooting)
-
 ## Installation
 
 You can download the latest release from the [Releases section](https://github.com/Blesmol/pfscf/releases). Currently there are zipped packages for Windows, macOS/Darwin and Linux. Download the release for your currently used operating system and extract into a new folder. The important things in this directory are the `pfscf` executable and the `templates` directory. The executable is, of course, the program to run this whole thing, whereas the `templates` directory contains the configuration files for the chronicle sheets, so that the program knows what to print where on the resulting sheet.
