@@ -36,7 +36,7 @@ To fill out a chronicle, you will basically need to things to start:
   * Pathfinder 1 is not yet supported
 2. An empty chronicle to be filled. This should be in PDF format and consist of only a single page. For information on how to create such a file if you have purchased and downloaded a scenario PDF file from Paizo, read the [section on how to extract a chronicle PDF](extraction.md).
 
-Everything set so far? Good! Then we can get serious now... ok, lets do this!
+Everything set so far? Good! Then we can get serious now...
 
 To fill out a chronicle, you have to call `pfscf` with the `fill` command. The call in general looks as follows:
 ```
