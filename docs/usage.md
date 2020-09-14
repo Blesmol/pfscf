@@ -1,11 +1,5 @@
 # Using Pfscf
 
-## Installation
-
-You can download the latest release from the [Releases section](https://github.com/Blesmol/pfscf/releases). Currently there are zipped packages for Windows, macOS/Darwin and Linux. Download the release for your currently used operating system and extract into a new folder. The important things in this directory are the `pfscf` executable and the `templates` directory. The executable is, of course, the program to run this whole thing, whereas the `templates` directory contains the configuration files for the chronicle sheets, so that the program knows what to print where on the resulting sheet.
-
-The program itself is a command line application. This means that e.g. on Windows you have to use the Windows command prompt or the Windows PowerShell to run this. You should also find a file `openCmdHere.bat` in the installation directory that will on windows open a cmd prompt window in the directory where the program is installed.
-
 ## Quickstart
 
 1. [Download the program](https://github.com/Blesmol/pfscf/releases) and extract into a new folder. For details see the [installation instructions](#installation).
@@ -50,7 +44,7 @@ And here is an example on how an actual call could look like:
 pfscf fill pfs2 s103_blank.pdf s103_bob player=Bob char="The Bobbynator" societyid=123456-2001 xp=4
 ```
 
-Worked so far? Great, you've created your first filled chronicle using `pfscf`! But if something did not go as expected, weird error messages coming up or the resulting PDF looks somehow wrong, then please have a look at section [Troubleshooting](#troubleshooting).
+Worked so far? Great, you've created your first filled chronicle using `pfscf`! But if something did not go as expected, weird error messages coming up or the resulting PDF looks somehow wrong, then please have a look at section [Troubleshooting](troubleshooting.md).
 
 Now you probably want to add some more stuff than just the things shown in the example above. To get the complete list of supported values for a specific chronicle, please call `pfscf template describe <template>`. This will display a list of all the supported parameters that you can use to fill out your chronicle. If you use a specialized chronicle template, e.g. template `pfs2.s1-06` from above, instead of the more generic templates like `pfs2`, you might get additional options, e.g. for striking out specific boons or other scenario-specific content.
 
