@@ -2,7 +2,7 @@
 
 To fill out chronicle sheets using `pfscf`, you need to have a blank/empty chronicle as PDF without DRM restrictions.
 
-Blank chronicle sheets are normally included at the end of each Pathfinder/Starfinder society scenario. An exception to this are chronicles for [adventure paths](https://paizo.com/store/pathfinder/adventures/adventurePath/ageOfAshes) and specials ([example](https://paizo.com/products/btq023hy/discuss?Pathfinder-Adventure-Little-Trouble-in-Big-Absalom). In such cases download links for the associated chronicles are normally directly included on the associated product page on Paizos homepage.
+Blank chronicle sheets are normally included at the end of each Pathfinder/Starfinder society scenario. An exception to this are chronicles for adventure paths ([example](https://paizo.com/store/pathfinder/adventures/adventurePath/ageOfAshes)) and specials ([example](https://paizo.com/products/btq023hy/discuss?Pathfinder-Adventure-Little-Trouble-in-Big-Absalom)). In such cases download links for the associated chronicles are normally directly included on the associated product page on Paizos homepage.
 
 The easiest way to get an empty chronicle sheet out of a scenario to use with `pfscf` is to open the scenario in a PDF viewer and then print the chronicle page to a file using a so-called PDF printer. This would create a new PDF file as output.
 
