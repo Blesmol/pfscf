@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Content type `rectangle` now has a new field `opacity` to allow semi-transparent regions. Accepted values are from 0.0 (0%, transparent) to 1.0 (100%, fully opaque).
 - Documentation is now automatically generated out of the MD files using mkdocs and published to https://blesmol.github.io/pfscf
+- The `pfscf fill` command will now automatically open the resulting filled chronicle PDF in the systems default PDF viewer. This can be suppressed with the new `--noAutoOpen` command line switch.
 
 ### Changed
 

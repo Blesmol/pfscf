@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"reflect"
+	"runtime"
 	"strings"
 )
 
@@ -237,4 +239,24 @@ func ReadFileToLines(filename string) (lines []string, err error) {
 	}
 
 	return lines, nil
+}
+
+// OpenWithDefaultViewer opens the provided file with the default viewer registered in the system for this.
+func OpenWithDefaultViewer(file string) (err error) {
+	absFile, err := filepath.Abs(file)
+	if err != nil {
+		return err
+	}
+	switch runtime.GOOS {
+	case "linux":
+		err = exec.Command("xdg-open", absFile).Start()
+	case "windows":
+		err = exec.Command(filepath.Join(os.Getenv("SYSTEMROOT"), "System32", "rundll32.exe"), "url.dll,FileProtocolHandler", absFile).Start()
+	case "darwin":
+		err = exec.Command("open", absFile).Start()
+	default:
+		err = fmt.Errorf("Unknown OS, cannot open file '%v' automatically", file)
+	}
+
+	return err
 }
