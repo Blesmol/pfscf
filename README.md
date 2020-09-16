@@ -39,10 +39,6 @@ Filling out a single Pathfinder/Starfinder Society chronicle sheet can be done w
 $ pfscf fill pfs2 s103_blank_chronicle.pdf s103_for_bob.pdf player=Bob char="The Bobbynator" xp=4
 ```
 
-### Writing your own templates
-
-Please see the [Documentation on writing your own templates](https://blesmol.github.io/pfscf/templates/). **This documentation is currently outdated and needs some serious rework! In case you are still interested, have a look at the existing templates in the `templates/` subdir**
-
 ## FAQ
 
 * **Q: What types of chronicles are supported at the moment?**
