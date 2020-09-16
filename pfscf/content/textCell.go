@@ -69,7 +69,7 @@ func (ce *textCell) resolve(ps preset.Store) (err error) {
 	// apply presets
 	for _, presetID := range ce.Presets {
 		preset, _ := ps.Get(presetID)
-		if err = fillPublicFieldsFromPreset(ce, &preset, "Presets"); err != nil {
+		if err = preset.FillPublicFieldsFromPreset(ce, "Presets"); err != nil {
 			err = fmt.Errorf("Error resolving content: %v", err)
 			return
 		}

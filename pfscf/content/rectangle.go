@@ -77,7 +77,7 @@ func (ce *rectangle) resolve(ps preset.Store) (err error) {
 
 	for _, presetID := range ce.Presets {
 		preset, _ := ps.Get(presetID)
-		if err = fillPublicFieldsFromPreset(ce, &preset, "Presets"); err != nil {
+		if err = preset.FillPublicFieldsFromPreset(ce, "Presets"); err != nil {
 			err = fmt.Errorf("Error resolving content: %v", err)
 			return
 		}
