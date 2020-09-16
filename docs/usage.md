@@ -9,7 +9,7 @@
 5. Call the program again, to fill your first chronicle. Lets stick with the example:
 
 ```
-$ pfscf fill pfs2.s1-06 myBlankChronicle.pdf chronicleForBob.pdf player=Bob char="The Bobbynator" societyid=123456-2001 xp=4 gp=10
+pfscf fill pfs2.s1-06 myBlankChronicle.pdf chronicleForBob.pdf player=Bob char="The Bobbynator" societyid=123456-2001 xp=4 gp=10
 ```
 
 And that should be enough to have your first filled chronicle using `pfscf`!
