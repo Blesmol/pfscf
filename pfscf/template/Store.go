@@ -12,7 +12,7 @@ import (
 
 // Store stores multiple ChronicleTemplates and provides means
 // to retrieve them by name.
-type Store map[string]*ChronicleTemplate // Store as ptrs so that it is easier to modify them do things like aliasing
+type Store map[string]*Chronicle // Store as ptrs so that it is easier to modify them do things like aliasing
 
 // newStore creates a new Store object
 func newStore() (store *Store) {
@@ -38,7 +38,7 @@ func (store *Store) GetTemplateIDs() (keyList []string) {
 }
 
 // Get returns the ChronicleTemplate matching the provided id.
-func (store *Store) Get(id string) (ct *ChronicleTemplate, exists bool) {
+func (store *Store) Get(id string) (ct *Chronicle, exists bool) {
 	ct, exists = (*store)[id]
 	return
 }
@@ -112,7 +112,7 @@ func (store *Store) resolveInheritanceBetweenTemplates() (err error) {
 	return nil
 }
 
-func (store *Store) resolveInheritanceBetweenTemplatesInternal(ct *ChronicleTemplate, resolvedIDs *map[string]bool, resolveChain ...string) (err error) {
+func (store *Store) resolveInheritanceBetweenTemplatesInternal(ct *Chronicle, resolvedIDs *map[string]bool, resolveChain ...string) (err error) {
 	// check if we have already seen that entry
 	if _, exists := (*resolvedIDs)[ct.ID]; exists {
 		return nil

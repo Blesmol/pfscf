@@ -24,8 +24,8 @@ var (
 	regexAspectRatio = regexp.MustCompile(aspectRatioPattern)
 )
 
-// ChronicleTemplate is the new approach for the Chronicle Template
-type ChronicleTemplate struct {
+// Chronicle is the new approach for the Chronicle Template
+type Chronicle struct {
 	ID          string
 	Description string
 	Inherit     string
@@ -38,16 +38,16 @@ type ChronicleTemplate struct {
 }
 
 // NewChronicleTemplate returns a new ChronicleTemplate object.
-func NewChronicleTemplate(filename string) (ct ChronicleTemplate) {
+func NewChronicleTemplate(filename string) (ct Chronicle) {
 	ct.filename = filename
 	return ct
 }
 
-func templateErr(ct *ChronicleTemplate, errIn error) (errOut error) {
+func templateErr(ct *Chronicle, errIn error) (errOut error) {
 	return fmt.Errorf("Template %v: %v", ct.ID, errIn)
 }
 
-func templateErrf(ct *ChronicleTemplate, msg string, args ...interface{}) (errOut error) {
+func templateErrf(ct *Chronicle, msg string, args ...interface{}) (errOut error) {
 	return fmt.Errorf("Template '%v': "+msg, ct.ID, args)
 }
 
@@ -56,7 +56,7 @@ func templateErrf(ct *ChronicleTemplate, msg string, args ...interface{}) (errOu
 // underlying data structure will be ZEROed. So the stores will be uninitialized. Even if they
 // were initialized before the unmarshalling. Yeah, great.
 // See https://github.com/go-yaml/yaml/issues/395 , might be fixed with go-yaml v3 in the future.
-func (ct *ChronicleTemplate) ensureStoresAreInitialized() {
+func (ct *Chronicle) ensureStoresAreInitialized() {
 	if ct.Parameters == nil {
 		ct.Parameters = param.NewStore()
 	}
@@ -70,7 +70,7 @@ func (ct *ChronicleTemplate) ensureStoresAreInitialized() {
 
 // GetExampleArguments returns an array containing all keys and example values for all parameters.
 // The result can be passed to the ArgStore.
-func (ct *ChronicleTemplate) GetExampleArguments() (result []string) {
+func (ct *Chronicle) GetExampleArguments() (result []string) {
 	return ct.Parameters.GetExampleArguments()
 }
 
@@ -79,7 +79,7 @@ func (ct *ChronicleTemplate) GetExampleArguments() (result []string) {
 // entry from sections 'parameters' or 'content' exists in both objects.
 // In case a preset entry exists in both objects, then the one from the original
 // object takes precedence.
-func (ct *ChronicleTemplate) inheritFrom(otherCT *ChronicleTemplate) (err error) {
+func (ct *Chronicle) inheritFrom(otherCT *Chronicle) (err error) {
 	err = ct.Parameters.InheritFrom(&otherCT.Parameters)
 	if err != nil {
 		return err
@@ -99,7 +99,7 @@ func (ct *ChronicleTemplate) inheritFrom(otherCT *ChronicleTemplate) (err error)
 // resolve resolves this template. This means that preset dependencies are resolved
 // and after that the preset dependencies on content side. Currently nothing needs
 // to be done for parameters.
-func (ct *ChronicleTemplate) resolve() (err error) {
+func (ct *Chronicle) resolve() (err error) {
 	if err = ct.Presets.Resolve(); err != nil {
 		return err
 	}
@@ -112,7 +112,7 @@ func (ct *ChronicleTemplate) resolve() (err error) {
 
 // WriteToCsvFile creates a CSV file out of the current chronicle template than can be used
 // as input for the "batch fill" command
-func (ct *ChronicleTemplate) WriteToCsvFile(filename string, separator rune, as *args.Store) (err error) {
+func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, as *args.Store) (err error) {
 	const numPlayers = 7
 
 	records := [][]string{
@@ -151,7 +151,7 @@ func (ct *ChronicleTemplate) WriteToCsvFile(filename string, separator rune, as 
 }
 
 // GenerateOutput adds the content of this chronicle template to the provided stamp.
-func (ct *ChronicleTemplate) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (err error) {
+func (ct *Chronicle) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (err error) {
 	// as we add new entries to the argStore, create a local store and set the
 	// original store as parent.
 	localArgStore, err := args.NewStore(args.StoreInit{Parent: argStore})
@@ -184,7 +184,7 @@ func (ct *ChronicleTemplate) GenerateOutput(stamp *stamp.Stamp, argStore *args.S
 
 // IsValid checks whether a given chronicle is valid. This should only be called
 // after resolve() was called on this template.
-func (ct *ChronicleTemplate) IsValid() (err error) {
+func (ct *Chronicle) IsValid() (err error) {
 	if utils.IsSet(ct.Aspectratio) {
 		if _, _, err = parseAspectRatio(ct.Aspectratio); err != nil {
 			return templateErr(ct, err)
@@ -208,7 +208,7 @@ func (ct *ChronicleTemplate) IsValid() (err error) {
 
 // Describe returns a short textual description of a single chronicle template.
 // It returns the description as a multi-line string.
-func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
+func (ct *Chronicle) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	if !verbose {
@@ -227,7 +227,7 @@ func (ct *ChronicleTemplate) Describe(verbose bool) (result string) {
 
 // DescribeParams returns a textual description of the parameters expected by
 // this chronicle template. It returns the description as a multi-line string.
-func (ct *ChronicleTemplate) DescribeParams(verbose bool) (result string) {
+func (ct *Chronicle) DescribeParams(verbose bool) (result string) {
 	return ct.Parameters.Describe(verbose)
 }
 
@@ -254,7 +254,7 @@ func parseAspectRatio(input string) (x, y float64, err error) {
 // direction. So if the aspect ration differs this must mean than margins were added somewhere.
 // The following function should correctly calculate the margins from the aspect ratio if
 // margins were only added on the x axis OR the y axis, not on both.
-func (ct *ChronicleTemplate) guessMarginsFromAspectRatio(stamp *stamp.Stamp) (xMarginPct, yMarginPct float64, err error) {
+func (ct *Chronicle) guessMarginsFromAspectRatio(stamp *stamp.Stamp) (xMarginPct, yMarginPct float64, err error) {
 	sx, sy := stamp.GetDimensions()
 	arx, ary, err := parseAspectRatio(ct.Aspectratio)
 	if err != nil {

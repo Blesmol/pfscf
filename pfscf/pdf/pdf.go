@@ -167,7 +167,7 @@ func (pf *File) StampIt(stampFile string, outFile string) (err error) {
 }
 
 // Fill is the main function used to fill a PDF file.
-func (pf *File) Fill(argStore *args.Store, ct *template.ChronicleTemplate, outfile string) (err error) {
+func (pf *File) Fill(argStore *args.Store, ct *template.Chronicle, outfile string) (err error) {
 	// prepare temporary working dir
 	workDir := utils.GetTempDir()
 	defer os.RemoveAll(workDir)
