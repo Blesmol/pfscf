@@ -1,30 +1,20 @@
 package stamp
 
-import (
-	"github.com/Blesmol/pfscf/pfscf/utils"
-)
-
 type canvas struct {
 	xPt, yPt float64
 	wPt, hPt float64
-	parent   *canvas
 }
 
 func newCanvas(xPt, yPt, wPt, hPt float64) (c canvas) {
-	c = canvas{xPt, yPt, wPt, hPt, nil}
+	c = canvas{xPt, yPt, wPt, hPt}
 	return
 }
 
 func (c canvas) getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) (subC canvas) {
 	xPt, yPt, wPt, hPt := c.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
 
-	subC = canvas{xPt, yPt, wPt, hPt, &c}
+	subC = canvas{xPt, yPt, wPt, hPt}
 	return
-}
-
-func (c canvas) getParentCanvas() (parentC canvas) {
-	utils.Assert(c.parent != nil, "Must only be called if parent canvas exists")
-	return *c.parent
 }
 
 // relPctToPt converts the provided percent coordinates into absolute

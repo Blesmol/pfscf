@@ -3,6 +3,7 @@ package content
 import (
 	"fmt"
 
+	"github.com/Blesmol/pfscf/pfscf/canvas"
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/utils"
@@ -71,9 +72,9 @@ func (store *MapStore) UnmarshalYAML(unmarshal func(interface{}) error) (err err
 // IsValid validates whether all content entries are valid. This means, e.g., that
 // the already contain all required values. Thus this should only be called after
 // the store was resolved.
-func (store *MapStore) IsValid(paramStore *param.Store) (err error) {
+func (store *MapStore) IsValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
 	for _, entry := range *store {
-		if err = entry.isValid(paramStore); err != nil {
+		if err = entry.isValid(paramStore, canvasStore); err != nil {
 			return err
 		}
 	}

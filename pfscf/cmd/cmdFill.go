@@ -34,6 +34,8 @@ func GetFillCommand() (cmd *cobra.Command) {
 	fillCmd.Flags().BoolVarP(&cfg.Global.DrawCellBorder, "cellBorder", "c", false, "Draw the cell borders of all added fields")
 	fillCmd.Flags().BoolVarP(&cmdFillUseExampleValues, "exampleValues", "e", false, "Use example values to fill out the chronicle")
 	fillCmd.Flags().BoolVarP(&cmdFillSuppressOpenOutfile, "noAutoOpen", "n", false, "Supress auto-opening the filled out chronicle")
+	fillCmd.Flags().BoolVarP(&cfg.Global.DrawCanvas, "draw-canvas", "d", false, "Draw a border around all defined canvases")
+	// TODO flag that takes name of cavnas as argument and draws a grid in that canvas
 
 	return fillCmd
 }

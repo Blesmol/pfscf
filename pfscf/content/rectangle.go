@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/canvas"
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
@@ -23,6 +24,7 @@ type rectangle struct {
 	X2, Y2       float64
 	Color        string
 	Transparency float64 // TODO convert to ptr
+	Canvas       string
 	Presets      []string
 }
 
@@ -34,8 +36,8 @@ func newRectangle() *rectangle {
 
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce *rectangle) isValid(paramStore *param.Store) (err error) {
-	err = utils.CheckFieldsAreSet(ce, "Color")
+func (ce *rectangle) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
+	err = utils.CheckFieldsAreSet(ce, "Color", "Canvas")
 	if err != nil {
 		return contentValErr(ce, err)
 	}
@@ -52,6 +54,11 @@ func (ce *rectangle) isValid(paramStore *param.Store) (err error) {
 
 	if ce.Y == ce.Y2 {
 		err = fmt.Errorf("Coordinates for Y axis are equal: %v", ce.Y)
+		return contentValErr(ce, err)
+	}
+
+	if _, exists := canvasStore.Get(ce.Canvas); !exists {
+		err = fmt.Errorf("Canvas '%v' does not exist", ce.Canvas)
 		return contentValErr(ce, err)
 	}
 
@@ -99,7 +106,7 @@ func (ce *rectangle) generateOutput(s *stamp.Stamp, as *args.Store) (err error) 
 	}
 
 	style := stamp.RectStyle{Style: "F", FillR: r, FillG: g, FillB: b, Transparency: ce.Transparency}
-	s.DrawRectangle(ce.X, ce.Y, ce.X2, ce.Y2, style)
+	s.DrawRectangle(ce.Canvas, ce.X, ce.Y, ce.X2, ce.Y2, style)
 
 	return nil
 }
@@ -147,6 +154,7 @@ func (ce *rectangle) deepCopy() Entry {
 		Y2:           ce.Y2,
 		Color:        ce.Color,
 		Transparency: ce.Transparency,
+		Canvas:       ce.Canvas,
 	}
 	for _, preset := range ce.Presets {
 		copy.Presets = append(copy.Presets, preset)

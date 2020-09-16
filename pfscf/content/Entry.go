@@ -5,6 +5,7 @@ import (
 	"regexp"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/canvas"
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
@@ -17,7 +18,7 @@ var (
 
 // Entry is an interface for the content. D'oh!
 type Entry interface {
-	isValid(*param.Store) (err error)
+	isValid(*param.Store, *canvas.Store) (err error)
 	resolve(ps preset.Store) (err error)
 	generateOutput(s *stamp.Stamp, as *args.Store) (err error)
 	deepCopy() Entry

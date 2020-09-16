@@ -2,6 +2,7 @@ package content
 
 import (
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/canvas"
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
@@ -23,12 +24,12 @@ func newTrigger() *trigger {
 	return &ce
 }
 
-func (ce *trigger) isValid(paramStore *param.Store) (err error) {
+func (ce *trigger) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
 	err = utils.CheckFieldsAreSet(ce, "Trigger")
 	if err != nil {
 		return contentValErr(ce, err)
 	}
-	return ce.Content.IsValid(paramStore)
+	return ce.Content.IsValid(paramStore, canvasStore)
 }
 
 // resolve the presets for this content object.

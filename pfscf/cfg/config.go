@@ -21,6 +21,7 @@ type globalFlags struct {
 	Verbose        bool
 	DrawCellBorder bool
 	DrawGrid       bool
+	DrawCanvas     bool
 }
 
 func init() {

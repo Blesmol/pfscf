@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/canvas"
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
@@ -23,6 +24,7 @@ type textCell struct {
 	Font     string
 	Fontsize float64
 	Align    string
+	Canvas   string
 	Presets  []string
 }
 
@@ -34,8 +36,8 @@ func newTextCell() *textCell {
 
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce *textCell) isValid(paramStore *param.Store) (err error) {
-	err = utils.CheckFieldsAreSet(ce, "Value", "Font", "Fontsize")
+func (ce *textCell) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
+	err = utils.CheckFieldsAreSet(ce, "Value", "Font", "Fontsize", "Canvas")
 	if err != nil {
 		return contentValErr(ce, err)
 	}
@@ -52,6 +54,11 @@ func (ce *textCell) isValid(paramStore *param.Store) (err error) {
 
 	if ce.Y == ce.Y2 {
 		err = fmt.Errorf("Coordinates for Y axis are equal: %v", ce.Y)
+		return contentValErr(ce, err)
+	}
+
+	if _, exists := canvasStore.Get(ce.Canvas); !exists {
+		err = fmt.Errorf("Canvas '%v' does not exist", ce.Canvas)
 		return contentValErr(ce, err)
 	}
 
@@ -85,8 +92,8 @@ func (ce *textCell) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 		return nil // nothing to do here...
 	}
 
-	y2 := s.DeriveY2(ce.Y, ce.Y2, ce.Fontsize)
-	s.AddTextCell(ce.X, ce.Y, ce.X2, y2, ce.Font, ce.Fontsize, ce.Align, *value, true)
+	y2 := s.DeriveY2(ce.Canvas, ce.Y, ce.Y2, ce.Fontsize)
+	s.AddTextCell(ce.Canvas, ce.X, ce.Y, ce.X2, y2, ce.Font, ce.Fontsize, ce.Align, *value, true)
 
 	return nil
 }

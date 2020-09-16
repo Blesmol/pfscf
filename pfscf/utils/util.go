@@ -352,7 +352,11 @@ func CheckFieldsAreSet(obj interface{}, fieldNames ...string) (err error) {
 // CheckFieldsAreInRange checks that all provided struct fields are within a given range.
 func CheckFieldsAreInRange(obj interface{}, min, max float64, fieldNames ...string) (err error) {
 	isOk := func(obj interface{}) bool {
-		fObj := obj.(float64)
+		oVal := reflect.ValueOf(obj)
+		if oVal.Kind() == reflect.Ptr {
+			oVal = oVal.Elem()
+		}
+		fObj := oVal.Interface().(float64)
 		return fObj >= min && fObj <= max
 	}
 	err = GenericFieldsCheck(obj, isOk, fieldNames...)
@@ -360,4 +364,24 @@ func CheckFieldsAreInRange(obj interface{}, min, max float64, fieldNames ...stri
 		return fmt.Errorf("Values for the following fields are out of range %.2f-%.2f: %v", min, max, err)
 	}
 	return nil
+}
+
+// CopyString creates a copy of a referenced string and returns the result as pointer.
+func CopyString(in *string) (out *string) {
+	if in == nil {
+		return nil
+	}
+	out = new(string)
+	*out = *in
+	return out
+}
+
+// CopyFloat creates a copy of a referenced float and returns the result as pointer.
+func CopyFloat(in *float64) (out *float64) {
+	if in == nil {
+		return nil
+	}
+	out = new(float64)
+	*out = *in
+	return out
 }

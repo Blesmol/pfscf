@@ -15,11 +15,12 @@ const (
 
 // Stamp is a wraper for a PDF page
 type Stamp struct {
-	pdf        *gofpdf.Fpdf
-	dimX       float64
-	dimY       float64
-	cellBorder string
-	canvas     canvas
+	pdf         *gofpdf.Fpdf
+	dimX        float64
+	dimY        float64
+	cellBorder  string
+	canvasStore map[string]canvas
+	pageCanvas  canvas
 }
 
 // RectStyle allows to provide only the required drawing parameters for a rectangle
@@ -37,7 +38,8 @@ func NewStamp(dimX float64, dimY float64) (s *Stamp) {
 	s.dimX = dimX
 	s.dimY = dimY
 
-	s.canvas = newCanvas(0.0, 0.0, dimX, dimY)
+	s.canvasStore = make(map[string]canvas, 0)
+	s.SetPageCanvas(0.0, 0.0, 100.0, 100.0)
 
 	s.SetCellBorder(false)
 
@@ -70,19 +72,28 @@ func (s *Stamp) GetDimensions() (x, y float64) {
 	return s.dimX, s.dimY
 }
 
-// AddCanvas adds another canvas to set a smaller canvas on this stamp.
-func (s *Stamp) AddCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) {
-	if s.shouldDrawCellBorder() {
-		style := RectStyle{Style: "D", BorderR: 0, BorderG: 255, BorderB: 0}
-		s.DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct, style)
-		s.pdf.GetAlpha()
-	}
-	s.canvas = s.canvas.getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct)
+// SetPageCanvas sets a new page canvas for this stamp. This function may only be
+// called as long as no entries are contained in the Stamps' internal canvas store
+func (s *Stamp) SetPageCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) {
+	utils.Assert(len(s.canvasStore) == 0, "May only be called before entries are added to the stamp canvas store")
+	s.pageCanvas = newCanvas(0.0, 0.0, s.dimX, s.dimY).getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct)
 }
 
-// RemoveCanvas removes the newest canvas from this stamp.
-func (s *Stamp) RemoveCanvas() {
-	s.canvas = s.canvas.getParentCanvas()
+// AddCanvas adds a canvas to the new internal canvas store.
+func (s *Stamp) AddCanvas(id string, x1Pct, y1Pct, x2Pct, y2Pct float64) {
+	// check for duplicates
+	_, exists := s.canvasStore[id]
+	utils.Assert(!exists, "Dulpicates should not occur here")
+
+	s.canvasStore[id] = s.pageCanvas.getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct)
+}
+
+// getCanvas returns the canvas denoted by the provided id. At the moment it is assumed that the
+// name is always valid.
+func (s *Stamp) getCanvas(id string) (c canvas) {
+	c, exists := s.canvasStore[id]
+	utils.Assert(exists, "It should have been checked before that only valid IDs exist at this point")
+	return c
 }
 
 // DeriveFontsize checks whether the provided text fits into the given width, if the current
@@ -113,18 +124,18 @@ func (s *Stamp) DeriveFontsize(cellWidthPt, cellHeightPt float64, font string, f
 // DeriveY2 takes two coordinates on the Y axis and the fontsize, and in case
 // the second coordinate is 0.0 will calculcate a proper y2 coordinate based
 // on y1 and the fontsize.
-func (s *Stamp) DeriveY2(y1Pct, y2Pct, fontsizePt float64) (y2 float64) {
+func (s *Stamp) DeriveY2(canvasID string, y1Pct, y2Pct, fontsizePt float64) (y2 float64) {
 	if y2Pct != 0.0 {
 		return y2Pct
 	}
 
-	_, fontsizePct := s.canvas.relPtToPct(0.0, fontsizePt)
+	_, fontsizePct := s.getCanvas(canvasID).relPtToPct(0.0, fontsizePt)
 	return y1Pct - fontsizePct
 }
 
 // AddTextCell adds a text cell to the stamp.
-func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fontsize float64, align string, text string, autoShrink bool) {
-	xPt, yPt, wPt, hPt := s.canvas.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
+func (s *Stamp) AddTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fontsize float64, align string, text string, autoShrink bool) {
+	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	effectiveFontsize := fontsize
 	if autoShrink {
@@ -141,8 +152,8 @@ func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fon
 }
 
 // DrawRectangle draws a rectangle on the stamp.
-func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, rs RectStyle) {
-	xPt, yPt, wPt, hPt := s.canvas.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
+func (s *Stamp) DrawRectangle(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs RectStyle) {
+	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	oldAlpha, oldBlendMode := s.pdf.GetAlpha()
 	s.pdf.SetAlpha(1.0-rs.Transparency, "Normal")
@@ -151,6 +162,27 @@ func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, rs RectStyle) 
 	s.pdf.SetDrawColor(rs.BorderR, rs.BorderG, rs.BorderB)
 	s.pdf.SetFillColor(rs.FillR, rs.FillG, rs.FillB)
 	s.pdf.Rect(xPt, yPt, wPt, hPt, rs.Style)
+}
+
+// DrawCanvases draws all canvases to the stamp
+func (s *Stamp) DrawCanvases() {
+	fontsize := 8.0
+	r, g, b := 51, 204, 51
+	s.pdf.SetDrawColor(r, g, b)
+	s.pdf.SetFont("Helvetica", "", fontsize)
+
+	for canvasID, canvas := range s.canvasStore {
+		xPt, yPt, wPt, hPt := canvas.pctToPt(0.0, 0.0, 100.0, 100.0)
+
+		// rectangle
+		s.pdf.Rect(xPt, yPt, wPt, hPt, "D")
+
+		// name/ID
+		s.pdf.SetXY(xPt, yPt+hPt-fontsize)
+		s.pdf.SetTextColor(r, g, b)
+		s.pdf.CellFormat(wPt, fontsize, canvasID, "0", 0, "RM", false, 0, "")
+	}
+	s.pdf.SetTextColor(0, 0, 0)
 }
 
 // WriteToFile writes the content of the Stamp object into a PDF file.
@@ -201,7 +233,7 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 		s.pdf.SetLineWidth(minorLineWidth)
 
 		for curPercent := 0.0; curPercent <= 100.0; curPercent += minorGap {
-			curX, curY := s.canvas.relPctToPt(curPercent, curPercent)
+			curX, curY := s.pageCanvas.relPctToPt(curPercent, curPercent)
 
 			if curX >= minX && curX <= maxX {
 				s.pdf.Line(curX, minY, curX, maxY)
@@ -219,7 +251,7 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 
 	// draw major gap X lines with labels
 	for curPercent := 0.0; curPercent <= 100.0; curPercent += majorGap {
-		curX, curY := s.canvas.relPctToPt(curPercent, curPercent)
+		curX, curY := s.pageCanvas.relPctToPt(curPercent, curPercent)
 
 		if curX >= minX && curX <= maxX {
 			s.pdf.Line(curX, minY, curX, maxY)

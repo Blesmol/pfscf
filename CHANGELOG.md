@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Changed content rectangle field "opacity" to "transparency"
+- The canvas concept. Now totally different than before.
 
 ### Removed
 

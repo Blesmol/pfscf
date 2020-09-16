@@ -2,6 +2,7 @@ package content
 
 import (
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/canvas"
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
@@ -23,13 +24,13 @@ func newChoice() *choice {
 	return &ce
 }
 
-func (ce *choice) isValid(paramStore *param.Store) (err error) {
+func (ce *choice) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
 	// TODO arg paramStore to isValid to be able to validate against parameters
 	err = utils.CheckFieldsAreSet(ce, "Choice")
 	if err != nil {
 		return contentValErr(ce, err)
 	}
-	return ce.Content.IsValid(paramStore)
+	return ce.Content.IsValid(paramStore, canvasStore)
 }
 
 // resolve the presets for this content object.
