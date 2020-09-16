@@ -4,22 +4,24 @@
 
 1. [Download the program](https://github.com/Blesmol/pfscf/releases) and extract into a new folder. For details see the [installation instructions](installation.md).
 2. Get a blank society chronicle as single-paged PDF file. I'd suggest to follow [these instructions](extraction.md). Put the resulting PDF page in the same directory to which you extracted `pfscf`.
-3. Open a command line prompt / terminal in this directory. Can on windows be done by double-clicking the `openCmdHere.bat` file.
+3. Open a command line prompt / terminal in this directory. On windows this can be done by double-clicking the `openCmdHere.bat` file included in the installation folder.
 4. Call the program to find whether your scenario is already explicitly supported, based on the scenario title. Use the `pfscf template search` command for this and search for some part of the scenario title. The part at the beginning of each line is the template id, e.g. something like `pfs2.s1-06` for PFS2 scenario "#1-06: Lost on the Spirit Road".
 5. Call the program again, to fill your first chronicle. Lets stick with the example:
 
-   ```
-   $ pfscf fill pfs2.s1-06 myBlankChronicle.pdf chronicleForBob.pdf player=Bob char="The Bobbynator" societyid=123456-2001 xp=4 gp=10
-   ```
+```
+$ pfscf fill pfs2.s1-06 myBlankChronicle.pdf chronicleForBob.pdf player=Bob char="The Bobbynator" societyid=123456-2001 xp=4 gp=10
+```
+
+And that should be enough to have your first filled chronicle using `pfscf`!
 
 ## Filling Out a Single Chronicle
 
 To fill out a chronicle, you will basically need to things to start:
 
 1. The ID of the template to use for filling the chronicle. Details can be found in [this section](#finding-the-right-chronicle-template), but when in doubt or you just want to get this going, simply use the following:
-  * `pfs2` for Pathfinder 2
-  * `sfs` for Starfinder
-  * Pathfinder 1 is not yet supported
+    * `pfs2` for Pathfinder 2
+    * `sfs` for Starfinder
+    * Pathfinder 1 is not yet supported
 2. An empty chronicle to be filled. This should be in PDF format and consist of only a single page. For information on how to create such a file if you have purchased and downloaded a scenario PDF file from Paizo, read the [section on how to extract a chronicle PDF](extraction.md).
 
 Everything set so far? Good! Then we can get serious now...
