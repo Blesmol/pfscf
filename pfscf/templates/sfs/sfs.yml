@@ -107,6 +107,20 @@ parameters:
     description: Infamy
     example: 4
 
+canvas:
+  page:
+    x:    0.0
+    y:    0.0
+    x2: 100.0
+    y2: 100.0
+
+  rightbar:
+    parent: page
+    x:  78.4
+    y:  35.0
+    x2: 93.9
+    y2: 90.8
+      
 presets:
   defaultfont:
     font: Helvetica
@@ -116,12 +130,14 @@ presets:
     presets: [defaultfont]
     y:  16.9
     align: CB
+    canvas: page
 
   rightbar:
     presets: [defaultfont]
     x:  78.4
     x2: 94.1
     align: CM
+    canvas: rightbar
 
   rightbarprefixedfield:
     presets: [rightbar]
@@ -141,10 +157,12 @@ presets:
     presets: [defaultfont]
     y:  93.8
     align: CB
+    canvas: page
 
   factions:
     presets: [defaultfont]
     fontsize: 10.0
+    canvas: page
 
   facnamecol1:
     presets: [factions]
@@ -195,6 +213,7 @@ content:
     trigger: param:societyid
     content:
       - type: rectangle
+        presets: [topline]
         color: white
         x:  56.0
         y:  15.0

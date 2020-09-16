@@ -1,3 +1,10 @@
 id: pfs2.q02
 description: "Quest #02: Unforgiving Fire"
 inherit: pfs2.quests
+
+canvas:
+  summary:
+    y2: 14.7
+
+  boons:
+    y: 16.6

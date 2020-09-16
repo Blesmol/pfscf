@@ -98,212 +98,305 @@ parameters:
     description: "Players' tier ('low' or 'high')"
     example: low
 
+canvas:
+  page:
+    x:    0.0
+    y:    0.0
+    x2: 100.0
+    y2: 100.0
+
+  main:
+    # this should be a canvas matching the "main" content box, only excluding the title,
+    # chronicle nr and herolab code.
+    # Having this allows an easy visual check on whether the page is aligned.
+    parent: page
+    x:   6.20
+    y:  11.40
+    x2: 94.00
+    y2: 95.40
+
+  playerinfo:
+    parent: main
+    x:   0.0
+    y:   0.0
+    x2: 68.4
+    y2: 10.2
+
+  factions:
+    parent: main
+    x:   68.7
+    y:    0.0
+    x2: 100.0
+    y2:  10.2
+
+  rightbar:
+    parent: main
+    x:   82.2
+    y:   28.1
+    x2: 100.0
+    y2:  94.45
+
+  gminfo:
+    parent: main
+    x:    0.0
+    y:   94.6
+    x2: 100.0
+    y2: 100.0
+
+  notes:
+    parent: main
+    x:   0.0
+    y:  84.8
+    x2: 39.5
+    y2: 94.6
+
+  downtime:
+    parent: main
+    x:  40.0
+    y:  84.8
+    x2: 79.8
+    y2: 94.6
+
+  summary:
+    parent: main
+    x:    0.0
+    y:   12.0
+    x2: 100.0
+    y2:  26.2
+
+  boons:
+    parent: main
+    x:   0.0
+    y:  28.1
+    x2: 79.8
+    y2: 42.3
+
+  middlebox:
+    parent: main
+    x:   2.3
+    y:  44.2
+    x2: 79.8
+    y2: 82.9
+
+  items_low:
+    parent: middlebox
+    x:   0.0
+    y:   0.0
+    x2: 38.2
+    y2: 49.9
+
+  items_high:
+    parent: middlebox
+    x:    0.0
+    y:   50.1
+    x2:  38.2
+    y2: 100.0
+
+  items_sold:
+    parent: middlebox
+    x:   38.4
+    y:    0.0
+    x2: 100.0
+    y2:  49.9
+
+  items_bought:
+    parent: middlebox
+    x:   38.4
+    y:   50.1
+    x2: 100.0
+    y2: 100.0
+
 presets:
   defaultfont:
     font: Helvetica
     fontsize: 14
 
-  topline:
+  playerinfo:
     presets: [defaultfont]
-    y:  16.0
+    canvas: playerinfo
+    y:  53.8
     align: CB
-
-  rightbarposx:
-    x:  78.4
-    x2: 93.9
-
-  rightbarposy:
-    y:  35.0
-    y2: 90.8
 
   rightbar:
     presets: [defaultfont]
+    canvas: rightbar
     x:    0.0
     x2: 100.0
     align: CM
 
-  bottomline:
+  gminfo:
     presets: [defaultfont]
-    y:  93.8
+    canvas: gminfo
+    y:  63.5
     align: CB
 
   factions:
     presets: [defaultfont]
+    canvas: factions
     fontsize: 8
 
-  faccol1:
+  faccolname:
     presets: [factions]
-    x:  71.5
-    x2: 81.1
+    x:  18.4
+    x2: 53.2
     align: CB
 
-  faccol2:
+  faccolrep1:
     presets: [factions]
-    x:  88
-    x2: 90.6
+    x:  78.0
+    x2: 87.9
     align: CB
 
   facline1:
     presets: [factions]
-    y:  13.95
+    y:  28.5
 
   facline2:
     presets: [factions]
-    y:  16.5
+    y:  58.5
 
   facline3:
     presets: [factions]
-    y:  19.1
+    y:  88.5
 
-  middleboxposx:
-    x:   8.2
-    x2: 76.2
-
-  middleboxposy:
-    y:  48.5
-    y2: 80.9
-
-  items:
-    x:   0.5
-    x2: 38.0
+  greyout:
     color: white
     transparency: 0.3
+
+  max_area:
+    x: 0.0
+    y: 0.0
+    x2: 100.0
+    y2: 100.0
 
 content:
   - value: param:player
     type: textCell
-    presets: [topline]
-    x:  6.9
-    x2: 23.6
+    presets: [playerinfo]
+    x:  1.2
+    x2: 28.8
 
   - value: param:char
     type: textCell
-    presets: [topline]
-    x:  27.7
-    x2: 44.8
+    presets: [playerinfo]
+    x:  35.8
+    x2: 64.2
 
   - type: trigger
     trigger: param:societyid
     content:
       - type: rectangle
+        presets: [playerinfo]
         color: white
-        x:  57.0
-        y:  15.7
-        x2: 59.5
-        y2: 14.5
+        x:  83.0
+        y:  32.0
+        x2: 89.0
+        y2: 50.2
       - value: param:societyid.player
         type: textCell
-        presets: [topline]
-        x:  45.8
-        x2: 56.8
+        presets: [playerinfo]
+        x:  65.9
+        x2: 84.3
         align: RB
       - value: "-"
         type: textCell
-        presets: [topline]
-        x:  56.8
-        x2: 58.5
+        presets: [playerinfo]
+        x:  84.3
+        x2: 87.0
         align: CB
       - value: param:societyid.char
         type: textCell
-        presets: [topline]
-        x:  58.5
-        x2: 65.8
+        presets: [playerinfo]
+        x:  87.0
+        x2: 99.2
         align: LB
 
-  - type: canvas
-    presets: [rightbarposx, rightbarposy]
-    content:
-      - value: param:xp
-        type: textCell
-        presets: [rightbar]
-        y:   8.4
-        y2: 13.9
+  - value: param:xp
+    type: textCell
+    presets: [rightbar]
+    y:   8.4
+    y2: 13.9
 
-      - value: param:gp
-        type: textCell
-        presets: [rightbar]
-        y:  33.5
-        y2: 38.9
+  - value: param:gp
+    type: textCell
+    presets: [rightbar]
+    y:  33.5
+    y2: 38.9
 
-      - value: param:income
-        type: textCell
-        presets: [rightbar]
-        y:  41.8
-        y2: 47.3
+  - value: param:income
+    type: textCell
+    presets: [rightbar]
+    y:  41.8
+    y2: 47.3
 
-      - value: param:fame
-        type: textCell
-        presets: [rightbar]
-        y:  83.6
-        y2: 89.0
+  - value: param:fame
+    type: textCell
+    presets: [rightbar]
+    y:  83.6
+    y2: 89.0
 
   - value: param:event
     type: textCell
-    presets: [bottomline]
-    x:   7.1
-    x2: 23.7
+    presets: [gminfo]
+    x:   1.1
+    x2: 20.0
 
   - value: param:eventcode
     type: textCell
-    presets: [bottomline]
-    x:  26.2
-    x2: 35.2
+    presets: [gminfo]
+    x:  22.7
+    x2: 33.0
 
   - value: param:date
     type: textCell
-    presets: [bottomline]
-    x:  37.6
-    x2: 50.4
+    presets: [gminfo]
+    x:  35.8
+    x2: 50.3
 
   - value: param:gm
     type: textCell
-    presets: [bottomline]
-    x:  52.8
-    x2: 74.0
+    presets: [gminfo]
+    x:  53.1
+    x2: 77.2
 
   - value: param:gmid
     type: textCell
-    presets: [bottomline]
-    x:  76.4
-    x2: 93.4
+    presets: [gminfo]
+    x:  79.9
+    x2: 99.3
 
   - value: param:fac1name
     type: textCell
-    presets: [faccol1, facline1]
+    presets: [faccolname, facline1]
 
   - value: param:fac1rep
     type: textCell
-    presets: [faccol2, facline1]
+    presets: [faccolrep1, facline1]
 
   - value: param:fac2name
     type: textCell
-    presets: [faccol1, facline2]
+    presets: [faccolname, facline2]
 
   - value: param:fac2rep
     type: textCell
-    presets: [faccol2, facline2]
+    presets: [faccolrep1, facline2]
 
   - value: param:fac3name
     type: textCell
-    presets: [faccol1, facline3]
+    presets: [faccolname, facline3]
 
   - value: param:fac3rep
     type: textCell
-    presets: [faccol2, facline3]
+    presets: [faccolrep1, facline3]
 
-  - type: canvas
-    presets: [middleboxposx, middleboxposy]
+  - type: choice
+    choice: param:tier
     content:
-      - type: choice
-        choice: param:tier
-        content:
-          low:
-            type: rectangle
-            presets: [items]
-            y:  51.0
-            y2: 99.0
-          high:
-            type: rectangle
-            presets: [items]
-            y:   1.0
-            y2: 49.0
+      low:
+        type: rectangle
+        presets: [greyout, max_area]
+        canvas: items_high
+      high:
+        type: rectangle
+        canvas: items_low
+        presets: [greyout, max_area]

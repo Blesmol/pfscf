@@ -240,6 +240,9 @@ func (s *Stamp) DrawCanvasGrid(canvasID string) (err error) {
 		{&majorGapVertical, &minorGapVertical, width},
 	} {
 		switch {
+		case e.dim < 100:
+			*e.major = 20.0
+			*e.minor = 5.0
 		case e.dim < 300:
 			*e.major = 10.0
 			*e.minor = 2.0

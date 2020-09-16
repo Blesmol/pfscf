@@ -2,7 +2,22 @@ id: pfs2.littleTrouble
 description: "Little Trouble in Big Absalom"
 inherit: pfs2.specials
 
-presets:
-  rightbarposy:
-    y:  29.0
-    y2: 90.8
+canvas:
+  rightbar:
+    y:  21.3
+
+  summary:
+    y2: 18.9
+
+  boons:
+    y:  21.0
+    y2: 46.3
+
+  middlebox:
+    y: 48.3
+
+  items_low:
+    y2: 46.0
+
+  items_high:
+    y: 54.0

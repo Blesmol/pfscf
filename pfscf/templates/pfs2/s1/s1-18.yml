@@ -2,7 +2,12 @@ id: pfs2.s1-18
 description: "#1-18: Lodge of the Living God"
 inherit: pfs2.s1
 
-presets:
-  rightbarposy:
-    y:  28.6
-    y2: 90.8
+canvas:
+  rightbar:
+    y: 20.7
+
+  summary:
+    y2: 18.2
+
+  boons:
+    y: 20.7

@@ -2,9 +2,25 @@ id: pfs2.s1-04
 description: "#1-04: Bandits of Immenwood"
 inherit: pfs2.s1
 
-presets:
+canvas:
   # by the way, paizo provided a faulty sheet where
   # the "starting XP" field is missing at the top
-  rightbarposy:
-    y:  27.1
-    y2: 90.8
+  rightbar:
+    y: 18.8
+
+  summary:
+    y2: 21.0
+
+  boons:
+    y: 23.1
+
+content:
+  # add white box at location where the "starting XP" field
+  # should have been. This way we can at least add some value here
+  - type: rectangle
+    presets: [rightbar]
+    color: white
+    x:   0.0
+    y:   0.0
+    x2: 99.0
+    y2:  5.4
