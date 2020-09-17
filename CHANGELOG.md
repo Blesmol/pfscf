@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - The `pfscf fill` command will now automatically open the resulting filled chronicle PDF in the systems default PDF viewer. This can be suppressed with the new `--noAutoOpen` command line switch.
 
 ### Changed
+- Changed content rectangle field "opacity" to "transparency"
 
 ### Removed
 
