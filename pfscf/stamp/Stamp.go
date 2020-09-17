@@ -9,6 +9,10 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
+const (
+	minFontSize = 4.0
+)
+
 // Stamp is a wraper for a PDF page
 type Stamp struct {
 	pdf        *gofpdf.Fpdf
@@ -18,9 +22,13 @@ type Stamp struct {
 	canvas     canvas
 }
 
-const (
-	minFontSize = 4.0
-)
+// RectStyle allows to provide only the required drawing parameters for a rectangle
+type RectStyle struct {
+	Style                     string // F=filled, D=outline, FD=both, default=D
+	FillR, FillG, FillB       int
+	BorderR, BorderG, BorderB int
+	Transparency              float64
+}
 
 // NewStamp creates a new Stamp object.
 func NewStamp(dimX float64, dimY float64) (s *Stamp) {
@@ -65,7 +73,8 @@ func (s *Stamp) GetDimensions() (x, y float64) {
 // AddCanvas adds another canvas to set a smaller canvas on this stamp.
 func (s *Stamp) AddCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) {
 	if s.shouldDrawCellBorder() {
-		s.DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct, "D", 0, 255, 0, 0, 0, 0, 0.0)
+		style := RectStyle{Style: "D", BorderR: 0, BorderG: 255, BorderB: 0}
+		s.DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct, style)
 		s.pdf.GetAlpha()
 	}
 	s.canvas = s.canvas.getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct)
@@ -132,16 +141,16 @@ func (s *Stamp) AddTextCell(x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fon
 }
 
 // DrawRectangle draws a rectangle on the stamp.
-func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, style string, dr, dg, db int, fr, fg, fb int, transparency float64) {
+func (s *Stamp) DrawRectangle(x1Pct, y1Pct, x2Pct, y2Pct float64, rs RectStyle) {
 	xPt, yPt, wPt, hPt := s.canvas.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	oldAlpha, oldBlendMode := s.pdf.GetAlpha()
-	s.pdf.SetAlpha(1.0-transparency, "Normal")
+	s.pdf.SetAlpha(1.0-rs.Transparency, "Normal")
 	defer s.pdf.SetAlpha(oldAlpha, oldBlendMode)
 
-	s.pdf.SetDrawColor(dr, dg, db)
-	s.pdf.SetFillColor(fr, fg, fb)
-	s.pdf.Rect(xPt, yPt, wPt, hPt, style)
+	s.pdf.SetDrawColor(rs.BorderR, rs.BorderG, rs.BorderB)
+	s.pdf.SetFillColor(rs.FillR, rs.FillG, rs.FillB)
+	s.pdf.Rect(xPt, yPt, wPt, hPt, rs.Style)
 }
 
 // WriteToFile writes the content of the Stamp object into a PDF file.
