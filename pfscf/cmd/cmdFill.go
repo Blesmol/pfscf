@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	cmdFillUseExampleValues bool
-	cmdSuppressOpenOutfile  bool
+	cmdFillUseExampleValues    bool
+	cmdFillSuppressOpenOutfile bool
 )
 
 // GetFillCommand returns the cobra command for the "fill" action.
@@ -33,7 +33,7 @@ func GetFillCommand() (cmd *cobra.Command) {
 	fillCmd.Flags().BoolVarP(&cfg.Global.DrawGrid, "grid", "g", false, "Draw a coordinate grid on the output file")
 	fillCmd.Flags().BoolVarP(&cfg.Global.DrawCellBorder, "cellBorder", "c", false, "Draw the cell borders of all added fields")
 	fillCmd.Flags().BoolVarP(&cmdFillUseExampleValues, "exampleValues", "e", false, "Use example values to fill out the chronicle")
-	fillCmd.Flags().BoolVarP(&cmdSuppressOpenOutfile, "noAutoOpen", "n", false, "Supress auto-opening the filled out chronicle")
+	fillCmd.Flags().BoolVarP(&cmdFillSuppressOpenOutfile, "noAutoOpen", "n", false, "Supress auto-opening the filled out chronicle")
 
 	return fillCmd
 }
@@ -71,7 +71,7 @@ func executeFill(cmd *cobra.Command, cmdArgs []string) {
 	err = pf.Fill(argStore, cTmpl, outFile)
 	utils.ExitOnError(err, "Error when filling out chronicle")
 
-	if !cmdSuppressOpenOutfile {
+	if !cmdFillSuppressOpenOutfile {
 		fmt.Printf("Opening file '%v' in standard PDF viewer\n", outFile)
 		err = utils.OpenWithDefaultViewer(outFile)
 		utils.ExitOnError(err, "Error opening PDF file")
