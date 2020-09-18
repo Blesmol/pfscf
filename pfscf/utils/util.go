@@ -118,16 +118,15 @@ func IsDir(dirname string) (exists bool, err error) {
 	return true, nil
 }
 
-// IsSet checks whether the provided value is different from its zero value and
-// in case of a non-nil pointer it also checks whether the referenced value is
-// not the zero value
+// IsSet checks whether the provided value is different from its zero value for
+// element types and different from nil for pointer type.s
 func IsSet(val interface{}) (result bool) {
 	if reflect.TypeOf(val) == nil {
 		return false
 	}
 	x := reflect.ValueOf(val)
 	if x.Kind() == reflect.Ptr {
-		return !(x.IsNil() || x.Elem().IsZero())
+		return !x.IsNil()
 	}
 	return !x.IsZero()
 }
