@@ -173,6 +173,62 @@ func SortCoords(c1, c2 float64) (float64, float64) {
 	return c2, c1
 }
 
+func copyValueIfUnset(vSrc, vDst reflect.Value) {
+	Assert(vDst.IsValid(), "Valid destination value expected")
+	Assert(vDst.CanSet(), "Settable destination value expected")
+	Assert(vSrc.IsValid(), "Valid source value expected")
+
+	introspect := func(v reflect.Value) (isSet, isPtr bool) {
+		if v.Kind() == reflect.Ptr {
+			return !v.IsNil(), true
+		}
+		return !v.IsZero(), false
+	}
+
+	srcIsSet, srcIsPtr := introspect(vSrc)
+	dstIsSet, dstIsPtr := introspect(vDst)
+
+	if !dstIsSet && srcIsSet {
+		var dstElem reflect.Value
+		if dstIsPtr {
+			// dst is a nil pointer, so allocate space and assign
+
+			// get required elem type from source
+			var srcElemType reflect.Type
+			if srcIsPtr {
+				srcElemType = vSrc.Elem().Type()
+			} else {
+				srcElemType = vSrc.Type()
+			}
+
+			dstPtr := reflect.New(srcElemType)
+			vDst.Set(dstPtr)
+			dstElem = vDst.Elem()
+		} else {
+			dstElem = vDst
+		}
+
+		var srcElem reflect.Value
+		if srcIsPtr {
+			srcElem = vSrc.Elem()
+		} else {
+			srcElem = vSrc
+		}
+
+		switch dstElem.Kind() {
+		case reflect.String:
+			fallthrough
+		case reflect.Int:
+			fallthrough
+		case reflect.Float64:
+			dstElem.Set(srcElem)
+		default:
+			panic(fmt.Sprintf("Unsupported datat type '%v' in struct, update function 'AddMissingValuesFrom()'", dstElem.Kind()))
+		}
+	}
+
+}
+
 // AddMissingValues iterates over the exported fields of the source object. For each
 // such fields it checks whether the target object contains a field with the same
 // name. If that is the case and if the target field does not yet have a value set,
@@ -189,7 +245,7 @@ func AddMissingValues(target interface{}, source interface{}, ignoredFields ...s
 		fieldDst := vDst.Field(i)
 		fieldName := vDst.Type().Field(i).Name
 
-		// Ignore the Presets field, as we do not want to take over values for this.
+		// Ignore some fields, as we do not want to take over values for this.
 		if Contains(ignoredFields, fieldName) { // especially filter out "Presets" and "ID"
 			continue
 		}
@@ -201,21 +257,21 @@ func AddMissingValues(target interface{}, source interface{}, ignoredFields ...s
 
 		fieldSrc := vSrc.FieldByName(fieldName)
 
-		// skip target fields that do not exist on source side side
+		// skip target fields that do not exist on source side
 		if !fieldSrc.IsValid() {
 			continue
 		}
 
-		if fieldDst.IsZero() && !fieldSrc.IsZero() {
-			switch fieldDst.Kind() {
-			case reflect.String:
-				fallthrough
-			case reflect.Float64:
-				fieldDst.Set(fieldSrc)
-			default:
-				panic(fmt.Sprintf("Unsupported datat type '%v' in struct, update function 'AddMissingValuesFrom()'", fieldDst.Kind()))
+		copyValueIfUnset(fieldSrc, fieldDst)
+
+		fctIsSet := func(v reflect.Value) bool {
+			if v.Kind() == reflect.Ptr {
+				return !v.IsNil()
 			}
+			return !v.IsZero()
 		}
+
+		Assert(!fctIsSet(vDst) || fctIsSet(vSrc), "This did not work as expected")
 	}
 }
 

@@ -1,8 +1,66 @@
 package utils
 
 import (
+	"reflect"
 	"testing"
 )
+
+func helperCopyValueIfUnset(t *testing.T) {
+
+}
+
+func TestCopyValueIfUnset(t *testing.T) {
+	zero := 0.0
+	one := 1.0
+	two := 2.0
+
+	testdata := []struct {
+		PtrDst, PtrSrc *float64
+		ptrExpNil      bool
+		ptrExpResult   float64
+	}{
+		{nil, nil, true, zero},
+		{nil, &zero, false, zero},
+		{nil, &one, false, one},
+		{&zero, nil, false, zero},
+		{&zero, &one, false, zero},
+		{&one, &two, false, one},
+	}
+
+	for _, tt := range testdata {
+		ttPtr := &tt
+
+		vTT := reflect.ValueOf(ttPtr).Elem()
+		if !vTT.CanSet() {
+			t.Log("Struct must be settable for this test")
+			t.FailNow()
+		}
+
+		vSrc := vTT.FieldByName("PtrSrc")
+		vDst := vTT.FieldByName("PtrDst")
+		if !vDst.CanSet() {
+			t.Log("Destination value must be settable for this test")
+			t.FailNow()
+		}
+
+		copyValueIfUnset(vSrc, vDst)
+
+		if tt.ptrExpNil {
+			if tt.PtrDst != nil {
+				t.Error("Should have been nil")
+			}
+		} else {
+			if tt.PtrDst == nil {
+				t.Error("Should not have been nil")
+			} else if *tt.PtrDst != tt.ptrExpResult {
+				t.Errorf("Values should have been identical: '%v' != '%v'", *tt.PtrDst, tt.ptrExpResult)
+			} else if tt.PtrSrc == tt.PtrDst {
+				t.Error("Pointers should have been different")
+			}
+		}
+	}
+
+}
 
 func TestAddMissingValues(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
@@ -21,7 +79,7 @@ func TestAddMissingValues(t *testing.T) {
 			}
 		})
 
-		t.Run("supported datatypes", func(t *testing.T) {
+		t.Run("supported elem datatypes", func(t *testing.T) {
 			type testStruct struct {
 				A, B, C float64
 				D, E, F string
@@ -36,6 +94,25 @@ func TestAddMissingValues(t *testing.T) {
 				target.D != "14.0" ||
 				target.E != "5.0" ||
 				target.F != "" {
+				t.Errorf("Result was different than expected")
+			}
+		})
+
+		t.Run("supported ptr datatypes", func(t *testing.T) {
+			srcElem := []float64{10.0, 11.0, 12.0}
+			dstElem := []float64{0.0, 1.0}
+
+			type testStruct struct {
+				A, B, C, D *float64
+			}
+			source := testStruct{A: &srcElem[0], B: &srcElem[1], C: &srcElem[2], D: nil}
+			target := testStruct{A: &dstElem[0], B: &dstElem[1], C: nil, D: nil}
+			AddMissingValues(&target, source)
+
+			if *target.A != dstElem[0] ||
+				*target.B != dstElem[1] ||
+				*target.C != srcElem[2] ||
+				target.D != nil {
 				t.Errorf("Result was different than expected")
 			}
 		})
@@ -75,5 +152,6 @@ func TestAddMissingValues(t *testing.T) {
 				t.Errorf("Result was different than expected")
 			}
 		})
+
 	})
 }
