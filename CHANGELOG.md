@@ -15,12 +15,11 @@ All notable changes to this project will be documented in this file.
 ## v0.10.0 - 2020-09-20
 
 ### Added
-- Content type `rectangle` now has a new field `opacity` to allow semi-transparent regions. Accepted values are from 0.0 (0%, transparent) to 1.0 (100%, fully opaque).
+- Content type `rectangle` now has a new field `transparency` to allow semi-transparent regions. Accepted values are from 0.0 (0%, fully opaque) to 1.0 (100%, fully transparent).
 - Documentation is now automatically generated out of the MD files using mkdocs and published to https://blesmol.github.io/pfscf
 - The `pfscf fill` command will now automatically open the resulting filled chronicle PDF in the systems default PDF viewer. This can be suppressed with the new `--no-auto-open` command line switch.
 
 ### Changed
-- Changed content rectangle field "opacity" to "transparency"
 - The canvas concept. Now totally different than before.
 - The option to draw a coordinate grid across the entire page was replaced. Now it is possible to draw a coordinate grid on the canvas with the specified name.
 
