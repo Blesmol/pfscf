@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 - The `pfscf fill` command will now automatically open the resulting filled chronicle PDF in the systems default PDF viewer. This can be suppressed with the new `--noAutoOpen` command line switch.
 
 ### Changed
+- Changed content rectangle field "opacity" to "transparency"
+- The canvas concept. Now totally different than before.
+- The option to draw a coordinate grid across the entire page was replaced. Now it is possible to draw a coordinate grid on the canvas with the specified name.
 
 ### Removed
 

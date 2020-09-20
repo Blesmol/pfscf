@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/canvas"
+	"github.com/Blesmol/pfscf/pfscf/cfg"
 	"github.com/Blesmol/pfscf/pfscf/content"
 	"github.com/Blesmol/pfscf/pfscf/csv"
 	"github.com/Blesmol/pfscf/pfscf/param"
@@ -32,6 +34,7 @@ type Chronicle struct {
 	Aspectratio string
 	Parameters  param.Store
 	Presets     preset.Store
+	Canvas      canvas.Store
 	Content     content.ListStore
 
 	filename string // filename of the originating yaml file
@@ -63,6 +66,9 @@ func (ct *Chronicle) ensureStoresAreInitialized() {
 	if ct.Presets == nil {
 		ct.Presets = preset.NewStore()
 	}
+	if ct.Canvas == nil {
+		ct.Canvas = canvas.NewStore()
+	}
 	if ct.Content == nil {
 		ct.Content = content.NewListStore()
 	}
@@ -87,6 +93,8 @@ func (ct *Chronicle) inheritFrom(otherCT *Chronicle) (err error) {
 
 	ct.Presets.InheritFrom(otherCT.Presets)
 
+	ct.Canvas.InheritFrom(otherCT.Canvas)
+
 	ct.Content.InheritFrom(otherCT.Content)
 
 	if !utils.IsSet(ct.Aspectratio) {
@@ -101,11 +109,15 @@ func (ct *Chronicle) inheritFrom(otherCT *Chronicle) (err error) {
 // to be done for parameters.
 func (ct *Chronicle) resolve() (err error) {
 	if err = ct.Presets.Resolve(); err != nil {
-		return err
+		return templateErr(ct, err)
+	}
+
+	if err = ct.Canvas.Resolve(); err != nil {
+		return templateErr(ct, err)
 	}
 
 	if err = ct.Content.Resolve(ct.Presets); err != nil {
-		return err
+		return templateErr(ct, err)
 	}
 	return nil
 }
@@ -170,8 +182,12 @@ func (ct *Chronicle) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (e
 			return err
 		}
 
-		stamp.AddCanvas(0.0+xMarginPct/2, 0.0+yMarginPct/2, 100.0-xMarginPct/2, 100-yMarginPct/2)
-		defer stamp.RemoveCanvas()
+		stamp.SetPageCanvas(0.0+xMarginPct/2, 0.0+yMarginPct/2, 100.0-xMarginPct/2, 100-yMarginPct/2)
+	}
+
+	ct.Canvas.AddCanvasesToStamp(stamp)
+	if cfg.Global.DrawCanvas {
+		stamp.DrawCanvases()
 	}
 
 	// pass to content store to generate output
@@ -199,7 +215,11 @@ func (ct *Chronicle) IsValid() (err error) {
 		return templateErr(ct, err)
 	}
 
-	if err = ct.Content.IsValid(&ct.Parameters); err != nil {
+	if err = ct.Canvas.IsValid(); err != nil {
+		return templateErr(ct, err)
+	}
+
+	if err = ct.Content.IsValid(&ct.Parameters, &ct.Canvas); err != nil {
 		return templateErr(ct, err)
 	}
 

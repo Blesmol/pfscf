@@ -2,11 +2,10 @@ package content
 
 import (
 	"fmt"
-	"reflect"
 	"regexp"
-	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/canvas"
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/preset"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
@@ -19,7 +18,7 @@ var (
 
 // Entry is an interface for the content. D'oh!
 type Entry interface {
-	isValid(*param.Store) (err error)
+	isValid(*param.Store, *canvas.Store) (err error)
 	resolve(ps preset.Store) (err error)
 	generateOutput(s *stamp.Stamp, as *args.Store) (err error)
 	deepCopy() Entry
@@ -28,57 +27,6 @@ type Entry interface {
 // TODO now with no ID we should print all fields of the respective entry instead (don't forget the type)
 func contentValErr(ce Entry, errIn error) (errOut error) {
 	return fmt.Errorf("Error validating content: %v; complete content entry is: %v", errIn, ce)
-}
-
-func fillPublicFieldsFromPreset(target interface{}, pe *preset.Entry, ignoredFields ...string) (err error) {
-	// assumption: target is pointer to struct
-	utils.Assert(reflect.ValueOf(target).Kind() == reflect.Ptr, "Target argument must be passed by ptr, as we modify it")
-	utils.Assert(reflect.ValueOf(target).Elem().Kind() == reflect.Struct, "Can only process structs as target")
-
-	vDst := reflect.ValueOf(target).Elem()
-
-	for i := 0; i < vDst.NumField(); i++ {
-		fieldDst := vDst.Field(i)
-		fieldName := vDst.Type().Field(i).Name
-
-		// Ignore the Presets field, as we do not want to take over values for this.
-		if utils.Contains(ignoredFields, fieldName) { // useful for filtering out things like "Presets"
-			continue
-		}
-
-		// take care to skip unexported fields or fields that already have a value
-		if !fieldDst.CanSet() || !fieldDst.IsZero() {
-			continue
-		}
-
-		lowerFieldName := strings.ToLower(fieldName)
-		presetVal, exists := pe.Get(lowerFieldName) // field names in presets map should be all lowercase
-		if !exists {
-			continue
-		}
-		vPreset := reflect.ValueOf(presetVal)
-
-		// trivial case: equal kinds.
-		if fieldDst.Kind() == vPreset.Kind() {
-			fieldDst.Set(reflect.ValueOf(presetVal))
-			continue
-		}
-
-		// try several conversions... hooray
-		switch fieldDst.Kind() {
-		case reflect.Float64:
-			switch vPreset.Kind() {
-			case reflect.Int:
-				fieldDst.SetFloat(float64(vPreset.Int()))
-				continue
-			}
-		default:
-		}
-
-		return fmt.Errorf("Error while applying preset '%v:%v' to content, types do not match: Preset has '%v', content wants '%v'", pe.ID(), lowerFieldName, vPreset.Kind(), fieldDst.Kind())
-	}
-
-	return nil
 }
 
 // getValue returns the value that should be used for the current content.

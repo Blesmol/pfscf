@@ -3,6 +3,7 @@ package content
 import (
 	"testing"
 
+	"github.com/Blesmol/pfscf/pfscf/canvas"
 	"github.com/Blesmol/pfscf/pfscf/param"
 	"github.com/Blesmol/pfscf/pfscf/stamp"
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
@@ -19,6 +20,7 @@ func getTextCellWithDummyData(presets ...string) (tc *textCell) {
 	tc.Font = "Helvetica"
 	tc.Fontsize = 14.0
 	tc.Align = "CB"
+	tc.Canvas = "test"
 	for _, preset := range presets {
 		tc.Presets = append(tc.Presets, preset)
 	}
@@ -28,12 +30,19 @@ func getTextCellWithDummyData(presets ...string) (tc *textCell) {
 
 func TestTextCell_IsValid(t *testing.T) {
 	paramStore := param.NewStore()
+	canvasStore := canvas.NewStore()
+	canvas := canvas.NewEntry()
+	testCoord := 10.0
+	canvas.X2 = &testCoord
+	canvas.Y2 = &testCoord
+	canvasStore.Add("test", &canvas)
+
 	t.Run("errors", func(t *testing.T) {
 		t.Run("missing value", func(t *testing.T) {
 			tc := getTextCellWithDummyData()
 			tc.Font = "" // "Unset" one required value
 
-			err := tc.isValid(&paramStore)
+			err := tc.isValid(&paramStore, &canvasStore)
 			test.ExpectError(t, err, "Missing value", "Font")
 		})
 
@@ -41,7 +50,7 @@ func TestTextCell_IsValid(t *testing.T) {
 			tc := getTextCellWithDummyData()
 			tc.Y2 = 101.0
 
-			err := tc.isValid(&paramStore)
+			err := tc.isValid(&paramStore, &canvasStore)
 			test.ExpectError(t, err, "out of range", "Y2")
 		})
 
@@ -49,7 +58,7 @@ func TestTextCell_IsValid(t *testing.T) {
 			tc := getTextCellWithDummyData()
 			tc.X2 = tc.X
 
-			err := tc.isValid(&paramStore)
+			err := tc.isValid(&paramStore, &canvasStore)
 			test.ExpectError(t, err, "Coordinates for X axis are equal")
 		})
 
@@ -57,8 +66,16 @@ func TestTextCell_IsValid(t *testing.T) {
 			tc := getTextCellWithDummyData()
 			tc.Y2 = tc.Y
 
-			err := tc.isValid(&paramStore)
+			err := tc.isValid(&paramStore, &canvasStore)
 			test.ExpectError(t, err, "Coordinates for Y axis are equal")
+		})
+
+		t.Run("invalid canvas", func(t *testing.T) {
+			tc := getTextCellWithDummyData()
+			tc.Canvas = "foobar"
+
+			err := tc.isValid(&paramStore, &canvasStore)
+			test.ExpectError(t, err, "Canvas 'foobar' does not exist")
 		})
 	})
 
@@ -66,7 +83,7 @@ func TestTextCell_IsValid(t *testing.T) {
 		tc := getTextCellWithDummyData()
 		tc.X = 0.0 // set something to "zero", which is also acceptable
 
-		err := tc.isValid(&paramStore)
+		err := tc.isValid(&paramStore, &canvasStore)
 		test.ExpectNoError(t, err)
 	})
 }
@@ -103,6 +120,7 @@ func TestTextCell_Resolve(t *testing.T) {
 
 func TestTextCell_generateOutput(t *testing.T) {
 	stamp := stamp.NewStamp(100.0, 100.0)
+	stamp.AddCanvas("test", 0.0, 0.0, 100.0, 100.0)
 	testArgName := "someId"
 	testArgValue := "foobar"
 	as := getTestArgStore(testArgName, testArgValue)

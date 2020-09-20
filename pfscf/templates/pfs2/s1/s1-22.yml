@@ -2,7 +2,12 @@ id: pfs2.s1-22
 description: "#1-22: Doom of Cassomir"
 inherit: pfs2.s1
 
-presets:
-  rightbarposy:
-    y:  30.7
-    y2: 90.8
+canvas:
+  rightbar:
+    y: 23.0
+
+  summary:
+    y2: 21.0
+
+  boons:
+    y: 23.0

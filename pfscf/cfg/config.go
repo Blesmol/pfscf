@@ -20,14 +20,15 @@ var (
 type globalFlags struct {
 	Verbose        bool
 	DrawCellBorder bool
-	DrawGrid       bool
+	DrawCanvasGrid string
+	DrawCanvas     bool
 }
 
 func init() {
 	Global = globalFlags{
 		Verbose:        false,
 		DrawCellBorder: false,
-		DrawGrid:       false,
+		DrawCanvasGrid: "",
 	}
 }
 

@@ -191,8 +191,10 @@ func (pf *File) Fill(argStore *args.Store, ct *template.Chronicle, outfile strin
 		return err
 	}
 
-	if cfg.Global.DrawGrid {
-		stamp.CreateMeasurementCoordinates(5, 1)
+	if cfg.Global.DrawCanvasGrid != "" {
+		if err = stamp.DrawCanvasGrid(cfg.Global.DrawCanvasGrid); err != nil {
+			return fmt.Errorf("Error drawing canvas grid: %v", err)
+		}
 	}
 
 	// write stamp
