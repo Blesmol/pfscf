@@ -195,10 +195,8 @@ func (s *Stamp) WriteToFile(filename string) (err error) {
 	return s.pdf.OutputFileAndClose(filename)
 }
 
-// CreateMeasurementCoordinates overlays the stamp with a set of lines
-func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
-	utils.Assert(majorGap > 0, "Provided gap should be greater than 0")
-
+// DrawCanvasGrid overlays the stamp with a set of lines
+func (s *Stamp) DrawCanvasGrid(canvasID string) (err error) {
 	const (
 		labelFont      = "Arial"
 		labelFontStyle = "B"
@@ -210,9 +208,52 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 		extraSpace = float64(1.0) // points
 	)
 
-	// store away old settings and reset at the end (you never know...)
-	formerR, formerB, formerG := s.pdf.GetDrawColor()
-	defer s.pdf.SetDrawColor(formerR, formerG, formerB)
+	// find canvas for which we should draw the grid
+	var canvas canvas
+	if canvasID != "" {
+		var exists bool
+		canvas, exists = s.canvasStore[canvasID]
+		if !exists {
+			return fmt.Errorf("Cannot find canvas '%v'", canvasID)
+		}
+	} else {
+		canvas = s.pageCanvas
+	}
+	minX := canvas.xPt
+	maxX := canvas.xPt + canvas.wPt
+	pctX := canvas.wPt / 100.0
+	minY := canvas.yPt
+	maxY := canvas.yPt + canvas.hPt
+	pctY := canvas.hPt / 100.0
+	height := canvas.hPt
+	width := canvas.wPt
+
+	// calculate major and minor gap for the given canvas.
+	// Try to keep major gaps a multiple of minor gaps
+	var majorGapVertical, minorGapVertical float64
+	var majorGapHorizontal, minorGapHorizontal float64
+	for _, e := range []struct {
+		major, minor *float64
+		dim          float64
+	}{
+		{&majorGapHorizontal, &minorGapHorizontal, height},
+		{&majorGapVertical, &minorGapVertical, width},
+	} {
+		switch {
+		case e.dim < 300:
+			*e.major = 10.0
+			*e.minor = 2.0
+		default:
+			*e.major = 5.0
+			*e.minor = 1.0
+		}
+	}
+
+	// store away old relevant settings and reset at the end (you never know...)
+	formerDR, formerDB, formerDG := s.pdf.GetDrawColor()
+	defer s.pdf.SetDrawColor(formerDR, formerDG, formerDB)
+	formerFR, formerFB, formerFG := s.pdf.GetFillColor()
+	defer s.pdf.SetFillColor(formerFR, formerFG, formerFB)
 	formerLineWidth := s.pdf.GetLineWidth()
 	defer s.pdf.SetLineWidth(formerLineWidth)
 
@@ -221,63 +262,119 @@ func (s *Stamp) CreateMeasurementCoordinates(majorGap, minorGap float64) {
 	maxLabelWidth := s.pdf.GetStringWidth("x:99") + extraSpace // 100% won't be reached
 	maxLabelHeight := labelFontSize + extraSpace
 
-	minX := 0.0 + maxLabelWidth
-	maxX := s.dimX - maxLabelWidth
-	minY := 0.0 + maxLabelHeight
-	maxY := s.dimY - maxLabelHeight
+	// settings for minor gap drawing
+	s.pdf.SetDrawColor(196, 196, 196) // something lightgrayish
+	s.pdf.SetLineWidth(minorLineWidth)
 
-	// ignore minor gap if 0 (or below)
-	if minorGap > 0 {
-		// settings for minor gap drawing
-		s.pdf.SetDrawColor(196, 196, 196) // something lightgrayish
-		s.pdf.SetLineWidth(minorLineWidth)
-
-		for curPercent := 0.0; curPercent <= 100.0; curPercent += minorGap {
-			curX, curY := s.pageCanvas.relPctToPt(curPercent, curPercent)
-
-			if curX >= minX && curX <= maxX {
-				s.pdf.Line(curX, minY, curX, maxY)
-			}
-
-			if curY >= minY && curY <= maxY {
-				s.pdf.Line(minX, curY, maxX, curY)
-			}
+	// minor vertical lines
+	for curPercent := 0.0; curPercent <= 100.0; curPercent += minorGapVertical {
+		// dont't draw anything directly on the border
+		if curPercent == 0.0 || curPercent == 100.0 {
+			continue
 		}
+
+		curX := minX + (curPercent * pctX)
+		s.pdf.Line(curX, minY, curX, maxY)
+	}
+
+	// minor horizontal lines
+	for curPercent := 0.0; curPercent <= 100.0; curPercent += minorGapHorizontal {
+		// dont't draw anything directly on the border
+		if curPercent == 0.0 || curPercent == 100.0 {
+			continue
+		}
+
+		curY := minY + (curPercent * pctY)
+		s.pdf.Line(minX, curY, maxX, curY)
 	}
 
 	// settings for major gap drawing
-	s.pdf.SetDrawColor(64, 64, 255) // something blueish
+	s.pdf.SetDrawColor(64, 64, 255)   // something blueish
+	s.pdf.SetFillColor(255, 255, 255) // white
+	s.pdf.SetCellMargin(0)
 	s.pdf.SetLineWidth(majorLineWidth)
 
-	// draw major gap X lines with labels
-	for curPercent := 0.0; curPercent <= 100.0; curPercent += majorGap {
-		curX, curY := s.pageCanvas.relPctToPt(curPercent, curPercent)
-
-		if curX >= minX && curX <= maxX {
-			s.pdf.Line(curX, minY, curX, maxY)
-
-			labelText := fmt.Sprintf("x:%v", strconv.Itoa(int(curPercent)))
-			labelWidth := s.pdf.GetStringWidth(labelText)
-
-			labelXPos := curX - (labelWidth / 2.0) // place in middle of line
-			labelYTopPos := 0.0 + maxLabelHeight - extraSpace
-			labelYBottomPos := s.dimY - extraSpace
-
-			s.pdf.Text(labelXPos, labelYTopPos, labelText)
-			s.pdf.Text(labelXPos, labelYBottomPos, labelText)
+	// major vertical lines
+	for curPercent := 0.0; curPercent <= 100.0; curPercent += majorGapVertical {
+		// dont't draw anything directly on the border
+		if curPercent == 0.0 || curPercent == 100.0 {
+			continue
 		}
 
-		if curY >= minY && curY <= maxY {
-			s.pdf.Line(minX, curY, maxX, curY)
+		// line
+		curX := minX + (curPercent * pctX)
+		s.pdf.Line(curX, minY, curX, maxY)
 
-			labelText := fmt.Sprintf("y:%v", strconv.Itoa(int(curPercent)))
-			labelWidth := s.pdf.GetStringWidth(labelText)
-			labelXLeft := 0.0 + extraSpace
-			labelXRight := s.dimX - labelWidth
-			labelYPos := curY + (maxLabelHeight / 2.0) - extraSpace
+		// label
+		labelText := fmt.Sprintf("x:%v", strconv.Itoa(int(curPercent)))
+		labelWidth := s.pdf.GetStringWidth(labelText)
+		labelX := curX + extraSpace
+		rotX := curX
 
-			s.pdf.Text(labelXLeft, labelYPos, labelText)
-			s.pdf.Text(labelXRight, labelYPos, labelText)
+		// top label
+		rotYTop := minY
+		labelYTop := rotYTop - (maxLabelHeight / 2.0)
+		if labelYTop-labelWidth < 0.0 { // yes, that looks weird, but: rotation
+			rotYTop = 0.0 + labelWidth + extraSpace
+			labelYTop = rotYTop - (maxLabelHeight / 2.0)
 		}
+
+		s.pdf.TransformBegin()
+		s.pdf.TransformRotate(90, rotX, rotYTop)
+		s.pdf.SetXY(labelX, labelYTop)
+		s.pdf.CellFormat(labelWidth, maxLabelHeight, labelText, "0", 0, "LM", true, 0, "")
+		s.pdf.TransformEnd()
+
+		// bottom label
+		rotYBottom := maxY + maxLabelWidth + 2*extraSpace
+		labelYBottom := rotYBottom - (maxLabelHeight / 2.0)
+		if rotYBottom > s.dimY {
+			rotYBottom = s.dimY - extraSpace
+			labelYBottom = rotYBottom - (maxLabelHeight / 2.0)
+		}
+
+		s.pdf.TransformBegin()
+		s.pdf.TransformRotate(90, rotX, rotYBottom)
+		s.pdf.SetXY(labelX, labelYBottom)
+		s.pdf.CellFormat(maxLabelWidth, maxLabelHeight, labelText, "0", 0, "RM", true, 0, "")
+		s.pdf.TransformEnd()
 	}
+
+	// major horizontal lines + labels
+	for curPercent := 0.0; curPercent <= 100.0; curPercent += majorGapHorizontal {
+		// dont't draw anything directly on the border
+		if curPercent == 0.0 || curPercent == 100.0 {
+			continue
+		}
+
+		curY := minY + (curPercent * pctY)
+
+		// line
+		s.pdf.Line(minX, curY, maxX, curY)
+
+		// label
+		labelText := fmt.Sprintf("y:%v", strconv.Itoa(int(curPercent)))
+		labelWidth := s.pdf.GetStringWidth(labelText)
+		labelY := curY - (maxLabelHeight / 2.0)
+
+		labelXLeft := minX - (labelWidth + extraSpace)
+		if labelXLeft < 0.0 {
+			labelXLeft = 0.0
+		}
+
+		labelXRight := maxX + extraSpace
+		if (labelXRight + labelWidth) > s.dimX {
+			labelXRight = s.dimX - labelWidth
+		}
+
+		// left label
+		s.pdf.SetXY(labelXLeft, labelY)
+		s.pdf.CellFormat(labelWidth, maxLabelHeight, labelText, "0", 0, "RM", true, 0, "")
+
+		// right label
+		s.pdf.SetXY(labelXRight, labelY)
+		s.pdf.CellFormat(labelWidth, maxLabelHeight, labelText, "0", 0, "LM", true, 0, "")
+	}
+
+	return nil
 }

@@ -43,7 +43,7 @@ func TestStamp_DetermineFontSize(t *testing.T) {
 		{100.0, 16.0, 14.0, "fooooooooooooooooooooooo", 7.5},
 		{100.0, 16.0, 14.0, "foo", 14.0},
 		{100.0, 10.0, 14.0, "foo", 10.0},
-		{100.0,  2.0, 14.0, "foo", minFontSize},
+		{100.0, 2.0, 14.0, "foo", minFontSize},
 	} {
 		result = s.DeriveFontsize(tt.width, tt.height, "Arial", tt.fontsize, tt.text)
 		test.ExpectEqual(t, result, tt.expectedFontsize)
@@ -76,13 +76,30 @@ func TestStamp_WriteToFile(t *testing.T) {
 
 }
 
-func TestStamp_CreateMeasurementCoordinates(t *testing.T) {
-	t.Run("with minor gap", func(t *testing.T) {
-		s := NewStamp(395.0, 395.0)
-		s.CreateMeasurementCoordinates(5.0, 1.0)
+func TestStamp_DrawCanvasGrid(t *testing.T) {
+	canvasID := "page"
+	t.Run("outer boundaries", func(t *testing.T) {
+		s := NewStamp(1000.0, 1000.0)
+		s.AddCanvas(canvasID, 0.0, 0.0, 100.0, 100.0)
+		err := s.DrawCanvasGrid(canvasID)
+		test.ExpectNoError(t, err)
 	})
-	t.Run("without minor gap", func(t *testing.T) {
-		s := NewStamp(395.0, 395.0)
-		s.CreateMeasurementCoordinates(5.0, 0)
+	t.Run("with default values", func(t *testing.T) {
+		s := NewStamp(1000.0, 1000.0)
+		s.AddCanvas(canvasID, 10.0, 10.0, 90.0, 90.0)
+		err := s.DrawCanvasGrid(canvasID)
+		test.ExpectNoError(t, err)
+	})
+	t.Run("smaller than 300", func(t *testing.T) {
+		s := NewStamp(600.0, 600.0)
+		s.AddCanvas(canvasID, 25.5, 25.5, 74.5, 74.5)
+		err := s.DrawCanvasGrid(canvasID)
+		test.ExpectNoError(t, err)
+	})
+	t.Run("error", func(t *testing.T) {
+		s := NewStamp(600.0, 600.0)
+		// no canvas added
+		err := s.DrawCanvasGrid(canvasID)
+		test.ExpectError(t, err, "Cannot find", canvasID)
 	})
 }

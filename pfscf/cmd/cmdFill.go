@@ -30,7 +30,7 @@ func GetFillCommand() (cmd *cobra.Command) {
 
 		Run: executeFill,
 	}
-	fillCmd.Flags().BoolVarP(&cfg.Global.DrawGrid, "grid", "g", false, "Draw a coordinate grid on the output file")
+	fillCmd.Flags().StringVarP(&cfg.Global.DrawCanvasGrid, "canvas-grid", "g", "", "Draw a coordinate grid in the output file for the canvas with the provided name")
 	fillCmd.Flags().BoolVarP(&cfg.Global.DrawCellBorder, "cellBorder", "c", false, "Draw the cell borders of all added fields")
 	fillCmd.Flags().BoolVarP(&cmdFillUseExampleValues, "exampleValues", "e", false, "Use example values to fill out the chronicle")
 	fillCmd.Flags().BoolVarP(&cmdFillSuppressOpenOutfile, "noAutoOpen", "n", false, "Supress auto-opening the filled out chronicle")
