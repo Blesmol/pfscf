@@ -3,100 +3,104 @@ description: Pathfinder 2 Society Chronicle
 aspectratio: 603:783 # dimensions of chronicle page in original pdf
 
 parameters:
-  player:
-    type: text
-    description: Player name
-    example: Bob
+  "Player Info":
+    player:
+      type: text
+      description: Player name
+      example: Bob
 
-  char:
-    type: text
-    description: Players character name
-    example: Stormageddon
+    char:
+      type: text
+      description: Players character name
+      example: Stormageddon
 
-  societyid:
-    type: societyid
-    description: Pathfinder Society ID
-    example: 123456-2001
+    societyid:
+      type: societyid
+      description: Pathfinder Society ID
+      example: 123456-2001
 
-  fac1name:
-    type: text
-    description: Faction 1 Name
-    example: Grand Archive
+  "Factions":
+    fac1name:
+      type: text
+      description: Faction 1 Name
+      example: Grand Archive
 
-  fac1rep:
-    type: text
-    description: Faction 1 Reputation points
-    example: 4
+    fac1rep:
+      type: text
+      description: Faction 1 Reputation points
+      example: 4
 
-  fac2name:
-    type: text
-    description: Faction 2 Name
-    example: Grand Archive
+    fac2name:
+      type: text
+      description: Faction 2 Name
+      example: Grand Archive
 
-  fac2rep:
-    type: text
-    description: Faction 2 Reputation points
-    example: 4
+    fac2rep:
+      type: text
+      description: Faction 2 Reputation points
+      example: 4
 
-  fac3name:
-    type: text
-    description: Faction 3 Name
-    example: Grand Archive
+    fac3name:
+      type: text
+      description: Faction 3 Name
+      example: Grand Archive
 
-  fac3rep:
-    type: text
-    description: Faction 3 Reputation points
-    example: 4
+    fac3rep:
+      type: text
+      description: Faction 3 Reputation points
+      example: 4
 
-  tier:
-    type: text
-    description: "Players' tier ('low' or 'high')"
-    example: low
+  "Rewards":
+    tier:
+      type: text
+      description: "Players' tier ('low' or 'high')"
+      example: low
 
-  xp:
-    type: text
-    description: Experience points
-    example: 4
+    xp:
+      type: text
+      description: Experience points
+      example: 4
 
-  gp:
-    type: text
-    description: Gold pieces
-    example: 4gp 2sp
+    gp:
+      type: text
+      description: Gold pieces
+      example: 4gp 2sp
 
-  income:
-    type: text
-    description: Earned income
-    example: 8cp
+    income:
+      type: text
+      description: Earned income
+      example: 8cp
 
-  fame:
-    type: text
-    description: Fame
-    example: 4
+    fame:
+      type: text
+      description: Fame
+      example: 4
 
-  event:
-    type: text
-    description: Event name
-    example: PaizoCon
+  "Event Info":
+    event:
+      type: text
+      description: Event name
+      example: PaizoCon
 
-  eventcode:
-    type: text
-    description: Event code
-    example: 1234
+    eventcode:
+      type: text
+      description: Event code
+      example: 1234
 
-  date:
-    type: text
-    description: The date on which the game session took place
-    example: 27.06.2020
+    date:
+      type: text
+      description: The date on which the game session took place
+      example: 27.06.2020
 
-  gm:
-    type: text
-    description: Gamemasters name
-    example: J. Doe
+    gm:
+      type: text
+      description: Gamemasters name
+      example: J. Doe
 
-  gmid:
-    type: text
-    description: Gamemasters PFS ID
-    example: 654321
+    gmid:
+      type: text
+      description: Gamemasters PFS ID
+      example: 654321
 
 canvas:
   page:

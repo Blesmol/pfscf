@@ -2,110 +2,115 @@ id: sfs
 description: Starfinder Society Chronicle
 
 parameters:
-  player:
-    type: text
-    description: Player name
-    example: Bob
+  "Player Info":
+    player:
+      type: text
+      description: Player name
+      example: Bob
 
-  char:
-    type: text
-    description: Players character name
-    example: Stormageddon
+    char:
+      type: text
+      description: Players character name
+      example: Stormageddon
 
-  societyid:
-    type: societyid
-    description: Starfinder Society ID
-    example: 123456-701
+    societyid:
+      type: societyid
+      description: Starfinder Society ID
+      example: 123456-701
 
-  faction:
-    type: text
-    description: Players faction
-    example: Dataphiles
+    faction:
+      type: text
+      description: Players faction
+      example: Dataphiles
 
-  xp:
-    type: text
-    description: Experience points
-    example: 4
 
-  credits:
-    type: text
-    description: Credits garnered
-    example: 696
+  "Rewards":
+    xp:
+      type: text
+      description: Experience points
+      example: 4
 
-  dayjob:
-    type: text
-    description: Earned income
-    example: 123
+    credits:
+      type: text
+      description: Credits garnered
+      example: 696
 
-  fame:
-    type: text
-    description: Fame
-    example: 4
+    dayjob:
+      type: text
+      description: Earned income
+      example: 123
 
-  event:
-    type: text
-    description: Event name
-    example: PaizoCon
+    fame:
+      type: text
+      description: Fame
+      example: 4
 
-  eventcode:
-    type: text
-    description: Event code
-    example: 1234
+  "Factions":
+    fac1name:
+      type: text
+      description: Faction 1 Name
+      example: Dataphiles
 
-  date:
-    type: text
-    description: The date on which the game session took place
-    example: 27.06.2020
+    fac1rep:
+      type: text
+      description: Faction 1 Reputation points
+      example: 4
 
-  gm:
-    type: text
-    description: Gamemasters name
-    example: J. Doe
+    fac2name:
+      type: text
+      description: Faction 2 Name
+      example: Wayfinders
 
-  gmid:
-    type: text
-    description: Gamemasters PFS ID
-    example: 654321
+    fac2rep:
+      type: text
+      description: Faction 2 Reputation points
+      example: 4
 
-  gminitials:
-    type: text
-    description: Gamemaster initials
-    example: JD
+    fac3name:
+      type: text
+      description: Faction 3 Name
+      example: Second Seekers
 
-  fac1name:
-    type: text
-    description: Faction 1 Name
-    example: Dataphiles
+    fac3rep:
+      type: text
+      description: Faction 3 Reputation points
+      example: 4
 
-  fac1rep:
-    type: text
-    description: Faction 1 Reputation points
-    example: 4
+    infamy:
+      type: text
+      description: Infamy
+      example: 4
 
-  fac2name:
-    type: text
-    description: Faction 2 Name
-    example: Wayfinders
+  "Event Info":
+    event:
+      type: text
+      description: Event name
+      example: PaizoCon
 
-  fac2rep:
-    type: text
-    description: Faction 2 Reputation points
-    example: 4
+    eventcode:
+      type: text
+      description: Event code
+      example: 1234
 
-  fac3name:
-    type: text
-    description: Faction 3 Name
-    example: Second Seekers
+    date:
+      type: text
+      description: The date on which the game session took place
+      example: 27.06.2020
 
-  fac3rep:
-    type: text
-    description: Faction 3 Reputation points
-    example: 4
+    gm:
+      type: text
+      description: Gamemasters name
+      example: J. Doe
 
-  infamy:
-    type: text
-    description: Infamy
-    example: 4
+    gmid:
+      type: text
+      description: Gamemasters PFS ID
+      example: 654321
+
+    gminitials:
+      type: text
+      description: Gamemaster initials
+      example: JD
 
 canvas:
   page:
