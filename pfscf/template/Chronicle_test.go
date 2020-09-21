@@ -26,10 +26,18 @@ id: parent
 description: some description
 
 parameters:
-  foo:
-    type: text
-    description: d
-    example: foo
+  group1:
+    foo:
+      type: text
+      description: d
+      example: foo
+
+canvas:
+  page:
+    x: 0.0
+    y: 0.0
+    x2: 100.0
+    y2: 100.0
 
 presets:
   bar:
@@ -52,6 +60,8 @@ preset:
 parameters:
 
 content:
+
+canvas:
 `
 
 		parentTemplate := NewChronicleTemplate("parent.yml")

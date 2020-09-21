@@ -18,8 +18,9 @@ var (
 )
 
 type societyidEntry struct {
-	id   string
+	id      string
 	theRank int
+	group   string
 
 	TheExample     string `yaml:"example"`
 	TheDescription string `yaml:"description"`
@@ -44,6 +45,14 @@ func (e *societyidEntry) Example() string {
 
 func (e *societyidEntry) Description() string {
 	return e.TheDescription
+}
+
+func (e *societyidEntry) Group() string {
+	return e.group
+}
+
+func (e *societyidEntry) setGroup(groupID string) {
+	e.group = groupID
 }
 
 func (e *societyidEntry) rank() int {

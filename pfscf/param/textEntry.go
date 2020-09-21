@@ -13,8 +13,9 @@ const (
 )
 
 type textEntry struct {
-	id   string
+	id      string
 	theRank int
+	group   string
 
 	TheExample     string `yaml:"example"`
 	TheDescription string `yaml:"description"`
@@ -39,6 +40,14 @@ func (e *textEntry) Example() string {
 
 func (e *textEntry) Description() string {
 	return e.TheDescription
+}
+
+func (e *textEntry) Group() string {
+	return e.group
+}
+
+func (e *textEntry) setGroup(groupID string) {
+	e.group = groupID
 }
 
 func (e *textEntry) rank() int {
