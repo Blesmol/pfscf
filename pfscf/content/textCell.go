@@ -110,6 +110,7 @@ func (ce *textCell) deepCopy() Entry {
 		Font:     ce.Font,
 		Fontsize: ce.Fontsize,
 		Align:    ce.Align,
+		Canvas:   ce.Canvas,
 	}
 	for _, preset := range ce.Presets {
 		copy.Presets = append(copy.Presets, preset)
