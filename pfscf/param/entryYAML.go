@@ -10,6 +10,10 @@ type entryYAML struct {
 	e Entry
 }
 
+var (
+	rankCounter int
+)
+
 func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	// determine type of entry
 	type entryTypeYAML struct{ Type string }
@@ -38,6 +42,9 @@ func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 	if err != nil {
 		return err
 	}
+
+	rankCounter++
+	s.e.setRank(rankCounter)
 
 	return nil
 }

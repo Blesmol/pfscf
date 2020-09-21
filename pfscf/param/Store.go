@@ -110,15 +110,26 @@ func (s *Store) GetExampleArguments() (result []string) {
 	return result
 }
 
-// GetSortedKeys returns the list of keys contained in this store as sorted list.
+// GetSortedKeys returns the list of keys contained in this store as list sorted by rank.
 func (s *Store) GetSortedKeys() (result []string) {
-	result = make([]string, 0)
+	type pair struct {
+		id   string
+		rank int
+	}
+	sorting := make([]pair, 0)
 
-	for key := range *s {
-		result = append(result, key)
+	for key, entry := range *s {
+		sorting = append(sorting, pair{key, entry.rank()})
 	}
 
-	sort.Strings(result)
+	sort.Slice(sorting, func(i, j int) bool {
+		return sorting[i].rank < sorting[j].rank
+	})
+
+	result = make([]string, 0)
+	for _, sortingEntry := range sorting {
+		result = append(result, sortingEntry.id)
+	}
 
 	return result
 }

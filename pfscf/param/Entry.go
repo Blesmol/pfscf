@@ -14,6 +14,8 @@ type Entry interface {
 	Type() string
 	Example() string
 	Description() string
+	rank() int
+	setRank(int)
 	deepCopy() Entry
 	isValid() error
 	validateAndProcessArgs(*args.Store) error

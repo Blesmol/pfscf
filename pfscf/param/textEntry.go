@@ -13,7 +13,8 @@ const (
 )
 
 type textEntry struct {
-	id string
+	id   string
+	theRank int
 
 	TheExample     string `yaml:"example"`
 	TheDescription string `yaml:"description"`
@@ -38,6 +39,14 @@ func (e *textEntry) Example() string {
 
 func (e *textEntry) Description() string {
 	return e.TheDescription
+}
+
+func (e *textEntry) rank() int {
+	return e.theRank
+}
+
+func (e *textEntry) setRank(rank int) {
+	e.theRank = rank
 }
 
 func (e *textEntry) deepCopy() Entry {
