@@ -18,7 +18,8 @@ var (
 )
 
 type societyidEntry struct {
-	id string
+	id   string
+	theRank int
 
 	TheExample     string `yaml:"example"`
 	TheDescription string `yaml:"description"`
@@ -43,6 +44,14 @@ func (e *societyidEntry) Example() string {
 
 func (e *societyidEntry) Description() string {
 	return e.TheDescription
+}
+
+func (e *societyidEntry) rank() int {
+	return e.theRank
+}
+
+func (e *societyidEntry) setRank(rank int) {
+	e.theRank = rank
 }
 
 func (e *societyidEntry) deepCopy() Entry {
