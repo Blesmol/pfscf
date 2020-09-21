@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 ### Removed
 
 ### Fixed
+
+## v0.10.1 - 2020-09-21
+
+### Fixed
 - Fixed issue with `canvas` entries in `textCell` objects
 
 ## v0.10.0 - 2020-09-20
