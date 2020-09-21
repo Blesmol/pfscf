@@ -14,6 +14,8 @@ type Entry interface {
 	Type() string
 	Example() string
 	Description() string
+	Group() string
+	setGroup(string)
 	rank() int
 	setRank(int)
 	deepCopy() Entry

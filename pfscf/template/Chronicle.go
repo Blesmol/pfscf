@@ -127,31 +127,42 @@ func (ct *Chronicle) resolve() (err error) {
 func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, as *args.Store) (err error) {
 	const numPlayers = 7
 
+	// file header
 	records := [][]string{
-		{"#ID", ct.ID},
-		{"#Description", ct.Description},
-		{"#"},
-		{"#Players"}, // will be filled below with labels
+		{"# ID", ct.ID},
+		{"# Description", ct.Description},
+		{""},
+		{"# Players"}, // will be filled below with labels
 	}
+
+	// Add "Player <x>" labels to the "#Players" line
 	for idx := 1; idx <= numPlayers; idx++ {
 		outerIdx := len(records) - 1
 		records[outerIdx] = append(records[outerIdx], fmt.Sprintf("Player %d", idx))
 	}
 
-	for _, contentID := range ct.Parameters.GetSortedKeys() {
-		// entry should be large enough for id column + 7 players
-		entry := make([]string, numPlayers+1)
+	// fill from parameters
+	for _, groupName := range ct.Parameters.GetSortedGroups() {
+		// Header for the current group
+		records = append(records, []string{""})
+		records = append(records, []string{fmt.Sprintf("# %v", groupName)})
 
-		entry[0] = contentID
+		// add parameters from current group
+		for _, paramID := range ct.Parameters.GetSortedKeysForGroup(groupName) {
+			// entry should be large enough for id column + 7 players
+			entry := make([]string, numPlayers+1)
 
-		// check if some value was provided on the cmd line that should be filled in everywhere
-		if val, exists := as.Get(contentID); exists {
-			for colIdx := 1; colIdx <= numPlayers; colIdx++ {
-				entry[colIdx] = val
+			entry[0] = paramID // first column is always parameter name
+
+			// check if some value was provided on the cmd line that should be filled in all columns for this parameter
+			if val, exists := as.Get(paramID); exists {
+				for colIdx := 1; colIdx <= numPlayers; colIdx++ {
+					entry[colIdx] = val
+				}
 			}
-		}
 
-		records = append(records, entry)
+			records = append(records, entry)
+		}
 	}
 
 	err = csv.WriteFile(filename, separator, records)

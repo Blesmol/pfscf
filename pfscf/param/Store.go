@@ -39,7 +39,7 @@ func (s *Store) Get(id string) (e Entry, exists bool) {
 
 // UnmarshalYAML unmarshals a Parameter Store
 func (s *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
-	type storeYAML map[string]entryYAML
+	type storeYAML map[string]map[string]entryYAML
 
 	sy := make(storeYAML, 0)
 
@@ -49,8 +49,11 @@ func (s *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	}
 
 	*s = NewStore()
-	for key, value := range sy {
-		s.add(key, value.e)
+	for groupID, group := range sy {
+		for entryID, entry := range group {
+			entry.e.setGroup(groupID)
+			s.add(entryID, entry.e)
+		}
 	}
 
 	return nil
@@ -129,6 +132,38 @@ func (s *Store) GetSortedKeys() (result []string) {
 	result = make([]string, 0)
 	for _, sortingEntry := range sorting {
 		result = append(result, sortingEntry.id)
+	}
+
+	return result
+}
+
+// GetSortedKeysForGroup returns the list of key IDs contained in the listed group.
+func (s *Store) GetSortedKeysForGroup(group string) (result []string) {
+	result = make([]string, 0)
+
+	sortedKeys := s.GetSortedKeys()
+
+	for _, key := range sortedKeys {
+		entry := (*s)[key]
+		if group == entry.Group() {
+			result = append(result, entry.ID())
+		}
+	}
+
+	return result
+}
+
+// GetSortedGroups returns the list of groups sorted by rank
+func (s *Store) GetSortedGroups() (result []string) {
+	result = make([]string, 0)
+
+	sortedKeys := s.GetSortedKeys()
+
+	for _, key := range sortedKeys {
+		entry := (*s)[key]
+		if !utils.Contains(result, entry.Group()) {
+			result = append(result, entry.Group())
+		}
 	}
 
 	return result
