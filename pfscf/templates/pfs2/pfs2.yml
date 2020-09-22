@@ -110,28 +110,15 @@ canvas:
     y2: 100.0
 
   main:
-    # this should be a canvas matching the "main" content box, only excluding the title,
-    # chronicle nr and herolab code.
-    # Having this allows an easy visual check on whether the page is aligned.
+    # this should be a canvas matching the "main" content box,
+    # only excluding the title, chronicle nr and herolab code.
+    # Having this allows an easy visual check on whether the
+    # page is aligned or has extra margins
     parent: page
     x:   6.20
     y:  11.40
     x2: 94.00
     y2: 95.40
-
-  playerinfo:
-    parent: main
-    x:   0.0
-    y:   0.0
-    x2: 68.4
-    y2: 10.2
-
-  factions:
-    parent: main
-    x:   68.7
-    y:    0.0
-    x2: 100.0
-    y2:  10.2
 
   rightbar:
     parent: main
@@ -140,40 +127,19 @@ canvas:
     x2: 100.0
     y2:  94.45
 
-  gminfo:
-    parent: main
-    x:    0.0
-    y:   94.6
-    x2: 100.0
-    y2: 100.0
+  #notes:
+  #  parent: main
+  #  x:   0.0
+  #  y:  84.8
+  #  x2: 39.5
+  #  y2: 94.6
 
-  notes:
-    parent: main
-    x:   0.0
-    y:  84.8
-    x2: 39.5
-    y2: 94.6
-
-  downtime:
-    parent: main
-    x:  40.0
-    y:  84.8
-    x2: 79.8
-    y2: 94.6
-
-  summary:
-    parent: main
-    x:    0.0
-    y:   12.0
-    x2: 100.0
-    y2:  26.2
-
-  boons:
-    parent: main
-    x:   0.0
-    y:  28.1
-    x2: 79.8
-    y2: 42.3
+  #downtime:
+  #  parent: main
+  #  x:  40.0
+  #  y:  84.8
+  #  x2: 79.8
+  #  y2: 94.6
 
   middlebox:
     parent: main
@@ -217,8 +183,8 @@ presets:
 
   playerinfo:
     presets: [defaultfont]
-    canvas: playerinfo
-    y:  53.8
+    canvas: main
+    y:  5.5
     align: CB
 
   rightbar:
@@ -228,40 +194,40 @@ presets:
     x2: 100.0
     align: CM
 
-  gminfo:
+  eventinfo:
     presets: [defaultfont]
-    canvas: gminfo
-    y:  63.5
+    canvas: main
+    y:  98.0
     align: CB
 
   factions:
     presets: [defaultfont]
-    canvas: factions
+    canvas: main
     fontsize: 8
 
   faccolname:
     presets: [factions]
-    x:  18.4
-    x2: 53.2
+    x:  74.4
+    x2: 85.5
     align: CB
 
   faccolrep1:
     presets: [factions]
-    x:  78.0
-    x2: 87.9
+    x:  93.1
+    x2: 96.2
     align: CB
 
   facline1:
     presets: [factions]
-    y:  28.5
+    y:  2.85
 
   facline2:
     presets: [factions]
-    y:  58.5
+    y:  5.95
 
   facline3:
     presets: [factions]
-    y:  88.5
+    y:  9.0
 
   greyout:
     color: white
@@ -277,14 +243,14 @@ content:
   - value: param:player
     type: textCell
     presets: [playerinfo]
-    x:  1.2
-    x2: 28.8
+    x:   0.8
+    x2: 19.7
 
   - value: param:char
     type: textCell
     presets: [playerinfo]
-    x:  35.8
-    x2: 64.2
+    x:  24.5
+    x2: 43.9
 
   - type: trigger
     trigger: param:societyid
@@ -292,27 +258,27 @@ content:
       - type: rectangle
         presets: [playerinfo]
         color: white
-        x:  83.0
-        y:  32.0
-        x2: 89.0
-        y2: 50.2
+        x:  57.5
+        y:   3.4
+        x2: 60.5
+        y2:  5.2
       - value: param:societyid.player
         type: textCell
         presets: [playerinfo]
-        x:  65.9
-        x2: 84.3
+        x:  45.1
+        x2: 57.6
         align: RB
       - value: "-"
         type: textCell
         presets: [playerinfo]
-        x:  84.3
-        x2: 87.0
+        x:  57.6
+        x2: 59.5
         align: CB
       - value: param:societyid.char
         type: textCell
         presets: [playerinfo]
-        x:  87.0
-        x2: 99.2
+        x:  59.5
+        x2: 67.8
         align: LB
 
   - value: param:xp
@@ -341,31 +307,31 @@ content:
 
   - value: param:event
     type: textCell
-    presets: [gminfo]
+    presets: [eventinfo]
     x:   1.1
     x2: 20.0
 
   - value: param:eventcode
     type: textCell
-    presets: [gminfo]
+    presets: [eventinfo]
     x:  22.7
     x2: 33.0
 
   - value: param:date
     type: textCell
-    presets: [gminfo]
+    presets: [eventinfo]
     x:  35.8
     x2: 50.3
 
   - value: param:gm
     type: textCell
-    presets: [gminfo]
+    presets: [eventinfo]
     x:  53.1
     x2: 77.2
 
   - value: param:gmid
     type: textCell
-    presets: [gminfo]
+    presets: [eventinfo]
     x:  79.9
     x2: 99.3
 

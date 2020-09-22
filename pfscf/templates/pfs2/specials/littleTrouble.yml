@@ -6,13 +6,6 @@ canvas:
   rightbar:
     y:  21.3
 
-  summary:
-    y2: 18.9
-
-  boons:
-    y:  21.0
-    y2: 46.3
-
   middlebox:
     y: 48.3
 
