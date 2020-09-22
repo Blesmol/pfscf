@@ -56,25 +56,65 @@ parameters:
       description: "Players' tier ('low' or 'high')"
       example: low
 
+    starting_xp:
+      type: text
+      description: Starting XP
+      example: 12
+
     xp:
       type: text
-      description: Experience points
+      description: XP Gained
       example: 4
+
+    final_xp:
+      type: text
+      description: Final XP
+      example: 16
+
+    starting_gp:
+      type: text
+      description: Starting GP
+      example: 23gp 4sp
 
     gp:
       type: text
-      description: Gold pieces
+      description: GP Gained
       example: 4gp 2sp
 
     income:
       type: text
-      description: Earned income
+      description: Earn income
       example: 8cp
+
+    items_sold:
+      type: text
+      description: Items sold
+      example: 2gp
+
+    gp_spent:
+      type: text
+      description: GP Spent
+      example: 17sp
+
+    total_gp:
+      type: text
+      description: Total GP
+      example: 27gp 9sp 8cp
+
+    starting_fame:
+      type: text
+      description: Starting Fame
+      example: 12
 
     fame:
       type: text
       description: Fame
       example: 4
+
+    total_fame:
+      type: text
+      description: Total Fame
+      example: 16
 
   "Event Info":
     event:
@@ -281,11 +321,29 @@ content:
         x2: 67.8
         align: LB
 
+  - value: param:starting_xp
+    type: textCell
+    presets: [rightbar]
+    y:  0.1
+    y2: 5.6
+
   - value: param:xp
     type: textCell
     presets: [rightbar]
     y:   8.4
     y2: 13.9
+
+  - value: param:final_xp
+    type: textCell
+    presets: [rightbar]
+    y:  16.8
+    y2: 22.3
+
+  - value: param:starting_gp
+    type: textCell
+    presets: [rightbar]
+    y:  25.3
+    y2: 30.6
 
   - value: param:gp
     type: textCell
@@ -299,11 +357,41 @@ content:
     y:  41.8
     y2: 47.3
 
+  - value: param:items_sold
+    type: textCell
+    presets: [rightbar]
+    y:  50.1
+    y2: 55.7
+
+  - value: param:gp_spent
+    type: textCell
+    presets: [rightbar]
+    y:  58.5
+    y2: 64.0
+
+  - value: param:total_gp
+    type: textCell
+    presets: [rightbar]
+    y:  66.9
+    y2: 72.4
+
+  - value: param:starting_fame
+    type: textCell
+    presets: [rightbar]
+    y:  75.4
+    y2: 80.8
+
   - value: param:fame
     type: textCell
     presets: [rightbar]
     y:  83.6
     y2: 89.0
+
+  - value: param:total_fame
+    type: textCell
+    presets: [rightbar]
+    y:  92.0
+    y2: 97.6
 
   - value: param:event
     type: textCell
