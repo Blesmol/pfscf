@@ -13,8 +13,9 @@ import (
 )
 
 var (
-	actionBatchCreateUseExampleValues bool
-	actionBatchCreateSeparator        string
+	actionBatchCreateUseExampleValues    bool
+	actionBatchCreateSeparator           string
+	actionBatchCreateSuppressOpenOutfile bool
 )
 
 // GetBatchCommand returns the cobra command for the "batch" action.
@@ -42,6 +43,7 @@ func GetBatchCommand() (cmd *cobra.Command) {
 	}
 	batchCreateCmd.Flags().BoolVarP(&actionBatchCreateUseExampleValues, "exampleValues", "e", false, "Use example values to fill out the chronicle")
 	batchCreateCmd.Flags().StringVarP(&actionBatchCreateSeparator, "separator", "s", ";", "Field separator character for resulting CSV file")
+	batchCreateCmd.Flags().BoolVarP(&actionBatchCreateSuppressOpenOutfile, "no-auto-open", "n", false, "Suppress auto-opening the created CSV file")
 
 	batchCmd.AddCommand(batchCreateCmd)
 
@@ -96,6 +98,12 @@ func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
 
 	err = cTmpl.WriteToCsvFile(outFile, separator, argStore)
 	utils.ExitOnError(err, "Error writing CSV file for template %v", tmplName)
+
+	if !actionBatchCreateSuppressOpenOutfile {
+		fmt.Printf("Trying to open file '%v' in standard viewer\n", outFile)
+		err = utils.OpenWithDefaultViewer(outFile)
+		utils.ExitOnError(err, "Error opening file")
+	}
 }
 
 func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
