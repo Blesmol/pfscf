@@ -1,5 +1,6 @@
 id: sfs
 description: Starfinder Society Chronicle
+aspectratio: 603:783 # dimensions of chronicle page in original pdf
 
 parameters:
   "Player Info":
@@ -22,7 +23,6 @@ parameters:
       type: text
       description: Players faction
       example: Dataphiles
-
 
   "Rewards":
     xp:
@@ -119,12 +119,22 @@ canvas:
     x2: 100.0
     y2: 100.0
 
-  rightbar:
+  main:
+    # this should be a canvas matching the "main" content box,
+    # only excluding the title,and chronicle number.
+    # Having this allows an easy visual check on whether the page is aligned.
     parent: page
-    x:  78.4
-    y:  35.0
-    x2: 93.9
-    y2: 90.8
+    x:   6.0
+    y:  12.2
+    x2: 94.2
+    y2: 95.90
+
+  rightbar:
+    parent: main
+    x:   82.2
+    y:    0.0
+    x2: 100.0
+    y2:  92.3
       
 presets:
   defaultfont:
@@ -133,30 +143,25 @@ presets:
 
   topline:
     presets: [defaultfont]
+    canvas: page
     y:  16.9
     align: CB
-    canvas: page
 
   rightbar:
     presets: [defaultfont]
-    x:  78.4
-    x2: 94.1
-    align: CM
     canvas: rightbar
-
-  rightbarprefixedfield:
-    presets: [rightbar]
-    x: 80.0
+    x:    0.0
+    x2: 100.0
+    align: CM
 
   rightbargmvalues:
-    presets: [rightbarprefixedfield]
-    x2: 88.8
+    presets: [rightbar]
+    x2: 65.0
     align: CB
 
   rightbargminits:
     presets: [rightbar]
-    x: 88.8
-    align: CM
+    x: 65.0
 
   bottomline:
     presets: [defaultfont]
@@ -255,13 +260,13 @@ content:
       - value: param:xp
         type: textCell
         presets: [rightbargmvalues]
-        y:  38.5
-        y2: 41.1
+        y:  34.0
+        y2: 37.4
       - value: param:gminitials
         type: textCell
         presets: [rightbargminits]
-        y:  39.7
-        y2: 41.1
+        y:  35.6
+        y2: 37.4
 
   - type: trigger
     trigger: param:fame
@@ -269,13 +274,13 @@ content:
       - value: param:fame
         type: textCell
         presets: [rightbargmvalues]
-        y:  52.3
-        y2: 54.9
+        y:  51.9
+        y2: 55.3
       - value: param:gminitials
         type: textCell
         presets: [rightbargminits]
-        y:  53.5
-        y2: 54.9
+        y:  53.6
+        y2: 55.3
 
   - type: trigger
     trigger: param:credits
@@ -283,14 +288,13 @@ content:
       - value: param:credits
         type: textCell
         presets: [rightbargmvalues]
-        y:  71.0
-        #y:  72.2
-        y2: 73.5
+        y:  76.1
+        y2: 79.4
       - value: param:gminitials
         type: textCell
         presets: [rightbargminits]
-        y:  72.2
-        y2: 73.5
+        y:  77.7
+        y2: 79.4
 
   - type: trigger
     trigger: param:dayjob
@@ -298,13 +302,13 @@ content:
       - value: param:dayjob
         type: textCell
         presets: [rightbargmvalues]
-        y:  75.4
-        y2: 78.1
+        y:  81.7
+        y2: 85.2
       - value: param:gminitials
         type: textCell
         presets: [rightbargminits]
-        y:  76.6
-        y2: 78.1
+        y:  83.5
+        y2: 85.2
 
   - value: param:event
     type: textCell
