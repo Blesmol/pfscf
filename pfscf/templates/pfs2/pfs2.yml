@@ -19,36 +19,56 @@ parameters:
       description: Pathfinder Society ID
       example: 123456-2001
 
+    chronicle:
+      type: text
+      description: Character Chronicle
+      example: 5
+
   "Factions":
-    fac1name:
+    fac1_name:
       type: text
-      description: Faction 1 Name
+      description: "Faction 1: Name"
       example: Grand Archive
 
-    fac1rep:
+    fac1_rep_gained:
       type: text
-      description: Faction 1 Reputation points
+      description: "Faction 1: Gained reputation points"
       example: 4
 
-    fac2name:
+    fac1_rep_total:
       type: text
-      description: Faction 2 Name
-      example: Grand Archive
+      description: "Faction 1: Total reputation points"
+      example: 16
 
-    fac2rep:
+    fac2_name:
       type: text
-      description: Faction 2 Reputation points
+      description: "Faction 2: Name"
+      example: "Envoys' Alliance"
+
+    fac2_rep_gained:
+      type: text
+      description: "Faction 2: Gained reputation points"
       example: 4
 
-    fac3name:
+    fac2_rep_total:
       type: text
-      description: Faction 3 Name
-      example: Grand Archive
+      description: "Faction 2: Total reputation points"
+      example: 12
 
-    fac3rep:
+    fac3_name:
       type: text
-      description: Faction 3 Reputation points
+      description: "Faction 3: Name"
+      example: Horizon Hunters
+
+    fac3_rep_gained:
+      type: text
+      description: "Faction 3: Gained reputation points"
       example: 4
+
+    fac3_rep_total:
+      type: text
+      description: "Faction 3: Total reputation points"
+      example: 8
 
   "Rewards":
     tier:
@@ -245,16 +265,22 @@ presets:
     canvas: main
     fontsize: 8
 
-  faccolname:
+  faccol_name:
     presets: [factions]
     x:  74.4
     x2: 85.5
     align: CB
 
-  faccolrep1:
+  faccol_rep_gained:
     presets: [factions]
     x:  93.1
     x2: 96.2
+    align: CB
+
+  faccol_rep_total:
+    presets: [factions]
+    x:  96.3
+    x2: 99.3
     align: CB
 
   facline1:
@@ -320,6 +346,16 @@ content:
         x:  59.5
         x2: 67.8
         align: LB
+
+  - value: param:chronicle
+    type: textCell
+    presets: [defaultfont]
+    canvas: page
+    x:  80.0
+    y:   4.6
+    x2: 93.8
+    y2:  6.7
+    align: CM
 
   - value: param:starting_xp
     type: textCell
@@ -423,29 +459,41 @@ content:
     x:  79.9
     x2: 99.3
 
-  - value: param:fac1name
+  - value: param:fac1_name
     type: textCell
-    presets: [faccolname, facline1]
+    presets: [faccol_name, facline1]
 
-  - value: param:fac1rep
+  - value: param:fac1_rep_gained
     type: textCell
-    presets: [faccolrep1, facline1]
+    presets: [faccol_rep_gained, facline1]
 
-  - value: param:fac2name
+  - value: param:fac1_rep_total
     type: textCell
-    presets: [faccolname, facline2]
+    presets: [faccol_rep_total, facline1]
 
-  - value: param:fac2rep
+  - value: param:fac2_name
     type: textCell
-    presets: [faccolrep1, facline2]
+    presets: [faccol_name, facline2]
 
-  - value: param:fac3name
+  - value: param:fac2_rep_gained
     type: textCell
-    presets: [faccolname, facline3]
+    presets: [faccol_rep_gained, facline2]
 
-  - value: param:fac3rep
+  - value: param:fac2_rep_total
     type: textCell
-    presets: [faccolrep1, facline3]
+    presets: [faccol_rep_total, facline2]
+
+  - value: param:fac3_name
+    type: textCell
+    presets: [faccol_name, facline3]
+
+  - value: param:fac3_rep_gained
+    type: textCell
+    presets: [faccol_rep_gained, facline3]
+
+  - value: param:fac3_rep_total
+    type: textCell
+    presets: [faccol_rep_total, facline3]
 
   - type: choice
     choice: param:tier
