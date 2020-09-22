@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 
 ### Fixed
+- Coordinates for "sfs" template were broken
 
 ## v0.10.1 - 2020-09-21
 
