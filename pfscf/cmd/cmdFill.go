@@ -33,7 +33,7 @@ func GetFillCommand() (cmd *cobra.Command) {
 	fillCmd.Flags().StringVarP(&cfg.Global.DrawCanvasGrid, "canvas-grid", "g", "", "Draw a coordinate grid in the output file for the canvas with the provided name")
 	fillCmd.Flags().BoolVarP(&cfg.Global.DrawCellBorder, "cellBorder", "c", false, "Draw the cell borders of all added fields")
 	fillCmd.Flags().BoolVarP(&cmdFillUseExampleValues, "exampleValues", "e", false, "Use example values to fill out the chronicle")
-	fillCmd.Flags().BoolVarP(&cmdFillSuppressOpenOutfile, "no-auto-open", "n", false, "Supress auto-opening the filled out chronicle")
+	fillCmd.Flags().BoolVarP(&cmdFillSuppressOpenOutfile, "no-auto-open", "n", false, "Suppress auto-opening the filled out chronicle")
 	fillCmd.Flags().BoolVarP(&cfg.Global.DrawCanvas, "draw-canvas", "d", false, "Draw a border around all defined canvases")
 
 	return fillCmd
@@ -73,7 +73,7 @@ func executeFill(cmd *cobra.Command, cmdArgs []string) {
 	utils.ExitOnError(err, "Error when filling out chronicle")
 
 	if !cmdFillSuppressOpenOutfile {
-		fmt.Printf("Opening file '%v' in standard PDF viewer\n", outFile)
+		fmt.Printf("Trying to open file '%v' in standard PDF viewer\n", outFile)
 		err = utils.OpenWithDefaultViewer(outFile)
 		utils.ExitOnError(err, "Error opening PDF file")
 	}
