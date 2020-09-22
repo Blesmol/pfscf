@@ -101,17 +101,8 @@ func (ce *textCell) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 // deepCopy creates a deep copy of this entry.
 // TODO create generic deep-copy function for public fields
 func (ce *textCell) deepCopy() Entry {
-	copy := textCell{
-		Value:    ce.Value,
-		X:        ce.X,
-		Y:        ce.Y,
-		X2:       ce.X2,
-		Y2:       ce.Y2,
-		Font:     ce.Font,
-		Fontsize: ce.Fontsize,
-		Align:    ce.Align,
-		Canvas:   ce.Canvas,
-	}
+	var copy textCell
+	utils.AddMissingValues(&copy, *ce, "Presets")
 	for _, preset := range ce.Presets {
 		copy.Presets = append(copy.Presets, preset)
 	}
