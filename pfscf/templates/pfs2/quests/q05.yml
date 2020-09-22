@@ -5,9 +5,3 @@ inherit: pfs2.quests
 canvas:
   rightbar:
     y: 18.7
-
-  summary:
-    y2: 16.6
-
-  boons:
-    y: 18.4
