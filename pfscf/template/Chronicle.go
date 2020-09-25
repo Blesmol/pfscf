@@ -124,7 +124,7 @@ func (ct *Chronicle) resolve() (err error) {
 
 // WriteToCsvFile creates a CSV file out of the current chronicle template than can be used
 // as input for the "batch fill" command
-func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, as *args.Store) (err error) {
+func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, argStore *args.Store) (err error) {
 	const numPlayers = 7
 
 	// file header
@@ -142,7 +142,7 @@ func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, as *args.St
 	}
 
 	// fill from parameters
-	for _, groupName := range ct.Parameters.GetSortedGroups() {
+	for _, groupName := range ct.Parameters.GetGroupsSortedByRank() {
 		// Header for the current group
 		records = append(records, []string{""})
 		records = append(records, []string{fmt.Sprintf("# %v", groupName)})
@@ -155,7 +155,7 @@ func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, as *args.St
 			entry[0] = paramID // first column is always parameter name
 
 			// check if some value was provided on the cmd line that should be filled in all columns for this parameter
-			if val, exists := as.Get(paramID); exists {
+			if val, exists := argStore.Get(paramID); exists {
 				for colIdx := 1; colIdx <= numPlayers; colIdx++ {
 					entry[colIdx] = val
 				}
@@ -163,6 +163,23 @@ func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, as *args.St
 
 			records = append(records, entry)
 		}
+	}
+
+	// add parameter legend to end of file
+	records = append(records, []string{""})
+	records = append(records, []string{"# Legend for input values"})
+	records = append(records, []string{"# Name", "Type", "Example", "Description"})
+	for _, paramName := range ct.Parameters.GetKeysSortedByName() {
+		param, _ := ct.Parameters.Get(paramName)
+
+		entry := make([]string, 4) // Comment char, Name, type, example, description
+
+		entry[0] = "# " + param.ID()
+		entry[1] = param.Type()
+		entry[2] = param.Example()
+		entry[3] = param.Description()
+
+		records = append(records, entry)
 	}
 
 	err = csv.WriteFile(filename, separator, records)

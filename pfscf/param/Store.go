@@ -113,8 +113,21 @@ func (s *Store) GetExampleArguments() (result []string) {
 	return result
 }
 
-// GetSortedKeys returns the list of keys contained in this store as list sorted by rank.
-func (s *Store) GetSortedKeys() (result []string) {
+// GetKeysSortedByName returns the list of keys contained in this store as list sorted by rank.
+func (s *Store) GetKeysSortedByName() (result []string) {
+	result = make([]string, 0)
+
+	for key := range *s {
+		result = append(result, key)
+	}
+
+	sort.Strings(result)
+
+	return result
+}
+
+// GetKeysSortedByRank returns the list of keys contained in this store as list sorted by rank.
+func (s *Store) GetKeysSortedByRank() (result []string) {
 	type pair struct {
 		id   string
 		rank int
@@ -141,7 +154,7 @@ func (s *Store) GetSortedKeys() (result []string) {
 func (s *Store) GetSortedKeysForGroup(group string) (result []string) {
 	result = make([]string, 0)
 
-	sortedKeys := s.GetSortedKeys()
+	sortedKeys := s.GetKeysSortedByRank()
 
 	for _, key := range sortedKeys {
 		entry := (*s)[key]
@@ -153,11 +166,11 @@ func (s *Store) GetSortedKeysForGroup(group string) (result []string) {
 	return result
 }
 
-// GetSortedGroups returns the list of groups sorted by rank
-func (s *Store) GetSortedGroups() (result []string) {
+// GetGroupsSortedByRank returns the list of groups sorted by rank
+func (s *Store) GetGroupsSortedByRank() (result []string) {
 	result = make([]string, 0)
 
-	sortedKeys := s.GetSortedKeys()
+	sortedKeys := s.GetKeysSortedByRank()
 
 	for _, key := range sortedKeys {
 		entry := (*s)[key]
@@ -174,7 +187,7 @@ func (s *Store) GetSortedGroups() (result []string) {
 func (s *Store) Describe(verbose bool) (result string) {
 	var sb strings.Builder
 
-	for _, key := range s.GetSortedKeys() {
+	for _, key := range s.GetKeysSortedByRank() {
 		entry, _ := s.Get(key)
 		fmt.Fprintf(&sb, entry.describe(verbose))
 	}
