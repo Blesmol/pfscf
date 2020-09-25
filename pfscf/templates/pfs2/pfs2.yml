@@ -305,6 +305,12 @@ presets:
     x2: 100.0
     y2: 100.0
 
+  checkbox:
+    value: "X"
+    fontsize: 8
+    font: Helvetica
+    align: CM
+
 content:
   - value: param:player
     type: textCell
