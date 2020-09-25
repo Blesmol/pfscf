@@ -97,7 +97,7 @@ func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
 	}
 	utils.ExitOnError(err, "Error processing command line arguments")
 
-	err = cTmpl.WriteToCsvFile(outFile, separator, argStore)
+	err = cTmpl.GenerateCsvFile(outFile, separator, argStore)
 	utils.ExitOnError(err, "Error writing CSV file for template %v", tmplName)
 
 	if !actionBatchCreateSuppressOpenOutfile {

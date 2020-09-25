@@ -122,10 +122,11 @@ func (ct *Chronicle) resolve() (err error) {
 	return nil
 }
 
-// WriteToCsvFile creates a CSV file out of the current chronicle template than can be used
+// GenerateCsvFile creates a CSV file out of the current chronicle template than can be used
 // as input for the "batch fill" command
-func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, argStore *args.Store) (err error) {
+func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *args.Store) (err error) {
 	const numPlayers = 7
+	const numChronicles = numPlayers + 1 // GM also wants a chronicle
 
 	// file header
 	records := [][]string{
@@ -136,10 +137,11 @@ func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, argStore *a
 	}
 
 	// Add "Player <x>" labels to the "#Players" line
+	outerIdx := len(records) - 1
 	for idx := 1; idx <= numPlayers; idx++ {
-		outerIdx := len(records) - 1
 		records[outerIdx] = append(records[outerIdx], fmt.Sprintf("Player %d", idx))
 	}
+	records[outerIdx] = append(records[outerIdx], "GM") // Add "GM" label as well
 
 	// fill from parameters
 	for _, groupName := range ct.Parameters.GetGroupsSortedByRank() {
@@ -149,14 +151,14 @@ func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, argStore *a
 
 		// add parameters from current group
 		for _, paramID := range ct.Parameters.GetSortedKeysForGroup(groupName) {
-			// entry should be large enough for id column + 7 players
-			entry := make([]string, numPlayers+1)
+			// entry should be large enough for id column + number of chronicles
+			entry := make([]string, 1+numChronicles)
 
 			entry[0] = paramID // first column is always parameter name
 
 			// check if some value was provided on the cmd line that should be filled in all columns for this parameter
 			if val, exists := argStore.Get(paramID); exists {
-				for colIdx := 1; colIdx <= numPlayers; colIdx++ {
+				for colIdx := 1; colIdx <= numChronicles; colIdx++ {
 					entry[colIdx] = val
 				}
 			}
@@ -167,7 +169,7 @@ func (ct *Chronicle) WriteToCsvFile(filename string, separator rune, argStore *a
 
 	// add parameter legend to end of file
 	records = append(records, []string{""})
-	records = append(records, []string{"# Legend for input values"})
+	records = append(records, []string{"# Legend for input values:"})
 	records = append(records, []string{"# Name", "Type", "Example", "Description"})
 	for _, paramName := range ct.Parameters.GetKeysSortedByName() {
 		param, _ := ct.Parameters.Get(paramName)
