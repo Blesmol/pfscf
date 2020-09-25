@@ -24,47 +24,47 @@ func newEntry() (e Entry) {
 }
 
 // ID returns the ID of this entry
-func (entry *Entry) ID() string {
-	return entry.id
+func (e *Entry) ID() string {
+	return e.id
 }
 
 // Get returns the value matching the provided key.
-func (entry *Entry) Get(key string) (val interface{}, exists bool) {
-	val, exists = entry.values[key]
+func (e *Entry) Get(key string) (val interface{}, exists bool) {
+	val, exists = e.values[key]
 	return
 }
 
 // UnmarshalYAML unmarshals a Parameter Store
-func (entry *Entry) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+func (e *Entry) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	// contruct target
-	*entry = newEntry()
+	*e = newEntry()
 
 	// unmarshal list of presets first
 	type entryPresetsYAML struct{ Presets *[]string }
-	epy := entryPresetsYAML{Presets: &entry.presets}
+	epy := entryPresetsYAML{Presets: &e.presets}
 	if err = unmarshal(&epy); err != nil {
 		return fmt.Errorf("Field 'presets' does not have expected list format")
 	}
 
 	// unmarshal everything else, remove the "presets" entry afterwards
-	if err = unmarshal(&entry.values); err != nil {
+	if err = unmarshal(&e.values); err != nil {
 		return err
 	}
-	delete(entry.values, "presets") // already included in separate "presets" array
+	delete(e.values, "presets") // already included in separate "presets" array
 
 	// remove empty values
-	for key, value := range entry.values {
+	for key, value := range e.values {
 		// do not use IsSet() here. This will not work with any preset that is "", 0, 0.0, false, etc.
 		// Instead check whether the value has a type. If it has a type, then we know that something
 		// was provided, i.e. the field was not just empty.
 
 		if reflect.TypeOf(value) == nil {
-			delete(entry.values, key)
+			delete(e.values, key)
 		}
 	}
 
 	// ensure that we only have supported types in here
-	for key, value := range entry.values {
+	for key, value := range e.values {
 		switch kind := reflect.TypeOf(value).Kind(); kind {
 		case reflect.String:
 		case reflect.Float64:
@@ -83,8 +83,8 @@ func (entry *Entry) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 // or not. They are not contradicting if all fields that they have in common
 // have the same type and value.
 // One exception to this is the "presets" list which is ignored here.
-func (entry *Entry) doesNotContradict(other Entry) (err error) {
-	for id, eValue := range entry.values {
+func (e *Entry) doesNotContradict(other Entry) (err error) {
+	for id, eValue := range e.values {
 		oValue, exists := other.values[id]
 		if !exists {
 			continue
@@ -93,40 +93,40 @@ func (entry *Entry) doesNotContradict(other Entry) (err error) {
 		eKind := reflect.TypeOf(eValue).Kind()
 		oKind := reflect.TypeOf(oValue).Kind()
 		if eKind != oKind {
-			return fmt.Errorf("Contradicting types for field '%v':\n- '%v': %v\n- '%v': %v", id, entry.id, eKind, other.id, oKind)
+			return fmt.Errorf("Contradicting types for field '%v':\n- '%v': %v\n- '%v': %v", id, e.id, eKind, other.id, oKind)
 		}
 
 		if eValue != oValue {
-			return fmt.Errorf("Contradicting values for field '%v':\n- '%v': %v\n- '%v': %v", id, entry.id, eValue, other.id, oValue)
+			return fmt.Errorf("Contradicting values for field '%v':\n- '%v': %v\n- '%v': %v", id, e.id, eValue, other.id, oValue)
 		}
 	}
 
 	return nil
 }
 
-func (entry *Entry) deepCopy() *Entry {
+func (e *Entry) deepCopy() *Entry {
 	copy := newEntry()
-	copy.id = entry.id
-	for _, preset := range entry.presets {
+	copy.id = e.id
+	for _, preset := range e.presets {
 		copy.presets = append(copy.presets, preset)
 	}
-	for key, value := range entry.values {
+	for key, value := range e.values {
 		copy.values[key] = value
 	}
 
 	return &copy
 }
 
-func (entry *Entry) inheritFrom(other Entry) {
+func (e *Entry) inheritFrom(other Entry) {
 	for otherKey, otherValue := range other.values {
-		if _, exists := entry.values[otherKey]; !exists {
-			entry.values[otherKey] = otherValue
+		if _, exists := e.values[otherKey]; !exists {
+			e.values[otherKey] = otherValue
 		}
 	}
 }
 
 // FillPublicFieldsFromPreset is a function that will do exactly as the name says
-func (entry *Entry) FillPublicFieldsFromPreset(target interface{}, ignoredFields ...string) (err error) {
+func (e *Entry) FillPublicFieldsFromPreset(target interface{}, ignoredFields ...string) (err error) {
 	// assumption: target is pointer to struct
 	utils.Assert(reflect.ValueOf(target).Kind() == reflect.Ptr, "Target argument must be passed by ptr, as we modify it")
 	utils.Assert(reflect.ValueOf(target).Elem().Kind() == reflect.Struct, "Can only process structs as target")
@@ -148,7 +148,7 @@ func (entry *Entry) FillPublicFieldsFromPreset(target interface{}, ignoredFields
 		}
 
 		lowerFieldName := strings.ToLower(fieldName)
-		presetVal, exists := entry.Get(lowerFieldName) // field names in presets map should be all lowercase
+		presetVal, exists := e.Get(lowerFieldName) // field names in presets map should be all lowercase
 		if !exists {
 			continue
 		}
@@ -171,7 +171,7 @@ func (entry *Entry) FillPublicFieldsFromPreset(target interface{}, ignoredFields
 		default:
 		}
 
-		return fmt.Errorf("Error while applying preset '%v:%v' to content, types do not match: Preset has '%v', content wants '%v'", entry.ID(), lowerFieldName, vPreset.Kind(), fieldDst.Kind())
+		return fmt.Errorf("Error while applying preset '%v:%v' to content, types do not match: Preset has '%v', content wants '%v'", e.ID(), lowerFieldName, vPreset.Kind(), fieldDst.Kind())
 	}
 
 	return nil

@@ -17,20 +17,20 @@ func NewListStore() (s ListStore) {
 	return s
 }
 
-func (store *ListStore) add(entry Entry) {
-	*store = append(*store, entry)
+func (s *ListStore) add(entry Entry) {
+	*s = append(*s, entry)
 }
 
 // InheritFrom copies over entries from another Store.
-func (store *ListStore) InheritFrom(other ListStore) {
+func (s *ListStore) InheritFrom(other ListStore) {
 	for _, otherEntry := range other {
-		store.add(otherEntry.deepCopy())
+		s.add(otherEntry.deepCopy())
 	}
 }
 
 // Resolve resolves preset requirements for all entries in the ContentStore
-func (store *ListStore) Resolve(ps preset.Store) (err error) {
-	for _, entry := range *store {
+func (s *ListStore) Resolve(ps preset.Store) (err error) {
+	for _, entry := range *s {
 		if err := entry.resolve(ps); err != nil {
 			return err
 		}
@@ -40,7 +40,7 @@ func (store *ListStore) Resolve(ps preset.Store) (err error) {
 }
 
 // UnmarshalYAML unmarshals a Content List Store
-func (store *ListStore) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+func (s *ListStore) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	type storeYAML []entryYAML
 
 	sy := make(storeYAML, 0)
@@ -50,17 +50,17 @@ func (store *ListStore) UnmarshalYAML(unmarshal func(interface{}) error) (err er
 		return err
 	}
 
-	*store = NewListStore()
+	*s = NewListStore()
 	for _, ey := range sy {
-		store.add(ey.e)
+		s.add(ey.e)
 	}
 
 	return nil
 }
 
 // GenerateOutput generates the output for the current content store into the provided stamp
-func (store *ListStore) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (err error) {
-	for _, entry := range *store {
+func (s *ListStore) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (err error) {
+	for _, entry := range *s {
 		if err = entry.generateOutput(stamp, argStore); err != nil {
 			return err
 		}
@@ -71,8 +71,8 @@ func (store *ListStore) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store)
 // IsValid validates whether all content entries are valid. This means, e.g., that
 // the already contain all required values. Thus this should only be called after
 // the store was resolved.
-func (store *ListStore) IsValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
-	for _, entry := range *store {
+func (s *ListStore) IsValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
+	for _, entry := range *s {
 		if err = entry.isValid(paramStore, canvasStore); err != nil {
 			return err
 		}
@@ -80,9 +80,9 @@ func (store *ListStore) IsValid(paramStore *param.Store, canvasStore *canvas.Sto
 	return nil
 }
 
-func (store *ListStore) deepCopy() (copy ListStore) {
+func (s *ListStore) deepCopy() (copy ListStore) {
 	copy = NewListStore()
-	for _, entry := range *store {
+	for _, entry := range *s {
 		copy.add(entry.deepCopy())
 	}
 	return copy

@@ -24,36 +24,36 @@ func newTrigger() *trigger {
 	return &ce
 }
 
-func (ce *trigger) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
-	err = utils.CheckFieldsAreSet(ce, "Trigger")
+func (e *trigger) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
+	err = utils.CheckFieldsAreSet(e, "Trigger")
 	if err != nil {
-		return contentValErr(ce, err)
+		return contentValErr(e, err)
 	}
-	return ce.Content.IsValid(paramStore, canvasStore)
+	return e.Content.IsValid(paramStore, canvasStore)
 }
 
 // resolve the presets for this content object.
-func (ce *trigger) resolve(ps preset.Store) (err error) {
-	return ce.Content.Resolve(ps)
+func (e *trigger) resolve(ps preset.Store) (err error) {
+	return e.Content.Resolve(ps)
 }
 
 // generateOutput generates the output for this textCell object.
-func (ce *trigger) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
+func (e *trigger) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	// will be triggered by any non-nil value
-	value := getValue(ce.Trigger, as)
+	value := getValue(e.Trigger, as)
 	if value == nil {
 		return nil // nothing to do here...
 	}
 
-	return ce.Content.GenerateOutput(s, as)
+	return e.Content.GenerateOutput(s, as)
 }
 
 // deepCopy creates a deep copy of this entry.
-func (ce *trigger) deepCopy() Entry {
+func (e *trigger) deepCopy() Entry {
 
 	copy := trigger{
-		Trigger: ce.Trigger,
-		Content: ce.Content.deepCopy(),
+		Trigger: e.Trigger,
+		Content: e.Content.deepCopy(),
 	}
 
 	return &copy

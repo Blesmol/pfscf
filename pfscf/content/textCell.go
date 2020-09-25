@@ -29,54 +29,54 @@ type textCell struct {
 }
 
 func newTextCell() *textCell {
-	var ce textCell
-	ce.Presets = make([]string, 0)
-	return &ce
+	var e textCell
+	e.Presets = make([]string, 0)
+	return &e
 }
 
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce *textCell) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
-	err = utils.CheckFieldsAreSet(ce, "Value", "Font", "Fontsize", "Canvas")
+func (e *textCell) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
+	err = utils.CheckFieldsAreSet(e, "Value", "Font", "Fontsize", "Canvas")
 	if err != nil {
-		return contentValErr(ce, err)
+		return contentValErr(e, err)
 	}
 
-	err = utils.CheckFieldsAreInRange(ce, 0.0, 100.0, "X", "Y", "X2", "Y2")
+	err = utils.CheckFieldsAreInRange(e, 0.0, 100.0, "X", "Y", "X2", "Y2")
 	if err != nil {
-		return contentValErr(ce, err)
+		return contentValErr(e, err)
 	}
 
-	if ce.X == ce.X2 {
-		err = fmt.Errorf("Coordinates for X axis are equal: %v", ce.X)
-		return contentValErr(ce, err)
+	if e.X == e.X2 {
+		err = fmt.Errorf("Coordinates for X axis are equal: %v", e.X)
+		return contentValErr(e, err)
 	}
 
-	if ce.Y == ce.Y2 {
-		err = fmt.Errorf("Coordinates for Y axis are equal: %v", ce.Y)
-		return contentValErr(ce, err)
+	if e.Y == e.Y2 {
+		err = fmt.Errorf("Coordinates for Y axis are equal: %v", e.Y)
+		return contentValErr(e, err)
 	}
 
-	if _, exists := canvasStore.Get(ce.Canvas); !exists {
-		err = fmt.Errorf("Canvas '%v' does not exist", ce.Canvas)
-		return contentValErr(ce, err)
+	if _, exists := canvasStore.Get(e.Canvas); !exists {
+		err = fmt.Errorf("Canvas '%v' does not exist", e.Canvas)
+		return contentValErr(e, err)
 	}
 
 	return nil
 }
 
 // resolve the presets for this content object.
-func (ce *textCell) resolve(ps preset.Store) (err error) {
+func (e *textCell) resolve(ps preset.Store) (err error) {
 	// check that required presets are not contradicting each other
-	if err = ps.PresetsAreNotContradicting(ce.Presets...); err != nil {
+	if err = ps.PresetsAreNotContradicting(e.Presets...); err != nil {
 		err = fmt.Errorf("Error resolving content: %v", err)
 		return
 	}
 
 	// apply presets
-	for _, presetID := range ce.Presets {
+	for _, presetID := range e.Presets {
 		preset, _ := ps.Get(presetID)
-		if err = preset.FillPublicFieldsFromPreset(ce, "Presets"); err != nil {
+		if err = preset.FillPublicFieldsFromPreset(e, "Presets"); err != nil {
 			err = fmt.Errorf("Error resolving content: %v", err)
 			return
 		}
@@ -86,24 +86,24 @@ func (ce *textCell) resolve(ps preset.Store) (err error) {
 }
 
 // generateOutput generates the output for this textCell object.
-func (ce *textCell) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
-	value := getValue(ce.Value, as)
+func (e *textCell) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
+	value := getValue(e.Value, as)
 	if value == nil {
 		return nil // nothing to do here...
 	}
 
-	y2 := s.DeriveY2(ce.Canvas, ce.Y, ce.Y2, ce.Fontsize)
-	s.AddTextCell(ce.Canvas, ce.X, ce.Y, ce.X2, y2, ce.Font, ce.Fontsize, ce.Align, *value, true)
+	y2 := s.DeriveY2(e.Canvas, e.Y, e.Y2, e.Fontsize)
+	s.AddTextCell(e.Canvas, e.X, e.Y, e.X2, y2, e.Font, e.Fontsize, e.Align, *value, true)
 
 	return nil
 }
 
 // deepCopy creates a deep copy of this entry.
 // TODO create generic deep-copy function for public fields
-func (ce *textCell) deepCopy() Entry {
+func (e *textCell) deepCopy() Entry {
 	var copy textCell
-	utils.AddMissingValues(&copy, *ce, "Presets")
-	for _, preset := range ce.Presets {
+	utils.AddMissingValues(&copy, *e, "Presets")
+	for _, preset := range e.Presets {
 		copy.Presets = append(copy.Presets, preset)
 	}
 

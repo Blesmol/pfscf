@@ -28,9 +28,9 @@ func GetStore() (ts *Store, err error) {
 }
 
 // GetTemplateIDs returns a sorted list of keys contained in this Store
-func (store *Store) GetTemplateIDs() (keyList []string) {
-	keyList = make([]string, 0, len(*store))
-	for key := range *store {
+func (s *Store) GetTemplateIDs() (keyList []string) {
+	keyList = make([]string, 0, len(*s))
+	for key := range *s {
 		keyList = append(keyList, key)
 	}
 	sort.Strings(keyList)
@@ -38,8 +38,8 @@ func (store *Store) GetTemplateIDs() (keyList []string) {
 }
 
 // Get returns the ChronicleTemplate matching the provided id.
-func (store *Store) Get(id string) (ct *Chronicle, exists bool) {
-	ct, exists = (*store)[id]
+func (s *Store) Get(id string) (ct *Chronicle, exists bool) {
+	ct, exists = (*s)[id]
 	return
 }
 
@@ -86,9 +86,9 @@ func getStoreForDir(dir string) (store *Store, err error) {
 }
 
 // resolveTemplates resolves the relations inside each template contained in this store
-func (store *Store) resolveTemplates() (err error) {
-	for _, currentID := range store.GetTemplateIDs() {
-		ct, _ := store.Get(currentID)
+func (s *Store) resolveTemplates() (err error) {
+	for _, currentID := range s.GetTemplateIDs() {
+		ct, _ := s.Get(currentID)
 		if err := ct.resolve(); err != nil {
 			return err
 		}
@@ -99,11 +99,11 @@ func (store *Store) resolveTemplates() (err error) {
 
 // resolveInheritanceBetweenTemplates resolves the inheritance relations between different templates by copying
 // over relevant entries, e.g. from the content or presets sections.
-func (store *Store) resolveInheritanceBetweenTemplates() (err error) {
+func (s *Store) resolveInheritanceBetweenTemplates() (err error) {
 	resolvedIDs := make(map[string]bool, 0) // stores IDs of all entries that are already resolved
-	for _, currentID := range store.GetTemplateIDs() {
-		ct, _ := store.Get(currentID)
-		err := store.resolveInheritanceBetweenTemplatesInternal(ct, &resolvedIDs)
+	for _, currentID := range s.GetTemplateIDs() {
+		ct, _ := s.Get(currentID)
+		err := s.resolveInheritanceBetweenTemplatesInternal(ct, &resolvedIDs)
 		if err != nil {
 			return err
 		}
@@ -112,7 +112,7 @@ func (store *Store) resolveInheritanceBetweenTemplates() (err error) {
 	return nil
 }
 
-func (store *Store) resolveInheritanceBetweenTemplatesInternal(ct *Chronicle, resolvedIDs *map[string]bool, resolveChain ...string) (err error) {
+func (s *Store) resolveInheritanceBetweenTemplatesInternal(ct *Chronicle, resolvedIDs *map[string]bool, resolveChain ...string) (err error) {
 	// check if we have already seen that entry
 	if _, exists := (*resolvedIDs)[ct.ID]; exists {
 		return nil
@@ -133,14 +133,14 @@ func (store *Store) resolveInheritanceBetweenTemplatesInternal(ct *Chronicle, re
 	}
 
 	// check if inherited ID exists and retrieve entry
-	inheritedCt, exists := store.Get(ct.Inherit)
+	inheritedCt, exists := s.Get(ct.Inherit)
 	if !exists {
 		return fmt.Errorf("Template '%v' inherits from template '%v', but that template cannot be found", ct.ID, ct.Inherit)
 	}
 
 	// add current id to inheritance list and perform recursive call
 	resolveChain = append(resolveChain, ct.ID)
-	err = store.resolveInheritanceBetweenTemplatesInternal(inheritedCt, resolvedIDs, resolveChain...)
+	err = s.resolveInheritanceBetweenTemplatesInternal(inheritedCt, resolvedIDs, resolveChain...)
 	if err != nil {
 		return err
 	}
@@ -157,8 +157,8 @@ func (store *Store) resolveInheritanceBetweenTemplatesInternal(ct *Chronicle, re
 	return nil
 }
 
-func (store *Store) isValid() (err error) {
-	for _, entry := range *store {
+func (s *Store) isValid() (err error) {
+	for _, entry := range *s {
 		if err = entry.IsValid(); err != nil {
 			return err
 		}
@@ -166,10 +166,10 @@ func (store *Store) isValid() (err error) {
 	return nil
 }
 
-func (store *Store) getTemplatesInheritingFrom(parentID string) (childIDs []string) {
+func (s *Store) getTemplatesInheritingFrom(parentID string) (childIDs []string) {
 	childIDs = make([]string, 0)
 
-	for key, template := range *store {
+	for key, template := range *s {
 		if (!utils.IsSet(parentID) && !utils.IsSet(template.Inherit)) ||
 			(template.Inherit == parentID) {
 			childIDs = append(childIDs, key)
@@ -181,10 +181,10 @@ func (store *Store) getTemplatesInheritingFrom(parentID string) (childIDs []stri
 }
 
 // ListTemplates lists the available templates. Result is returned as multi-line string.
-func (store *Store) ListTemplates() (result string) {
+func (s *Store) ListTemplates() (result string) {
 	var sb strings.Builder
 
-	completeList := store.listTemplatesInheritingFrom("")
+	completeList := s.listTemplatesInheritingFrom("")
 	for _, line := range completeList {
 		fmt.Fprintf(&sb, "%v\n", line)
 	}
@@ -192,14 +192,14 @@ func (store *Store) ListTemplates() (result string) {
 	return sb.String()
 }
 
-func (store *Store) listTemplatesInheritingFrom(parentID string) (result []string) {
+func (s *Store) listTemplatesInheritingFrom(parentID string) (result []string) {
 	result = make([]string, 0)
 
-	for _, childID := range store.getTemplatesInheritingFrom(parentID) {
-		template, _ := store.Get(childID)
+	for _, childID := range s.getTemplatesInheritingFrom(parentID) {
+		template, _ := s.Get(childID)
 		result = append(result, fmt.Sprintf("- %v: %v", template.ID, template.Description))
 
-		childrenDesc := store.listTemplatesInheritingFrom(childID)
+		childrenDesc := s.listTemplatesInheritingFrom(childID)
 		for _, childDesc := range childrenDesc {
 			result = append(result, fmt.Sprintf("  %v", childDesc))
 		}
@@ -212,7 +212,7 @@ func (store *Store) listTemplatesInheritingFrom(parentID string) (result []strin
 // where all these keywords are included in the description or the id.
 // The search is case-insensitive.
 // Result is returned as multi-line string.
-func (store *Store) SearchForTemplates(keywords ...string) (result string, foundMatch bool) {
+func (s *Store) SearchForTemplates(keywords ...string) (result string, foundMatch bool) {
 	if len(keywords) == 0 {
 		return "No keywords provided", false
 	}
@@ -225,7 +225,7 @@ func (store *Store) SearchForTemplates(keywords ...string) (result string, found
 
 	var sb strings.Builder
 	foundSomething := false
-	for key, template := range *store {
+	for key, template := range *s {
 		if termsContainAllKeywords(strings.ToLower(key), strings.ToLower(template.Description), lowerKW...) {
 			foundSomething = true
 			fmt.Fprintf(&sb, "- %v: %v\n", template.ID, template.Description)

@@ -19,29 +19,29 @@ func NewMapStore() (s MapStore) {
 	return s
 }
 
-func (store *MapStore) add(id string, entry Entry) {
-	if _, exists := (*store)[id]; exists {
+func (s *MapStore) add(id string, entry Entry) {
+	if _, exists := (*s)[id]; exists {
 		utils.Assert(false, "As we only call this from a map in yaml, duplicates should not occur")
 	}
-	(*store)[id] = entry
+	(*s)[id] = entry
 }
 
 // InheritFrom inherits entries from another param store. An error is returned in case
 // an entry exists in both stores.
-func (store *MapStore) InheritFrom(other MapStore) (err error) {
+func (s *MapStore) InheritFrom(other MapStore) (err error) {
 	for otherID, otherEntry := range other {
-		if _, exists := (*store)[otherID]; exists {
+		if _, exists := (*s)[otherID]; exists {
 			return fmt.Errorf("Duplicate parameter ID '%v' found while inheriting", otherID)
 		}
-		store.add(otherID, otherEntry.deepCopy())
+		s.add(otherID, otherEntry.deepCopy())
 	}
 
 	return nil
 }
 
 // Resolve resolves preset requirements for all entries in the ContentStore
-func (store *MapStore) Resolve(ps preset.Store) (err error) {
-	for _, entry := range *store {
+func (s *MapStore) Resolve(ps preset.Store) (err error) {
+	for _, entry := range *s {
 		if err := entry.resolve(ps); err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ func (store *MapStore) Resolve(ps preset.Store) (err error) {
 }
 
 // UnmarshalYAML unmarshals a Content Store
-func (store *MapStore) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+func (s *MapStore) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	type storeYAML map[string]entryYAML
 
 	sy := make(storeYAML, 0)
@@ -61,9 +61,9 @@ func (store *MapStore) UnmarshalYAML(unmarshal func(interface{}) error) (err err
 		return err
 	}
 
-	*store = NewMapStore()
+	*s = NewMapStore()
 	for key, ey := range sy {
-		store.add(key, ey.e)
+		s.add(key, ey.e)
 	}
 
 	return nil
@@ -72,8 +72,8 @@ func (store *MapStore) UnmarshalYAML(unmarshal func(interface{}) error) (err err
 // IsValid validates whether all content entries are valid. This means, e.g., that
 // the already contain all required values. Thus this should only be called after
 // the store was resolved.
-func (store *MapStore) IsValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
-	for _, entry := range *store {
+func (s *MapStore) IsValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
+	for _, entry := range *s {
 		if err = entry.isValid(paramStore, canvasStore); err != nil {
 			return err
 		}
@@ -81,9 +81,9 @@ func (store *MapStore) IsValid(paramStore *param.Store, canvasStore *canvas.Stor
 	return nil
 }
 
-func (store *MapStore) deepCopy() (copy MapStore) {
+func (s *MapStore) deepCopy() (copy MapStore) {
 	copy = NewMapStore()
-	for key, entry := range *store {
+	for key, entry := range *s {
 		copy.add(key, entry.deepCopy())
 	}
 	return copy

@@ -14,7 +14,7 @@ var (
 	rankCounter int
 )
 
-func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+func (ey *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	// determine type of entry
 	type entryTypeYAML struct{ Type string }
 	var ety entryTypeYAML
@@ -31,11 +31,11 @@ func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 	case typeText:
 		var e textEntry
 		err = unmarshal(&e)
-		s.e = &e
+		ey.e = &e
 	case typeSocietyID:
 		var e societyidEntry
 		err = unmarshal(&e)
-		s.e = &e
+		ey.e = &e
 	default:
 		err = fmt.Errorf("Unknown parameter type: '%v'", ety.Type)
 	}
@@ -44,7 +44,7 @@ func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 	}
 
 	rankCounter++
-	s.e.setRank(rankCounter)
+	ey.e.setRank(rankCounter)
 
 	return nil
 }
