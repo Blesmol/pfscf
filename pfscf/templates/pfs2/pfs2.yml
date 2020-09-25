@@ -19,9 +19,9 @@ parameters:
       description: Pathfinder Society ID
       example: 123456-2001
 
-    chronicle:
+    chronicle_nr:
       type: text
-      description: Character Chronicle
+      description: Character chronicle number
       example: 5
 
   "Factions":
@@ -353,7 +353,7 @@ content:
         x2: 67.8
         align: LB
 
-  - value: param:chronicle
+  - value: param:chronicle_nr
     type: textCell
     presets: [defaultfont]
     canvas: page
