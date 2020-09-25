@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
@@ -127,6 +128,10 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 	// parse remaining arguments
 	cmdLineArgStore, err := args.NewStore(args.StoreInit{Args: cmdArgs[4:]})
 	utils.ExitOnError(err, "Error processing command line arguments")
+
+	// ensure output directory exists
+	err = os.MkdirAll(outDir, os.ModePerm)
+	utils.ExitOnError(err, "Error creating output directory")
 
 	for idx, batchArgStore := range batchArgStores {
 		cmdLineArgStore.SetParent(batchArgStore) // command line arguments have priority
