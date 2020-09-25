@@ -14,6 +14,15 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## v0.11.1 - 2020-09-25
+
+### Added
+- Generated CSV files now include an alphabetically sorted list of all parameters at the end of the file, including the description and example text.
+- `pfscf batch fill` now automatically creates the specified output dir if it does not already exist.
+
+### Changed
+- Generated CSV file now containes an additional column labelled "GM"
+
 ## v0.11.0 - 2020-09-22
 
 ### Added
