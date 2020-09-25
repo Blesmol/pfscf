@@ -4,6 +4,7 @@ on:
     branches:
       - master
       - doc
+      - docs
     paths:
       - 'docs/**'
 jobs:
