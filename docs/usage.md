@@ -2,17 +2,7 @@
 
 ## Quickstart
 
-1. [Download the program](https://github.com/Blesmol/pfscf/releases) and extract into a new folder. For details see the [installation instructions](installation.md).
-2. Get a blank society chronicle as single-paged PDF file. I'd suggest to follow [these instructions](extraction.md). Put the resulting PDF page in the same directory to which you extracted `pfscf`.
-3. Open a command line prompt / terminal in this directory. On windows this can be done by double-clicking the `openCmdHere.bat` file included in the installation folder.
-4. Call the program to find whether your scenario is already explicitly supported, based on the scenario title. Use the `pfscf template search` command for this and search for some part of the scenario title. The part at the beginning of each line is the template id, e.g. something like `pfs2.s1-06` for PFS2 scenario "#1-06: Lost on the Spirit Road".
-5. Call the program again, to fill your first chronicle. Lets stick with the example:
-
-```
-pfscf fill pfs2.s1-06 myBlankChronicle.pdf chronicleForBob.pdf player=Bob char="The Bobbynator" societyid=123456-2001 xp=4 gp=10
-```
-
-And that should be enough to have your first filled chronicle using `pfscf`!
+There is a [quickstart chapter](quickstart.md) available if you want to dive right in and get some quick results.
 
 ## Filling Out a Single Chronicle
 
