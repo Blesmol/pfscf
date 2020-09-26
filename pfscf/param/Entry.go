@@ -14,6 +14,7 @@ type Entry interface {
 	Type() string
 	Example() string
 	Description() string
+	AcceptedValues() []string
 	Group() string
 	setGroup(string)
 	rank() int

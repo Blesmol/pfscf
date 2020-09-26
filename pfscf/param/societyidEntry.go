@@ -47,6 +47,10 @@ func (e *societyidEntry) Description() string {
 	return e.TheDescription
 }
 
+func (e *societyidEntry) AcceptedValues() []string {
+	return []string{"Society IDs w. pattern \"<digits>-<digits>\""}
+}
+
 func (e *societyidEntry) Group() string {
 	return e.group
 }
