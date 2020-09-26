@@ -42,6 +42,10 @@ func (e *textEntry) Description() string {
 	return e.TheDescription
 }
 
+func (e *textEntry) AcceptedValues() []string {
+	return []string{"Any text"}
+}
+
 func (e *textEntry) Group() string {
 	return e.group
 }
