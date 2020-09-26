@@ -41,7 +41,7 @@ func init() {
 
 // NewStore creates a new ArgStore
 // TODO test this
-func NewStore(init StoreInit) (as *Store, err error) {
+func NewStore(init StoreInit) (s *Store, err error) {
 	var initialCapacity int
 	if utils.IsSet(init.InitCapacity) {
 		initialCapacity = init.InitCapacity
@@ -49,7 +49,7 @@ func NewStore(init StoreInit) (as *Store, err error) {
 		initialCapacity = len(init.Args)
 	}
 
-	localAs := Store{
+	localStore := Store{
 		store:  make(map[string]string, initialCapacity),
 		parent: init.Parent,
 	}
@@ -60,14 +60,14 @@ func NewStore(init StoreInit) (as *Store, err error) {
 			return nil, err
 		}
 
-		if !localAs.HasKey(key) {
-			localAs.Set(key, value)
+		if !localStore.hasKey(key) {
+			localStore.Set(key, value)
 		} else {
 			return nil, fmt.Errorf("Duplicate key '%v' found", key)
 		}
 	}
 
-	return &localAs, nil
+	return &localStore, nil
 }
 
 // splitArgument takes an arugment string and tries to split it up in key and value parts.
@@ -90,60 +90,60 @@ func splitArgument(arg string) (key, value string, err error) {
 	return key, value, nil
 }
 
-// HasKey returns whether the ArgStore contains an entry with the given key.
-func (as *Store) HasKey(key string) bool {
-	_, keyExists := as.store[key]
-	if !keyExists && as.HasParent() {
-		keyExists = as.parent.HasKey(key)
+// hasKey returns whether the ArgStore contains an entry with the given key.
+func (s *Store) hasKey(key string) bool {
+	_, keyExists := s.store[key]
+	if !keyExists && s.hasParent() {
+		keyExists = s.parent.hasKey(key)
 	}
 	return keyExists
 }
 
 // Set adds a new value to the ArgStore using the given key.
-func (as *Store) Set(key string, value string) {
-	as.store[key] = value
+func (s *Store) Set(key string, value string) {
+	s.store[key] = value
 }
 
 // Get looks up the given key in the ArgStore and returns the value plus a flag
 // indicating whether there is a value for the given key.
-func (as Store) Get(key string) (value string, keyExists bool) {
-	value, keyExists = as.store[key]
+func (s *Store) Get(key string) (value string, keyExists bool) {
+	value, keyExists = s.store[key]
 	if keyExists {
 		return value, true
 	}
-	if as.parent != nil {
-		return as.parent.Get(key)
+	if s.parent != nil {
+		return s.parent.Get(key)
 	}
 	return value, false
 }
 
-// HasParent returns whether the ArgStore already has a parent object sei
-func (as Store) HasParent() bool {
-	return as.parent != nil
+// hasParent returns whether the ArgStore already has a parent object sei
+func (s *Store) hasParent() bool {
+	return s.parent != nil
 }
 
 // SetParent sets the parent ArgStore for the given ArgStore. The returned bool flag
 // indicates whether an existing parent was overwritten.
-func (as *Store) SetParent(parent *Store) bool {
-	hasParent := as.HasParent()
-	as.parent = parent
+func (s *Store) SetParent(parent *Store) bool {
+	hasParent := s.hasParent()
+	s.parent = parent
 	return hasParent
 }
 
-// NumEntries returns the number of entries currently stored in the ArgStore
-func (as Store) NumEntries() int {
-	return len(as.GetKeys())
+// numEntries returns the number of entries currently stored in the ArgStore
+func (s *Store) numEntries() int {
+	return len(s.GetKeys())
 }
 
 // GetKeys returns a sorted list of all contained keys
-func (as Store) GetKeys() (keyList []string) {
-	if as.parent != nil {
-		keyList = as.parent.GetKeys()
+func (s *Store) GetKeys() (keyList []string) {
+	if s.parent != nil {
+		keyList = s.parent.GetKeys()
 	} else {
 		keyList = make([]string, 0)
 	}
 
-	for key := range as.store {
+	for key := range s.store {
 		if !utils.Contains(keyList, key) {
 			keyList = append(keyList, key)
 		}
@@ -171,7 +171,7 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 	numPlayers := len(records[0]) - 1
 
 	for idx := 1; idx <= numPlayers; idx++ {
-		as, err := NewStore(StoreInit{InitCapacity: len(records)})
+		s, err := NewStore(StoreInit{InitCapacity: len(records)})
 		if err != nil {
 
 		}
@@ -179,7 +179,7 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 		for _, record := range records {
 			key := record[0]
 			value := record[idx]
-			if as.HasKey(key) {
+			if s.hasKey(key) {
 				return nil, fmt.Errorf("File '%v' contains multiple lines for content ID '%v'", filename, key)
 			}
 
@@ -188,13 +188,13 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 				if !utils.IsSet(key) {
 					return nil, fmt.Errorf("CSV Line has content value '%v', but is missing content ID in first column", value)
 				}
-				as.Set(key, value)
+				s.Set(key, value)
 			}
 		}
 
 		// only add if we have at least one entry here
-		if as.NumEntries() >= 1 {
-			argStores = append(argStores, as)
+		if s.numEntries() >= 1 {
+			argStores = append(argStores, s)
 		}
 	}
 

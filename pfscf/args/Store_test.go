@@ -85,7 +85,7 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 			test.ExpectNoError(t, err)
 
 			test.ExpectEqual(t, len(argStores), 1)
-			test.ExpectEqual(t, argStores[0].NumEntries(), 3)
+			test.ExpectEqual(t, argStores[0].numEntries(), 3)
 
 			for _, data := range []struct {
 				argStore *Store
@@ -129,7 +129,7 @@ func TestGetArgStoresFromCsvFile(t *testing.T) {
 				{argStores[2], 2, "player"},
 				{argStores[2], 2, "societyid"},
 			} {
-				test.ExpectEqual(t, data.argStore.NumEntries(), data.expEntries)
+				test.ExpectEqual(t, data.argStore.numEntries(), data.expEntries)
 
 				argEntry, exists := data.argStore.Get(data.key)
 				test.ExpectTrue(t, exists)
