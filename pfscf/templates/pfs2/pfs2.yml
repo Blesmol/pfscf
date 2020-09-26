@@ -72,9 +72,9 @@ parameters:
 
   "Rewards":
     tier:
-      type: text
-      description: "Players' tier ('low' or 'high')"
-      example: low
+      type: choice
+      description: "Players' tier"
+      choices: [low, high]
 
     starting_xp:
       type: text

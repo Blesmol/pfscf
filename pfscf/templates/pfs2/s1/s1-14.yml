@@ -5,9 +5,9 @@ inherit: pfs2.s1
 parameters:
   "Scenario Info":
     villain:
-      type: text
+      type: choice
       description: "Main villain in this scenario"
-      example: cat
+      choices: [cat, druid, lion]
 
 content:
   - type: choice
