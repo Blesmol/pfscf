@@ -13,9 +13,7 @@ const (
 )
 
 type textEntry struct {
-	id      string
-	theRank int
-	group   string
+	commonFields
 
 	TheExample     string `yaml:"example"`
 	TheDescription string `yaml:"description"`
@@ -23,15 +21,6 @@ type textEntry struct {
 
 func (e *textEntry) Type() string {
 	return typeText
-}
-
-func (e *textEntry) ID() string {
-	return e.id
-}
-
-func (e *textEntry) setID(id string) {
-	utils.Assert(!utils.IsSet(e.id), "Should only be called once per object")
-	e.id = id
 }
 
 func (e *textEntry) Example() string {
@@ -44,22 +33,6 @@ func (e *textEntry) Description() string {
 
 func (e *textEntry) AcceptedValues() []string {
 	return []string{"Any text"}
-}
-
-func (e *textEntry) Group() string {
-	return e.group
-}
-
-func (e *textEntry) setGroup(groupID string) {
-	e.group = groupID
-}
-
-func (e *textEntry) rank() int {
-	return e.theRank
-}
-
-func (e *textEntry) setRank(rank int) {
-	e.theRank = rank
 }
 
 func (e *textEntry) deepCopy() Entry {

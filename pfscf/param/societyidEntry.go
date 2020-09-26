@@ -18,9 +18,7 @@ var (
 )
 
 type societyidEntry struct {
-	id      string
-	theRank int
-	group   string
+	commonFields
 
 	TheExample     string `yaml:"example"`
 	TheDescription string `yaml:"description"`
@@ -28,15 +26,6 @@ type societyidEntry struct {
 
 func (e *societyidEntry) Type() string {
 	return typeSocietyID
-}
-
-func (e *societyidEntry) ID() string {
-	return e.id
-}
-
-func (e *societyidEntry) setID(id string) {
-	utils.Assert(!utils.IsSet(e.id), "Should only be called once per object")
-	e.id = id
 }
 
 func (e *societyidEntry) Example() string {
@@ -49,22 +38,6 @@ func (e *societyidEntry) Description() string {
 
 func (e *societyidEntry) AcceptedValues() []string {
 	return []string{"Society IDs w. pattern \"<digits>-<digits>\""}
-}
-
-func (e *societyidEntry) Group() string {
-	return e.group
-}
-
-func (e *societyidEntry) setGroup(groupID string) {
-	e.group = groupID
-}
-
-func (e *societyidEntry) rank() int {
-	return e.theRank
-}
-
-func (e *societyidEntry) setRank(rank int) {
-	e.theRank = rank
 }
 
 func (e *societyidEntry) deepCopy() Entry {

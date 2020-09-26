@@ -13,9 +13,7 @@ const (
 )
 
 type choiceEntry struct {
-	id      string
-	theRank int
-	group   string
+	commonFields
 
 	TheExample     string   `yaml:"example"`
 	TheDescription string   `yaml:"description"`
@@ -24,15 +22,6 @@ type choiceEntry struct {
 
 func (e *choiceEntry) Type() string {
 	return typeChoice
-}
-
-func (e *choiceEntry) ID() string {
-	return e.id
-}
-
-func (e *choiceEntry) setID(id string) {
-	utils.Assert(!utils.IsSet(e.id), "Should only be called once per object")
-	e.id = id
 }
 
 func (e *choiceEntry) Example() string {
@@ -49,22 +38,6 @@ func (e *choiceEntry) Description() string {
 
 func (e *choiceEntry) AcceptedValues() []string {
 	return e.TheChoices
-}
-
-func (e *choiceEntry) Group() string {
-	return e.group
-}
-
-func (e *choiceEntry) setGroup(groupID string) {
-	e.group = groupID
-}
-
-func (e *choiceEntry) rank() int {
-	return e.theRank
-}
-
-func (e *choiceEntry) setRank(rank int) {
-	e.theRank = rank
 }
 
 func (e *choiceEntry) deepCopy() Entry {
