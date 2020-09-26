@@ -158,11 +158,23 @@ func (s *Store) resolveInheritanceBetweenTemplatesInternal(ct *Chronicle, resolv
 }
 
 func (s *Store) isValid() (err error) {
-	for _, entry := range *s {
-		if err = entry.IsValid(); err != nil {
+	// get deterministic template order for validation. The order itself is not relevant
+	// for the validation. But if a parent template has invalid entries, then the error
+	// message should referr to that template, not to some other template that inherits it.
+	// Order is:
+	// 1. Parent templates come before their child templates
+	// 2. Alphabetical if there is no inheritance relation
+
+	sortedList := newHierarchieStore(s, "").flatten()
+
+	for _, ct := range sortedList {
+		fmt.Printf("DEBUG: %v\n", ct.ID)
+
+		if err = ct.IsValid(); err != nil {
 			return err
 		}
 	}
+
 	return nil
 }
 
