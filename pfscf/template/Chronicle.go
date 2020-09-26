@@ -169,15 +169,15 @@ func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *
 
 	// add parameter legend to end of file
 	records = append(records, []string{""})
-	records = append(records, []string{"# Legend for input values:"})
-	records = append(records, []string{"# Name", "Type", "Example", "Description"})
+	records = append(records, []string{"# Legend, for; input values:"})
+	records = append(records, []string{"# Name", "Accepted values", "Example", "Description"})
 	for _, paramName := range ct.Parameters.GetKeysSortedByName() {
 		param, _ := ct.Parameters.Get(paramName)
 
 		entry := make([]string, 4) // Comment char, Name, type, example, description
 
 		entry[0] = "# " + param.ID()
-		entry[1] = param.Type()
+		entry[1] = utils.ToCommaSeparatedString(param.AcceptedValues())
 		entry[2] = param.Example()
 		entry[3] = param.Description()
 

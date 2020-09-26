@@ -385,3 +385,18 @@ func CopyFloat(in *float64) (out *float64) {
 	*out = *in
 	return out
 }
+
+// ToCommaSeparatedString takes a list of input values and returns them as single
+// string with all values separated by commas.
+func ToCommaSeparatedString(input []string) (result string) {
+	var sb strings.Builder
+
+	for index, current := range input {
+		fmt.Fprint(&sb, current)
+		if index != len(input)-1 {
+			fmt.Fprint(&sb, ", ")
+		}
+	}
+
+	return sb.String()
+}
