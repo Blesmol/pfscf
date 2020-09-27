@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - New parameter type 'choice'. Mostly to be used in combination with content type 'choice'.
 
 ### Changed
+- Template validation now happens in deterministic order, with parent templates being evaluated first
 - Renamed content type 'textCell' to 'text' for simplicity
 
 ### Removed
