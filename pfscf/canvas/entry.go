@@ -26,78 +26,78 @@ func contentValErr(entry *Entry, errIn error) (errOut error) {
 }
 
 // ID returns the ID of this entry
-func (entry *Entry) ID() string {
-	return entry.id
+func (e *Entry) ID() string {
+	return e.id
 }
 
-func (entry *Entry) isValid() (err error) {
-	if err = utils.CheckFieldsAreSet(entry, "X", "Y", "X2", "Y2"); err != nil {
-		return contentValErr(entry, err)
+func (e *Entry) isValid() (err error) {
+	if err = utils.CheckFieldsAreSet(e, "X", "Y", "X2", "Y2"); err != nil {
+		return contentValErr(e, err)
 	}
 
-	if err = utils.CheckFieldsAreInRange(entry, 0.0, 100.0, "X", "Y", "X2", "Y2"); err != nil {
-		return contentValErr(entry, err)
+	if err = utils.CheckFieldsAreInRange(e, 0.0, 100.0, "X", "Y", "X2", "Y2"); err != nil {
+		return contentValErr(e, err)
 	}
 
-	if entry.X == entry.X2 {
-		err = fmt.Errorf("X coordinates are equal, both %.2f", *entry.X)
-		return contentValErr(entry, err)
+	if e.X == e.X2 {
+		err = fmt.Errorf("X coordinates are equal, both %.2f", *e.X)
+		return contentValErr(e, err)
 	}
-	if entry.Y == entry.Y2 {
-		err = fmt.Errorf("Y coordinates are equal, both %.2f", *entry.Y)
-		return contentValErr(entry, err)
+	if e.Y == e.Y2 {
+		err = fmt.Errorf("Y coordinates are equal, both %.2f", *e.Y)
+		return contentValErr(e, err)
 	}
 
 	return nil
 }
 
-func (entry *Entry) resolve(s *Store, resolveChain ...string) (err error) {
-	if entry.isResolved {
+func (e *Entry) resolve(s *Store, resolveChain ...string) (err error) {
+	if e.isResolved {
 		return nil
 	}
 
 	// check for cyclic dependency
 	for idx, otherID := range resolveChain {
-		if entry.id == otherID {
+		if e.id == otherID {
 			outputChain := append(resolveChain[idx:], otherID) // reduce to relevant part, include conflicting ID again
-			return fmt.Errorf("Error resolving canvas '%v': Cyclic dependency, chain is %v", entry.id, outputChain)
+			return fmt.Errorf("Error resolving canvas '%v': Cyclic dependency, chain is %v", e.id, outputChain)
 		}
 	}
 
-	if err = entry.isValid(); err != nil {
+	if err = e.isValid(); err != nil {
 		return err
 	}
 
 	// ensure that coordinates are sorted, X<=X2, Y<=Y2
-	if *entry.X > *entry.X2 {
-		entry.X, entry.X2 = entry.X2, entry.X
+	if *e.X > *e.X2 {
+		e.X, e.X2 = e.X2, e.X
 	}
-	if *entry.Y > *entry.Y2 {
-		entry.Y, entry.Y2 = entry.Y2, entry.Y
+	if *e.Y > *e.Y2 {
+		e.Y, e.Y2 = e.Y2, e.Y
 	}
 
-	if entry.Parent != nil { // No parent canvas? Nothing more to do!
-		parent, exists := s.Get(*entry.Parent)
+	if e.Parent != nil { // No parent canvas? Nothing more to do!
+		parent, exists := s.Get(*e.Parent)
 
 		// check that the entry from which we inherit really exists
 		if !exists {
-			return fmt.Errorf("Canvas '%v': Cannot find parent canvas '%v'", entry.id, entry.Parent)
+			return fmt.Errorf("Canvas '%v': Cannot find parent canvas '%v'", e.id, e.Parent)
 		}
 
 		// ensure that parent is already resolved
-		resolveChain = append(resolveChain, entry.id)
+		resolveChain = append(resolveChain, e.id)
 		if err = parent.resolve(s, resolveChain...); err != nil {
 			return err
 		}
 
 		// calculate absolute coordinates
-		entry.X = calcAbsCoord(*entry.X, *parent.X, *parent.X2)
-		entry.X2 = calcAbsCoord(*entry.X2, *parent.X, *parent.X2)
-		entry.Y = calcAbsCoord(*entry.Y, *parent.Y, *parent.Y2)
-		entry.Y2 = calcAbsCoord(*entry.Y2, *parent.Y, *parent.Y2)
+		e.X = calcAbsCoord(*e.X, *parent.X, *parent.X2)
+		e.X2 = calcAbsCoord(*e.X2, *parent.X, *parent.X2)
+		e.Y = calcAbsCoord(*e.Y, *parent.Y, *parent.Y2)
+		e.Y2 = calcAbsCoord(*e.Y2, *parent.Y, *parent.Y2)
 	}
 
-	entry.isResolved = true
+	e.isResolved = true
 
 	return nil
 }
@@ -112,20 +112,20 @@ func calcAbsCoord(input, pCoord1, pCoord2 float64) *float64 {
 	return &result
 }
 
-func (entry *Entry) deepCopy() *Entry {
-	utils.Assert(entry.isResolved == false, "copies should not happen after entry was resolved")
+func (e *Entry) deepCopy() *Entry {
+	utils.Assert(e.isResolved == false, "copies should not happen after entry was resolved")
 
 	copy := NewEntry()
-	copy.id = entry.id
-	copy.X = utils.CopyFloat(entry.X)
-	copy.Y = utils.CopyFloat(entry.Y)
-	copy.X2 = utils.CopyFloat(entry.X2)
-	copy.Y2 = utils.CopyFloat(entry.Y2)
-	copy.Parent = utils.CopyString(entry.Parent)
+	copy.id = e.id
+	copy.X = utils.CopyFloat(e.X)
+	copy.Y = utils.CopyFloat(e.Y)
+	copy.X2 = utils.CopyFloat(e.X2)
+	copy.Y2 = utils.CopyFloat(e.Y2)
+	copy.Parent = utils.CopyString(e.Parent)
 
 	return &copy
 }
 
-func (entry *Entry) inherit(other *Entry) {
-	utils.AddMissingValues(entry, *other)
+func (e *Entry) inherit(other *Entry) {
+	utils.AddMissingValues(e, *other)
 }
