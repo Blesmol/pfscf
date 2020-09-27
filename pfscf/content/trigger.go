@@ -37,7 +37,7 @@ func (e *trigger) resolve(ps preset.Store) (err error) {
 	return e.Content.Resolve(ps)
 }
 
-// generateOutput generates the output for this textCell object.
+// generateOutput generates the output for this object.
 func (e *trigger) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	// will be triggered by any non-nil value
 	value := getValue(e.Trigger, as)

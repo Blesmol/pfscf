@@ -313,13 +313,13 @@ presets:
 
 content:
   - value: param:player
-    type: textCell
+    type: text
     presets: [playerinfo]
     x:   0.8
     x2: 19.7
 
   - value: param:char
-    type: textCell
+    type: text
     presets: [playerinfo]
     x:  24.5
     x2: 43.9
@@ -335,26 +335,26 @@ content:
         x2: 60.5
         y2:  5.2
       - value: param:societyid.player
-        type: textCell
+        type: text
         presets: [playerinfo]
         x:  45.1
         x2: 57.6
         align: RB
       - value: "-"
-        type: textCell
+        type: text
         presets: [playerinfo]
         x:  57.6
         x2: 59.5
         align: CB
       - value: param:societyid.char
-        type: textCell
+        type: text
         presets: [playerinfo]
         x:  59.5
         x2: 67.8
         align: LB
 
   - value: param:chronicle_nr
-    type: textCell
+    type: text
     presets: [defaultfont]
     canvas: page
     x:  80.0
@@ -364,141 +364,141 @@ content:
     align: CM
 
   - value: param:starting_xp
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  0.1
     y2: 5.6
 
   - value: param:xp
-    type: textCell
+    type: text
     presets: [rightbar]
     y:   8.4
     y2: 13.9
 
   - value: param:final_xp
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  16.8
     y2: 22.3
 
   - value: param:starting_gp
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  25.3
     y2: 30.6
 
   - value: param:gp
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  33.5
     y2: 38.9
 
   - value: param:income
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  41.8
     y2: 47.3
 
   - value: param:items_sold
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  50.1
     y2: 55.7
 
   - value: param:gp_spent
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  58.5
     y2: 64.0
 
   - value: param:total_gp
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  66.9
     y2: 72.4
 
   - value: param:starting_fame
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  75.4
     y2: 80.8
 
   - value: param:fame
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  83.6
     y2: 89.0
 
   - value: param:total_fame
-    type: textCell
+    type: text
     presets: [rightbar]
     y:  92.0
     y2: 97.6
 
   - value: param:event
-    type: textCell
+    type: text
     presets: [eventinfo]
     x:   1.1
     x2: 20.0
 
   - value: param:eventcode
-    type: textCell
+    type: text
     presets: [eventinfo]
     x:  22.7
     x2: 33.0
 
   - value: param:date
-    type: textCell
+    type: text
     presets: [eventinfo]
     x:  35.8
     x2: 50.3
 
   - value: param:gm
-    type: textCell
+    type: text
     presets: [eventinfo]
     x:  53.1
     x2: 77.2
 
   - value: param:gmid
-    type: textCell
+    type: text
     presets: [eventinfo]
     x:  79.9
     x2: 99.3
 
   - value: param:fac1_name
-    type: textCell
+    type: text
     presets: [faccol_name, facline1]
 
   - value: param:fac1_rep_gained
-    type: textCell
+    type: text
     presets: [faccol_rep_gained, facline1]
 
   - value: param:fac1_rep_total
-    type: textCell
+    type: text
     presets: [faccol_rep_total, facline1]
 
   - value: param:fac2_name
-    type: textCell
+    type: text
     presets: [faccol_name, facline2]
 
   - value: param:fac2_rep_gained
-    type: textCell
+    type: text
     presets: [faccol_rep_gained, facline2]
 
   - value: param:fac2_rep_total
-    type: textCell
+    type: text
     presets: [faccol_rep_total, facline2]
 
   - value: param:fac3_name
-    type: textCell
+    type: text
     presets: [faccol_name, facline3]
 
   - value: param:fac3_rep_gained
-    type: textCell
+    type: text
     presets: [faccol_rep_gained, facline3]
 
   - value: param:fac3_rep_total
-    type: textCell
+    type: text
     presets: [faccol_rep_total, facline3]
 
   - type: choice

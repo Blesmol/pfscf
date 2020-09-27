@@ -13,7 +13,7 @@ presets:
 
 content:
   player:
-    type: textCell
+    type: text
     example: Bob
     presets: [common]
 
@@ -24,11 +24,11 @@ content:
     presets: [common]
 
   char:
-    type: textCell
+    type: text
     example: Magnatron
     presets: [common]
 
   noExample:
-    type: textCell
+    type: text
     presets: [common]
 

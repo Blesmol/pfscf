@@ -24,8 +24,8 @@ func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 
 	// read concrete object based on type information
 	switch ety.Type {
-	case typeTextCell:
-		s.e = newTextCell()
+	case typeText:
+		s.e = newText()
 		err = unmarshal(s.e)
 	case typeRectangle:
 		s.e = newRectangle()

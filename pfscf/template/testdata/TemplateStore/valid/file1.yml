@@ -7,7 +7,7 @@ presets:
     y: 20
 content:
   c0:
-    type: textCell
+    type: text
   c1:
-    type: textCell
+    type: text
 

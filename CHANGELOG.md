@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - New parameter type 'choice'. Mostly to be used in combination with content type 'choice'.
 
 ### Changed
+- Renamed content type 'textCell' to 'text' for simplicity
 
 ### Removed
 

@@ -3,7 +3,7 @@ description: foo
 inherit: id_c
 content:
   content_d:
-    type: textCell
+    type: text
 presets:
   preset_d:
-    type: textCell
+    type: text
