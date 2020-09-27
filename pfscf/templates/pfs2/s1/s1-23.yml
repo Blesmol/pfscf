@@ -1,3 +1,7 @@
 id: pfs2.s1-23
 description: "#1-23: The Star-Crossed Court"
 inherit: pfs2.s1
+
+canvas:
+  rightbar:
+    y: 20.6
