@@ -305,7 +305,7 @@ func parseAspectRatio(input string) (x, y float64, err error) {
 // The following function should correctly calculate the margins from the aspect ratio if
 // margins were only added on the x axis OR the y axis, not on both.
 func (ct *Chronicle) guessMarginsFromAspectRatio(stamp *stamp.Stamp) (xMarginPct, yMarginPct float64, err error) {
-	sx, sy := stamp.GetDimensions()
+	sx, sy := stamp.GetDimensionsWithOffset()
 	arx, ary, err := parseAspectRatio(ct.Aspectratio)
 	if err != nil {
 		return

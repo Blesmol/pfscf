@@ -119,7 +119,7 @@ func TestTextCell_Resolve(t *testing.T) {
 }
 
 func TestTextCell_generateOutput(t *testing.T) {
-	stamp := stamp.NewStamp(100.0, 100.0)
+	stamp := stamp.NewStamp(100.0, 100.0, 0.0, 0.0)
 	stamp.AddCanvas("test", 0.0, 0.0, 100.0, 100.0)
 	testArgName := "someId"
 	testArgValue := "foobar"

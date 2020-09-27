@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
+	"github.com/Blesmol/pfscf/pfscf/cfg"
 	"github.com/Blesmol/pfscf/pfscf/pdf"
 	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
@@ -59,6 +60,9 @@ func GetBatchCommand() (cmd *cobra.Command) {
 
 		Run: executeBatchFill,
 	}
+	batchFillCmd.Flags().Float64VarP(&cfg.Global.OffsetX, "offset-x", "x", 0, "Assume an additional offset for the X axis of the chronicle")
+	batchFillCmd.Flags().Float64VarP(&cfg.Global.OffsetY, "offset-y", "y", 0, "Assume an additional offset for the Y axis of the chronicle")
+
 	batchCmd.AddCommand(batchFillCmd)
 
 	return batchCmd

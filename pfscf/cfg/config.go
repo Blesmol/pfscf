@@ -22,14 +22,8 @@ type globalFlags struct {
 	DrawCellBorder bool
 	DrawCanvasGrid string
 	DrawCanvas     bool
-}
-
-func init() {
-	Global = globalFlags{
-		Verbose:        false,
-		DrawCellBorder: false,
-		DrawCanvasGrid: "",
-	}
+	OffsetX        float64
+	OffsetY        float64
 }
 
 // GetTemplatesDir returns the path below which the template files are stored.
