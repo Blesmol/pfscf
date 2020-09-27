@@ -5,6 +5,6 @@ presets:
     font: base
 content:
   c0:
-    type: textCell
+    type: text
     font: base
 

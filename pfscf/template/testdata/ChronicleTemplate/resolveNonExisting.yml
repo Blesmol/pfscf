@@ -5,5 +5,5 @@ presets:
     presets: [p2]
 content:
   c1:
-    type: textCell
+    type: text
     presets: [p2]

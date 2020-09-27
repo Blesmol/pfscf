@@ -3,11 +3,11 @@ description: simpleDescription
 inherit: otherId
 content:
   c2:
-    type: textCell
+    type: text
     example: c2example
     x: 3
   c0:
-    type: textCell
+    type: text
     example: c0example
     x: 1
   c1:

@@ -208,13 +208,13 @@ presets:
 
 content:
   - value: param:player
-    type: textCell
+    type: text
     presets: [topline]
     x:  7.3
     x2: 20.7
 
   - value: param:char
-    type: textCell
+    type: text
     presets: [topline]
     x:  25.8
     x2: 42.8
@@ -230,26 +230,26 @@ content:
         x2: 59.0
         y2: 16.5
       - value: param:societyid.player
-        type: textCell
+        type: text
         presets: [topline]
         x:  44.8
         x2: 55.9
         align: RB
       - value: "-"
-        type: textCell
+        type: text
         presets: [topline]
         x:  56.0
         x2: 57.4
         align: CB
       - value: param:societyid.char
-        type: textCell
+        type: text
         presets: [topline]
         x:  57.5
         x2: 64.8
         align: LB
 
   - value: param:faction
-    type: textCell
+    type: text
     presets: [topline]
     x:  66.9
     x2: 74.3
@@ -258,12 +258,12 @@ content:
     trigger: param:xp
     content:
       - value: param:xp
-        type: textCell
+        type: text
         presets: [rightbargmvalues]
         y:  34.0
         y2: 37.4
       - value: param:gminitials
-        type: textCell
+        type: text
         presets: [rightbargminits]
         y:  35.6
         y2: 37.4
@@ -272,12 +272,12 @@ content:
     trigger: param:fame
     content:
       - value: param:fame
-        type: textCell
+        type: text
         presets: [rightbargmvalues]
         y:  51.9
         y2: 55.3
       - value: param:gminitials
-        type: textCell
+        type: text
         presets: [rightbargminits]
         y:  53.6
         y2: 55.3
@@ -286,12 +286,12 @@ content:
     trigger: param:credits
     content:
       - value: param:credits
-        type: textCell
+        type: text
         presets: [rightbargmvalues]
         y:  76.1
         y2: 79.4
       - value: param:gminitials
-        type: textCell
+        type: text
         presets: [rightbargminits]
         y:  77.7
         y2: 79.4
@@ -300,71 +300,71 @@ content:
     trigger: param:dayjob
     content:
       - value: param:dayjob
-        type: textCell
+        type: text
         presets: [rightbargmvalues]
         y:  81.7
         y2: 85.2
       - value: param:gminitials
-        type: textCell
+        type: text
         presets: [rightbargminits]
         y:  83.5
         y2: 85.2
 
   - value: param:event
-    type: textCell
+    type: text
     presets: [bottomline]
     x:   7.1
     x2: 23.7
 
   - value: param:eventcode
-    type: textCell
+    type: text
     presets: [bottomline]
     x:  26.2
     x2: 35.2
 
   - value: param:date
-    type: textCell
+    type: text
     presets: [bottomline]
     x:  37.6
     x2: 50.4
 
   - value: param:gm
-    type: textCell
+    type: text
     presets: [bottomline]
     x:  52.8
     x2: 74.0
 
   - value: param:gmid
-    type: textCell
+    type: text
     presets: [bottomline]
     x:  76.4
     x2: 93.4
 
   - value: param:fac1name
-    type: textCell
+    type: text
     presets: [facline1, facnamecol1]
 
   - value: param:fac1rep
-    type: textCell
+    type: text
     presets: [facline1, facrepcol1]
 
   - value: param:fac2name
-    type: textCell
+    type: text
     presets: [facline2, facnamecol1]
 
   - value: param:fac2rep
-    type: textCell
+    type: text
     presets: [facline2, facrepcol1]
 
   - value: param:fac3name
-    type: textCell
+    type: text
     presets: [facline1, facnamecol2]
 
   - value: param:fac3rep
-    type: textCell
+    type: text
     presets: [facline1, facrepcol2]
 
   - value: param:infamy
-    type: textCell
+    type: text
     presets: [facline2, facnamecol2]
 

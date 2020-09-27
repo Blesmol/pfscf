@@ -9,8 +9,8 @@ import (
 	test "github.com/Blesmol/pfscf/pfscf/testutils"
 )
 
-func getTextCellWithDummyData(presets ...string) (tc *textCell) {
-	tc = newTextCell()
+func getTextCellWithDummyData(presets ...string) (tc *text) {
+	tc = newText()
 
 	tc.Value = "Some value"
 	tc.X = 12.0
@@ -135,11 +135,11 @@ func TestTextCell_generateOutput(t *testing.T) {
 }
 
 func TestTextCell_deepCopy(t *testing.T) {
-	e1 := newTextCell()
+	e1 := newText()
 	e1.Value = "t1"
 	e1.Presets = append(e1.Presets, "t1")
 
-	e2 := e1.deepCopy().(*textCell)
+	e2 := e1.deepCopy().(*text)
 	e2.Value = "t2"
 	e2.Presets[0] = "t2"
 

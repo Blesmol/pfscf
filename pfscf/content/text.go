@@ -12,12 +12,12 @@ import (
 )
 
 const (
-	typeTextCell = "textCell"
+	typeText = "text"
 )
 
-// textCell is the final type to implement textCells.
+// text is the final type to implement text cells.
 // TODO switch to pointers to distinguish between unset values and zero values?
-type textCell struct {
+type text struct {
 	Value    string
 	X, Y     float64
 	X2, Y2   float64
@@ -28,15 +28,15 @@ type textCell struct {
 	Presets  []string
 }
 
-func newTextCell() *textCell {
-	var e textCell
+func newText() *text {
+	var e text
 	e.Presets = make([]string, 0)
 	return &e
 }
 
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (e *textCell) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
+func (e *text) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
 	err = utils.CheckFieldsAreSet(e, "Value", "Font", "Fontsize", "Canvas")
 	if err != nil {
 		return contentValErr(e, err)
@@ -66,7 +66,7 @@ func (e *textCell) isValid(paramStore *param.Store, canvasStore *canvas.Store) (
 }
 
 // resolve the presets for this content object.
-func (e *textCell) resolve(ps preset.Store) (err error) {
+func (e *text) resolve(ps preset.Store) (err error) {
 	// check that required presets are not contradicting each other
 	if err = ps.PresetsAreNotContradicting(e.Presets...); err != nil {
 		err = fmt.Errorf("Error resolving content: %v", err)
@@ -85,8 +85,8 @@ func (e *textCell) resolve(ps preset.Store) (err error) {
 	return nil
 }
 
-// generateOutput generates the output for this textCell object.
-func (e *textCell) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
+// generateOutput generates the output for this object.
+func (e *text) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	value := getValue(e.Value, as)
 	if value == nil {
 		return nil // nothing to do here...
@@ -100,8 +100,8 @@ func (e *textCell) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 
 // deepCopy creates a deep copy of this entry.
 // TODO create generic deep-copy function for public fields
-func (e *textCell) deepCopy() Entry {
-	var copy textCell
+func (e *text) deepCopy() Entry {
+	var copy text
 	utils.AddMissingValues(&copy, *e, "Presets")
 	for _, preset := range e.Presets {
 		copy.Presets = append(copy.Presets, preset)

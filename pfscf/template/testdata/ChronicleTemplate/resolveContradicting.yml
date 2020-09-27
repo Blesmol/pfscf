@@ -9,5 +9,5 @@ presets:
     presets: [p1, p2]
 content:
   c1:
-    type: textCell
+    type: text
     presets: [p1, p2]
