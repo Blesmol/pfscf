@@ -31,8 +31,8 @@ func GetFillCommand() (cmd *cobra.Command) {
 		Run: executeFill,
 	}
 	fillCmd.Flags().StringVarP(&cfg.Global.DrawCanvasGrid, "canvas-grid", "g", "", "Draw a coordinate grid in the output file for the canvas with the provided name")
-	fillCmd.Flags().BoolVarP(&cfg.Global.DrawCellBorder, "cellBorder", "c", false, "Draw the cell borders of all added fields")
-	fillCmd.Flags().BoolVarP(&cmdFillUseExampleValues, "exampleValues", "e", false, "Use example values to fill out the chronicle")
+	fillCmd.Flags().BoolVarP(&cfg.Global.DrawCellBorder, "cell-border", "c", false, "Draw the cell borders of all added fields")
+	fillCmd.Flags().BoolVarP(&cmdFillUseExampleValues, "examples", "e", false, "Use example values to fill out the chronicle")
 	fillCmd.Flags().BoolVarP(&cmdFillSuppressOpenOutfile, "no-auto-open", "n", false, "Suppress auto-opening the filled out chronicle")
 	fillCmd.Flags().BoolVarP(&cfg.Global.DrawCanvas, "draw-canvas", "d", false, "Draw a border around all defined canvases")
 	fillCmd.Flags().Float64VarP(&cfg.Global.OffsetX, "offset-x", "x", 0, "Assume an additional offset for the X axis of the chronicle")
