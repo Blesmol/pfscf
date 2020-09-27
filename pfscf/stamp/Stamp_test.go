@@ -10,7 +10,7 @@ import (
 )
 
 func TestNewStamp(t *testing.T) {
-	s := NewStamp(1.0, 2.0)
+	s := NewStamp(1.0, 2.0, 0.0, 0.0)
 	test.ExpectNotNil(t, s)
 
 	test.ExpectEqual(t, s.dimX, 1.0)
@@ -19,7 +19,7 @@ func TestNewStamp(t *testing.T) {
 }
 
 func TestStamp_SetCellBorder(t *testing.T) {
-	s := NewStamp(1.0, 1.0)
+	s := NewStamp(1.0, 1.0, 0.0, 0.0)
 	test.ExpectNotNil(t, s)
 
 	test.ExpectEqual(t, s.cellBorder, "0") // default is that no cell border should be drawn
@@ -30,7 +30,7 @@ func TestStamp_SetCellBorder(t *testing.T) {
 }
 
 func TestStamp_DetermineFontSize(t *testing.T) {
-	s := NewStamp(100.0, 100.0)
+	s := NewStamp(100.0, 100.0, 0.0, 0.0)
 
 	var result float64
 
@@ -54,7 +54,7 @@ func TestStamp_WriteToFile(t *testing.T) {
 
 	t.Run("error", func(t *testing.T) {
 		t.Run("missing filename", func(t *testing.T) {
-			s := NewStamp(400.0, 400.0)
+			s := NewStamp(400.0, 400.0, 0.0, 0.0)
 			test.ExpectNotNil(t, s)
 			err := s.WriteToFile("")
 			test.ExpectError(t, err)
@@ -65,7 +65,7 @@ func TestStamp_WriteToFile(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		t.Run("fiii", func(t *testing.T) {
-			s := NewStamp(400.0, 400.0)
+			s := NewStamp(400.0, 400.0, 0.0, 0.0)
 			test.ExpectNotNil(t, s)
 			workDir := utils.GetTempDir()
 			defer os.RemoveAll(workDir)
@@ -79,25 +79,25 @@ func TestStamp_WriteToFile(t *testing.T) {
 func TestStamp_DrawCanvasGrid(t *testing.T) {
 	canvasID := "page"
 	t.Run("outer boundaries", func(t *testing.T) {
-		s := NewStamp(1000.0, 1000.0)
+		s := NewStamp(1000.0, 1000.0, 0.0, 0.0)
 		s.AddCanvas(canvasID, 0.0, 0.0, 100.0, 100.0)
 		err := s.DrawCanvasGrid(canvasID)
 		test.ExpectNoError(t, err)
 	})
 	t.Run("with default values", func(t *testing.T) {
-		s := NewStamp(1000.0, 1000.0)
+		s := NewStamp(1000.0, 1000.0, 0.0, 0.0)
 		s.AddCanvas(canvasID, 10.0, 10.0, 90.0, 90.0)
 		err := s.DrawCanvasGrid(canvasID)
 		test.ExpectNoError(t, err)
 	})
 	t.Run("smaller than 300", func(t *testing.T) {
-		s := NewStamp(600.0, 600.0)
+		s := NewStamp(600.0, 600.0, 0.0, 0.0)
 		s.AddCanvas(canvasID, 25.5, 25.5, 74.5, 74.5)
 		err := s.DrawCanvasGrid(canvasID)
 		test.ExpectNoError(t, err)
 	})
 	t.Run("error", func(t *testing.T) {
-		s := NewStamp(600.0, 600.0)
+		s := NewStamp(600.0, 600.0, 0.0, 0.0)
 		// no canvas added
 		err := s.DrawCanvasGrid(canvasID)
 		test.ExpectError(t, err, "Cannot find", canvasID)

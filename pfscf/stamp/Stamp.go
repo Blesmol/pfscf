@@ -21,6 +21,8 @@ type Stamp struct {
 	cellBorder  string
 	canvasStore map[string]canvas
 	pageCanvas  canvas
+	offsetX     float64
+	offsetY     float64
 }
 
 // RectStyle allows to provide only the required drawing parameters for a rectangle
@@ -32,11 +34,14 @@ type RectStyle struct {
 }
 
 // NewStamp creates a new Stamp object.
-func NewStamp(dimX float64, dimY float64) (s *Stamp) {
+func NewStamp(dimX, dimY, offsetX, offsetY float64) (s *Stamp) {
 	s = new(Stamp)
 
 	s.dimX = dimX
 	s.dimY = dimY
+
+	s.offsetX = offsetX
+	s.offsetY = offsetY
 
 	s.canvasStore = make(map[string]canvas, 0)
 	s.SetPageCanvas(0.0, 0.0, 100.0, 100.0)
@@ -67,16 +72,17 @@ func (s *Stamp) shouldDrawCellBorder() bool {
 	return s.cellBorder == "1"
 }
 
-// GetDimensions returns the x/y dimensions of this stamp
-func (s *Stamp) GetDimensions() (x, y float64) {
-	return s.dimX, s.dimY
+// GetDimensionsWithOffset returns the x/y dimensions of this stamp minus its offsets
+func (s *Stamp) GetDimensionsWithOffset() (x, y float64) {
+	return s.dimX-s.offsetX, s.dimY-s.offsetY
 }
 
 // SetPageCanvas sets a new page canvas for this stamp. This function may only be
 // called as long as no entries are contained in the Stamps' internal canvas store
 func (s *Stamp) SetPageCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) {
 	utils.Assert(len(s.canvasStore) == 0, "May only be called before entries are added to the stamp canvas store")
-	s.pageCanvas = newCanvas(0.0, 0.0, s.dimX, s.dimY).getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct)
+	baseCanvas := newCanvas(0.0+s.offsetX/2.0, 0.0+s.offsetY/2.0, s.dimX-s.offsetX, s.dimY-s.offsetY)
+	s.pageCanvas = baseCanvas.getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct)
 }
 
 // AddCanvas adds a canvas to the new internal canvas store.

@@ -180,7 +180,7 @@ func (f *File) Fill(argStore *args.Store, ct *template.Chronicle, outfile string
 	width, height := extractedPage.GetDimensionsInPoints()
 
 	// create stamp
-	stamp := stamp.NewStamp(width, height)
+	stamp := stamp.NewStamp(width, height, cfg.Global.OffsetX, cfg.Global.OffsetY)
 
 	if cfg.Global.DrawCellBorder {
 		stamp.SetCellBorder(true)
