@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - New parameter type 'choice'. Mostly to be used in combination with content type 'choice'.
-- New command line flags `-margin-x <value>` and `-margin-y <value>` for the `fill` and `batch fill` commands to fine-tune results in case the result is slightly off.
+- New command line flags `-offset-x <value>` and `-offset-y <value>` for the `fill` and `batch fill` commands to fine-tune results in case the result is slightly off.
 
 ### Changed
 - Template validation now happens in deterministic order, with parent templates being evaluated first
