@@ -10,13 +10,14 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Template validation now happens in deterministic order, with parent templates being evaluated first
-- Renamed content type 'textCell' to 'text' for simplicity
+- Renamed content type `textCell` to `text` for simplicity
 - Renamed cmd line flag `--exampleValues` to `--examples`
 - Renamed cmd line flag `--cellBorder` to `--cell-border`
 
 ### Removed
 
 ### Fixed
+- Cyclic parent relations in `canvas` entries are now recognized and lead to error messages
 
 ## v0.11.1 - 2020-09-25
 
