@@ -168,8 +168,6 @@ func (s *Store) isValid() (err error) {
 	sortedList := newHierarchieStore(s, "").flatten()
 
 	for _, ct := range sortedList {
-		fmt.Printf("DEBUG: %v\n", ct.ID)
-
 		if err = ct.IsValid(); err != nil {
 			return err
 		}
