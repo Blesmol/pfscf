@@ -51,10 +51,17 @@ func (entry *Entry) isValid() (err error) {
 	return nil
 }
 
-func (entry *Entry) resolve(s *Store) (err error) {
-	// TODO add code to avoid dependency cycles, see presets
+func (entry *Entry) resolve(s *Store, resolveChain ...string) (err error) {
 	if entry.isResolved {
 		return nil
+	}
+
+	// check for cyclic dependency
+	for idx, otherID := range resolveChain {
+		if entry.id == otherID {
+			outputChain := append(resolveChain[idx:], otherID) // reduce to relevant part, include conflicting ID again
+			return fmt.Errorf("Error resolving canvas '%v': Cyclic dependency, chain is %v", entry.id, outputChain)
+		}
 	}
 
 	if err = entry.isValid(); err != nil {
@@ -78,7 +85,8 @@ func (entry *Entry) resolve(s *Store) (err error) {
 		}
 
 		// ensure that parent is already resolved
-		if err = parent.resolve(s); err != nil {
+		resolveChain = append(resolveChain, entry.id)
+		if err = parent.resolve(s, resolveChain...); err != nil {
 			return err
 		}
 
