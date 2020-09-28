@@ -10,12 +10,12 @@ import (
 
 // ReadCsvFile reads the csv file from the provided location.
 func ReadCsvFile(filename string) (records [][]string, err error) {
+	// TODO add check whether this is a regular file. Error message is misleading in case name denotes a directory.
+
 	fileData, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return nil, fmt.Errorf("Error reading csv file '%v': %v", filename, err)
+		return nil, fmt.Errorf("Error reading file '%v': %v", filename, err)
 	}
-
-	// TODO check number of contains commas vs semicolons to determine separator
 
 	r := csv.NewReader(bytes.NewReader(fileData))
 	r.Comma = detectSeparator(fileData)
