@@ -1,4 +1,4 @@
-# Filling Out Chroncles
+# Filling Out Chronicles
 
 ## Quickstart
 
