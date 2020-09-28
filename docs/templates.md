@@ -1,5 +1,14 @@
 # Creating Template Files for Pfscf (Outdated)
 
+!!! warning "Outdated"
+	The contents of this page are quite outdated. I will see that I update this page in the near future.
+
+!!! warning "Format bound to change"
+	This is still quite a new project.
+	And already the file format for the chronicle templates has changed various times.
+	Most likely this will happen again in the near future, multiple times.
+	So please keep that in mind when writing new files: They will most likely need to be updated again soon.
+
 After some time of using pfscf, you might be tempted to create your own templates or modify existing ones.
 Or you are just curious on what is currently supported by pfscf.
 Besides, it's always useful to provide proper documentation.

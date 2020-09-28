@@ -1,5 +1,9 @@
 site_name: The Pathfinder Society Chronicle Filler
 theme: material
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.details
 nav:
   - index.md
   - quickstart.md
@@ -10,4 +14,4 @@ nav:
   - faq.md
   - troubleshooting.md
   - legal.md
- 
+
