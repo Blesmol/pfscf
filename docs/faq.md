@@ -1,8 +1,6 @@
 # Frequently Asked Questions
 
-!!! info ""
-
-	This is the section about general questions. In case you are having problems with using the program, please have a look at the [troubleshooting chapter](troubleshooting.md)
+This is the section about general questions. In case you are having problems with using the program, please have a look at the [troubleshooting chapter](troubleshooting.md)
 
 ??? question "What types of chronicles / game systems are supported at the moment?"
 

@@ -31,13 +31,13 @@
 	Then you can use that same value when filling out your chronicle.
 	This parameter is supported both for the `fill` and for the `batch fill` command.
 
-??? question "I have a Society scenario and want to use pfscf on that. But it keeps complaining that some operation is not allowed because of PDF permissions on that file."
+??? note "I have a Society scenario and want to use pfscf on that. But it keeps complaining that some operation is not allowed because of PDF permissions on that file."
 
 	The permission settings in place on Paizos PDFs do not allow to do things like extracting pages.
 	Which I can totally understand for the scenario and their property in general, but this makes life a little bit harder.
 	Have a look at the chapter about [getting blank chronicle sheets](extraction.md) for instructions on how to extract a chronicle sheet from your scenario PDF file.
 
-??? question "Oh noes! I have found a bug! I HAVE FOUND A BUG!!1!"
+??? note "Oh noes! I have found a bug! I HAVE FOUND A BUG!!1!"
 
 	First, calm down.
 	Second, please report this to me by opening an [issue](https://github.com/Blesmol/pfscf/issues).
