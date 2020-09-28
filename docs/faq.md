@@ -1,16 +1,14 @@
 # Frequently Asked Questions
 
+!!! info ""
+
+	This is the section about general questions. In case you are having problems with using the program, please have a look at the [troubleshooting chapter](troubleshooting.md)
+
 ??? question "What types of chronicles / game systems are supported at the moment?"
 
 	At the moment the chronicles for Pathfinder 2 and Starfinder are supported.
 	Pathfinder 1 is in general also possible, but I did not yet have time to provide the proper configuration.
 	Also Pathfinder 1 may take some more time, as Paizo seems to have changed the chronicle layout between seaons.
-
-??? question "I have a Society scenario and want to use pfscf on that. But it keeps complaining that some operation is not allowed because of PDF permissions on that file. What should I do?"
-
-	The permission settings in place on Paizos PDFs do not allow to do things like extracting pages.
-	Which I can totally understand for the scenario and their property in general, but this makes life a little bit harder.
-	Have a look at the chapter about [getting blank chronicle sheets](extraction.md) for instructions on how to extract a chronicle sheet from your scenario PDF file.
 
 ??? question "What about scenario-specific options? For example, I have this one scenario where I need an easy way to strike out boons that the group did not get."
 
@@ -22,15 +20,6 @@
 	And what do I also have on the roadmap?
 	An auto-updater for such configs!
 	So if people would contribute scenario-specific configs, then other people don't need to update their installation of pfscf every two weeks, but just call the program with some yet-to-be-determined parameter (think of `pfscf update-config`) and you get the latest and greatest scenario-specific config automatically downloaded to your computer.
-
-??? question "Oh noes! I have found a bug! I HAVE FOUND A BUG!!1! WHAT SHOULD I DO???"
-
-	First, calm down.
-	Second, please report this to me by opening an [issue](https://github.com/Blesmol/pfscf/issues).
-	If you do so, please provide as many details as possible.
-	What operating system are you running?
-	What did you do (exact command line, input files), what did then happen (exact output)?
-	I will try to find out what can be done about this and try to fix it as soon as possible.
 
 ??? question "I have this absolutely great idea for a missing feature! Can you implement this?"
 
