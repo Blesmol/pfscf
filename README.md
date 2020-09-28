@@ -23,6 +23,7 @@ Available Commands:
   batch       Fill out multiple chronicles in one go
   fill        Fill out a single chronicle sheet
   help        Help about any command
+  open        Open the specified file (e.g. PDF, CSV) with its default app
   template    Various actions on templates: list, describe, etc
 
 Flags:
