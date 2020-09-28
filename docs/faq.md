@@ -16,10 +16,10 @@
 
   **A:** First, calm down. Second, please report this to me by opening an [issue](https://github.com/Blesmol/pfscf/issues). If you do so, please provide as many details as possible. What operating system are you running? What did you do (exact command line, input files), what did then happen (exact output)? I will try to find out what can be done about this and try to fix it as soon as possible.
 
-!!! question "I have this absolutely great idea for a missing feature!"
+??? question "I have this absolutely great idea for a missing feature!"
 	Yay! Feature ideas are always welcome! Please open an [issue](https://github.com/Blesmol/pfscf/issues) in this repository and describe your idea! The more details, the better! But please be also aware that I am doing this in my free time, and some things might be really, really complicated to realize. So please don't be mad if things might take a little bit longer or sometimes even won't be done. But... it's open source, contributions are always possible and welcome :) Still: If you have an idea that you think would improve this project, please create an issue here. You'll never know unless you tried!
 
-!!! question "I have this absolutely great idea for a missing feature!"
+?? question "I have this absolutely great idea for a missing feature!"
 
 	Yay! Feature ideas are always welcome! Please open an [issue](https://github.com/Blesmol/pfscf/issues) in this repository and describe your idea! The more details, the better! But please be also aware that I am doing this in my free time, and some things might be really, really complicated to realize. So please don't be mad if things might take a little bit longer or sometimes even won't be done. But... it's open source, contributions are always possible and welcome :) Still: If you have an idea that you think would improve this project, please create an issue here. You'll never know unless you tried!
 
