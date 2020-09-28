@@ -1,5 +1,7 @@
 # Troubleshooting
 
+This chapter describes on how to overcome some reoccurring problems users might have. The list will be expanded in the future.
+
 ??? note "The values in the right sidebar (xp, credits/gold, ...) are misplaced"
 
 	Chronicles for different scenarios might have sidebars with a different size and thus need some minor adaptions to the template configuration.
