@@ -12,12 +12,19 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## v0.11.3 - 2020-09-29
+
+### Added
+- New command line action `open` to have an easy way to open files (e.g. PDF or CSV) with their default application
+
+### Fixed
+- Generated CSV files had some typos in comments
+
 ## v0.11.2 - 2020-09-27
 
 ### Added
 - New parameter type 'choice'. Mostly to be used in combination with content type 'choice'.
 - New command line flags `--offset-x <value>` and `--offset-y <value>` for the `fill` and `batch fill` commands to fine-tune results in case the result is slightly off.
-- New command line action `open` to have an easy way to open files (e.g. PDF or CSV) with their default application
 
 ### Changed
 - Template validation now happens in deterministic order, with parent templates being evaluated first
