@@ -43,11 +43,11 @@ This chapter describes on how to overcome some reoccurring problems users might 
 	Please check whether everything works then as expected.
 	Soon I will also provide means to store this in a config so that you don't have to specify this each and every time when generating a CSV file.
 
-??? note "I have a Society scenario and want to use pfscf on that. But it keeps complaining that some operation is not allowed because of PDF permissions on that file."
+??? note "When I use pfscf with some PDF file, it keeps complaining that some operation is not allowed because of PDF permissions on that file."
 
 	The permission settings in place on Paizos PDFs do not allow to do things like extracting pages.
 	Which I can totally understand for the scenario and their property in general, but this makes life a little bit harder.
-	Have a look at the chapter about [getting blank chronicle sheets](extraction.md) for instructions on how to extract a chronicle sheet from your scenario PDF file.
+	Have a look at the chapter about [getting blank chronicle sheets](extraction.md) for instructions on how to extract a chronicle sheet from your scenario PDF file that should work with pfscf.
 
 ??? note "Oh noes! I have found a bug! I HAVE FOUND A BUG!!1!"
 
