@@ -2,12 +2,6 @@
 
 This chapter describes on how to overcome some reoccurring problems users might have. The list will be expanded in the future.
 
-??? note "The values in the right sidebar (xp, credits/gold, ...) are misplaced"
-
-	Chronicles for different scenarios might have sidebars with a different size and thus need some minor adaptions to the template configuration.
-	First check whether there already exists a specialized template for your scenario (`pfscf template list`) and try using that one.
-	If this does not help, you could either [try to fix the configuration yourself](templates.md) or send me the chronicle via [email](mailto:github@pecebe.de) and I will see what I can do.
-
 ??? note "All values on my chronicle are misplaced"
 
 	This can happen if your input chronicle PDF file has slightly different dimensions than expected.
@@ -32,6 +26,22 @@ This chapter describes on how to overcome some reoccurring problems users might 
 	Might take some trying around until you got a working value, but finally it should hopefully work.
 	Then you can use that same value when filling out your chronicle.
 	This parameter is supported both for the `fill` and for the `batch fill` command.
+
+??? note "Only values in the right sidebar (xp, credits/gold, ...) are misplaced"
+
+	Chronicles for different scenarios might have sidebars with a different size and thus need some minor adaptions to the template configuration.
+	First check whether there already exists a specialized template for your scenario (`pfscf template list`) and try using that one.
+	If this does not help, you could either [try to fix the configuration yourself](templates.md) or send me the chronicle via [email](mailto:github@pecebe.de) and I will see what I can do.
+
+??? note "The CSV file that I generated with pfscf does not properly work with Excel/LibreOffice, ..."
+
+	Applications like Excel try to put the content from such a file into a table based on so-called separator characters.
+	And although CSV stands for "**comma**-separated values", the separator character is not necessarily a comma.
+	Apparently Excel has certain expectations on what the separator character is, based on the region that you're living in.
+	At the moment the CSV files generated from pfscf are using `;` as separator character per default.
+	When generating a CSV file with pfscf, you can select what should be used as separator using the `--separator` command line flag, e.g. `pfscf batch create --separator "," ...`.
+	Please check whether everything works then as expected.
+	Soon I will also provide means to store this in a config so that you don't have to specify this each and every time when generating a CSV file.
 
 ??? note "I have a Society scenario and want to use pfscf on that. But it keeps complaining that some operation is not allowed because of PDF permissions on that file."
 
