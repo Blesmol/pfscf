@@ -30,6 +30,13 @@ This is the section about general questions. In case you are having problems wit
 	Still: If you have an idea that you think would improve this project, please create an issue here.
 	You'll never know unless you tried!
 
+??? question "Why don't you also provide the blank chronicles?"
+
+	Should probably be clear, but let's have that question anyways.
+	The answer is: Copyright.
+	I do not own the blank chronicles and don't have permission from Paizo to include them here.
+	I also won't take up any discussions with Paizo regarding this.
+	If you want to fill out chronicles, you should have the scenario PDF anyways.
 
 ??? question "Will there ever be a GUI for pfscf?"
 
