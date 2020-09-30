@@ -36,7 +36,7 @@ func getValue(valueField string, as *args.Store) (result *string) {
 		return nil
 	}
 
-	// check whether a parameter reference was provided
+	// check whether a parameter reference was provided, i.e. something like "param:<name>"
 	paramName := regexParamValue.FindStringSubmatch(valueField)
 	if len(paramName) > 0 {
 		utils.Assert(len(paramName) == 2, "Should contain the matching text plus a single capturing group")
@@ -49,4 +49,15 @@ func getValue(valueField string, as *args.Store) (result *string) {
 
 	// else assume that provided value was a static text
 	return &valueField
+}
+
+// getValueList returns a list of values that should be used for the current content.
+func getValueList(valueField string, as *args.Store) []string {
+	val := getValue(valueField, as)
+
+	if val == nil {
+		return make([]string, 0)
+	}
+
+	return utils.SplitAndTrim(*val, ",")
 }
