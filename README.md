@@ -2,6 +2,13 @@
 
 The "Pathfinder Society Chronicle Filler" (or short: pfscf) is a small command line application available for different platforms (Windows, macOS, Linux) that helps filling out chronicle sheets for the Pathfinder and Starfinder Roleplaying Games from [Paizo Inc](https://paizo.com).
 
+You can download the program from the "Assets" section of the [latest release](https://github.com/Blesmol/pfscf/releases/latest).
+The downloaded archive should be extracted into a new directory.
+For details, please have a look at the [installation instructions](https://blesmol.github.io/pfscf/installation/).
+There are also [quickstart instructions](https://blesmol.github.io/pfscf/quickstart/) available in case you want to dive right into the action.
+
+The complete documentation for this project can be found at <https://blesmol.github.io/pfscf/>.
+
 ```
 $ pfscf
 The Pathfinder Society Chronicle Filler
@@ -22,18 +29,6 @@ Flags:
 
 Use "pfscf [command] --help" for more information about a command.
 ```
-
-You can download the program in the [Releases section](https://github.com/Blesmol/pfscf/releases/latest).
-The downloaded archive should be extracted into a new directory.
-For details, please have a look at the [installation instructions](https://blesmol.github.io/pfscf/installation/).
-
-## Documentation
-
-The complete documentation for this project is stored at <https://blesmol.github.io/pfscf/>.
-
-## Quickstart
-
-There are also [quickstart instructions](https://blesmol.github.io/pfscf/quickstart/) available in case you want to dive right into the action.
 
 ## Legal disclaimer
 
