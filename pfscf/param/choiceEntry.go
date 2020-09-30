@@ -65,8 +65,12 @@ func (e *choiceEntry) validateAndProcessArgs(as *args.Store) error {
 	argValue, exists := as.Get(e.ID())
 	utils.Assert(exists, "Existence of entry should have been validated by caller")
 
-	if !utils.Contains(e.TheChoices, argValue) {
-		return fmt.Errorf("Invalid choice '%v' was provided. Valid choices are: %v", argValue, e.TheChoices)
+	splitArgs := utils.SplitAndTrim(argValue, ",")
+
+	for _, splitArg := range splitArgs {
+		if !utils.Contains(e.TheChoices, splitArg) {
+			return fmt.Errorf("Invalid choice '%v' was provided. Valid choices are: %v", splitArg, e.TheChoices)
+		}
 	}
 
 	return nil

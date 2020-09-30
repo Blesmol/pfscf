@@ -400,3 +400,14 @@ func ToCommaSeparatedString(input []string) (result string) {
 
 	return sb.String()
 }
+
+// SplitAndTrim splits the string up at the provided separator and them trims each substring.
+func SplitAndTrim(input, sep string) (result []string) {
+	result = strings.Split(input, sep)
+
+	for idx, entry := range result {
+		result[idx] = strings.TrimSpace(entry)
+	}
+
+	return result
+}

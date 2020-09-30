@@ -40,16 +40,17 @@ func (ce *choice) resolve(ps preset.Store) (err error) {
 
 // generateOutput generates the output for this content object.
 func (ce *choice) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
-	selectedChoice := getValue(ce.Choice, as)
-	if selectedChoice == nil {
+	selectedChoices := getValueList(ce.Choice, as)
+	if len(selectedChoices) == 0 {
 		return nil // nothing to do here...
 	}
 
-	// TODO extend to support multiple choices
-	for id, entry := range ce.Content {
-		if id == *selectedChoice {
-			if err = entry.generateOutput(s, as); err != nil {
-				return err
+	for _, choice := range selectedChoices {
+		for contentID, entry := range ce.Content {
+			if contentID == choice {
+				if err = entry.generateOutput(s, as); err != nil {
+					return err
+				}
 			}
 		}
 	}

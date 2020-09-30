@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 ### Changed
+- Parameter and content entries of type `choice` can now handle multiple selections. Arguments need to be provided as comma-separated list, e.g. `remove-boons=1,3`
 
 ### Removed
 
