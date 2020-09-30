@@ -5,9 +5,9 @@ The "Pathfinder Society Chronicle Filler" (or short: pfscf) is a small command l
 You can download the program from the "Assets" section of the [latest release](https://github.com/Blesmol/pfscf/releases/latest).
 The downloaded archive should be extracted into a new directory.
 For details, please have a look at the [installation instructions](https://blesmol.github.io/pfscf/installation/).
+There are also [quickstart instructions](https://blesmol.github.io/pfscf/quickstart/) available in case you want to dive right into the action.
 
 The complete documentation for this project can be found at <https://blesmol.github.io/pfscf/>.
-There are also [quickstart instructions](https://blesmol.github.io/pfscf/quickstart/) available in case you want to dive right into the action.
 
 ```
 $ pfscf
