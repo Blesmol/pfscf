@@ -38,6 +38,9 @@ type Chronicle struct {
 	Content     content.ListStore
 
 	filename string // filename of the originating yaml file
+
+	parent   *Chronicle
+	children []*Chronicle
 }
 
 // NewChronicleTemplate returns a new ChronicleTemplate object.
@@ -71,6 +74,10 @@ func (ct *Chronicle) ensureStoresAreInitialized() {
 	}
 	if ct.Content == nil {
 		ct.Content = content.NewListStore()
+	}
+
+	if ct.children == nil {
+		ct.children = make([]*Chronicle, 0)
 	}
 }
 
@@ -329,4 +336,33 @@ func (ct *Chronicle) guessMarginsFromAspectRatio(stamp *stamp.Stamp) (xMarginPct
 	}
 
 	return 0.0, 0.0, nil // no margins, fits perfect
+}
+
+func (ct *Chronicle) addChild(childCt *Chronicle) (err error) {
+	// add references to chronicle templates
+	utils.Assert(childCt.parent == nil, "Chronicle can only have one 'inherit' entry, thus can only have one parent")
+	childCt.parent = ct
+	ct.children = append(ct.children, childCt)
+
+	// check for cyclic dependencies
+	depList := make([]string, 0)
+	for curCt := ct; curCt.parent != nil; curCt = curCt.parent {
+		if utils.Contains(depList, curCt.ID) {
+			depList = append(depList, curCt.ID) // add entry before printing to have complete cycle in output
+			return templateErrf(curCt, "Found cyclic inheritance dependencies. Inheritance chain is %v", depList)
+		}
+		depList = append(depList, curCt.ID)
+	}
+
+	// ensure that list of children is sorted lexically
+	sortChronicleList(ct.children)
+
+	return nil
+}
+
+func (ct *Chronicle) getHierarchieLevel() (level uint) {
+	for curCt := ct.parent; curCt != nil; level++ {
+		curCt = curCt.parent
+	}
+	return level
 }
