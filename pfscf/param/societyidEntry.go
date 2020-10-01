@@ -69,9 +69,12 @@ func (e *societyidEntry) validateAndProcessArgs(as *args.Store) (err error) {
 	charID := societyID[2]
 
 	// add to arg store
+	// TODO validate that no such entries yet exist in the argStore
 	as.Set(e.ID()+".player", playerID)
 	as.Set(e.ID()+".char", charID)
-	// TODO validate that no such entries yet exist in the argStore
+	if len(charID) > 0 {
+		as.Set(e.ID()+".char_without_first_digit", charID[1:]) // so much for good naming...
+	}
 
 	return nil
 }
