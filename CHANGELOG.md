@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Parameter and content entries of type `choice` can now handle multiple selections. Arguments need to be provided as comma-separated list, e.g. `remove-boons=1,3`
+- Added layout template `pfs2.sheet_layout1` in hierarchie between templates `pfs2` and `pfs2.s1`, `pfs2.quests` and `pfs2.specials`. This new template contains the description of the "old" layout that was used in PFS2 season 01. For season 02 and others there will be a new layout template `pfs2.sheet_layout2`.
 
 ### Removed
 
