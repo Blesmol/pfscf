@@ -24,6 +24,7 @@ const (
 
 var (
 	regexAspectRatio = regexp.MustCompile(aspectRatioPattern)
+	validFlags       = []string{"hidden"}
 )
 
 // Chronicle is the new approach for the Chronicle Template
@@ -32,6 +33,7 @@ type Chronicle struct {
 	Description string
 	Inherit     string
 	Aspectratio string
+	Flags       []string
 	Parameters  param.Store
 	Presets     preset.Store
 	Canvas      canvas.Store
@@ -50,7 +52,7 @@ func NewChronicleTemplate(filename string) (ct Chronicle) {
 }
 
 func templateErr(ct *Chronicle, errIn error) (errOut error) {
-	return fmt.Errorf("Template %v: %v", ct.ID, errIn)
+	return fmt.Errorf("Template '%v': %v", ct.ID, errIn)
 }
 
 func templateErrf(ct *Chronicle, msg string, args ...interface{}) (errOut error) {
@@ -248,6 +250,10 @@ func (ct *Chronicle) IsValid() (err error) {
 		return templateErrf(ct, "Missing description")
 	}
 
+	if err = ct.hasValidFlags(); err != nil {
+		return templateErr(ct, err)
+	}
+
 	if err = ct.Parameters.IsValid(); err != nil {
 		return templateErr(ct, err)
 	}
@@ -360,9 +366,24 @@ func (ct *Chronicle) addChild(childCt *Chronicle) (err error) {
 	return nil
 }
 
-func (ct *Chronicle) getHierarchieLevel() (level uint) {
-	for curCt := ct.parent; curCt != nil; level++ {
-		curCt = curCt.parent
+func (ct *Chronicle) getHierarchieLevel(excludeHidden bool) (level uint) {
+	for curCt := ct.parent; curCt != nil; curCt = curCt.parent {
+		if !curCt.hasFlag("hidden") {
+			level++
+		}
 	}
 	return level
+}
+
+func (ct *Chronicle) hasValidFlags() (err error) {
+	for _, flag := range ct.Flags {
+		if !utils.Contains(validFlags, flag) {
+			return fmt.Errorf("Unknown flag: '%v'", flag)
+		}
+	}
+	return nil
+}
+
+func (ct *Chronicle) hasFlag(flag string) bool {
+	return utils.Contains(ct.Flags, flag)
 }
