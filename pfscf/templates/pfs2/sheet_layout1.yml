@@ -1,0 +1,518 @@
+id: pfs2.sheet_layout1
+description: "PFS2 Chronicle Sheet Format V1: Used only in Season 01"
+inherit: pfs2
+flags:
+  - hidden
+
+aspectratio: 603:783 # dimensions of chronicle page in original pdf
+
+parameters:
+  "Player Info":
+    player:
+      type: text
+      description: Player name
+      example: Bob
+
+    char:
+      type: text
+      description: Players character name
+      example: Stormageddon
+
+    societyid:
+      type: societyid
+      description: Pathfinder Society ID
+      example: 123456-2001
+
+    chronicle_nr:
+      type: text
+      description: Character chronicle number
+      example: 5
+
+  "Factions":
+    fac1_name:
+      type: text
+      description: "Faction 1: Name"
+      example: Grand Archive
+
+    fac1_rep_gained:
+      type: text
+      description: "Faction 1: Gained reputation points"
+      example: 4
+
+    fac1_rep_total:
+      type: text
+      description: "Faction 1: Total reputation points"
+      example: 16
+
+    fac2_name:
+      type: text
+      description: "Faction 2: Name"
+      example: "Envoys' Alliance"
+
+    fac2_rep_gained:
+      type: text
+      description: "Faction 2: Gained reputation points"
+      example: 4
+
+    fac2_rep_total:
+      type: text
+      description: "Faction 2: Total reputation points"
+      example: 12
+
+    fac3_name:
+      type: text
+      description: "Faction 3: Name"
+      example: Horizon Hunters
+
+    fac3_rep_gained:
+      type: text
+      description: "Faction 3: Gained reputation points"
+      example: 4
+
+    fac3_rep_total:
+      type: text
+      description: "Faction 3: Total reputation points"
+      example: 8
+
+  "Rewards":
+    tier:
+      type: choice
+      description: "Players' tier"
+      choices: [low, high]
+
+    starting_xp:
+      type: text
+      description: Starting XP
+      example: 12
+
+    xp:
+      type: text
+      description: XP Gained
+      example: 4
+
+    final_xp:
+      type: text
+      description: Final XP
+      example: 16
+
+    starting_gp:
+      type: text
+      description: Starting GP
+      example: 23gp 4sp
+
+    gp:
+      type: text
+      description: GP Gained
+      example: 4gp 2sp
+
+    income:
+      type: text
+      description: Earn income
+      example: 8cp
+
+    items_sold:
+      type: text
+      description: Items sold
+      example: 2gp
+
+    gp_spent:
+      type: text
+      description: GP Spent
+      example: 17sp
+
+    total_gp:
+      type: text
+      description: Total GP
+      example: 27gp 9sp 8cp
+
+    starting_fame:
+      type: text
+      description: Starting Fame
+      example: 12
+
+    fame:
+      type: text
+      description: Fame
+      example: 4
+
+    total_fame:
+      type: text
+      description: Total Fame
+      example: 16
+
+  "Event Info":
+    event:
+      type: text
+      description: Event name
+      example: PaizoCon
+
+    eventcode:
+      type: text
+      description: Event code
+      example: 1234
+
+    date:
+      type: text
+      description: The date on which the game session took place
+      example: 27.06.2020
+
+    gm:
+      type: text
+      description: Gamemasters name
+      example: J. Doe
+
+    gmid:
+      type: text
+      description: Gamemasters PFS ID
+      example: 654321
+
+canvas:
+  page:
+    x:    0.0
+    y:    0.0
+    x2: 100.0
+    y2: 100.0
+
+  main:
+    # this should be a canvas matching the "main" content box,
+    # only excluding the title, chronicle nr and herolab code.
+    # Having this allows an easy visual check on whether the
+    # page is aligned or has extra margins
+    parent: page
+    x:   6.20
+    y:  11.40
+    x2: 94.00
+    y2: 95.40
+
+  rightbar:
+    parent: main
+    x:   82.2
+    y:   28.1
+    x2: 100.0
+    y2:  94.45
+
+  #notes:
+  #  parent: main
+  #  x:   0.0
+  #  y:  84.8
+  #  x2: 39.5
+  #  y2: 94.6
+
+  #downtime:
+  #  parent: main
+  #  x:  40.0
+  #  y:  84.8
+  #  x2: 79.8
+  #  y2: 94.6
+
+  middlebox:
+    parent: main
+    x:   2.3
+    y:  44.2
+    x2: 79.8
+    y2: 82.9
+
+  items_low:
+    parent: middlebox
+    x:   0.0
+    y:   0.0
+    x2: 38.2
+    y2: 49.9
+
+  items_high:
+    parent: middlebox
+    x:    0.0
+    y:   50.1
+    x2:  38.2
+    y2: 100.0
+
+  items_sold:
+    parent: middlebox
+    x:   38.4
+    y:    0.0
+    x2: 100.0
+    y2:  49.9
+
+  items_bought:
+    parent: middlebox
+    x:   38.4
+    y:   50.1
+    x2: 100.0
+    y2: 100.0
+
+presets:
+  defaultfont:
+    font: Helvetica
+    fontsize: 14
+
+  playerinfo:
+    presets: [defaultfont]
+    canvas: main
+    y:  5.5
+    align: CB
+
+  rightbar:
+    presets: [defaultfont]
+    canvas: rightbar
+    x:    0.0
+    x2: 100.0
+    align: CM
+
+  eventinfo:
+    presets: [defaultfont]
+    canvas: main
+    y:  98.0
+    align: CB
+
+  factions:
+    presets: [defaultfont]
+    canvas: main
+    fontsize: 8
+
+  faccol_name:
+    presets: [factions]
+    x:  74.4
+    x2: 85.5
+    align: CB
+
+  faccol_rep_gained:
+    presets: [factions]
+    x:  93.1
+    x2: 96.2
+    align: CB
+
+  faccol_rep_total:
+    presets: [factions]
+    x:  96.3
+    x2: 99.3
+    align: CB
+
+  facline1:
+    presets: [factions]
+    y:  2.85
+
+  facline2:
+    presets: [factions]
+    y:  5.95
+
+  facline3:
+    presets: [factions]
+    y:  9.0
+
+  greyout:
+    color: white
+    transparency: 0.3
+
+  max_area:
+    x: 0.0
+    y: 0.0
+    x2: 100.0
+    y2: 100.0
+
+  checkbox:
+    value: "X"
+    fontsize: 8
+    font: Helvetica
+    align: CM
+
+content:
+  - value: param:player
+    type: text
+    presets: [playerinfo]
+    x:   0.8
+    x2: 19.7
+
+  - value: param:char
+    type: text
+    presets: [playerinfo]
+    x:  24.5
+    x2: 43.9
+
+  - type: trigger
+    trigger: param:societyid
+    content:
+      - type: rectangle
+        presets: [playerinfo]
+        color: white
+        x:  57.5
+        y:   3.4
+        x2: 60.5
+        y2:  5.2
+      - value: param:societyid.player
+        type: text
+        presets: [playerinfo]
+        x:  45.1
+        x2: 57.6
+        align: RB
+      - value: "-"
+        type: text
+        presets: [playerinfo]
+        x:  57.6
+        x2: 59.5
+        align: CB
+      - value: param:societyid.char
+        type: text
+        presets: [playerinfo]
+        x:  59.5
+        x2: 67.8
+        align: LB
+
+  - value: param:chronicle_nr
+    type: text
+    presets: [defaultfont]
+    canvas: page
+    x:  80.0
+    y:   4.6
+    x2: 93.8
+    y2:  6.7
+    align: CM
+
+  - value: param:starting_xp
+    type: text
+    presets: [rightbar]
+    y:  0.1
+    y2: 5.6
+
+  - value: param:xp
+    type: text
+    presets: [rightbar]
+    y:   8.4
+    y2: 13.9
+
+  - value: param:final_xp
+    type: text
+    presets: [rightbar]
+    y:  16.8
+    y2: 22.3
+
+  - value: param:starting_gp
+    type: text
+    presets: [rightbar]
+    y:  25.3
+    y2: 30.6
+
+  - value: param:gp
+    type: text
+    presets: [rightbar]
+    y:  33.5
+    y2: 38.9
+
+  - value: param:income
+    type: text
+    presets: [rightbar]
+    y:  41.8
+    y2: 47.3
+
+  - value: param:items_sold
+    type: text
+    presets: [rightbar]
+    y:  50.1
+    y2: 55.7
+
+  - value: param:gp_spent
+    type: text
+    presets: [rightbar]
+    y:  58.5
+    y2: 64.0
+
+  - value: param:total_gp
+    type: text
+    presets: [rightbar]
+    y:  66.9
+    y2: 72.4
+
+  - value: param:starting_fame
+    type: text
+    presets: [rightbar]
+    y:  75.4
+    y2: 80.8
+
+  - value: param:fame
+    type: text
+    presets: [rightbar]
+    y:  83.6
+    y2: 89.0
+
+  - value: param:total_fame
+    type: text
+    presets: [rightbar]
+    y:  92.0
+    y2: 97.6
+
+  - value: param:event
+    type: text
+    presets: [eventinfo]
+    x:   1.1
+    x2: 20.0
+
+  - value: param:eventcode
+    type: text
+    presets: [eventinfo]
+    x:  22.7
+    x2: 33.0
+
+  - value: param:date
+    type: text
+    presets: [eventinfo]
+    x:  35.8
+    x2: 50.3
+
+  - value: param:gm
+    type: text
+    presets: [eventinfo]
+    x:  53.1
+    x2: 77.2
+
+  - value: param:gmid
+    type: text
+    presets: [eventinfo]
+    x:  79.9
+    x2: 99.3
+
+  - value: param:fac1_name
+    type: text
+    presets: [faccol_name, facline1]
+
+  - value: param:fac1_rep_gained
+    type: text
+    presets: [faccol_rep_gained, facline1]
+
+  - value: param:fac1_rep_total
+    type: text
+    presets: [faccol_rep_total, facline1]
+
+  - value: param:fac2_name
+    type: text
+    presets: [faccol_name, facline2]
+
+  - value: param:fac2_rep_gained
+    type: text
+    presets: [faccol_rep_gained, facline2]
+
+  - value: param:fac2_rep_total
+    type: text
+    presets: [faccol_rep_total, facline2]
+
+  - value: param:fac3_name
+    type: text
+    presets: [faccol_name, facline3]
+
+  - value: param:fac3_rep_gained
+    type: text
+    presets: [faccol_rep_gained, facline3]
+
+  - value: param:fac3_rep_total
+    type: text
+    presets: [faccol_rep_total, facline3]
+
+  - type: choice
+    choice: param:tier
+    content:
+      low:
+        type: rectangle
+        presets: [greyout, max_area]
+        canvas: items_high
+      high:
+        type: rectangle
+        canvas: items_low
+        presets: [greyout, max_area]
