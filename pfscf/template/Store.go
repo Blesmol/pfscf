@@ -27,16 +27,6 @@ func GetStore() (ts *Store, err error) {
 	return getStoreForDir(cfg.GetTemplatesDir())
 }
 
-// GetTemplateIDs returns a sorted list of keys contained in this Store
-func (s *Store) GetTemplateIDs() (keyList []string) {
-	keyList = make([]string, 0, len(*s))
-	for key := range *s {
-		keyList = append(keyList, key)
-	}
-	sort.Strings(keyList)
-	return keyList
-}
-
 // Get returns the ChronicleTemplate matching the provided id.
 func (s *Store) Get(id string) (ct *Chronicle, exists bool) {
 	ct, exists = (*s)[id]
@@ -70,11 +60,7 @@ func getStoreForDir(dir string) (store *Store, err error) {
 		(*store)[ct.ID] = &ct
 	}
 
-	if err = store.resolveInheritanceBetweenTemplates(); err != nil {
-		return nil, err
-	}
-
-	if err = store.resolveTemplates(); err != nil {
+	if err = store.resolve(); err != nil {
 		return nil, err
 	}
 
@@ -85,74 +71,39 @@ func getStoreForDir(dir string) (store *Store, err error) {
 	return store, nil
 }
 
-// resolveTemplates resolves the relations inside each template contained in this store
-func (s *Store) resolveTemplates() (err error) {
-	for _, currentID := range s.GetTemplateIDs() {
-		ct, _ := s.Get(currentID)
-		if err := ct.resolve(); err != nil {
+func (s *Store) resolve() (err error) {
+	// resolve references between templates
+	for _, ct := range *s {
+		if utils.IsSet(ct.Inherit) {
+			// check if parent actually exists, and if so, add chronicle reference
+			parentCt, exists := s.Get(ct.Inherit)
+			if !exists {
+				return fmt.Errorf("Template '%v' inherits from template '%v', but that template cannot be found", ct.ID, ct.Inherit)
+			}
+
+			if err = parentCt.addChild(ct); err != nil {
+				return err
+			}
+		}
+	}
+
+	// inherit and resolve, starting at root nodes
+	if err = s.performPreOrder(func(ct *Chronicle) error {
+		for _, childCt := range ct.children {
+			// ensure that children inherit before the current chronicle is resolved
+			if err = childCt.inheritFrom(ct); err != nil {
+				return err
+			}
+		}
+
+		// resolve each chronicle template
+		if err = ct.resolve(); err != nil {
 			return err
 		}
-	}
-
-	return nil
-}
-
-// resolveInheritanceBetweenTemplates resolves the inheritance relations between different templates by copying
-// over relevant entries, e.g. from the content or presets sections.
-func (s *Store) resolveInheritanceBetweenTemplates() (err error) {
-	resolvedIDs := make(map[string]bool, 0) // stores IDs of all entries that are already resolved
-	for _, currentID := range s.GetTemplateIDs() {
-		ct, _ := s.Get(currentID)
-		err := s.resolveInheritanceBetweenTemplatesInternal(ct, &resolvedIDs)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (s *Store) resolveInheritanceBetweenTemplatesInternal(ct *Chronicle, resolvedIDs *map[string]bool, resolveChain ...string) (err error) {
-	// check if we have already seen that entry
-	if _, exists := (*resolvedIDs)[ct.ID]; exists {
 		return nil
-	}
-
-	// check if we have a cyclic dependency
-	for idx, inheritedID := range resolveChain {
-		if inheritedID == ct.ID {
-			resolveChain = append(resolveChain, ct.ID) // add entry before printing to have complete cycle in output
-			return fmt.Errorf("Error resolving dependencies of template '%v'. Inheritance chain is %v", ct.ID, resolveChain[idx:])
-		}
-	}
-
-	// entries without inheritance information can simply be added to the list of resolved IDs
-	if ct.Inherit == "" {
-		(*resolvedIDs)[ct.ID] = true
-		return nil
-	}
-
-	// check if inherited ID exists and retrieve entry
-	inheritedCt, exists := s.Get(ct.Inherit)
-	if !exists {
-		return fmt.Errorf("Template '%v' inherits from template '%v', but that template cannot be found", ct.ID, ct.Inherit)
-	}
-
-	// add current id to inheritance list and perform recursive call
-	resolveChain = append(resolveChain, ct.ID)
-	err = s.resolveInheritanceBetweenTemplatesInternal(inheritedCt, resolvedIDs, resolveChain...)
-	if err != nil {
+	}); err != nil {
 		return err
 	}
-
-	// now resolve chronicle inheritance
-	err = ct.inheritFrom(inheritedCt)
-	if err != nil {
-		return err
-	}
-
-	// add to list of resolved entries
-	(*resolvedIDs)[ct.ID] = true
 
 	return nil
 }
@@ -161,19 +112,50 @@ func (s *Store) isValid() (err error) {
 	// get deterministic template order for validation. The order itself is not relevant
 	// for the validation. But if a parent template has invalid entries, then the error
 	// message should referr to that template, not to some other template that inherits it.
-	// Order is:
-	// 1. Parent templates come before their child templates
-	// 2. Alphabetical if there is no inheritance relation
+	// Basically this function guarantees that parent templates are validated before their
+	// child templates.
 
-	sortedList := newHierarchieStore(s, "").flatten()
-
-	for _, ct := range sortedList {
+	if err = s.performPreOrder(func(ct *Chronicle) error {
 		if err = ct.IsValid(); err != nil {
 			return err
 		}
+
+		return nil
+	}); err != nil {
+		return err
 	}
 
 	return nil
+}
+
+// performPreOrder traverses the hierarchie structure in a preorder way,
+// i.e. first resolves the current node, then child subtrees from left to right.
+func (s *Store) performPreOrder(workerFct func(*Chronicle) error) error {
+	worklist := s.getRootTemplates()
+	for len(worklist) > 0 {
+		ct := worklist[0]
+
+		if err := workerFct(ct); err != nil {
+			return err
+		}
+
+		// add new nodes at beginning for preorder traversal
+		worklist = append(ct.children, worklist[1:]...)
+	}
+	return nil
+}
+
+func (s *Store) getRootTemplates() (result []*Chronicle) {
+	result = make([]*Chronicle, 0)
+
+	for _, ct := range *s {
+		if ct.parent == nil {
+			result = append(result, ct)
+		}
+	}
+
+	sortChronicleList(result)
+	return result
 }
 
 func (s *Store) getTemplatesInheritingFrom(parentID string) (childIDs []string) {
@@ -194,28 +176,16 @@ func (s *Store) getTemplatesInheritingFrom(parentID string) (childIDs []string) 
 func (s *Store) ListTemplates() (result string) {
 	var sb strings.Builder
 
-	completeList := s.listTemplatesInheritingFrom("")
-	for _, line := range completeList {
-		fmt.Fprintf(&sb, "%v\n", line)
-	}
+	s.performPreOrder(func(ct *Chronicle) error {
+		// print hierarchie indentation
+		for level := ct.getHierarchieLevel(); level > 0; level-- {
+			fmt.Fprint(&sb, "  ")
+		}
+		fmt.Fprintf(&sb, "- %v: %v\n", ct.ID, ct.Description)
+		return nil
+	})
 
 	return sb.String()
-}
-
-func (s *Store) listTemplatesInheritingFrom(parentID string) (result []string) {
-	result = make([]string, 0)
-
-	for _, childID := range s.getTemplatesInheritingFrom(parentID) {
-		template, _ := s.Get(childID)
-		result = append(result, fmt.Sprintf("- %v: %v", template.ID, template.Description))
-
-		childrenDesc := s.listTemplatesInheritingFrom(childID)
-		for _, childDesc := range childrenDesc {
-			result = append(result, fmt.Sprintf("  %v", childDesc))
-		}
-	}
-
-	return result
 }
 
 // SearchForTemplates takes one or multiple keywords and searches for templates
@@ -253,4 +223,10 @@ func termsContainAllKeywords(termA, termB string, keywords ...string) bool {
 	}
 
 	return true
+}
+
+func sortChronicleList(input []*Chronicle) {
+	sort.Slice(input, func(i, j int) bool {
+		return input[i].ID < input[j].ID
+	})
 }
