@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Templates can now have flags. Added `hidden` flag to be able to add technical layout layers in the inheritance hierarchie that should not be displayed with the `template list` command. Will make things easier to handle when different layouts are in place for different seasons (else things would get messy starting with season 3 (yes, 3, not 2))
 
 ### Changed
 - Parameter and content entries of type `choice` can now handle multiple selections. Arguments need to be provided as comma-separated list, e.g. `remove-boons=1,3`

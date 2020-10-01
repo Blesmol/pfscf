@@ -177,11 +177,13 @@ func (s *Store) ListTemplates() (result string) {
 	var sb strings.Builder
 
 	s.performPreOrder(func(ct *Chronicle) error {
-		// print hierarchie indentation
-		for level := ct.getHierarchieLevel(); level > 0; level-- {
-			fmt.Fprint(&sb, "  ")
+		if !ct.hasFlag("hidden") {
+			// print hierarchie indentation
+			for level := ct.getHierarchieLevel(true); level > 0; level-- {
+				fmt.Fprint(&sb, "  ")
+			}
+			fmt.Fprintf(&sb, "- %v: %v\n", ct.ID, ct.Description)
 		}
-		fmt.Fprintf(&sb, "- %v: %v\n", ct.ID, ct.Description)
 		return nil
 	})
 
