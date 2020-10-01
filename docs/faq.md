@@ -45,6 +45,14 @@ This is the section about general questions. In case you are having problems wit
 	But if you're interested in making one and using pfscf in the background, then I'm sure that lots of people will love it!
 	Honestly! It's just not something for me, sorry.
 
+??? question "Can you provide this program also for additional operating systems?"
+
+	I can in general provide prebuild binaries for all operating systems and platforms that are supported by [Golang](https://golang.org/).
+	This includes especially intel 32bit, arm, and PowerPC.
+	So if you think there is a need for this, please drop me a message.
+
+	(PS: Android is also supported by golang, but as this is a command-line tool I currently do not see the point of providing an Android build.)
+
 ??? question "Why golang?"
 
 	It produces standalone executables for all major platforms (Windows, macOS, Linux) and users do not have to install any additional software to use pfscf.
