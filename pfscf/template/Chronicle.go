@@ -159,7 +159,7 @@ func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *
 		records = append(records, []string{fmt.Sprintf("# %v", groupName)})
 
 		// add parameters from current group
-		for _, paramID := range ct.Parameters.GetSortedKeysForGroup(groupName) {
+		for _, paramID := range ct.Parameters.GetKeysForGroupSortedByRank(groupName) {
 			// entry should be large enough for id column + number of chronicles
 			entry := make([]string, 1+numChronicles)
 
