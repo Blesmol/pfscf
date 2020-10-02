@@ -39,15 +39,6 @@ func (e *Entry) isValid() (err error) {
 		return contentValErr(e, err)
 	}
 
-	if e.X == e.X2 {
-		err = fmt.Errorf("X coordinates are equal, both %.2f", *e.X)
-		return contentValErr(e, err)
-	}
-	if e.Y == e.Y2 {
-		err = fmt.Errorf("Y coordinates are equal, both %.2f", *e.Y)
-		return contentValErr(e, err)
-	}
-
 	return nil
 }
 

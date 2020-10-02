@@ -3,18 +3,32 @@ package stamp
 type canvas struct {
 	xPt, yPt float64
 	wPt, hPt float64
+
+	isActive bool
 }
 
 func newCanvas(xPt, yPt, wPt, hPt float64) (c canvas) {
-	c = canvas{xPt, yPt, wPt, hPt}
+	c = canvas{xPt, yPt, wPt, hPt, isActiveCanvas(wPt, hPt, nil)}
 	return
 }
 
 func (c canvas) getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) (subC canvas) {
 	xPt, yPt, wPt, hPt := c.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
 
-	subC = canvas{xPt, yPt, wPt, hPt}
+	subC = canvas{xPt, yPt, wPt, hPt, isActiveCanvas(wPt, hPt, &c)}
 	return
+}
+
+func isActiveCanvas(w, h float64, parent *canvas) bool {
+	if parent != nil && !parent.isActive {
+		return false
+	}
+
+	if w == 0.0 || h == 0.0 {
+		return false
+	}
+
+	return true
 }
 
 // relPctToPt converts the provided percent coordinates into absolute
