@@ -74,7 +74,7 @@ func (s *Stamp) shouldDrawCellBorder() bool {
 
 // GetDimensionsWithOffset returns the x/y dimensions of this stamp minus its offsets
 func (s *Stamp) GetDimensionsWithOffset() (x, y float64) {
-	return s.dimX-s.offsetX, s.dimY-s.offsetY
+	return s.dimX - s.offsetX, s.dimY - s.offsetY
 }
 
 // SetPageCanvas sets a new page canvas for this stamp. This function may only be
@@ -100,6 +100,12 @@ func (s *Stamp) getCanvas(id string) (c canvas) {
 	c, exists := s.canvasStore[id]
 	utils.Assert(exists, "It should have been checked before that only valid IDs exist at this point")
 	return c
+}
+
+func (s *Stamp) isActiveCanvas(id string) bool {
+	c, exists := s.canvasStore[id]
+	utils.Assert(exists, "It should have been checked before that only valid IDs exist at this point")
+	return c.isActive
 }
 
 // DeriveFontsize checks whether the provided text fits into the given width, if the current
@@ -141,6 +147,10 @@ func (s *Stamp) DeriveY2(canvasID string, y1Pct, y2Pct, fontsizePt float64) (y2 
 
 // AddTextCell adds a text cell to the stamp.
 func (s *Stamp) AddTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, font string, fontsize float64, align string, text string, autoShrink bool) {
+	if !s.isActiveCanvas(canvasID) {
+		return
+	}
+
 	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	effectiveFontsize := fontsize
@@ -159,6 +169,10 @@ func (s *Stamp) AddTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64,
 
 // DrawRectangle draws a rectangle on the stamp.
 func (s *Stamp) DrawRectangle(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs RectStyle) {
+	if !s.isActiveCanvas(canvasID) {
+		return
+	}
+
 	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	oldAlpha, oldBlendMode := s.pdf.GetAlpha()
@@ -178,6 +192,10 @@ func (s *Stamp) DrawCanvases() {
 	s.pdf.SetFont("Helvetica", "", fontsize)
 
 	for canvasID, canvas := range s.canvasStore {
+		if !s.isActiveCanvas(canvasID) {
+			continue
+		}
+
 		xPt, yPt, wPt, hPt := canvas.pctToPt(0.0, 0.0, 100.0, 100.0)
 
 		// rectangle
@@ -221,6 +239,9 @@ func (s *Stamp) DrawCanvasGrid(canvasID string) (err error) {
 		canvas, exists = s.canvasStore[canvasID]
 		if !exists {
 			return fmt.Errorf("Cannot find canvas '%v'", canvasID)
+		}
+		if !s.isActiveCanvas(canvasID) {
+			return fmt.Errorf("Canvas '%v' exists, but is not active", canvasID)
 		}
 	} else {
 		canvas = s.pageCanvas
