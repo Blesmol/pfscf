@@ -509,10 +509,10 @@ content:
     choice: param:tier
     content:
       low:
-        type: rectangle
-        presets: [greyout, max_area]
-        canvas: items_high
+        - type: rectangle
+          presets: [greyout, max_area]
+          canvas: items_high
       high:
-        type: rectangle
-        canvas: items_low
-        presets: [greyout, max_area]
+        - type: rectangle
+          canvas: items_low
+          presets: [greyout, max_area]
