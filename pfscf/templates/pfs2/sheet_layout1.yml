@@ -1,5 +1,5 @@
 id: pfs2.sheet_layout1
-description: "PFS2 Chronicle Sheet Format V1: Used only in Season 01"
+description: "PFS2 Chronicle Sheet Format v1: Used only in Season 01"
 inherit: pfs2
 flags:
   - hidden
@@ -73,6 +73,12 @@ parameters:
       type: text
       description: "Faction 3: Total reputation points"
       example: 8
+
+  "Boons":
+    strikeout_boons:
+      type: choice
+      description: "Boons that should be striked out"
+      choices: [1, 2, 3]
 
   "Rewards":
     tier:
@@ -191,6 +197,54 @@ canvas:
     x2: 100.0
     y2:  94.45
 
+  boon1.1:
+    # inactive per default, should be adapted when inheriting this template
+    parent: main
+    x:   0.5
+    y:   0.0
+    x2: 79.5
+    y2:  0.0
+
+  boon1.2:
+    # inactive per default, should be adapted when inheriting this template
+    parent: main
+    x:   0.5
+    y:   0.0
+    x2: 79.5
+    y2:  0.0
+
+  boon2.1:
+    # inactive per default, should be adapted when inheriting this template
+    parent: main
+    x:   0.5
+    y:   0.0
+    x2: 79.5
+    y2:  0.0
+
+  boon2.2:
+    # inactive per default, should be adapted when inheriting this template
+    parent: main
+    x:   0.5
+    y:   0.0
+    x2: 79.5
+    y2:  0.0
+
+  boon3.1:
+    # inactive per default, should be adapted when inheriting this template
+    parent: main
+    x:   0.5
+    y:   0.0
+    x2: 79.5
+    y2:  0.0
+
+  boon3.2:
+    # inactive per default, should be adapted when inheriting this template
+    parent: main
+    x:   0.5
+    y:   0.0
+    x2: 79.5
+    y2:  0.0
+
   #notes:
   #  parent: main
   #  x:   0.0
@@ -308,6 +362,9 @@ presets:
     y: 0.0
     x2: 100.0
     y2: 100.0
+
+  strikeout_boon:
+    presets: [greyout, max_area]
 
   checkbox:
     value: "X"
@@ -516,3 +573,28 @@ content:
         - type: rectangle
           canvas: items_low
           presets: [greyout, max_area]
+
+  - type: choice
+    choice: param:strikeout_boons
+    content:
+      1:
+        - type: rectangle
+          presets: [strikeout_boon]
+          canvas: boon1.1
+        - type: rectangle
+          presets: [strikeout_boon]
+          canvas: boon1.2
+      2:
+        - type: rectangle
+          presets: [strikeout_boon]
+          canvas: boon2.1
+        - type: rectangle
+          presets: [strikeout_boon]
+          canvas: boon2.2
+      3:
+        - type: rectangle
+          presets: [strikeout_boon]
+          canvas: boon3.1
+        - type: rectangle
+          presets: [strikeout_boon]
+          canvas: boon3.2
