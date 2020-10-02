@@ -9,6 +9,11 @@ parameters:
       description: "Main villain in this scenario"
       choices: [cat, druid, lion]
 
+canvas:
+  boon1.1:
+    y:  28.5
+    y2: 36.0
+
 content:
   - type: choice
     choice: param:villain
