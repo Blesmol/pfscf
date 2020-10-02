@@ -15,12 +15,12 @@ const (
 
 type choice struct {
 	Choice  string
-	Content MapStore
+	Content map[string]ListStore
 }
 
 func newChoice() *choice {
 	var ce choice
-	ce.Content = NewMapStore()
+	ce.Content = make(map[string]ListStore)
 	return &ce
 }
 
@@ -30,12 +30,22 @@ func (ce *choice) isValid(paramStore *param.Store, canvasStore *canvas.Store) (e
 	if err != nil {
 		return contentValErr(ce, err)
 	}
-	return ce.Content.IsValid(paramStore, canvasStore)
+	for _, subStore := range ce.Content {
+		if err = subStore.IsValid(paramStore, canvasStore); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // resolve the presets for this content object.
 func (ce *choice) resolve(ps preset.Store) (err error) {
-	return ce.Content.Resolve(ps)
+	for _, subStore := range ce.Content {
+		if err = subStore.Resolve(ps); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // generateOutput generates the output for this content object.
@@ -46,9 +56,9 @@ func (ce *choice) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	}
 
 	for _, choice := range selectedChoices {
-		for contentID, entry := range ce.Content {
+		for contentID, contentStore := range ce.Content {
 			if contentID == choice {
-				if err = entry.generateOutput(s, as); err != nil {
+				if err = contentStore.GenerateOutput(s, as); err != nil {
 					return err
 				}
 			}
@@ -63,7 +73,11 @@ func (ce *choice) deepCopy() Entry {
 
 	copy := choice{
 		Choice:  ce.Choice,
-		Content: ce.Content.deepCopy(),
+		Content: make(map[string]ListStore),
+	}
+
+	for key, entry := range ce.Content {
+		copy.Content[key] = entry.deepCopy()
 	}
 
 	return &copy

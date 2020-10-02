@@ -14,23 +14,23 @@ content:
     choice: param:villain
     content:
       cat:
-        type: text
-        presets: [checkbox]
-        canvas: main
-        x: 67.5
-        y: 17.7
-        x2: 68.5
+        - type: text
+          presets: [checkbox]
+          canvas: main
+          x: 67.5
+          y: 17.7
+          x2: 68.5
       druid:
-        type: text
-        presets: [checkbox]
-        canvas: main
-        x: 79.8
-        y: 17.7
-        x2: 80.8
+        - type: text
+          presets: [checkbox]
+          canvas: main
+          x: 79.8
+          y: 17.7
+          x2: 80.8
       lion:
-        type: text
-        presets: [checkbox]
-        canvas: main
-        x: 93.1
-        y: 17.7
-        x2: 94.1
+        - type: text
+          presets: [checkbox]
+          canvas: main
+          x: 93.1
+          y: 17.7
+          x2: 94.1
