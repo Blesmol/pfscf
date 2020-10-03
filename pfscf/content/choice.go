@@ -14,7 +14,7 @@ const (
 )
 
 type choice struct {
-	Choice  string
+	Choices string
 	Content map[string]ListStore
 }
 
@@ -26,7 +26,7 @@ func newChoice() *choice {
 
 func (ce *choice) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
 	// TODO arg paramStore to isValid to be able to validate against parameters
-	err = utils.CheckFieldsAreSet(ce, "Choice")
+	err = utils.CheckFieldsAreSet(ce, "Choices")
 	if err != nil {
 		return contentValErr(ce, err)
 	}
@@ -50,7 +50,7 @@ func (ce *choice) resolve(ps preset.Store) (err error) {
 
 // generateOutput generates the output for this content object.
 func (ce *choice) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
-	selectedChoices := getValueList(ce.Choice, as)
+	selectedChoices := ce.getChoicesFromArgStore(as)
 	if len(selectedChoices) == 0 {
 		return nil // nothing to do here...
 	}
@@ -68,11 +68,22 @@ func (ce *choice) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	return nil
 }
 
+// getValueList returns a list of values that should be used for the current content.
+func (ce *choice) getChoicesFromArgStore(as *args.Store) []string {
+	val := getValue(ce.Choices, as)
+
+	if val == nil {
+		return make([]string, 0)
+	}
+
+	return utils.SplitAndTrim(*val, ",")
+}
+
 // deepCopy creates a deep copy of this entry.
 func (ce *choice) deepCopy() Entry {
 
 	copy := choice{
-		Choice:  ce.Choice,
+		Choices: ce.Choices,
 		Content: make(map[string]ListStore),
 	}
 

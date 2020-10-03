@@ -16,7 +16,7 @@ canvas:
 
 content:
   - type: choice
-    choice: param:villain
+    choices: param:villain
     content:
       cat:
         - type: text

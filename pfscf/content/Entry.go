@@ -50,14 +50,3 @@ func getValue(valueField string, as *args.Store) (result *string) {
 	// else assume that provided value was a static text
 	return &valueField
 }
-
-// getValueList returns a list of values that should be used for the current content.
-func getValueList(valueField string, as *args.Store) []string {
-	val := getValue(valueField, as)
-
-	if val == nil {
-		return make([]string, 0)
-	}
-
-	return utils.SplitAndTrim(*val, ",")
-}

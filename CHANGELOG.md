@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 - Templates can now have flags. Added `hidden` flag to be able to add technical layout layers in the inheritance hierarchie that should not be displayed with the `template list` command. Will make things easier to handle when different layouts are in place for different seasons (else things would get messy starting with season 3 (yes, 3, not 2))
 
 ### Changed
-- Parameter and content entries of type `choice` can now handle multiple selections. Arguments need to be provided as comma-separated list, e.g. `remove-boons=1,3`
+- Parameter and content entries of type `choice` can now handle multiple selections. Arguments need to be provided as comma-separated list, e.g. `remove-boons=1,3`. Consequently, the field with name `choice` inside such entries was renamed to `choices`.
 - Added layout template `pfs2.sheet_layout1` in hierarchie between templates `pfs2` and `pfs2.s1`, `pfs2.quests` and `pfs2.specials`. This new template contains the description of the "old" layout that was used in PFS2 season 01. For season 02 and others there will be a new layout template `pfs2.sheet_layout2`.
 - Output of `template describe` is now grouped and sorted in a similar way to what was already done for the generated CSV files
 - Canvases (and their subcanvases) are now considered being "inactive" if their width or height is 0, i.e. if their `x` and `x2` coordinates or `y` and `y2` coordinates are equal. This can be used to define inactive canvases with well-defined names in a parent template, e.g. for striking out boons, that can then easily be filled with the correct coordinates in other templates that inherit from the parent template.

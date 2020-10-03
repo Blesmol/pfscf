@@ -563,7 +563,7 @@ content:
     presets: [faccol_rep_total, facline3]
 
   - type: choice
-    choice: param:tier
+    choices: param:tier
     content:
       low:
         - type: rectangle
@@ -575,7 +575,7 @@ content:
           presets: [greyout, max_area]
 
   - type: choice
-    choice: param:strikeout_boons
+    choices: param:strikeout_boons
     content:
       1:
         - type: rectangle
