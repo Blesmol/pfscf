@@ -10,7 +10,7 @@ type entryYAML struct {
 	e Entry
 }
 
-func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
+func (ey *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	// determine type of entry
 	type entryTypeYAML struct{ Type string }
 	var ety entryTypeYAML
@@ -25,21 +25,18 @@ func (s *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error)
 	// read concrete object based on type information
 	switch ety.Type {
 	case typeText:
-		s.e = newText()
-		err = unmarshal(s.e)
+		ey.e = newText()
 	case typeRectangle:
-		s.e = newRectangle()
-		err = unmarshal(s.e)
+		ey.e = newRectangle()
 	case typeTrigger:
-		s.e = newTrigger()
-		err = unmarshal(s.e)
+		ey.e = newTrigger()
 	case typeChoice:
-		s.e = newChoice()
-		err = unmarshal(s.e)
+		ey.e = newChoice()
 	default:
-		err = fmt.Errorf("Unknown content type: '%v'", ety.Type)
+		return fmt.Errorf("Unknown content type: '%v'", ety.Type)
 	}
-	if err != nil {
+
+	if err = unmarshal(ey.e); err != nil {
 		return err
 	}
 
