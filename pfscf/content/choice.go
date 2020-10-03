@@ -68,7 +68,8 @@ func (ce *choice) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	return nil
 }
 
-// getValueList returns a list of values that should be used for the current content.
+// getChoicesFromArgStore returns a list of values that should be used for the current content.
+// Entries are expected to be separated by comma.
 func (ce *choice) getChoicesFromArgStore(as *args.Store) []string {
 	val := getValue(ce.Choices, as)
 

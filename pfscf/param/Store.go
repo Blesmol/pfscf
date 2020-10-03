@@ -82,7 +82,8 @@ func (s *Store) IsValid() (err error) {
 	return nil
 }
 
-// ValidateAndProcessArgs checks whether all
+// ValidateAndProcessArgs checks whether all arguments in the arg store have a
+// corresponding parameter entry.
 func (s *Store) ValidateAndProcessArgs(as *args.Store) (err error) {
 	for _, key := range as.GetKeys() {
 		paramEntry, pExists := s.Get(key)
