@@ -84,6 +84,7 @@ func (e *choiceEntry) describe(verbose bool) (result string) {
 		fmt.Fprintf(&sb, "- %v\n", e.id)
 		fmt.Fprintf(&sb, "\tDesc: %v\n", e.Description())
 		fmt.Fprintf(&sb, "\tType: %v\n", e.Type())
+		fmt.Fprintf(&sb, "\tAllowed Choices: %v\n", e.TheChoices)
 		fmt.Fprintf(&sb, "\tExample: %v\n", genericContentUsageExample(e.id, e.Example()))
 	}
 
