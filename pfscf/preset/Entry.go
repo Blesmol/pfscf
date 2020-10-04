@@ -107,9 +107,7 @@ func (e *Entry) doesNotContradict(other Entry) (err error) {
 func (e *Entry) deepCopy() *Entry {
 	copy := newEntry()
 	copy.id = e.id
-	for _, preset := range e.presets {
-		copy.presets = append(copy.presets, preset)
-	}
+	copy.presets = append(copy.presets, e.presets...)
 	for key, value := range e.values {
 		copy.values[key] = value
 	}
