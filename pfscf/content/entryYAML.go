@@ -32,6 +32,8 @@ func (ey *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error
 		ey.e = newTrigger()
 	case typeChoice:
 		ey.e = newChoice()
+	case typeMultiline:
+		ey.e = newMultiline()
 	default:
 		return fmt.Errorf("Unknown content type: '%v'", ety.Type)
 	}
