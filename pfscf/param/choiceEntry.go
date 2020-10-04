@@ -79,12 +79,12 @@ func (e *choiceEntry) describe(verbose bool) (result string) {
 	var sb strings.Builder
 
 	if !verbose {
-		fmt.Fprintf(&sb, "- %v: %v\n", e.id, e.TheDescription)
+		fmt.Fprintf(&sb, "- %v: %v\n", e.id, e.Description())
 	} else {
 		fmt.Fprintf(&sb, "- %v\n", e.id)
-		fmt.Fprintf(&sb, "\tDesc: %v\n", e.TheDescription)
+		fmt.Fprintf(&sb, "\tDesc: %v\n", e.Description())
 		fmt.Fprintf(&sb, "\tType: %v\n", e.Type())
-		fmt.Fprintf(&sb, "\tExample: %v\n", genericContentUsageExample(e.id, e.TheExample))
+		fmt.Fprintf(&sb, "\tExample: %v\n", genericContentUsageExample(e.id, e.Example()))
 	}
 
 	return sb.String()

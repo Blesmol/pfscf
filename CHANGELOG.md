@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 
 ### Fixed
+- When calling `pfscf template describe -v <template>`, then the example value for param type `choice` was missing.
 
 ## v0.11.3 - 2020-09-29
 
