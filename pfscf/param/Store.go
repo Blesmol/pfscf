@@ -82,20 +82,34 @@ func (s *Store) IsValid() (err error) {
 	return nil
 }
 
+func (s *Store) getArgNameToEntryMapping() (result map[string]Entry) {
+	result = make(map[string]Entry)
+
+	for _, paramEntry := range *s {
+		for _, argName := range paramEntry.ArgStoreIDs() {
+			result[argName] = paramEntry
+		}
+	}
+
+	return result
+}
+
 // ValidateAndProcessArgs checks whether all arguments in the arg store have a
 // corresponding parameter entry.
 func (s *Store) ValidateAndProcessArgs(as *args.Store) (err error) {
-	for _, key := range as.GetKeys() {
-		paramEntry, pExists := s.Get(key)
+	argNameToEntry := s.getArgNameToEntryMapping()
+
+	for _, argName := range as.GetKeys() {
+		paramEntry, pExists := argNameToEntry[argName]
 
 		// check that all entries in the arg store have a corresponding parameter entry
 		if !pExists {
-			return fmt.Errorf("Error while validating argument '%v': No corresponding parameter registered for template", key)
+			return fmt.Errorf("Error while validating argument '%v': No corresponding parameter registered for template", argName)
 		}
 
 		// ask each type whether the provided argument is valid, and add entries to argStore if required
 		if err = paramEntry.validateAndProcessArgs(as); err != nil {
-			return fmt.Errorf("Error while validating argument '%v': %v", key, err)
+			return fmt.Errorf("Error while validating argument '%v': %v", argName, err)
 		}
 	}
 
