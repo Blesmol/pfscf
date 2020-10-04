@@ -99,13 +99,9 @@ func (e *text) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 }
 
 // deepCopy creates a deep copy of this entry.
-// TODO create generic deep-copy function for public fields
 func (e *text) deepCopy() Entry {
-	var copy text
-	utils.AddMissingValues(&copy, *e, "Presets")
-	for _, preset := range e.Presets {
-		copy.Presets = append(copy.Presets, preset)
-	}
+	copy := *e
+	copy.Presets = append(make([]string, 0), e.Presets...)
 
 	return &copy
 }

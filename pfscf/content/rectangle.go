@@ -145,13 +145,9 @@ func parseColor(color string) (r, g, b int, err error) {
 }
 
 // deepCopy creates a deep copy of this entry.
-// TODO create generic deep-copy function for public fields
 func (ce *rectangle) deepCopy() Entry {
-	var copy rectangle
-	utils.AddMissingValues(&copy, *ce, "Presets")
-	for _, preset := range ce.Presets {
-		copy.Presets = append(copy.Presets, preset)
-	}
+	copy := *ce
+	copy.Presets = append(make([]string, 0), ce.Presets...)
 
 	return &copy
 }

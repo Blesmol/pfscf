@@ -50,7 +50,6 @@ func (e *trigger) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 
 // deepCopy creates a deep copy of this entry.
 func (e *trigger) deepCopy() Entry {
-
 	copy := trigger{
 		Trigger: e.Trigger,
 		Content: e.Content.deepCopy(),

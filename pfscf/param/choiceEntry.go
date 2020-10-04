@@ -43,8 +43,7 @@ func (e *choiceEntry) AcceptedValues() []string {
 func (e *choiceEntry) deepCopy() Entry {
 	copy := *e
 
-	copy.TheChoices = make([]string, 0)
-	copy.TheChoices = append(copy.TheChoices, e.TheChoices...)
+	copy.TheChoices = append(make([]string, 0), e.TheChoices...)
 
 	return &copy
 }
