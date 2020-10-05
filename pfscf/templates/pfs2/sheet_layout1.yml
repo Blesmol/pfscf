@@ -146,6 +146,52 @@ parameters:
       description: Total Fame
       example: 16
 
+  "Items Sold / Conditions Gained":
+    list_items_sold:
+      type: multiline
+      description: "Items Sold / Conditions Gained"
+      example: "Rusty armor, smells a little bit"
+      lines: 7
+    list_items_sold_price:
+      type: multiline
+      description: "Price for sold items"
+      example: "3cp"
+      lines: 7
+    items_sold_total_value:
+      type: text
+      description: "Total value of items sold"
+      example: "21cp"
+
+  "Items Bought / Conditions Cleared":
+    list_items_bought:
+      type: multiline
+      description: "Items Bought / Conditions Cleared"
+      example: "Shiny armor, only used once"
+      lines: 7
+    list_items_bought_price:
+      type: multiline
+      description: "Price for bought items"
+      example: "2gp"
+      lines: 7
+    items_bought_total_cost:
+      type: text
+      description: "Total cost of items bought"
+      example: "14gp"
+
+  "Notes":
+    notes:
+      type: multiline
+      description: "Notes on the chronicle sheet"
+      example: "Player was caught stealing a purse"
+      lines: 6
+
+  "Downtime":
+    downtime:
+      type: multiline
+      description: "Downtime Activities"
+      example: "All work and no play makes Jack a dull boy"
+      lines: 6
+
   "Event Info":
     event:
       type: text
@@ -245,20 +291,6 @@ canvas:
     x2: 79.5
     y2:  0.0
 
-  #notes:
-  #  parent: main
-  #  x:   0.0
-  #  y:  84.8
-  #  x2: 39.5
-  #  y2: 94.6
-
-  #downtime:
-  #  parent: main
-  #  x:  40.0
-  #  y:  84.8
-  #  x2: 79.8
-  #  y2: 94.6
-
   middlebox:
     parent: main
     x:   2.3
@@ -293,6 +325,13 @@ canvas:
     y:   50.1
     x2: 100.0
     y2: 100.0
+
+  commentbox:
+    parent: main
+    x:   0.4
+    y:  84.8
+    x2: 79.5
+    y2: 94.6
 
 presets:
   defaultfont:
@@ -371,6 +410,38 @@ presets:
     fontsize: 8
     font: Helvetica
     align: CM
+
+  commentbox:
+    presets: [defaultfont, max_area]
+    canvas: commentbox
+    align: LM
+    lines: 6
+
+  items_purchased_left_col:
+    presets: [defaultfont]
+    x:   3.0
+    x2: 69.5
+    align: LM
+
+  items_purchased_right_col:
+    presets: [defaultfont]
+    x:  73.0
+    x2: 97.0
+    align: CM
+
+  items_sold_line:
+    presets: [defaultfont]
+    canvas: items_sold
+    lines: 7
+    y: 12.0
+    y2: 78.0
+
+  items_bought_line:
+    presets: [defaultfont]
+    canvas: items_bought
+    lines: 7
+    y: 11.8
+    y2: 78.0
 
 content:
   - value: param:player
@@ -563,18 +634,6 @@ content:
     presets: [faccol_rep_total, facline3]
 
   - type: choice
-    choices: param:tier
-    content:
-      low:
-        - type: rectangle
-          presets: [greyout, max_area]
-          canvas: items_high
-      high:
-        - type: rectangle
-          canvas: items_low
-          presets: [greyout, max_area]
-
-  - type: choice
     choices: param:strikeout_boons
     content:
       1:
@@ -598,3 +657,55 @@ content:
         - type: rectangle
           presets: [strikeout_boon]
           canvas: boon3.2
+
+  - choices: param:tier
+    type: choice
+    content:
+      low:
+        - type: rectangle
+          presets: [greyout, max_area]
+          canvas: items_high
+      high:
+        - type: rectangle
+          canvas: items_low
+          presets: [greyout, max_area]
+
+  - value: param:list_items_sold
+    type: multiline
+    presets: [items_purchased_left_col, items_sold_line]
+
+  - value: param:list_items_sold_price
+    type: multiline
+    presets: [items_purchased_right_col, items_sold_line]
+
+  - value: param:items_sold_total_value
+    type: text
+    presets: [items_purchased_right_col, items_sold_line]
+    y:  80.4
+    y2: 96.0
+    align: CM
+
+  - value: param:list_items_bought
+    type: multiline
+    presets: [items_purchased_left_col, items_bought_line]
+
+  - value: param:list_items_bought_price
+    type: multiline
+    presets: [items_purchased_right_col, items_bought_line]
+
+  - value: param:items_bought_total_cost
+    type: text
+    presets: [items_purchased_right_col, items_bought_line]
+    y:  80.4
+    y2: 96.0
+    align: CM
+
+  - value: param:notes
+    type: multiline
+    presets: [commentbox]
+    x2:  49.3
+
+  - value: param:downtime
+    type: multiline
+    presets: [commentbox]
+    x: 50.2

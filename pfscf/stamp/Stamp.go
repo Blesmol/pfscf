@@ -167,6 +167,35 @@ func (s *Stamp) AddTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64,
 	s.pdf.CellFormat(wPt, hPt, text, s.cellBorder, 0, align, false, 0, "")
 }
 
+// AddMultilineTextCell adds a text cell to the stamp.
+func (s *Stamp) AddMultilineTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, lineheightPct float64, font string, fontsize float64, align string, text string) {
+	if !s.isActiveCanvas(canvasID) {
+		return
+	}
+
+	canvas := s.getCanvas(canvasID)
+	xPt, yPt, wPt, _ := canvas.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
+	_, lhPt := canvas.relPctToPt(0.0, lineheightPct)
+
+	effectiveFontsize := fontsize
+
+	s.pdf.SetFont(font, "", effectiveFontsize)
+
+	s.pdf.SetXY(xPt, yPt)
+	fmt.Printf("Coords: %v x %v, %v, %v\n", xPt, yPt, y1Pct, y2Pct)
+	s.pdf.SetCellMargin(0)
+	if s.shouldDrawCellBorder() {
+		s.pdf.SetDrawColor(0, 0, 0)
+	}
+
+	s.pdf.MultiCell(wPt, lhPt, text, s.cellBorder, align, false)
+
+	s.pdf.SetXY(400.0, 400.0)
+	s.pdf.MultiCell(20.0, 14.0, "Some very, very long text is this", "", "", true)
+	// https://godoc.org/github.com/jung-kurt/gofpdf#Fpdf.MultiCell
+	// func (f *Fpdf) MultiCell(w, h float64, txtStr, borderStr, alignStr string, fill bool)
+}
+
 // DrawRectangle draws a rectangle on the stamp.
 func (s *Stamp) DrawRectangle(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs RectStyle) {
 	if !s.isActiveCanvas(canvasID) {

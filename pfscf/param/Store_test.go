@@ -14,8 +14,10 @@ func TestStore_AddGet(t *testing.T) {
 	_, exists := store.Get("id")
 	test.ExpectFalse(t, exists)
 
-	store.add("id1", &textEntry{TheExample: "example1"})
-	store.add("id2", &societyidEntry{TheExample: "example2"})
+	err := store.add("id1", &textEntry{TheExample: "example1"})
+	test.ExpectNoError(t, err)
+	err = store.add("id2", &societyidEntry{TheExample: "example2"})
+	test.ExpectNoError(t, err)
 
 	entry, exists := store.Get("id1")
 	test.ExpectTrue(t, exists)

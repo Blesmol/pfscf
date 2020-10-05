@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/csv"
@@ -25,22 +26,15 @@ type StoreInit struct {
 }
 
 const (
-	// TODOs:
-	// - Restrict input set for key: [a-zA-Z0-9-_]
-	// - key should have shortest match, to allow value to contain "="
-	argPattern = "(?P<key>.*)=(?P<value>.*)"
+	//arrayPattern = `(?P<key>.*)\[(?P<index>\d)\]` // TODO limit to max 2 digits
+	arrayPattern = `^\s*(.*)\[(\d\d?)\]\s*$` // limit to max 2 digits
 )
 
 var (
-	argRegex *regexp.Regexp // not used at the moment
+	regexArray = regexp.MustCompile(arrayPattern)
 )
 
-func init() {
-	argRegex = regexp.MustCompile(argPattern)
-}
-
 // NewStore creates a new ArgStore
-// TODO test this
 func NewStore(init StoreInit) (s *Store, err error) {
 	var initialCapacity int
 	if utils.IsSet(init.InitCapacity) {
@@ -71,7 +65,6 @@ func NewStore(init StoreInit) (s *Store, err error) {
 }
 
 // splitArgument takes an arugment string and tries to split it up in key and value parts.
-// TODO test this
 func splitArgument(arg string) (key, value string, err error) {
 	splitIdx := strings.Index(arg, "=")
 
@@ -106,15 +99,75 @@ func (s *Store) Set(key string, value string) {
 
 // Get looks up the given key in the ArgStore and returns the value plus a flag
 // indicating whether there is a value for the given key.
-func (s *Store) Get(key string) (value string, keyExists bool) {
-	value, keyExists = s.store[key]
+func (s *Store) Get(argID string) (value string, keyExists bool) {
+	value, keyExists = s.store[argID]
 	if keyExists {
 		return value, true
 	}
 	if s.parent != nil {
-		return s.parent.Get(key)
+		return s.parent.Get(argID)
 	}
 	return value, false
+}
+
+// isArrayEntryFor checks whether the actual ID that we have equals the wanted ID plus
+// a positive array index. If yes, then this index-1 is returned. Else -1 is returned.
+// In case a line with index 0 was specified (which is invalid, as the first line begins
+// with 1), then this is also returned as -1.
+func isArrayEntryFor(wantID, haveID string) (index int) {
+	pattern := regexArray.FindStringSubmatch(haveID)
+	if len(pattern) > 0 {
+		utils.Assert(len(pattern) == 3, "Should contain the matching text plus two capturing groups")
+
+		if wantID == pattern[1] {
+			index, err := strconv.Atoi(pattern[2])
+			utils.AssertNoError(err) // regex should ensure that this can only be a valid positive integer
+
+			return index - 1
+		}
+	}
+
+	return -1
+}
+
+func addToArrayIfNotSet(arr *[]string, index int, value string) {
+	// no value? Nothing to do!
+	if !utils.IsSet(value) {
+		return
+	}
+
+	// ensure array is big enough, enlarge with empty values if required
+	if len(*arr) < index+1 {
+		requiredIncrease := (index + 1) - len(*arr)
+		*arr = append(*arr, make([]string, requiredIncrease)...)
+	}
+
+	// add value, but only if not already set
+	if !utils.IsSet((*arr)[index]) {
+		(*arr)[index] = value
+	}
+}
+
+// GetArray checks the store for array entries with the key as name. Array indices start
+// at 1, not at 0.
+func (s *Store) GetArray(argID string) (result []string) {
+	result = make([]string, 0)
+
+	for key, value := range s.store {
+		if index := isArrayEntryFor(argID, key); index != -1 {
+			addToArrayIfNotSet(&result, index, value)
+		}
+	}
+
+	// see if parent has any entries and then merge
+	if s.hasParent() {
+		parentArray := s.parent.GetArray(argID)
+		for index, value := range parentArray {
+			addToArrayIfNotSet(&result, index, value)
+		}
+	}
+
+	return result
 }
 
 // hasParent returns whether the ArgStore already has a parent object sei

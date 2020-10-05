@@ -17,6 +17,10 @@ func (e *commonFields) setID(id string) {
 	e.id = id
 }
 
+func (e *commonFields) ArgStoreIDs() []string {
+	return []string{e.id}
+}
+
 func (e *commonFields) Group() string {
 	return e.group
 }

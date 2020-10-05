@@ -40,6 +40,7 @@ func getValue(valueField string, as *args.Store) (result *string) {
 	paramName := regexParamValue.FindStringSubmatch(valueField)
 	if len(paramName) > 0 {
 		utils.Assert(len(paramName) == 2, "Should contain the matching text plus a single capturing group")
+
 		argValue, exists := as.Get(paramName[1])
 		if exists {
 			return &argValue
@@ -49,4 +50,27 @@ func getValue(valueField string, as *args.Store) (result *string) {
 
 	// else assume that provided value was a static text
 	return &valueField
+}
+
+// getMultiValue returns an array of values that should be used for the current content.
+func getMultiValue(contentValueField string, as *args.Store) (result []string) {
+	// No input? No result!
+	if !utils.IsSet(contentValueField) {
+		return nil
+	}
+
+	// check whether a parameter reference was provided, i.e. something like "param:<name>"
+	paramName := regexParamValue.FindStringSubmatch(contentValueField)
+	if len(paramName) > 0 {
+		utils.Assert(len(paramName) == 2, "Should contain the matching text plus a single capturing group")
+
+		argArray := as.GetArray(paramName[1])
+		if len(argArray) > 0 {
+			return argArray
+		}
+		return nil
+	}
+
+	// else assume that provided value was a static text
+	return []string{contentValueField}
 }

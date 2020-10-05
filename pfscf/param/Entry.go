@@ -11,6 +11,7 @@ import (
 type Entry interface {
 	ID() string
 	setID(string)
+	ArgStoreIDs() []string
 	Type() string
 	Example() string
 	Description() string

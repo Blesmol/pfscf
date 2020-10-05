@@ -19,16 +19,17 @@ func NewStore() (s Store) {
 }
 
 // add adds an entry to the store and also sets the ID on the entry
-func (s *Store) add(id string, e Entry) {
+func (s *Store) add(id string, e Entry) (err error) {
 	utils.Assert(!utils.IsSet(e.ID()) || id == e.ID(), "ID must not be set here")
 	if _, exists := (*s)[id]; exists {
-		utils.Assert(false, "As we only call this from a map in yaml, duplicates should not occur")
+		return fmt.Errorf("Found multiple parameter definitions with id '%v'", id)
 	}
 
 	if !utils.IsSet(e.ID()) {
 		e.setID(id)
 	}
 	(*s)[id] = e
+	return nil
 }
 
 // Get returns the Entry matching the provided id.
@@ -52,7 +53,9 @@ func (s *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 	for groupID, group := range sy {
 		for entryID, entry := range group {
 			entry.e.setGroup(groupID)
-			s.add(entryID, entry.e)
+			if err = s.add(entryID, entry.e); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -63,10 +66,9 @@ func (s *Store) UnmarshalYAML(unmarshal func(interface{}) error) (err error) {
 // an entry exists in both stores.
 func (s *Store) InheritFrom(other *Store) (err error) {
 	for otherID, otherEntry := range *other {
-		if _, exists := (*s)[otherID]; exists {
-			return fmt.Errorf("Duplicate parameter ID '%v' found while inheriting", otherID)
+		if err = s.add(otherID, otherEntry.deepCopy()); err != nil {
+			return fmt.Errorf("Error while inheriting parent template: %v", err)
 		}
-		s.add(otherID, otherEntry.deepCopy())
 	}
 
 	return nil
@@ -82,20 +84,34 @@ func (s *Store) IsValid() (err error) {
 	return nil
 }
 
+func (s *Store) getArgNameToEntryMapping() (result map[string]Entry) {
+	result = make(map[string]Entry)
+
+	for _, paramEntry := range *s {
+		for _, argName := range paramEntry.ArgStoreIDs() {
+			result[argName] = paramEntry
+		}
+	}
+
+	return result
+}
+
 // ValidateAndProcessArgs checks whether all arguments in the arg store have a
 // corresponding parameter entry.
 func (s *Store) ValidateAndProcessArgs(as *args.Store) (err error) {
-	for _, key := range as.GetKeys() {
-		paramEntry, pExists := s.Get(key)
+	argNameToEntry := s.getArgNameToEntryMapping()
+
+	for _, argName := range as.GetKeys() {
+		paramEntry, pExists := argNameToEntry[argName]
 
 		// check that all entries in the arg store have a corresponding parameter entry
 		if !pExists {
-			return fmt.Errorf("Error while validating argument '%v': No corresponding parameter registered for template", key)
+			return fmt.Errorf("Error while validating argument '%v': No corresponding parameter registered for template", argName)
 		}
 
 		// ask each type whether the provided argument is valid, and add entries to argStore if required
 		if err = paramEntry.validateAndProcessArgs(as); err != nil {
-			return fmt.Errorf("Error while validating argument '%v': %v", key, err)
+			return fmt.Errorf("Error while validating argument '%v': %v", argName, err)
 		}
 	}
 
@@ -108,7 +124,9 @@ func (s *Store) GetExampleArguments() (result []string) {
 	result = make([]string, 0)
 
 	for _, entry := range *s {
-		result = append(result, fmt.Sprintf("%v=%v", entry.ID(), entry.Example()))
+		for _, argStoreID := range entry.ArgStoreIDs() {
+			result = append(result, fmt.Sprintf("%v=%v", argStoreID, entry.Example()))
+		}
 	}
 
 	return result

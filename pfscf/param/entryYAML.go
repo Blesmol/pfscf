@@ -40,6 +40,10 @@ func (ey *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error
 		var e choiceEntry
 		err = unmarshal(&e)
 		ey.e = &e
+	case typeMultiline:
+		var e multilineEntry
+		err = unmarshal(&e)
+		ey.e = &e
 	default:
 		err = fmt.Errorf("Unknown parameter type: '%v'", ety.Type)
 	}

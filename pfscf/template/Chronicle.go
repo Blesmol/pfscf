@@ -97,7 +97,7 @@ func (ct *Chronicle) GetExampleArguments() (result []string) {
 func (ct *Chronicle) inheritFrom(otherCT *Chronicle) (err error) {
 	err = ct.Parameters.InheritFrom(&otherCT.Parameters)
 	if err != nil {
-		return err
+		return templateErr(ct, err)
 	}
 
 	ct.Presets.InheritFrom(otherCT.Presets)
@@ -160,19 +160,24 @@ func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *
 
 		// add parameters from current group
 		for _, paramID := range ct.Parameters.GetKeysForGroupSortedByRank(groupName) {
-			// entry should be large enough for id column + number of chronicles
-			entry := make([]string, 1+numChronicles)
+			paramEntry, _ := ct.Parameters.Get(paramID)
 
-			entry[0] = paramID // first column is always parameter name
+			// parameters can have multiple identifiers, e.g. for splitlines.
+			for _, argStoreID := range paramEntry.ArgStoreIDs() {
+				// entry should be large enough for id column + number of chronicles
+				row := make([]string, 1+numChronicles)
 
-			// check if some value was provided on the cmd line that should be filled in all columns for this parameter
-			if val, exists := argStore.Get(paramID); exists {
-				for colIdx := 1; colIdx <= numChronicles; colIdx++ {
-					entry[colIdx] = val
+				row[0] = argStoreID // first column is always parameter name
+
+				// check if some value was provided on the cmd line that should be filled in all columns for this parameter
+				if val, exists := argStore.Get(argStoreID); exists {
+					for colIdx := 1; colIdx <= numChronicles; colIdx++ {
+						row[colIdx] = val
+					}
 				}
-			}
 
-			records = append(records, entry)
+				records = append(records, row)
+			}
 		}
 	}
 
