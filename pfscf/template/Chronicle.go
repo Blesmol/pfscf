@@ -97,7 +97,7 @@ func (ct *Chronicle) GetExampleArguments() (result []string) {
 func (ct *Chronicle) inheritFrom(otherCT *Chronicle) (err error) {
 	err = ct.Parameters.InheritFrom(&otherCT.Parameters)
 	if err != nil {
-		return err
+		return templateErr(ct, err)
 	}
 
 	ct.Presets.InheritFrom(otherCT.Presets)
