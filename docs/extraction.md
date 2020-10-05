@@ -26,9 +26,19 @@ Therefore, please find below some guidance on how to extract chronicle sheets in
 
 ## MacOS
 
-To be done, thankful for tipps.
+### Preview
 
-Can most likely be done similar to windows using Acrobat Reader if there is some PDF printer available on MacOS.
+1. Open adventure PDF using Preview.app
+2. Make a duplicate using "File" > "Duplicate"
+3. Enter an appropriate name for the new file
+4. Open the thumbnail view in the sidebar, either using the sidebar button in the toolbar, or via "View" > "Thumbnails"
+5. You can now simply delete pages one at a time by selecting their thumbnails and hitting delete. For most adventures, however, it will be faster to:
+  a. Click in the thumbnail area
+  b. Hit ⌘+A to select all
+  c. Scroll to the last page
+  d. ⌘+Click the last page to deselect it
+  e. Hit delete to delete everything else
+6. Then simply save the new PDF
 
 ## Linux
 
