@@ -43,7 +43,7 @@ func (e *multilineEntry) Description() string {
 }
 
 func (e *multilineEntry) AcceptedValues() []string {
-	return []string{"Any text, either as long line (will have auto-break) or split into separate lines"}
+	return []string{"Any text, split into separate lines"}
 }
 
 func (e *multilineEntry) deepCopy() Entry {
