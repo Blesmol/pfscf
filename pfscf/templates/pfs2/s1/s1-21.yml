@@ -1,3 +1,11 @@
 id: pfs2.s1-21
 description: "#1-21: Mistress of the Maze"
 inherit: pfs2.s1
+
+canvas:
+  rightbar:
+    y: 20.7
+
+  boon1.1:
+    y:  21.0
+    y2: 27.5
