@@ -1,0 +1,3 @@
+id: pfs2.bounties
+description: PFS2 Bounties
+inherit: pfs2.layout2
