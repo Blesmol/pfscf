@@ -31,6 +31,7 @@ type RectStyle struct {
 	FillR, FillG, FillB       int
 	BorderR, BorderG, BorderB int
 	Transparency              float64
+	Linewidth                 float64
 }
 
 // NewStamp creates a new Stamp object.
@@ -151,7 +152,7 @@ func (s *Stamp) AddTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64,
 		return
 	}
 
-	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
+	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).transformToAbsXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	effectiveFontsize := fontsize
 	if autoShrink {
@@ -174,8 +175,8 @@ func (s *Stamp) AddMultilineTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct
 	}
 
 	canvas := s.getCanvas(canvasID)
-	xPt, yPt, wPt, _ := canvas.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
-	_, lhPt := canvas.relPctToPt(0.0, lineheightPct)
+	xPt, yPt, wPt, _ := canvas.transformToAbsXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
+	_, lhPt := canvas.pctToRelPt(0.0, lineheightPct)
 
 	effectiveFontsize := fontsize
 
@@ -202,15 +203,33 @@ func (s *Stamp) DrawRectangle(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float6
 		return
 	}
 
-	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
+	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).transformToAbsXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	oldAlpha, oldBlendMode := s.pdf.GetAlpha()
-	s.pdf.SetAlpha(1.0-rs.Transparency, "Normal")
 	defer s.pdf.SetAlpha(oldAlpha, oldBlendMode)
 
 	s.pdf.SetDrawColor(rs.BorderR, rs.BorderG, rs.BorderB)
 	s.pdf.SetFillColor(rs.FillR, rs.FillG, rs.FillB)
+	s.pdf.SetAlpha(1.0-rs.Transparency, "Normal")
 	s.pdf.Rect(xPt, yPt, wPt, hPt, rs.Style)
+}
+
+// DrawLine draws a line on the stamp.
+func (s *Stamp) DrawLine(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs RectStyle) {
+	if !s.isActiveCanvas(canvasID) {
+		return
+	}
+
+	canvas := s.getCanvas(canvasID)
+	x1Pt, y1Pt := canvas.pctToAbsPt(x1Pct, y1Pct)
+	x2Pt, y2Pt := canvas.pctToAbsPt(x2Pct, y2Pct)
+
+	oldLineWidth := s.pdf.GetLineWidth()
+	defer s.pdf.SetLineWidth(oldLineWidth)
+
+	s.pdf.SetDrawColor(rs.BorderR, rs.BorderG, rs.BorderB)
+	s.pdf.SetLineWidth(rs.Linewidth)
+	s.pdf.Line(x1Pt, y1Pt, x2Pt, y2Pt)
 }
 
 // DrawCanvases draws all canvases to the stamp
@@ -225,7 +244,7 @@ func (s *Stamp) DrawCanvases() {
 			continue
 		}
 
-		xPt, yPt, wPt, hPt := canvas.pctToPt(0.0, 0.0, 100.0, 100.0)
+		xPt, yPt, wPt, hPt := canvas.transformToAbsXYWH(0.0, 0.0, 100.0, 100.0)
 
 		// rectangle
 		s.pdf.Rect(xPt, yPt, wPt, hPt, "D")

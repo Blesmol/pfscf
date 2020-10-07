@@ -13,7 +13,7 @@ func newCanvas(xPt, yPt, wPt, hPt float64) (c canvas) {
 }
 
 func (c canvas) getSubCanvas(x1Pct, y1Pct, x2Pct, y2Pct float64) (subC canvas) {
-	xPt, yPt, wPt, hPt := c.pctToPt(x1Pct, y1Pct, x2Pct, y2Pct)
+	xPt, yPt, wPt, hPt := c.transformToAbsXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	subC = canvas{xPt, yPt, wPt, hPt, isActiveCanvas(wPt, hPt, &c)}
 	return
@@ -31,23 +31,28 @@ func isActiveCanvas(w, h float64, parent *canvas) bool {
 	return true
 }
 
-// relPctToPt converts the provided percent coordinates into absolute
-// point coordinates for the current stamp object.
+// pctToRelPt converts the provided canvas percent coordinates into
+// point coordinates that are relative to the current canvas object.
 // A value of, e.g. 10% should be passed as 10.0, not as 0.10
-func (c canvas) relPctToPt(xPct, yPct float64) (xPt, yPt float64) {
+func (c canvas) pctToRelPt(xPct, yPct float64) (xPt, yPt float64) {
 	xPt = xPct * c.wPt / 100.0
 	yPt = yPct * c.hPt / 100.0
 	return
 }
 
-func (c canvas) pctToPt(x1Pct, y1Pct, x2Pct, y2Pct float64) (xPt, yPt, wPt, hPt float64) {
+func (c canvas) pctToAbsPt(xPct, yPct float64) (xPt, yPt float64) {
+	xPt = (xPct * c.wPt / 100.0) + c.xPt
+	yPt = (yPct * c.hPt / 100.0) + c.yPt
+	return
+}
+
+// transformToAbsXYWH converts the given sets of percent coordinates into absolute coordinates
+// for the current stamp.
+func (c canvas) transformToAbsXYWH(x1Pct, y1Pct, x2Pct, y2Pct float64) (xPt, yPt, wPt, hPt float64) {
 	xPct, yPct, wPct, hPct := getXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
 
-	xPt, yPt = c.relPctToPt(xPct, yPct)
-	xPt += c.xPt // coordinates should be absolute, not relative to canvas
-	yPt += c.yPt
-
-	wPt, hPt = c.relPctToPt(wPct, hPct)
+	xPt, yPt = c.pctToAbsPt(xPct, yPct)
+	wPt, hPt = c.pctToRelPt(wPct, hPct)
 
 	return
 }
