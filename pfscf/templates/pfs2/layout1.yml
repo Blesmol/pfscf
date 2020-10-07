@@ -403,7 +403,14 @@ presets:
     y2: 100.0
 
   strikeout_boon:
-    presets: [greyout, max_area]
+    presets: [max_area]
+    color: black
+    style: strikeout
+
+  strikeout_item_area:
+    presets: [max_area]
+    color: black
+    style: strikeout
 
   checkbox:
     value: "X"
@@ -663,12 +670,12 @@ content:
     content:
       low:
         - type: rectangle
-          presets: [greyout, max_area]
+          presets: [strikeout_item_area]
           canvas: items_high
       high:
         - type: rectangle
           canvas: items_low
-          presets: [greyout, max_area]
+          presets: [strikeout_item_area]
 
   - value: param:list_items_sold
     type: multiline
