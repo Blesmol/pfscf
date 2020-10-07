@@ -34,6 +34,8 @@ func (ey *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error
 		ey.e = newChoice()
 	case typeMultiline:
 		ey.e = newMultiline()
+	case typeLine:
+		ey.e = newLine()
 	default:
 		return fmt.Errorf("Unknown content type: '%v'", ety.Type)
 	}
