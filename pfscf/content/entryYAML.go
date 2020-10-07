@@ -24,18 +24,18 @@ func (ey *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error
 
 	// read concrete object based on type information
 	switch ety.Type {
-	case typeText:
-		ey.e = newText()
-	case typeRectangle:
-		ey.e = newRectangle()
-	case typeTrigger:
-		ey.e = newTrigger()
 	case typeChoice:
 		ey.e = newChoice()
-	case typeMultiline:
-		ey.e = newMultiline()
 	case typeLine:
 		ey.e = newLine()
+	case typeMultiline:
+		ey.e = newMultiline()
+	case typeRectangle:
+		ey.e = newRectangle()
+	case typeText:
+		ey.e = newText()
+	case typeTrigger:
+		ey.e = newTrigger()
 	default:
 		return fmt.Errorf("Unknown content type: '%v'", ety.Type)
 	}
