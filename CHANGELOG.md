@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- New content type `line` to draw lines. Can be used to configure item strikeouts in chronicle templates.
 
 ### Changed
 
