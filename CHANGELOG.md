@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - New content type `line` to draw lines. Can be used to configure item strikeouts in chronicle templates.
 
 ### Changed
+- Content type `rectangle` now supports an additional field `style`. Currently this accepts two values, `filled` and `strikeout`. With `filled` you get the previous behavior where the rectangle area is filled with the color. With `strikeout` a cross is placed on the area, e.g. to strike out boons. Default is `filled` if no value for field `style` was provided.
 
 ### Removed
 
