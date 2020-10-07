@@ -1,10 +1,7 @@
 package content
 
 import (
-	"encoding/hex"
 	"fmt"
-	"regexp"
-	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/canvas"
@@ -109,39 +106,6 @@ func (ce *rectangle) generateOutput(s *stamp.Stamp, as *args.Store) (err error) 
 	s.DrawRectangle(ce.Canvas, ce.X, ce.Y, ce.X2, ce.Y2, style)
 
 	return nil
-}
-
-func parseColor(color string) (r, g, b int, err error) {
-	regexHexColorCode := regexp.MustCompile(`^[0-9a-f]{6}$`)
-
-	color = strings.ToLower(strings.TrimSpace(color))
-
-	switch color {
-	case "white":
-		return 255, 255, 255, nil
-	case "black":
-		return 0, 0, 0, nil
-	case "blue":
-		return 0, 0, 255, nil
-	case "red":
-		return 255, 0, 0, nil
-	case "green":
-		return 0, 255, 0, nil
-	}
-
-	colorCode := regexHexColorCode.FindString(color)
-	if utils.IsSet(colorCode) {
-		colorCodeBytes := []byte(colorCode)
-		decoded := make([]byte, hex.DecodedLen(len(colorCodeBytes)))
-		_, err := hex.Decode(decoded, colorCodeBytes)
-		utils.Assert(err == nil, fmt.Sprintf("Valid input should have been guaranteed by regexp, but instead got error: %v", err))
-		utils.Assert(len(decoded) == 3, fmt.Sprintf("Number of resultint entries should be guaranteed by regexp, was %v instead", len(decoded)))
-
-		r, g, b = int(decoded[0]), int(decoded[1]), int(decoded[2])
-		return r, g, b, nil
-	}
-
-	return 0, 0, 0, fmt.Errorf("Unknown color: '%v'", color)
 }
 
 // deepCopy creates a deep copy of this entry.
