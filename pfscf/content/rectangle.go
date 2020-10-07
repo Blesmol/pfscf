@@ -102,7 +102,7 @@ func (ce *rectangle) generateOutput(s *stamp.Stamp, as *args.Store) (err error) 
 		return err
 	}
 
-	style := stamp.RectStyle{Style: "F", FillR: r, FillG: g, FillB: b, Transparency: ce.Transparency}
+	style := stamp.OutputStyle{Style: "F", FillR: r, FillG: g, FillB: b, Transparency: ce.Transparency}
 	s.DrawRectangle(ce.Canvas, ce.X, ce.Y, ce.X2, ce.Y2, style)
 
 	return nil

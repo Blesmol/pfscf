@@ -25,15 +25,6 @@ type Stamp struct {
 	offsetY     float64
 }
 
-// RectStyle allows to provide only the required drawing parameters for a rectangle
-type RectStyle struct {
-	Style                     string // F=filled, D=outline, FD=both, default=D
-	FillR, FillG, FillB       int
-	BorderR, BorderG, BorderB int
-	Transparency              float64
-	Linewidth                 float64
-}
-
 // NewStamp creates a new Stamp object.
 func NewStamp(dimX, dimY, offsetX, offsetY float64) (s *Stamp) {
 	s = new(Stamp)
@@ -109,6 +100,14 @@ func (s *Stamp) isActiveCanvas(id string) bool {
 	return c.isActive
 }
 
+func (s *Stamp) saveCurrentOutputStyle() (style OutputStyle) {
+	return getOutputStyle(s.pdf)
+}
+
+func (s *Stamp) restoreOutputStyle(style OutputStyle) {
+	style.setOutputStyle(s.pdf)
+}
+
 // DeriveFontsize checks whether the provided text fits into the given width, if the current
 // font and fontsize is used. If it does not fit, the size is reduced until it fits or until a
 // minimum font size is reached.
@@ -152,6 +151,9 @@ func (s *Stamp) AddTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64,
 		return
 	}
 
+	oldStyle := s.saveCurrentOutputStyle()
+	defer s.restoreOutputStyle(oldStyle)
+
 	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).transformToAbsXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
 
 	effectiveFontsize := fontsize
@@ -180,6 +182,9 @@ func (s *Stamp) AddMultilineTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct
 
 	effectiveFontsize := fontsize
 
+	oldStyle := s.saveCurrentOutputStyle()
+	defer s.restoreOutputStyle(oldStyle)
+
 	s.pdf.SetFont(font, "", effectiveFontsize)
 
 	s.pdf.SetXY(xPt, yPt)
@@ -198,24 +203,25 @@ func (s *Stamp) AddMultilineTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct
 }
 
 // DrawRectangle draws a rectangle on the stamp.
-func (s *Stamp) DrawRectangle(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs RectStyle) {
+func (s *Stamp) DrawRectangle(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs OutputStyle) {
 	if !s.isActiveCanvas(canvasID) {
 		return
 	}
 
 	xPt, yPt, wPt, hPt := s.getCanvas(canvasID).transformToAbsXYWH(x1Pct, y1Pct, x2Pct, y2Pct)
 
-	oldAlpha, oldBlendMode := s.pdf.GetAlpha()
-	defer s.pdf.SetAlpha(oldAlpha, oldBlendMode)
+	oldStyle := s.saveCurrentOutputStyle()
+	defer s.restoreOutputStyle(oldStyle)
 
-	s.pdf.SetDrawColor(rs.BorderR, rs.BorderG, rs.BorderB)
+	s.pdf.SetDrawColor(rs.DrawR, rs.DrawG, rs.DrawB)
 	s.pdf.SetFillColor(rs.FillR, rs.FillG, rs.FillB)
 	s.pdf.SetAlpha(1.0-rs.Transparency, "Normal")
+
 	s.pdf.Rect(xPt, yPt, wPt, hPt, rs.Style)
 }
 
 // DrawLine draws a line on the stamp.
-func (s *Stamp) DrawLine(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs RectStyle) {
+func (s *Stamp) DrawLine(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs OutputStyle) {
 	if !s.isActiveCanvas(canvasID) {
 		return
 	}
@@ -224,16 +230,20 @@ func (s *Stamp) DrawLine(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs
 	x1Pt, y1Pt := canvas.pctToAbsPt(x1Pct, y1Pct)
 	x2Pt, y2Pt := canvas.pctToAbsPt(x2Pct, y2Pct)
 
-	oldLineWidth := s.pdf.GetLineWidth()
-	defer s.pdf.SetLineWidth(oldLineWidth)
+	oldStyle := s.saveCurrentOutputStyle()
+	defer s.restoreOutputStyle(oldStyle)
 
-	s.pdf.SetDrawColor(rs.BorderR, rs.BorderG, rs.BorderB)
+	s.pdf.SetDrawColor(rs.DrawR, rs.DrawG, rs.DrawB)
 	s.pdf.SetLineWidth(rs.Linewidth)
+
 	s.pdf.Line(x1Pt, y1Pt, x2Pt, y2Pt)
 }
 
 // DrawCanvases draws all canvases to the stamp
 func (s *Stamp) DrawCanvases() {
+	oldStyle := s.saveCurrentOutputStyle()
+	defer s.restoreOutputStyle(oldStyle)
+
 	fontsize := 8.0
 	r, g, b := 51, 204, 51
 	s.pdf.SetDrawColor(r, g, b)
@@ -254,7 +264,6 @@ func (s *Stamp) DrawCanvases() {
 		s.pdf.SetTextColor(r, g, b)
 		s.pdf.CellFormat(wPt, fontsize, canvasID, "0", 0, "RM", false, 0, "")
 	}
-	s.pdf.SetTextColor(0, 0, 0)
 }
 
 // WriteToFile writes the content of the Stamp object into a PDF file.
@@ -279,6 +288,9 @@ func (s *Stamp) DrawCanvasGrid(canvasID string) (err error) {
 
 		extraSpace = float64(1.0) // points
 	)
+
+	oldStyle := s.saveCurrentOutputStyle()
+	defer s.restoreOutputStyle(oldStyle)
 
 	// find canvas for which we should draw the grid
 	var canvas canvas

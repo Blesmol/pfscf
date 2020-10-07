@@ -91,7 +91,7 @@ func (ce *line) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 		return err
 	}
 
-	style := stamp.RectStyle{BorderR: r, BorderG: g, BorderB: b, Linewidth: ce.Linewidth}
+	style := stamp.OutputStyle{DrawR: r, DrawG: g, DrawB: b, Linewidth: ce.Linewidth}
 	s.DrawLine(ce.Canvas, ce.X, ce.Y, ce.X2, ce.Y2, style)
 
 	return nil
