@@ -17,7 +17,7 @@ func TestCanvas_relPctToPt(t *testing.T) {
 	}
 
 	for _, tt := range testData {
-		xPtGot, yPtGot := tt.c.relPctToPt(tt.xPct, tt.yPct)
+		xPtGot, yPtGot := tt.c.pctToRelPt(tt.xPct, tt.yPct)
 		test.ExpectEqual(t, xPtGot, tt.xPtExp)
 		test.ExpectEqual(t, yPtGot, tt.yPtExp)
 	}
