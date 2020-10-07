@@ -43,11 +43,6 @@ func (ce *line) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err
 		return contentValErr(ce, err)
 	}
 
-	if ce.X == ce.X2 && ce.Y == ce.Y2 {
-		err = fmt.Errorf("Line should have different coordinates either for x and x2 or for y and y2: x/x2: %v, y/y2: %v", ce.X, ce.Y)
-		return contentValErr(ce, err)
-	}
-
 	if _, exists := canvasStore.Get(ce.Canvas); !exists {
 		err = fmt.Errorf("Canvas '%v' does not exist", ce.Canvas)
 		return contentValErr(ce, err)
@@ -86,6 +81,13 @@ func (ce *line) resolve(ps preset.Store) (err error) {
 
 // generateOutput generates the output for this textCell object.
 func (ce *line) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
+	// if the coordinates just form a point, then don't do anything and just return.
+	// This also provides an easy way to have "inactive" lines that become active
+	// by providing a different preset.
+	if ce.X == ce.X2 && ce.Y == ce.Y2 {
+		return nil
+	}
+
 	r, g, b, err := parseColor(ce.Color)
 	if err != nil {
 		return err
