@@ -15,12 +15,17 @@ const (
 	typeRectangle = "rectangle"
 )
 
+var (
+	validStyles = []string{"filled", "strikeout"}
+)
+
 // rectangle needs a description
 type rectangle struct {
 	X, Y         float64
 	X2, Y2       float64
 	Color        string
 	Transparency float64 // TODO convert to ptr
+	Style        string
 	Canvas       string
 	Presets      []string
 }
@@ -34,7 +39,7 @@ func newRectangle() *rectangle {
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
 func (ce *rectangle) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
-	err = utils.CheckFieldsAreSet(ce, "Color", "Canvas")
+	err = utils.CheckFieldsAreSet(ce, "Color", "Canvas", "Style")
 	if err != nil {
 		return contentValErr(ce, err)
 	}
@@ -68,6 +73,11 @@ func (ce *rectangle) isValid(paramStore *param.Store, canvasStore *canvas.Store)
 		return contentValErr(ce, err)
 	}
 
+	if !utils.Contains(validStyles, ce.Style) {
+		err = fmt.Errorf("Unknown style '%v'. Supported styles are %v", ce.Style, validStyles)
+		return contentValErr(ce, err)
+	}
+
 	return nil
 }
 
@@ -91,6 +101,9 @@ func (ce *rectangle) resolve(ps preset.Store) (err error) {
 	if !utils.IsSet(ce.Transparency) {
 		ce.Transparency = 0.0
 	}
+	if !utils.IsSet(ce.Style) {
+		ce.Style = validStyles[0]
+	}
 
 	return nil
 }
@@ -102,8 +115,17 @@ func (ce *rectangle) generateOutput(s *stamp.Stamp, as *args.Store) (err error) 
 		return err
 	}
 
-	style := stamp.OutputStyle{Style: "F", FillR: r, FillG: g, FillB: b, Transparency: ce.Transparency}
-	s.DrawRectangle(ce.Canvas, ce.X, ce.Y, ce.X2, ce.Y2, style)
+	switch ce.Style {
+	case "filled":
+		style := stamp.OutputStyle{Style: "F", FillR: r, FillG: g, FillB: b, Transparency: ce.Transparency}
+		s.DrawRectangle(ce.Canvas, ce.X, ce.Y, ce.X2, ce.Y2, style)
+	case "strikeout":
+		style := stamp.OutputStyle{DrawR: r, DrawB: b, DrawG: g, Linewidth: 2.5}
+		s.DrawLine(ce.Canvas, ce.X, ce.Y, ce.X2, ce.Y2, style)
+		s.DrawLine(ce.Canvas, ce.X, ce.Y2, ce.X2, ce.Y, style)
+	default:
+		utils.Assert(false, "Should be unreachable, or some valid case is missing here")
+	}
 
 	return nil
 }

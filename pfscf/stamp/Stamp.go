@@ -203,7 +203,7 @@ func (s *Stamp) AddMultilineTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct
 }
 
 // DrawRectangle draws a rectangle on the stamp.
-func (s *Stamp) DrawRectangle(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs OutputStyle) {
+func (s *Stamp) DrawRectangle(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, os OutputStyle) {
 	if !s.isActiveCanvas(canvasID) {
 		return
 	}
@@ -213,15 +213,15 @@ func (s *Stamp) DrawRectangle(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float6
 	oldStyle := s.saveCurrentOutputStyle()
 	defer s.restoreOutputStyle(oldStyle)
 
-	s.pdf.SetDrawColor(rs.DrawR, rs.DrawG, rs.DrawB)
-	s.pdf.SetFillColor(rs.FillR, rs.FillG, rs.FillB)
-	s.pdf.SetAlpha(1.0-rs.Transparency, "Normal")
+	s.pdf.SetDrawColor(os.DrawR, os.DrawG, os.DrawB)
+	s.pdf.SetFillColor(os.FillR, os.FillG, os.FillB)
+	s.pdf.SetAlpha(1.0-os.Transparency, "Normal")
 
-	s.pdf.Rect(xPt, yPt, wPt, hPt, rs.Style)
+	s.pdf.Rect(xPt, yPt, wPt, hPt, os.Style)
 }
 
 // DrawLine draws a line on the stamp.
-func (s *Stamp) DrawLine(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs OutputStyle) {
+func (s *Stamp) DrawLine(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, os OutputStyle) {
 	if !s.isActiveCanvas(canvasID) {
 		return
 	}
@@ -233,8 +233,8 @@ func (s *Stamp) DrawLine(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, rs
 	oldStyle := s.saveCurrentOutputStyle()
 	defer s.restoreOutputStyle(oldStyle)
 
-	s.pdf.SetDrawColor(rs.DrawR, rs.DrawG, rs.DrawB)
-	s.pdf.SetLineWidth(rs.Linewidth)
+	s.pdf.SetDrawColor(os.DrawR, os.DrawG, os.DrawB)
+	s.pdf.SetLineWidth(os.Linewidth)
 
 	s.pdf.Line(x1Pt, y1Pt, x2Pt, y2Pt)
 }
