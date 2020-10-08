@@ -24,43 +24,43 @@ type checkbox struct {
 }
 
 func newCheckbox() *checkbox {
-	var ce checkbox
-	ce.Presets = make([]string, 0)
-	return &ce
+	var e checkbox
+	e.Presets = make([]string, 0)
+	return &e
 }
 
 // isValid checks whether the current content object is valid and returns an
 // error with details if the object is not valid.
-func (ce *checkbox) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
-	err = utils.CheckFieldsAreSet(ce, "Canvas")
+func (e *checkbox) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
+	err = utils.CheckFieldsAreSet(e, "Canvas")
 	if err != nil {
-		return contentValErr(ce, err)
+		return contentValErr(e, err)
 	}
 
-	err = utils.CheckFieldsAreInRange(ce, 0.0, 100.0, "X", "Y", "Size")
+	err = utils.CheckFieldsAreInRange(e, 0.0, 100.0, "X", "Y", "Size")
 	if err != nil {
-		return contentValErr(ce, err)
+		return contentValErr(e, err)
 	}
 
-	if _, exists := canvasStore.Get(ce.Canvas); !exists {
-		err = fmt.Errorf("Canvas '%v' does not exist", ce.Canvas)
-		return contentValErr(ce, err)
+	if _, exists := canvasStore.Get(e.Canvas); !exists {
+		err = fmt.Errorf("Canvas '%v' does not exist", e.Canvas)
+		return contentValErr(e, err)
 	}
 
 	return nil
 }
 
 // resolve the presets for this content object.
-func (ce *checkbox) resolve(ps preset.Store) (err error) {
+func (e *checkbox) resolve(ps preset.Store) (err error) {
 	// check that required presets are not contradicting each other
-	if err = ps.PresetsAreNotContradicting(ce.Presets...); err != nil {
+	if err = ps.PresetsAreNotContradicting(e.Presets...); err != nil {
 		err = fmt.Errorf("Error resolving content: %v", err)
 		return
 	}
 
-	for _, presetID := range ce.Presets {
+	for _, presetID := range e.Presets {
 		preset, _ := ps.Get(presetID)
-		if err = preset.FillPublicFieldsFromPreset(ce, "Presets"); err != nil {
+		if err = preset.FillPublicFieldsFromPreset(e, "Presets"); err != nil {
 			err = fmt.Errorf("Error resolving content: %v", err)
 			return
 		}
@@ -70,21 +70,21 @@ func (ce *checkbox) resolve(ps preset.Store) (err error) {
 }
 
 // generateOutput generates the output for this textCell object.
-func (ce *checkbox) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
-	if ce.Size == 0.0 { // No size? No output! Also a way to have this disabled per default
+func (e *checkbox) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
+	if e.Size == 0.0 { // No size? No output! Also a way to have this disabled per default
 		return nil
 	}
 
 	style := stamp.OutputStyle{DrawR: 0, DrawB: 0, DrawG: 0, Linewidth: 0.5}
-	s.DrawStrike(ce.Canvas, ce.X, ce.Y, ce.Size, style)
+	s.DrawStrike(e.Canvas, e.X, e.Y, e.Size, style)
 
 	return nil
 }
 
 // deepCopy creates a deep copy of this entry.
-func (ce *checkbox) deepCopy() Entry {
-	copy := *ce
-	copy.Presets = append(make([]string, 0), ce.Presets...)
+func (e *checkbox) deepCopy() Entry {
+	copy := *e
+	copy.Presets = append(make([]string, 0), e.Presets...)
 
 	return &copy
 }

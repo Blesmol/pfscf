@@ -19,18 +19,18 @@ type choice struct {
 }
 
 func newChoice() *choice {
-	var ce choice
-	ce.Content = make(map[string]ListStore)
-	return &ce
+	var e choice
+	e.Content = make(map[string]ListStore)
+	return &e
 }
 
-func (ce *choice) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
+func (e *choice) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
 	// TODO arg paramStore to isValid to be able to validate against parameters
-	err = utils.CheckFieldsAreSet(ce, "Choices")
+	err = utils.CheckFieldsAreSet(e, "Choices")
 	if err != nil {
-		return contentValErr(ce, err)
+		return contentValErr(e, err)
 	}
-	for _, subStore := range ce.Content {
+	for _, subStore := range e.Content {
 		if err = subStore.IsValid(paramStore, canvasStore); err != nil {
 			return err
 		}
@@ -39,8 +39,8 @@ func (ce *choice) isValid(paramStore *param.Store, canvasStore *canvas.Store) (e
 }
 
 // resolve the presets for this content object.
-func (ce *choice) resolve(ps preset.Store) (err error) {
-	for _, subStore := range ce.Content {
+func (e *choice) resolve(ps preset.Store) (err error) {
+	for _, subStore := range e.Content {
 		if err = subStore.Resolve(ps); err != nil {
 			return err
 		}
@@ -49,14 +49,14 @@ func (ce *choice) resolve(ps preset.Store) (err error) {
 }
 
 // generateOutput generates the output for this content object.
-func (ce *choice) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
-	selectedChoices := ce.getChoicesFromArgStore(as)
+func (e *choice) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
+	selectedChoices := e.getChoicesFromArgStore(as)
 	if len(selectedChoices) == 0 {
 		return nil // nothing to do here...
 	}
 
 	for _, choice := range selectedChoices {
-		for contentID, contentStore := range ce.Content {
+		for contentID, contentStore := range e.Content {
 			if contentID == choice {
 				if err = contentStore.GenerateOutput(s, as); err != nil {
 					return err
@@ -70,8 +70,8 @@ func (ce *choice) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 
 // getChoicesFromArgStore returns a list of values that should be used for the current content.
 // Entries are expected to be separated by comma.
-func (ce *choice) getChoicesFromArgStore(as *args.Store) []string {
-	val := getValue(ce.Choices, as)
+func (e *choice) getChoicesFromArgStore(as *args.Store) []string {
+	val := getValue(e.Choices, as)
 
 	if val == nil {
 		return make([]string, 0)
@@ -81,14 +81,14 @@ func (ce *choice) getChoicesFromArgStore(as *args.Store) []string {
 }
 
 // deepCopy creates a deep copy of this entry.
-func (ce *choice) deepCopy() Entry {
+func (e *choice) deepCopy() Entry {
 
 	copy := choice{
-		Choices: ce.Choices,
+		Choices: e.Choices,
 		Content: make(map[string]ListStore),
 	}
 
-	for key, entry := range ce.Content {
+	for key, entry := range e.Content {
 		copy.Content[key] = entry.deepCopy()
 	}
 
