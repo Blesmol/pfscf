@@ -239,22 +239,9 @@ func (s *Stamp) DrawLine(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, os
 	s.pdf.Line(x1Pt, y1Pt, x2Pt, y2Pt)
 }
 
-// DrawStrike draws a strikeout cross on the stamp
-func (s *Stamp) DrawStrike(canvasID string, xPct, yPct, sizePt float64, os OutputStyle) {
-	if !s.isActiveCanvas(canvasID) {
-		return
-	}
-
+func (s *Stamp) drawStrikeoutInternal(x1Pt, y1Pt, x2Pt, y2Pt float64, os OutputStyle) {
 	oldStyle := s.saveCurrentOutputStyle()
 	defer s.restoreOutputStyle(oldStyle)
-
-	canvas := s.getCanvas(canvasID)
-	xCenterPt, yCenterPt := canvas.pctToAbsPt(xPct, yPct)
-	halfSize := sizePt * 0.5
-	x1Pt := xCenterPt - halfSize
-	x2Pt := xCenterPt + halfSize
-	y1Pt := yCenterPt - halfSize
-	y2Pt := yCenterPt + halfSize
 
 	if s.shouldDrawCellBorder() {
 		s.pdf.SetDrawColor(0, 0, 0)
@@ -267,6 +254,36 @@ func (s *Stamp) DrawStrike(canvasID string, xPct, yPct, sizePt float64, os Outpu
 
 	s.pdf.Line(x1Pt, y1Pt, x2Pt, y2Pt)
 	s.pdf.Line(x1Pt, y2Pt, x2Pt, y1Pt)
+}
+
+// DrawStrikeoutArea draws a strikeout cross on the stamp
+func (s *Stamp) DrawStrikeoutArea(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, os OutputStyle) {
+	if !s.isActiveCanvas(canvasID) {
+		return
+	}
+
+	canvas := s.getCanvas(canvasID)
+	x1Pt, y1Pt := canvas.pctToAbsPt(x1Pct, y1Pct)
+	x2Pt, y2Pt := canvas.pctToAbsPt(x2Pct, y2Pct)
+
+	s.drawStrikeoutInternal(x1Pt, y1Pt, x2Pt, y2Pt, os)
+}
+
+// DrawStrikeoutCentered draws a strikeout cross on the stamp around an area
+func (s *Stamp) DrawStrikeoutCentered(canvasID string, xPct, yPct, sizePt float64, os OutputStyle) {
+	if !s.isActiveCanvas(canvasID) {
+		return
+	}
+
+	canvas := s.getCanvas(canvasID)
+	xCenterPt, yCenterPt := canvas.pctToAbsPt(xPct, yPct)
+	halfSize := sizePt * 0.5
+	x1Pt := xCenterPt - halfSize
+	x2Pt := xCenterPt + halfSize
+	y1Pt := yCenterPt - halfSize
+	y2Pt := yCenterPt + halfSize
+
+	s.drawStrikeoutInternal(x1Pt, y1Pt, x2Pt, y2Pt, os)
 }
 
 // DrawCanvases draws all canvases to the stamp

@@ -116,8 +116,7 @@ func (e *rectangle) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 		s.DrawRectangle(e.Canvas, e.X, e.Y, e.X2, e.Y2, style)
 	case "strikeout":
 		style := stamp.OutputStyle{DrawR: r, DrawB: b, DrawG: g, Linewidth: 2.5}
-		s.DrawLine(e.Canvas, e.X, e.Y, e.X2, e.Y2, style)
-		s.DrawLine(e.Canvas, e.X, e.Y2, e.X2, e.Y, style)
+		s.DrawStrikeoutArea(e.Canvas, e.X, e.Y, e.X2, e.Y2, style)
 	default:
 		utils.Assert(false, "Should be unreachable, or some valid case is missing here")
 	}
