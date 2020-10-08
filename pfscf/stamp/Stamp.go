@@ -239,6 +239,36 @@ func (s *Stamp) DrawLine(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64, os
 	s.pdf.Line(x1Pt, y1Pt, x2Pt, y2Pt)
 }
 
+// DrawStrike draws a strikeout cross on the stamp
+func (s *Stamp) DrawStrike(canvasID string, xPct, yPct, sizePt float64, os OutputStyle) {
+	if !s.isActiveCanvas(canvasID) {
+		return
+	}
+
+	oldStyle := s.saveCurrentOutputStyle()
+	defer s.restoreOutputStyle(oldStyle)
+
+	canvas := s.getCanvas(canvasID)
+	xCenterPt, yCenterPt := canvas.pctToAbsPt(xPct, yPct)
+	halfSize := sizePt * 0.5
+	x1Pt := xCenterPt - halfSize
+	x2Pt := xCenterPt + halfSize
+	y1Pt := yCenterPt - halfSize
+	y2Pt := yCenterPt + halfSize
+
+	if s.shouldDrawCellBorder() {
+		s.pdf.SetDrawColor(0, 0, 0)
+		s.pdf.SetLineWidth(1.0)
+		s.pdf.Rect(x1Pt, y1Pt, x2Pt-x1Pt, y2Pt-y1Pt, "D")
+	}
+
+	s.pdf.SetDrawColor(os.DrawR, os.DrawG, os.DrawB)
+	s.pdf.SetLineWidth(os.Linewidth)
+
+	s.pdf.Line(x1Pt, y1Pt, x2Pt, y2Pt)
+	s.pdf.Line(x1Pt, y2Pt, x2Pt, y1Pt)
+}
+
 // DrawCanvases draws all canvases to the stamp
 func (s *Stamp) DrawCanvases() {
 	oldStyle := s.saveCurrentOutputStyle()
