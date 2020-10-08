@@ -73,11 +73,6 @@ func (e *rectangle) isValid(paramStore *param.Store, canvasStore *canvas.Store) 
 
 // resolve the presets for this content object.
 func (e *rectangle) resolve(ps preset.Store) (err error) {
-	// Rectangle with zero width or height? No output!
-	if e.X == e.X2 || e.Y == e.Y2 {
-		return nil
-	}
-
 	// check that required presets are not contradicting each other
 	if err = ps.PresetsAreNotContradicting(e.Presets...); err != nil {
 		err = fmt.Errorf("Error resolving content: %v", err)
@@ -105,6 +100,11 @@ func (e *rectangle) resolve(ps preset.Store) (err error) {
 
 // generateOutput generates the output for this textCell object.
 func (e *rectangle) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
+	// Rectangle with zero width or height? No output!
+	if e.X == e.X2 || e.Y == e.Y2 {
+		return nil
+	}
+
 	r, g, b, err := parseColor(e.Color)
 	if err != nil {
 		return err
