@@ -19,9 +19,9 @@ type trigger struct {
 }
 
 func newTrigger() *trigger {
-	var ce trigger
-	ce.Content = NewListStore()
-	return &ce
+	var e trigger
+	e.Content = NewListStore()
+	return &e
 }
 
 func (e *trigger) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err error) {
