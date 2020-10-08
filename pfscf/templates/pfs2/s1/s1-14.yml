@@ -2,40 +2,44 @@ id: pfs2.s1-14
 description: "#1-14: Lions of Katapesh"
 inherit: pfs2.s1
 
-parameters:
-  "Scenario Info":
-    villain:
-      type: choice
-      description: "Main villain in this scenario"
-      choices: [cat, druid, lion]
+presets:
+  item.low.1:
+    y:  5.0
+    y2: 5.0
+
+  item.low.2:
+    y:  10.0
+    y2: 10.0
+
+  item.low.2.2:
+    y:  14.5
+    y2: 14.5
+
+  item.low.3:
+    y:  19.5
+    y2: 19.5
+
+  item.high.1:
+    y:  57.0
+    y2: 57.0
+
+  item.high.2:
+    y:  62.0
+    y2: 62.0
+
+  item.high.2.2:
+    y:  66.5
+    y2: 66.5
+
+  item.high.3:
+    y:  71.5
+    y2: 71.5
+
+  item.high.3.2:
+    y:  76.0
+    y2: 76.0
 
 canvas:
   boon1.1:
     y:  28.5
     y2: 36.0
-
-content:
-  - type: choice
-    choices: param:villain
-    content:
-      cat:
-        - type: text
-          presets: [checkbox]
-          canvas: main
-          x: 67.5
-          y: 17.7
-          x2: 68.5
-      druid:
-        - type: text
-          presets: [checkbox]
-          canvas: main
-          x: 79.8
-          y: 17.7
-          x2: 80.8
-      lion:
-        - type: text
-          presets: [checkbox]
-          canvas: main
-          x: 93.1
-          y: 17.7
-          x2: 94.1

@@ -74,18 +74,30 @@ parameters:
       description: "Faction 3: Total reputation points"
       example: 8
 
-  "Boons":
+  "Boons & Items":
+    tier:
+      type: choice
+      description: "Players' tier"
+      choices: [low, high]
+      example: low,high
+
+    summary_checkbox:
+      type: choice
+      description: "Checkboxes in the adventure summary that should be selected"
+      choices: [1, 2, 3, 4, 5]
+
     strikeout_boons:
       type: choice
       description: "Boons that should be striked out"
       choices: [1, 2, 3]
 
-  "Rewards":
-    tier:
+    strikeout_items:
       type: choice
-      description: "Players' tier"
-      choices: [low, high]
+      description: "Items that should be striked out"
+      choices: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      example: 1,2,3,4,5,6,7,8,9
 
+  "Rewards":
     starting_xp:
       type: text
       description: Starting XP
@@ -298,18 +310,25 @@ canvas:
     x2: 79.8
     y2: 82.9
 
-  items_low:
-    parent: middlebox
-    x:   0.0
-    y:   0.0
-    x2: 38.2
-    y2: 49.9
-
-  items_high:
+  items:
     parent: middlebox
     x:    0.0
-    y:   50.1
+    y:    0.0
     x2:  38.2
+    y2: 100.0
+
+  items_low: # TODO remove?
+    parent: items
+    x:    0.0
+    y:    0.0
+    x2: 100.0
+    y2:  49.9
+
+  items_high: # TODO remove?
+    parent: items
+    x:    0.0
+    y:   50.1
+    x2: 100.0
     y2: 100.0
 
   items_sold:
@@ -412,11 +431,156 @@ presets:
     color: black
     style: strikeout
 
-  checkbox:
-    value: "X"
-    fontsize: 8
-    font: Helvetica
-    align: CM
+  strikeout_item:
+    canvas: items
+    color: black
+    linewidth: 2.0
+    x:   1.0
+    x2: 98.0
+
+  item.low.1:
+    y: 0.0
+    y2: 0.0
+
+  item.low.1.2:
+    y: 0.0
+    y2: 0.0
+
+  item.low.2:
+    y: 0.0
+    y2: 0.0
+
+  item.low.2.2:
+    y: 0.0
+    y2: 0.0
+
+  item.low.3:
+    y: 0.0
+    y2: 0.0
+
+  item.low.3.2:
+    y: 0.0
+    y2: 0.0
+
+  item.low.4:
+    y: 0.0
+    y2: 0.0
+
+  item.low.4.2:
+    y: 0.0
+    y2: 0.0
+
+  item.low.5:
+    y: 0.0
+    y2: 0.0
+
+  item.low.5.2:
+    y: 0.0
+    y2: 0.0
+
+  item.low.6:
+    y: 0.0
+    y2: 0.0
+
+  item.low.6.2:
+    y: 0.0
+    y2: 0.0
+
+  item.low.7:
+    y: 0.0
+    y2: 0.0
+
+  item.low.7.2:
+    y: 0.0
+    y2: 0.0
+
+  item.low.8:
+    y: 0.0
+    y2: 0.0
+
+  item.low.8.2:
+    y: 0.0
+    y2: 0.0
+
+  item.low.9:
+    y: 0.0
+    y2: 0.0
+
+  item.low.9.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.1:
+    y: 0.0
+    y2: 0.0
+
+  item.high.1.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.2.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.3:
+    y: 0.0
+    y2: 0.0
+
+  item.high.3.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.4:
+    y: 0.0
+    y2: 0.0
+
+  item.high.4.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.5:
+    y: 0.0
+    y2: 0.0
+
+  item.high.5.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.6:
+    y: 0.0
+    y2: 0.0
+
+  item.high.6.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.7:
+    y: 0.0
+    y2: 0.0
+
+  item.high.7.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.8:
+    y: 0.0
+    y2: 0.0
+
+  item.high.8.2:
+    y: 0.0
+    y2: 0.0
+
+  item.high.9:
+    y: 0.0
+    y2: 0.0
+
+  item.high.9.2:
+    y: 0.0
+    y2: 0.0
 
   commentbox:
     presets: [defaultfont, max_area]
@@ -669,13 +833,110 @@ content:
     type: choice
     content:
       low:
-        - type: rectangle
+        - type: rectangle # TODO: change?
           presets: [strikeout_item_area]
           canvas: items_high
+        - choices: param:strikeout_items
+          type: choice
+          content:
+            1:
+              - type: line
+                presets: [strikeout_item, item.low.1]
+              - type: line
+                presets: [strikeout_item, item.low.1.2]
+            2:
+              - type: line
+                presets: [strikeout_item, item.low.2]
+              - type: line
+                presets: [strikeout_item, item.low.2.2]
+            3:
+              - type: line
+                presets: [strikeout_item, item.low.3]
+              - type: line
+                presets: [strikeout_item, item.low.3.2]
+            4:
+              - type: line
+                presets: [strikeout_item, item.low.4]
+              - type: line
+                presets: [strikeout_item, item.low.4.2]
+            5:
+              - type: line
+                presets: [strikeout_item, item.low.5]
+              - type: line
+                presets: [strikeout_item, item.low.5.2]
+            6:
+              - type: line
+                presets: [strikeout_item, item.low.6]
+              - type: line
+                presets: [strikeout_item, item.low.6.2]
+            7:
+              - type: line
+                presets: [strikeout_item, item.low.7]
+              - type: line
+                presets: [strikeout_item, item.low.7.2]
+            8:
+              - type: line
+                presets: [strikeout_item, item.low.8]
+              - type: line
+                presets: [strikeout_item, item.low.8.2]
+            9:
+              - type: line
+                presets: [strikeout_item, item.low.9]
+              - type: line
+                presets: [strikeout_item, item.low.9.2]
+
       high:
-        - type: rectangle
+        - type: rectangle # TODO: change?
           canvas: items_low
           presets: [strikeout_item_area]
+        - choices: param:strikeout_items
+          type: choice
+          content:
+            1:
+              - type: line
+                presets: [strikeout_item, item.high.1]
+              - type: line
+                presets: [strikeout_item, item.high.1.2]
+            2:
+              - type: line
+                presets: [strikeout_item, item.high.2]
+              - type: line
+                presets: [strikeout_item, item.high.2.2]
+            3:
+              - type: line
+                presets: [strikeout_item, item.high.3]
+              - type: line
+                presets: [strikeout_item, item.high.3.2]
+            4:
+              - type: line
+                presets: [strikeout_item, item.high.4]
+              - type: line
+                presets: [strikeout_item, item.high.4.2]
+            5:
+              - type: line
+                presets: [strikeout_item, item.high.5]
+              - type: line
+                presets: [strikeout_item, item.high.5.2]
+            6:
+              - type: line
+                presets: [strikeout_item, item.high.6]
+              - type: line
+                presets: [strikeout_item, item.high.6.2]
+            7:
+              - type: line
+                presets: [strikeout_item, item.high.7]
+              - type: line
+                presets: [strikeout_item, item.high.7.2]
+            8:
+              - type: line
+                presets: [strikeout_item, item.high.8]
+              - type: line
+                presets: [strikeout_item, item.high.8.2]
+            9:
+              - type: line
+                presets: [strikeout_item, item.high.9]
+              - type: line
+                presets: [strikeout_item, item.high.9.2]
 
   - value: param:list_items_sold
     type: multiline
