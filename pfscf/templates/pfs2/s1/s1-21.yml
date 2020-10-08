@@ -6,6 +6,9 @@ canvas:
   rightbar:
     y: 20.7
 
-  boon1.1:
+presets:
+  boon.1:
+    x:   0.0
     y:  21.0
+    x2: 79.5
     y2: 27.5

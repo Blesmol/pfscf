@@ -9,8 +9,3 @@ canvas:
   middlebox:
     y: 48.3
 
-  items_low:
-    y2: 46.0
-
-  items_high:
-    y: 54.0
