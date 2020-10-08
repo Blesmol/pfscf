@@ -76,7 +76,7 @@ func (e *checkbox) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
 	}
 
 	style := stamp.OutputStyle{DrawR: 0, DrawB: 0, DrawG: 0, Linewidth: 0.5}
-	s.DrawStrike(e.Canvas, e.X, e.Y, e.Size, style)
+	s.DrawStrikeoutCentered(e.Canvas, e.X, e.Y, e.Size, style)
 
 	return nil
 }
