@@ -79,23 +79,25 @@ parameters:
       type: choice
       description: "Players' tier"
       choices: [low, high]
-      example: low,high
+      #example: low,high
 
     summary_checkbox:
       type: choice
       description: "Checkboxes in the adventure summary that should be selected"
       choices: [1, 2, 3, 4, 5]
+      #example: 1,2,3,4,5
 
     strikeout_boons:
       type: choice
       description: "Boons that should be striked out"
       choices: [1, 2, 3]
+      #example: 1,2,3
 
     strikeout_items:
       type: choice
       description: "Items that should be striked out"
       choices: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-      example: 1,2,3,4,5,6,7,8,9
+      #example: 1,2,3,4,5,6,7,8,9
 
   "Rewards":
     starting_xp:
@@ -255,54 +257,6 @@ canvas:
     x2: 100.0
     y2:  94.45
 
-  boon1.1:
-    # inactive per default, should be adapted when inheriting this template
-    parent: main
-    x:   0.5
-    y:   0.0
-    x2: 79.5
-    y2:  0.0
-
-  boon1.2:
-    # inactive per default, should be adapted when inheriting this template
-    parent: main
-    x:   0.5
-    y:   0.0
-    x2: 79.5
-    y2:  0.0
-
-  boon2.1:
-    # inactive per default, should be adapted when inheriting this template
-    parent: main
-    x:   0.5
-    y:   0.0
-    x2: 79.5
-    y2:  0.0
-
-  boon2.2:
-    # inactive per default, should be adapted when inheriting this template
-    parent: main
-    x:   0.5
-    y:   0.0
-    x2: 79.5
-    y2:  0.0
-
-  boon3.1:
-    # inactive per default, should be adapted when inheriting this template
-    parent: main
-    x:   0.5
-    y:   0.0
-    x2: 79.5
-    y2:  0.0
-
-  boon3.2:
-    # inactive per default, should be adapted when inheriting this template
-    parent: main
-    x:   0.5
-    y:   0.0
-    x2: 79.5
-    y2:  0.0
-
   middlebox:
     parent: main
     x:   2.3
@@ -315,20 +269,6 @@ canvas:
     x:    0.0
     y:    0.0
     x2:  38.2
-    y2: 100.0
-
-  items_low: # TODO remove?
-    parent: items
-    x:    0.0
-    y:    0.0
-    x2: 100.0
-    y2:  49.9
-
-  items_high: # TODO remove?
-    parent: items
-    x:    0.0
-    y:   50.1
-    x2: 100.0
     y2: 100.0
 
   items_sold:
@@ -357,7 +297,7 @@ presets:
     font: Helvetica
     fontsize: 14
 
-  playerinfo:
+  player.infoline:
     presets: [defaultfont]
     canvas: main
     y:  5.5
@@ -370,7 +310,7 @@ presets:
     x2: 100.0
     align: CM
 
-  eventinfo:
+  event.infoline:
     presets: [defaultfont]
     canvas: main
     y:  98.0
@@ -411,25 +351,63 @@ presets:
     presets: [factions]
     y:  9.0
 
-  greyout:
-    color: white
-    transparency: 0.3
-
   max_area:
     x: 0.0
     y: 0.0
     x2: 100.0
     y2: 100.0
 
-  strikeout_boon:
-    presets: [max_area]
-    color: black
-    style: strikeout
+  checkbox:
+    canvas: main
+    linewidth: 0.5
+    size: 5.0
 
-  strikeout_item_area:
-    presets: [max_area]
+  checkbox.1:
+    dummy: 0
+
+  checkbox.2:
+    dummy: 0
+
+  checkbox.3:
+    dummy: 0
+
+  checkbox.4:
+    dummy: 0
+
+  checkbox.5:
+    dummy: 0
+
+  strikeout_boon:
+    canvas: main
     color: black
-    style: strikeout
+    linewidth: 2.0
+
+  boon.1:
+    dummy: 0
+  boon.1.2:
+    dummy: 0
+  boon.2:
+    dummy: 0
+  boon.2.2:
+    dummy: 0
+  boon.3:
+    dummy: 0
+  boon.3.2:
+    dummy: 0
+
+  strikeout_items_area:
+    canvas: items
+    x:    0.0
+    x2: 100.0
+    linewidth: 2.0
+
+  items.low.area:
+    y:   0.0
+    y2: 49.9
+
+  items.high.area:
+    y:   50.1
+    y2: 100.0
 
   strikeout_item:
     canvas: items
@@ -438,147 +416,147 @@ presets:
     x:   1.0
     x2: 98.0
 
-  item.low.1:
+  items.low.1:
     y: 0.0
     y2: 0.0
 
-  item.low.1.2:
+  items.low.1.2:
     y: 0.0
     y2: 0.0
 
-  item.low.2:
+  items.low.2:
     y: 0.0
     y2: 0.0
 
-  item.low.2.2:
+  items.low.2.2:
     y: 0.0
     y2: 0.0
 
-  item.low.3:
+  items.low.3:
     y: 0.0
     y2: 0.0
 
-  item.low.3.2:
+  items.low.3.2:
     y: 0.0
     y2: 0.0
 
-  item.low.4:
+  items.low.4:
     y: 0.0
     y2: 0.0
 
-  item.low.4.2:
+  items.low.4.2:
     y: 0.0
     y2: 0.0
 
-  item.low.5:
+  items.low.5:
     y: 0.0
     y2: 0.0
 
-  item.low.5.2:
+  items.low.5.2:
     y: 0.0
     y2: 0.0
 
-  item.low.6:
+  items.low.6:
     y: 0.0
     y2: 0.0
 
-  item.low.6.2:
+  items.low.6.2:
     y: 0.0
     y2: 0.0
 
-  item.low.7:
+  items.low.7:
     y: 0.0
     y2: 0.0
 
-  item.low.7.2:
+  items.low.7.2:
     y: 0.0
     y2: 0.0
 
-  item.low.8:
+  items.low.8:
     y: 0.0
     y2: 0.0
 
-  item.low.8.2:
+  items.low.8.2:
     y: 0.0
     y2: 0.0
 
-  item.low.9:
+  items.low.9:
     y: 0.0
     y2: 0.0
 
-  item.low.9.2:
+  items.low.9.2:
     y: 0.0
     y2: 0.0
 
-  item.high.1:
+  items.high.1:
     y: 0.0
     y2: 0.0
 
-  item.high.1.2:
+  items.high.1.2:
     y: 0.0
     y2: 0.0
 
-  item.high.2:
+  items.high.2:
     y: 0.0
     y2: 0.0
 
-  item.high.2.2:
+  items.high.2.2:
     y: 0.0
     y2: 0.0
 
-  item.high.3:
+  items.high.3:
     y: 0.0
     y2: 0.0
 
-  item.high.3.2:
+  items.high.3.2:
     y: 0.0
     y2: 0.0
 
-  item.high.4:
+  items.high.4:
     y: 0.0
     y2: 0.0
 
-  item.high.4.2:
+  items.high.4.2:
     y: 0.0
     y2: 0.0
 
-  item.high.5:
+  items.high.5:
     y: 0.0
     y2: 0.0
 
-  item.high.5.2:
+  items.high.5.2:
     y: 0.0
     y2: 0.0
 
-  item.high.6:
+  items.high.6:
     y: 0.0
     y2: 0.0
 
-  item.high.6.2:
+  items.high.6.2:
     y: 0.0
     y2: 0.0
 
-  item.high.7:
+  items.high.7:
     y: 0.0
     y2: 0.0
 
-  item.high.7.2:
+  items.high.7.2:
     y: 0.0
     y2: 0.0
 
-  item.high.8:
+  items.high.8:
     y: 0.0
     y2: 0.0
 
-  item.high.8.2:
+  items.high.8.2:
     y: 0.0
     y2: 0.0
 
-  item.high.9:
+  items.high.9:
     y: 0.0
     y2: 0.0
 
-  item.high.9.2:
+  items.high.9.2:
     y: 0.0
     y2: 0.0
 
@@ -617,13 +595,13 @@ presets:
 content:
   - value: param:player
     type: text
-    presets: [playerinfo]
+    presets: [player.infoline]
     x:   0.8
     x2: 19.7
 
   - value: param:char
     type: text
-    presets: [playerinfo]
+    presets: [player.infoline]
     x:  24.5
     x2: 43.9
 
@@ -631,7 +609,7 @@ content:
     trigger: param:societyid
     content:
       - type: rectangle
-        presets: [playerinfo]
+        presets: [player.infoline]
         color: white
         x:  57.5
         y:   3.4
@@ -639,19 +617,19 @@ content:
         y2:  5.2
       - value: param:societyid.player
         type: text
-        presets: [playerinfo]
+        presets: [player.infoline]
         x:  45.1
         x2: 57.6
         align: RB
       - value: "-"
         type: text
-        presets: [playerinfo]
+        presets: [player.infoline]
         x:  57.6
         x2: 59.5
         align: CB
       - value: param:societyid.char
         type: text
-        presets: [playerinfo]
+        presets: [player.infoline]
         x:  59.5
         x2: 67.8
         align: LB
@@ -740,31 +718,31 @@ content:
 
   - value: param:event
     type: text
-    presets: [eventinfo]
+    presets: [event.infoline]
     x:   1.1
     x2: 20.0
 
   - value: param:eventcode
     type: text
-    presets: [eventinfo]
+    presets: [event.infoline]
     x:  22.7
     x2: 33.0
 
   - value: param:date
     type: text
-    presets: [eventinfo]
+    presets: [event.infoline]
     x:  35.8
     x2: 50.3
 
   - value: param:gm
     type: text
-    presets: [eventinfo]
+    presets: [event.infoline]
     x:  53.1
     x2: 77.2
 
   - value: param:gmid
     type: text
-    presets: [eventinfo]
+    presets: [event.infoline]
     x:  79.9
     x2: 99.3
 
@@ -805,138 +783,149 @@ content:
     presets: [faccol_rep_total, facline3]
 
   - type: choice
+    choices: param:summary_checkbox
+    content:
+      1:
+        - type: strikeout
+          presets: [checkbox, checkbox.1]
+      2:
+        - type: strikeout
+          presets: [checkbox, checkbox.2]
+      3:
+        - type: strikeout
+          presets: [checkbox, checkbox.3]
+      4:
+        - type: strikeout
+          presets: [checkbox, checkbox.4]
+      5:
+        - type: strikeout
+          presets: [checkbox, checkbox.5]
+
+  - type: choice
     choices: param:strikeout_boons
     content:
       1:
-        - type: rectangle
-          presets: [strikeout_boon]
-          canvas: boon1.1
-        - type: rectangle
-          presets: [strikeout_boon]
-          canvas: boon1.2
+        - type: strikeout
+          presets: [strikeout_boon, boon.1]
+        - type: strikeout
+          presets: [strikeout_boon, boon.1.2]
       2:
-        - type: rectangle
-          presets: [strikeout_boon]
-          canvas: boon2.1
-        - type: rectangle
-          presets: [strikeout_boon]
-          canvas: boon2.2
+        - type: strikeout
+          presets: [strikeout_boon, boon.2]
+        - type: strikeout
+          presets: [strikeout_boon, boon.2.2]
       3:
-        - type: rectangle
-          presets: [strikeout_boon]
-          canvas: boon3.1
-        - type: rectangle
-          presets: [strikeout_boon]
-          canvas: boon3.2
+        - type: strikeout
+          presets: [strikeout_boon, boon.3]
+        - type: strikeout
+          presets: [strikeout_boon, boon.3.2]
 
   - choices: param:tier
     type: choice
     content:
       low:
-        - type: rectangle # TODO: change?
-          presets: [strikeout_item_area]
-          canvas: items_high
+        - type: strikeout
+          presets: [strikeout_items_area, items.high.area]
         - choices: param:strikeout_items
           type: choice
           content:
             1:
               - type: line
-                presets: [strikeout_item, item.low.1]
+                presets: [strikeout_item, items.low.1]
               - type: line
-                presets: [strikeout_item, item.low.1.2]
+                presets: [strikeout_item, items.low.1.2]
             2:
               - type: line
-                presets: [strikeout_item, item.low.2]
+                presets: [strikeout_item, items.low.2]
               - type: line
-                presets: [strikeout_item, item.low.2.2]
+                presets: [strikeout_item, items.low.2.2]
             3:
               - type: line
-                presets: [strikeout_item, item.low.3]
+                presets: [strikeout_item, items.low.3]
               - type: line
-                presets: [strikeout_item, item.low.3.2]
+                presets: [strikeout_item, items.low.3.2]
             4:
               - type: line
-                presets: [strikeout_item, item.low.4]
+                presets: [strikeout_item, items.low.4]
               - type: line
-                presets: [strikeout_item, item.low.4.2]
+                presets: [strikeout_item, items.low.4.2]
             5:
               - type: line
-                presets: [strikeout_item, item.low.5]
+                presets: [strikeout_item, items.low.5]
               - type: line
-                presets: [strikeout_item, item.low.5.2]
+                presets: [strikeout_item, items.low.5.2]
             6:
               - type: line
-                presets: [strikeout_item, item.low.6]
+                presets: [strikeout_item, items.low.6]
               - type: line
-                presets: [strikeout_item, item.low.6.2]
+                presets: [strikeout_item, items.low.6.2]
             7:
               - type: line
-                presets: [strikeout_item, item.low.7]
+                presets: [strikeout_item, items.low.7]
               - type: line
-                presets: [strikeout_item, item.low.7.2]
+                presets: [strikeout_item, items.low.7.2]
             8:
               - type: line
-                presets: [strikeout_item, item.low.8]
+                presets: [strikeout_item, items.low.8]
               - type: line
-                presets: [strikeout_item, item.low.8.2]
+                presets: [strikeout_item, items.low.8.2]
             9:
               - type: line
-                presets: [strikeout_item, item.low.9]
+                presets: [strikeout_item, items.low.9]
               - type: line
-                presets: [strikeout_item, item.low.9.2]
+                presets: [strikeout_item, items.low.9.2]
 
       high:
-        - type: rectangle # TODO: change?
-          canvas: items_low
-          presets: [strikeout_item_area]
+        - type: strikeout
+          presets: [strikeout_items_area, items.low.area]
         - choices: param:strikeout_items
           type: choice
           content:
             1:
               - type: line
-                presets: [strikeout_item, item.high.1]
+                presets: [strikeout_item, items.high.1]
               - type: line
-                presets: [strikeout_item, item.high.1.2]
+                presets: [strikeout_item, items.high.1.2]
             2:
               - type: line
-                presets: [strikeout_item, item.high.2]
+                presets: [strikeout_item, items.high.2]
               - type: line
-                presets: [strikeout_item, item.high.2.2]
+                presets: [strikeout_item, items.high.2.2]
             3:
               - type: line
-                presets: [strikeout_item, item.high.3]
+                presets: [strikeout_item, items.high.3]
               - type: line
-                presets: [strikeout_item, item.high.3.2]
+                presets: [strikeout_item, items.high.3.2]
             4:
               - type: line
-                presets: [strikeout_item, item.high.4]
+                presets: [strikeout_item, items.high.4]
               - type: line
-                presets: [strikeout_item, item.high.4.2]
+                presets: [strikeout_item, items.high.4.2]
             5:
               - type: line
-                presets: [strikeout_item, item.high.5]
+                presets: [strikeout_item, items.high.5]
               - type: line
-                presets: [strikeout_item, item.high.5.2]
+                presets: [strikeout_item, items.high.5.2]
             6:
               - type: line
-                presets: [strikeout_item, item.high.6]
+                presets: [strikeout_item, items.high.6]
               - type: line
-                presets: [strikeout_item, item.high.6.2]
+                presets: [strikeout_item, items.high.6.2]
             7:
               - type: line
-                presets: [strikeout_item, item.high.7]
+                presets: [strikeout_item, items.high.7]
               - type: line
-                presets: [strikeout_item, item.high.7.2]
+                presets: [strikeout_item, items.high.7.2]
             8:
               - type: line
-                presets: [strikeout_item, item.high.8]
+                presets: [strikeout_item, items.high.8]
               - type: line
-                presets: [strikeout_item, item.high.8.2]
+                presets: [strikeout_item, items.high.8.2]
             9:
               - type: line
-                presets: [strikeout_item, item.high.9]
+                presets: [strikeout_item, items.high.9]
               - type: line
-                presets: [strikeout_item, item.high.9.2]
+                presets: [strikeout_item, items.high.9.2]
 
   - value: param:list_items_sold
     type: multiline

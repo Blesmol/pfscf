@@ -3,43 +3,56 @@ description: "#1-14: Lions of Katapesh"
 inherit: pfs2.s1
 
 presets:
-  item.low.1:
+  checkbox.1:
+    x: 68.0
+    y: 17.0
+
+  checkbox.2:
+    x: 80.3
+    y: 17.0
+
+  checkbox.3:
+    x: 93.5
+    y: 17.0
+
+  items.low.1:
     y:  5.0
     y2: 5.0
 
-  item.low.2:
+  items.low.2:
     y:  10.0
     y2: 10.0
 
-  item.low.2.2:
+  items.low.2.2:
     y:  14.5
     y2: 14.5
 
-  item.low.3:
+  items.low.3:
     y:  19.5
     y2: 19.5
 
-  item.high.1:
+  items.high.1:
     y:  57.0
     y2: 57.0
 
-  item.high.2:
+  items.high.2:
     y:  62.0
     y2: 62.0
 
-  item.high.2.2:
+  items.high.2.2:
     y:  66.5
     y2: 66.5
 
-  item.high.3:
+  items.high.3:
     y:  71.5
     y2: 71.5
 
-  item.high.3.2:
+  items.high.3.2:
     y:  76.0
     y2: 76.0
 
-canvas:
-  boon1.1:
+  boon.1:
+    x:   0.0
     y:  28.5
+    x2: 79.5
     y2: 36.0
