@@ -47,16 +47,6 @@ func (e *text) isValid(paramStore *param.Store, canvasStore *canvas.Store) (err 
 		return contentValErr(e, err)
 	}
 
-	if e.X == e.X2 {
-		err = fmt.Errorf("Coordinates for X axis are equal: %v", e.X)
-		return contentValErr(e, err)
-	}
-
-	if e.Y == e.Y2 {
-		err = fmt.Errorf("Coordinates for Y axis are equal: %v", e.Y)
-		return contentValErr(e, err)
-	}
-
 	if _, exists := canvasStore.Get(e.Canvas); !exists {
 		err = fmt.Errorf("Canvas '%v' does not exist", e.Canvas)
 		return contentValErr(e, err)
@@ -87,6 +77,11 @@ func (e *text) resolve(ps preset.Store) (err error) {
 
 // generateOutput generates the output for this object.
 func (e *text) generateOutput(s *stamp.Stamp, as *args.Store) (err error) {
+	// Area with zero width or height? No output!
+	if e.X == e.X2 || e.Y == e.Y2 {
+		return nil
+	}
+
 	value := getValue(e.Value, as)
 	if value == nil {
 		return nil // nothing to do here...

@@ -54,22 +54,6 @@ func TestTextCell_IsValid(t *testing.T) {
 			test.ExpectError(t, err, "out of range", "Y2")
 		})
 
-		t.Run("equal x axis values", func(t *testing.T) {
-			tc := getTextCellWithDummyData()
-			tc.X2 = tc.X
-
-			err := tc.isValid(&paramStore, &canvasStore)
-			test.ExpectError(t, err, "Coordinates for X axis are equal")
-		})
-
-		t.Run("equal y axis values", func(t *testing.T) {
-			tc := getTextCellWithDummyData()
-			tc.Y2 = tc.Y
-
-			err := tc.isValid(&paramStore, &canvasStore)
-			test.ExpectError(t, err, "Coordinates for Y axis are equal")
-		})
-
 		t.Run("invalid canvas", func(t *testing.T) {
 			tc := getTextCellWithDummyData()
 			tc.Canvas = "foobar"
