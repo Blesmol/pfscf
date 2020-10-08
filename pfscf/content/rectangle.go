@@ -49,16 +49,6 @@ func (ce *rectangle) isValid(paramStore *param.Store, canvasStore *canvas.Store)
 		return contentValErr(ce, err)
 	}
 
-	if ce.X == ce.X2 {
-		err = fmt.Errorf("Coordinates for X axis are equal: %v", ce.X)
-		return contentValErr(ce, err)
-	}
-
-	if ce.Y == ce.Y2 {
-		err = fmt.Errorf("Coordinates for Y axis are equal: %v", ce.Y)
-		return contentValErr(ce, err)
-	}
-
 	if _, exists := canvasStore.Get(ce.Canvas); !exists {
 		err = fmt.Errorf("Canvas '%v' does not exist", ce.Canvas)
 		return contentValErr(ce, err)
@@ -83,6 +73,11 @@ func (ce *rectangle) isValid(paramStore *param.Store, canvasStore *canvas.Store)
 
 // resolve the presets for this content object.
 func (ce *rectangle) resolve(ps preset.Store) (err error) {
+	// Rectangle with zero width or height? No output!
+	if ce.X == ce.X2 || ce.Y == ce.Y2 {
+		return nil
+	}
+
 	// check that required presets are not contradicting each other
 	if err = ps.PresetsAreNotContradicting(ce.Presets...); err != nil {
 		err = fmt.Errorf("Error resolving content: %v", err)
