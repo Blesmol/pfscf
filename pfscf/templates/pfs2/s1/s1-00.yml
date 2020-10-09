@@ -1,3 +1,30 @@
 id: pfs2.s1-00
 description: "#1-00: Origin of the Open Road"
 inherit: pfs2.s1
+
+presets:
+  boon.1:
+    x:   1.0
+    y:  28.5
+    x2: 79.5
+    y2: 39.0
+
+  items.low.1:
+    y:  5.0
+    y2: 5.0
+
+  items.low.2:
+    y:  10.0
+    y2: 10.0
+
+  items.low.3:
+    y:  14.5
+    y2: 14.5
+
+  items.low.area:
+    y:  0.0
+    y2: 0.0
+
+  items.high.area:
+    y:  0.0
+    y2: 0.0
