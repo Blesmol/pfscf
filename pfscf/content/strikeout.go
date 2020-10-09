@@ -33,7 +33,7 @@ func newStrikeout() *strikeout {
 }
 
 func (e *strikeout) shouldDrawCentered() bool {
-	return utils.IsSet(e.Size)
+	return utils.IsSet(e.Size) && utils.IsSet(e.X) && utils.IsSet(e.Y)
 }
 
 func (e *strikeout) shouldDrawArea() bool {
