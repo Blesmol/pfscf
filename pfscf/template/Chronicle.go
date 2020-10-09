@@ -230,13 +230,15 @@ func (ct *Chronicle) GenerateOutput(stamp *stamp.Stamp, argStore *args.Store) (e
 	}
 
 	ct.Canvas.AddCanvasesToStamp(stamp)
-	if cfg.Global.DrawCanvas {
-		stamp.DrawCanvases()
-	}
 
 	// pass to content store to generate output
 	if err = ct.Content.GenerateOutput(stamp, localArgStore); err != nil {
 		return err
+	}
+
+	// draw canvas borders as last action to be visible over other content
+	if cfg.Global.DrawCanvas {
+		stamp.DrawCanvases()
 	}
 
 	return nil
