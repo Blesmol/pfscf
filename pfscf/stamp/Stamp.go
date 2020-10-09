@@ -245,7 +245,7 @@ func (s *Stamp) drawStrikeoutInternal(x1Pt, y1Pt, x2Pt, y2Pt float64, os OutputS
 
 	if s.shouldDrawCellBorder() {
 		s.pdf.SetDrawColor(0, 0, 0)
-		s.pdf.SetLineWidth(1.0)
+		s.pdf.SetLineWidth(0.5)
 		s.pdf.Rect(x1Pt, y1Pt, x2Pt-x1Pt, y2Pt-y1Pt, "D")
 	}
 
