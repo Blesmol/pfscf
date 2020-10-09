@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - New content type `line` to draw lines. Can be used to configure item strikeouts in chronicle templates.
-- New content type `checkbox` to draw a small cross to mark checkboxes as selected. Can in principle also be done by using the `rectangle` type, but having this is more convenient, and there are enough checkboxes present on the different chronicles.
+- New content type `strikeout` to draw crosses to the chronicle. These can either be done by providing the center coordinates of the cross in percent and a size in points for things like checkboxes, or by providing two sets of coordinates to span an area for striking out other things like, e.g. a boon.
 
 ### Changed
 - Content type `rectangle` now supports an additional field `style`. Currently this accepts two values, `filled` and `strikeout`. With `filled` you get the previous behavior where the rectangle area is filled with the color. With `strikeout` a cross is placed on the area, e.g. to strike out boons. Default is `filled` if no value for field `style` was provided.
