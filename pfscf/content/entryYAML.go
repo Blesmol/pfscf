@@ -24,8 +24,8 @@ func (ey *entryYAML) UnmarshalYAML(unmarshal func(interface{}) error) (err error
 
 	// read concrete object based on type information
 	switch ety.Type {
-	case typeCheckbox:
-		ey.e = newCheckbox()
+	case typeStrikeout:
+		ey.e = newStrikeout()
 	case typeChoice:
 		ey.e = newChoice()
 	case typeLine:
