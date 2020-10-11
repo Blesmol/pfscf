@@ -135,7 +135,8 @@ func (ct *Chronicle) resolve() (err error) {
 // as input for the "batch fill" command
 func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *args.Store) (err error) {
 	const numPlayers = 7
-	const numChronicles = numPlayers + 1 // GM also wants a chronicle
+	const numChronicles = numPlayers + 1     // GM also wants a chronicle
+	const numColumns = 1 + numChronicles + 1 // identifiers + chronicles + example column
 
 	// file header
 	records := [][]string{
@@ -150,7 +151,8 @@ func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *
 	for idx := 1; idx <= numPlayers; idx++ {
 		records[outerIdx] = append(records[outerIdx], fmt.Sprintf("Player %d", idx))
 	}
-	records[outerIdx] = append(records[outerIdx], "GM") // Add "GM" label as well
+	records[outerIdx] = append(records[outerIdx], "GM")        // Add "GM" label as well
+	records[outerIdx] = append(records[outerIdx], "# Example") // Add "GM" label as well
 
 	// fill from parameters
 	for _, groupName := range ct.Parameters.GetGroupsSortedByRank() {
@@ -165,7 +167,7 @@ func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *
 			// parameters can have multiple identifiers, e.g. for splitlines.
 			for _, argStoreID := range paramEntry.ArgStoreIDs() {
 				// entry should be large enough for id column + number of chronicles
-				row := make([]string, 1+numChronicles)
+				row := make([]string, numColumns)
 
 				row[0] = argStoreID // first column is always parameter name
 
@@ -175,6 +177,9 @@ func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *
 						row[colIdx] = val
 					}
 				}
+
+				// add example text
+				row[len(row)-1] = fmt.Sprintf("# %v", paramEntry.Example())
 
 				records = append(records, row)
 			}
