@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - New content type `line` to draw lines. Can be used to configure item strikeouts in chronicle templates.
 - New content type `strikeout` to draw crosses to the chronicle. These can either be done by providing the center coordinates of the cross in percent and a size in points for things like checkboxes, or by providing two sets of coordinates to span an area for striking out other things like, e.g. a boon.
 - Generated CSV files now contain the example values for each parameter in the last column
+- First templates for PFS2 Season 02 using the old season 01 layout
 
 ### Changed
 - Content type `rectangle` now supports an additional field `style`. Currently this accepts two values, `filled` and `strikeout`. With `filled` you get the previous behavior where the rectangle area is filled with the color. With `strikeout` a cross is placed on the area, e.g. to strike out boons. Default is `filled` if no value for field `style` was provided.

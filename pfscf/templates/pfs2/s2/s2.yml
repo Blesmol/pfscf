@@ -1,0 +1,12 @@
+id: pfs2.s2
+description: "PFS2 Season 2: Year of Corruption's Reach"
+inherit: pfs2.layout1
+
+presets:
+  items.low.area:
+    y:  0.0
+    y2: 0.0
+
+  items.high.area:
+    y:  0.0
+    y2: 0.0
