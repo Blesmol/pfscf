@@ -74,29 +74,33 @@ parameters:
       description: "Faction 3: Total reputation points"
       example: 8
 
-  "Boons & Items":
+  "Boons, Items and Selections":
     tier:
       type: choice
       description: "Players' tier"
       choices: [low, high]
+      example: low
       #example: low,high
 
     summary_checkbox:
       type: choice
       description: "Checkboxes in the adventure summary that should be selected"
       choices: [1, 2, 3, 4, 5]
+      example: 1,3
       #example: 1,2,3,4,5
 
     strikeout_boons:
       type: choice
       description: "Boons that should be striked out"
       choices: [1, 2, 3]
+      example: 1,2
       #example: 1,2,3
 
     strikeout_items:
       type: choice
       description: "Items that should be striked out"
       choices: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      example: 1,3,4
       #example: 1,2,3,4,5,6,7,8,9
 
   "Rewards":
