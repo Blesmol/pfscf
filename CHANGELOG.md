@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## v0.14.0 - 2020-10-11
+
+### Added
 - New content type `line` to draw lines. Can be used to configure item strikeouts in chronicle templates.
 - New content type `strikeout` to draw crosses to the chronicle. These can either be done by providing the center coordinates of the cross in percent and a size in points for things like checkboxes, or by providing two sets of coordinates to span an area for striking out other things like, e.g. a boon.
 - Generated CSV files now contain the example values for each parameter in the last column
@@ -13,10 +23,6 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Content type `rectangle` now supports an additional field `style`. Currently this accepts two values, `filled` and `strikeout`. With `filled` you get the previous behavior where the rectangle area is filled with the color. With `strikeout` a cross is placed on the area, e.g. to strike out boons. Default is `filled` if no value for field `style` was provided.
 - All content types that can directly generate output (i.e. everything except `choice` and `trigger`) will no longer report validation errors in case they have coordinates and sizes that imply no output should be generated. For example a `rectangle` with a width or height of zero will generate no output. Same if e.g. the `fontsize` for a `textentry` is zero. This can be used to have "inactive" content entries in a parent template that will only become active if viable values are provided in a template that inherits from that one, e.g. by providing appropriate preset entries.
-
-### Removed
-
-### Fixed
 
 ## v0.12.0 - 2020-10-05
 
