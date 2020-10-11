@@ -5,3 +5,12 @@ inherit: pfs2.s1
 canvas:
   rightbar:
     y: 21.7
+
+presets:
+  items.low.area:
+    y:  0.0
+    y2: 0.0
+
+  items.high.area:
+    y:  0.0
+    y2: 0.0
