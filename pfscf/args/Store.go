@@ -225,9 +225,7 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 
 	for idx := 1; idx <= numPlayers; idx++ {
 		s, err := NewStore(StoreInit{InitCapacity: len(records)})
-		if err != nil {
-
-		}
+		utils.AssertNoError(err)
 
 		for _, record := range records {
 			key := record[0]
@@ -237,7 +235,7 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 			}
 
 			// only store if there is an actual value
-			if utils.IsSet(value) {
+			if csvRecordHasValue(value) {
 				if !utils.IsSet(key) {
 					return nil, fmt.Errorf("CSV Line has content value '%v', but is missing content ID in first column", value)
 				}
@@ -252,4 +250,10 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 	}
 
 	return argStores, nil
+}
+
+// csvRecordHasValue checks if a record read from a CSV file is not empty and does not begin
+// with the comment character '#'.
+func csvRecordHasValue(value string) bool {
+	return utils.IsSet(value) && len(value) > 0 && value[0] != '#'
 }
