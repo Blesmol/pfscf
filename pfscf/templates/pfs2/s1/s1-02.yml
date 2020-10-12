@@ -1,3 +1,22 @@
 id: pfs2.s1-02
 description: "#1-02: The Mosquito Witch"
 inherit: pfs2.s1
+
+presets:
+  boon.1:
+    x:   1.0
+    y:  28.5
+    x2: 79.5
+    y2: 38.0
+
+  items.low.1:
+    y:  5.2
+    y2: 5.2
+
+  items.high.1:
+    y:  57.1
+    y2: 57.1
+
+  items.high.2:
+    y:  62.0
+    y2: 62.0
