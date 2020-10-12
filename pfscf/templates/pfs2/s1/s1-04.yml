@@ -18,3 +18,52 @@ content:
     y:   0.0
     x2: 99.0
     y2:  5.4
+
+presets:
+  boon.1:
+    x:   1.0
+    y:  23.2
+    x2: 79.5
+    y2: 30.5
+
+  boon.2:
+    x:   1.0
+    y:  30.5
+    x2: 79.5
+    y2: 36.0
+
+  items.low.1:
+    y:  5.2
+    y2: 5.2
+
+  items.low.2:
+    y:  10.0
+    y2: 10.0
+
+  items.low.3:
+    y:  14.8
+    y2: 14.8
+
+  items.low.4:
+    y:  19.2
+    y2: 19.2
+
+  items.high.1:
+    y:  57.0
+    y2: 57.0
+
+  items.high.2:
+    y:  62.0
+    y2: 62.0
+
+  items.high.2.2:
+    y:  66.5
+    y2: 66.5
+
+  items.high.3:
+    y:  71.1
+    y2: 71.1
+
+  items.high.4:
+    y:  76.0
+    y2: 76.0
