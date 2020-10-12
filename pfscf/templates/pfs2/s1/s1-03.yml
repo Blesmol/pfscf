@@ -1,3 +1,48 @@
 id: pfs2.s1-03
 description: "#1-03: Escaping the Grave"
 inherit: pfs2.s1
+
+presets:
+  boon.1:
+    x:   1.0
+    y:  28.5
+    x2: 79.5
+    y2: 36.0
+
+  # do not strike through wayfinder description text
+  # as this is also relevant for high-tier players
+  items.low.area:
+    y:   0.0
+    y2: 12.0
+
+  items.low.1:
+    y:  5.2
+    y2: 5.2
+
+  items.low.2:
+    y:  10.0
+    y2: 10.0
+
+  items.high.1:
+    y:  57.1
+    y2: 57.1
+
+  items.high.2:
+    y:  62.0
+    y2: 62.0
+
+  items.high.3:
+    y:  66.5
+    y2: 66.5
+
+  items.high.4:
+    y:  71.2
+    y2: 71.2
+
+  items.high.5:
+    y:  76.0
+    y2: 76.0
+
+  items.high.5.2:
+    y:  80.7
+    y2: 80.7
