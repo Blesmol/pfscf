@@ -1,3 +1,18 @@
 id: pfs2.s1-05
 description: "#1-05: Trailblazers' Bounty"
 inherit: pfs2.s1
+
+presets:
+  boon.1:
+    x:   1.0
+    y:  28.5
+    x2: 79.5
+    y2: 34.5
+
+  items.low.1:
+    y:  5.2
+    y2: 5.2
+
+  items.high.1:
+    y:  57.0
+    y2: 57.0
