@@ -12,6 +12,11 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## v0.14.1 - 2020-10-12
+
+### Added
+- Completed some additional scenarios for PFS2 Season 01 that I was asked for.
+
 ## v0.14.0 - 2020-10-11
 
 ### Added
