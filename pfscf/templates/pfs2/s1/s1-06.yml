@@ -1,3 +1,18 @@
 id: pfs2.s1-06
 description: "#1-06: Lost on the Spirit Road"
 inherit: pfs2.s1
+
+presets:
+  boon.1:
+    x:   1.0
+    y:  28.5
+    x2: 79.5
+    y2: 38.0
+
+  items.low.1:
+    y:  3.5
+    y2: 3.5
+
+  items.high.1:
+    y:  53.5
+    y2: 53.5
