@@ -8,6 +8,7 @@ import (
 
 	"github.com/Blesmol/pfscf/pfscf/cfg"
 	"github.com/Blesmol/pfscf/pfscf/cmd"
+	"github.com/Blesmol/pfscf/pfscf/web"
 )
 
 var (
@@ -18,7 +19,7 @@ func main() {
 
 	RootCmd := &cobra.Command{
 		Use:   "pfscf",
-		Short: "The Pathfinder Society Chronicle Filler (v" + version +")",
+		Short: "The Pathfinder Society Chronicle Filler (v" + version + ")",
 	}
 
 	RootCmd.PersistentFlags().BoolVarP(&cfg.Global.Verbose, "verbose", "v", false, "verbose output")
@@ -33,4 +34,14 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+// WebCreateExample takes only a template name and some filenames and provides some PoC functionality.
+func WebCreateExample(template, inFile, outFile string) {
+	web.CreateExample(template, inFile, outFile)
+}
+
+// WebCreateExampleWithoutArgs is like WebCreateExample, but with hardcoded values.
+func WebCreateExampleWithoutArgs() {
+	web.CreateExample("pfs2.s1-14", "input.pdf", "output.pdf")
 }
