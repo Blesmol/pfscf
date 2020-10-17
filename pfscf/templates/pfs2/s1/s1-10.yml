@@ -1,3 +1,26 @@
 id: pfs2.s1-10
 description: "#1-10: Tarnbreaker's Trail"
 inherit: pfs2.s1
+
+presets:
+  boon.1:
+    x:   0.5
+    y:  28.5
+    x2: 79.5
+    y2: 42.0
+
+  items.low.1:
+    y:  5.0
+    y2: 5.0
+
+  items.low.1.2:
+    y:  10.0
+    y2: 10.0
+
+  items.high.1:
+    y:  57.0
+    y2: 57.0
+
+  items.high.1.2:
+    y:  61.8
+    y2: 61.8
