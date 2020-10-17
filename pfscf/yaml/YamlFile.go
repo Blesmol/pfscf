@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	templateFilePattern = ".+\\.yml$"
+	templateFilePattern = `^[^.].*\.yml$`
 )
 
 // GetYamlFilenamesFromDir takes a directory name as input and returns a list of names

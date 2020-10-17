@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 
 ### Fixed
+- Template files whose filename begins with a dot are now ignored as intended
 
 ## v0.14.1 - 2020-10-12
 
