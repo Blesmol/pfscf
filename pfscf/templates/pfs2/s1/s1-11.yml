@@ -1,3 +1,76 @@
 id: pfs2.s1-11
 description: "#1-11: Flames of Rebellion"
 inherit: pfs2.s1
+
+presets:
+  checkbox.1:
+    x: 31.85
+    y: 18.8
+
+  checkbox.2:
+    x: 57.15
+    y: 18.8
+
+  checkbox.3:
+    x: 87.15
+    y: 18.8
+
+  checkbox.4:
+    x: 11.6
+    y: 22.5
+
+  checkbox.5:
+    x: 30.0
+    y: 22.5
+
+  boon.1:
+    x:   0.5
+    y:  28.5
+    x2: 79.5
+    y2: 38.0
+
+  boon.2:
+    x:   0.5
+    y:  38.0
+    x2: 79.5
+    y2: 41.5
+
+  items.low.1:
+    y:  5.0
+    y2: 5.0
+
+  items.low.1.2:
+    y:  10.0
+    y2: 10.0
+
+  items.low.2:
+    y:  14.5
+    y2: 14.5
+
+  items.low.2.2:
+    y:  19.0
+    y2: 19.0
+
+  items.low.3:
+    y:  24.0
+    y2: 24.0
+
+  items.high.1:
+    y:  57.0
+    y2: 57.0
+
+  items.high.1.2:
+    y:  61.8
+    y2: 61.8
+
+  items.high.2:
+    y:  66.5
+    y2: 66.5
+
+  items.high.2.2:
+    y:  71.0
+    y2: 71.0
+
+  items.high.3:
+    y:  76.0
+    y2: 76.0
