@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Print warnings if provided input CSV file does not contain any entries
+- Print warnings if provided file names do not have expected file extension
 
 ### Changed
 

@@ -74,6 +74,8 @@ func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
 	tmplName := cmdArgs[0]
 	outFile := cmdArgs[1]
 
+	warnOnWrongFileExtension(outFile, "csv")
+
 	var separator rune
 	// TODO remove check completely, just use first rune in separator string. Or forward as string instead of rune, and there check length and values.
 	switch actionBatchCreateSeparator {
@@ -118,6 +120,9 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 	inCsv := cmdArgs[1]
 	inPdf := cmdArgs[2]
 	outDir := cmdArgs[3]
+
+	warnOnWrongFileExtension(inCsv, "csv")
+	warnOnWrongFileExtension(inPdf, "pdf")
 
 	ts, err := template.GetStore()
 	utils.ExitOnError(err, "Error retrieving templates")
