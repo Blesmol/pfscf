@@ -52,6 +52,9 @@ func executeFill(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitWithMessage("Input file and output file must not be identical")
 	}
 
+	warnOnWrongFileExtension(inFile, "pdf")
+	warnOnWrongFileExtension(outFile, "pdf")
+
 	ts, err := template.GetStore()
 	utils.ExitOnError(err, "Error retrieving templates")
 	cTmpl, exists := ts.Get(tmplName)
