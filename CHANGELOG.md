@@ -5,13 +5,19 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- Print warnings if provided input CSV file does not contain any entries
-- Print warnings if provided file names do not have expected file extension
-- Templates for PFS2 bounties
 
 ### Changed
 
 ### Removed
+
+### Fixed
+
+## v0.14.2 - 2020-10-26
+
+### Added
+- Print warnings if provided input CSV file does not contain any entries
+- Print warnings if provided file names do not have expected file extension
+- Templates for PFS2 bounties
 
 ### Fixed
 - Template files whose filename begins with a dot are now ignored as intended
