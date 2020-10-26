@@ -1,0 +1,12 @@
+id: pfs2.b01
+description: "Bounty #01: The Whytefang Wyrm"
+inherit: pfs2.bounties
+
+presets:
+  checkbox.1:
+    x: 85.5
+    y: 17.0
+
+  checkbox.2:
+    x:  2.1
+    y: 18.75
