@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Print warnings if provided input CSV file does not contain any entries
 - Print warnings if provided file names do not have expected file extension
+- Templates for PFS2 bounties
 
 ### Changed
 
