@@ -5,3 +5,24 @@ inherit: pfs2.s1
 canvas:
   rightbar:
     y: 20.7
+
+presets:
+  checkbox.1:
+    x: 31.9
+    y: 15.2
+
+  checkbox.2:
+    x: 49.1
+    y: 15.2
+
+  boon.1:
+    x:   0.0
+    y:  21.5
+    x2: 79.5
+    y2: 29.0
+
+  boon.2:
+    x:   0.0
+    y:  30.5
+    x2: 79.5
+    y2: 40.0

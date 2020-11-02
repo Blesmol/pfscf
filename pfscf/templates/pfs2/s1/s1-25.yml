@@ -7,6 +7,12 @@ canvas:
     y: 21.7
 
 presets:
+  boon.1:
+    x:   0.0
+    y:  23.5
+    x2: 79.5
+    y2: 30.5
+
   items.low.area:
     y:  0.0
     y2: 0.0

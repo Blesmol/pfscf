@@ -1,3 +1,10 @@
 id: pfs2.s1-12
 description: "#1-12: Burden of Envy"
 inherit: pfs2.s1
+
+presets:
+  boon.1:
+    x:   0.0
+    y:  28.5
+    x2: 79.5
+    y2: 36.5

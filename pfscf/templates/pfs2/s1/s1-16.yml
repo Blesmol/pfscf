@@ -1,3 +1,18 @@
 id: pfs2.s1-16
 description: "#1-16: Perennial Crown 1: Opal of Bhopan"
 inherit: pfs2.s1
+
+presets:
+  checkbox.1:
+    x: 48.2
+    y: 18.8
+
+  checkbox.2:
+    x: 81.3
+    y: 18.8
+
+  boon.1:
+    x:   0.0
+    y:  28.5
+    x2: 79.5
+    y2: 34.5
