@@ -1,0 +1,16 @@
+id: pfs2.s2-03
+description: "#2-03: Catastrophe's Spark"
+inherit: pfs2.s2
+
+presets:
+  checkbox.1:
+    x: 74.9
+    y: 19.3
+
+  checkbox.2:
+    x: 93.3
+    y: 19.3
+
+  checkbox.3:
+    x: 16.6
+    y: 21.1

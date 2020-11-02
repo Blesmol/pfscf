@@ -1,3 +1,16 @@
 id: pfs2.s2-02
 description: "#2-02: Mountain of Sea and Sky"
 inherit: pfs2.s2
+
+presets:
+  checkbox.1:
+    x: 57.3
+    y: 20.6
+
+  checkbox.2:
+    x: 85.7
+    y: 20.6
+
+  checkbox.3:
+    x: 14.1
+    y: 22.5
