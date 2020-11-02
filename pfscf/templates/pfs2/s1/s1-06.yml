@@ -9,10 +9,10 @@ presets:
     x2: 79.5
     y2: 38.0
 
-  items.low.1:
-    y:  3.5
-    y2: 3.5
+  item.low.1:
+    y:  45.6
+    y2: 45.6
 
-  items.high.1:
-    y:  53.5
-    y2: 53.5
+  item.high.1:
+    y:  65.0
+    y2: 65.0
