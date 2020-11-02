@@ -1,0 +1,20 @@
+id: pfs2.s2-04
+description: "#2-04: Path of Kings"
+inherit: pfs2.s2
+
+presets:
+  checkbox.1:
+    x: 74.1
+    y: 17.0
+
+  checkbox.2:
+    x: 85.0
+    y: 17.0
+
+  checkbox.3:
+    x: 27.6
+    y: 18.8
+
+  checkbox.4:
+    x: 40.0
+    y: 18.8
