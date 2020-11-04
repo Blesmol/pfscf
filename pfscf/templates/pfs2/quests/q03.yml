@@ -1,3 +1,27 @@
 id: pfs2.q03
 description: "Quest #03: Grehunde's Gorget"
 inherit: pfs2.quests
+
+presets:
+  boon.1:
+    x:   0.0
+    y:  28.5
+    x2: 79.5
+    y2: 36.0
+
+  item.low.1:
+    y:  45.6
+    y2: 45.6
+
+  item.low.2:
+    y:  48.8
+    y2: 48.8
+
+  item.low.3:
+    y:  50.5
+    y2: 50.5
+      
+  item.high.1:
+    y:  65.0
+    y2: 65.0
+

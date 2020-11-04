@@ -1,3 +1,26 @@
 id: pfs2.q01
 description: "Quest #01: The Sandstone Secret"
 inherit: pfs2.quests
+
+presets:
+  boon.1:
+    x:   0.0
+    y:  28.5
+    x2: 79.5
+    y2: 34.5
+
+  item.low.1:
+    y:  51.0
+    y2: 51.0
+
+  item.low.2:
+    y:  52.8
+    y2: 52.8
+
+  item.high.1:
+    y:  68.6
+    y2: 68.6
+
+  item.high.2:
+    y:  70.4
+    y2: 70.4
