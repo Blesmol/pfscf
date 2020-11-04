@@ -1,3 +1,24 @@
 id: pfs2.q08
 description: "Quest #08: Shadows of the Black Sovereign"
 inherit: pfs2.quests
+
+presets:
+  checkbox.1:
+    x: 61.0
+    y: 17.0
+
+  checkbox.2:
+    x: 71.0
+    y: 17.0
+
+  boon.1:
+    x:   0.0
+    y:  29.5
+    x2: 79.5
+    y2: 32.5
+
+  boon.2:
+    x:   0.0
+    y:  34.0
+    x2: 79.5
+    y2: 38.0
