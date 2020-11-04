@@ -7,12 +7,16 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 ### Changed
-- For ease of (template creation) simplicity, items are no longer indexed directly, but their lines are indexed instead. So instead of providing parameter `strikeout_item=1,3`, this might now be something like `strikeout_item_lines=1,3,4` if the third item takes up two lines on the chronicle. Really, really simplifies things for me!
-- Finished all PFS2 templates for season 01, quests, season 02 up to s2-04 (incl)
 
 ### Removed
 
 ### Fixed
+
+## v0.15.0 - 2020-11-04
+
+### Changed
+- For ease of (template creation) simplicity, items are no longer indexed directly, but their lines are indexed instead. So instead of providing parameter `strikeout_item=1,3`, this might now be something like `strikeout_item_lines=1,3,4` if the third item takes up two lines on the chronicle. Really, really simplifies things for me!
+- Finished all PFS2 templates for season 01, quests, season 02 up to s2-04 (incl)
 
 ## v0.14.2 - 2020-10-26
 
