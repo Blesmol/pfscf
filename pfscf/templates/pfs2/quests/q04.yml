@@ -1,3 +1,16 @@
 id: pfs2.q04
 description: "Quest #04: Port Peril Pub Crawl"
 inherit: pfs2.quests
+
+presets:
+  boon.1:
+    x:   0.0
+    y:  28.5
+    x2: 79.5
+    y2: 34.5
+
+  boon.2:
+    x:   0.0
+    y:  36.0
+    x2: 79.5
+    y2: 41.5

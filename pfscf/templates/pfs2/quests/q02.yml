@@ -1,3 +1,46 @@
 id: pfs2.q02
 description: "Quest #02: Unforgiving Fire"
 inherit: pfs2.quests
+
+presets:
+  boon.1:
+    x:   0.0
+    y:  17.0
+    x2: 99.0
+    y2: 22.3
+
+  boon.2:
+    x:   0.0
+    y:  22.4
+    x2: 99.0
+    y2: 26.0
+
+  boon.2.2:
+    x:   0.0
+    y:  26.0
+    x2: 79.5
+    y2: 41.5
+
+  item.low.1:
+    y:  49.8
+    y2: 49.8
+
+  item.low.2:
+    y:  51.7
+    y2: 51.7
+
+  item.high.1:
+    y:  68.2
+    y2: 68.2
+
+  item.high.2:
+    y:  69.9
+    y2: 69.9
+
+  item.high.3:
+    y:  71.7
+    y2: 71.7
+
+  item.high.4:
+    y:  73.5
+    y2: 73.5
