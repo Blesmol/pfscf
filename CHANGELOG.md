@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 
 ### Fixed
+- Release artifacts contained relative paths beginning with `.../`. Only the `CHANGELOG.md` and `LICENSE` files were affected, but this still caused errors during unpacking.
 
 ## v0.15.0 - 2020-11-04
 
