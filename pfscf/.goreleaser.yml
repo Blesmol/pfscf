@@ -5,6 +5,8 @@ before:
     - go mod download
     # you may remove this if you don't need go generate
     - go generate ./...
+    - cp ../CHANGELOG.md .
+    - cp ../LICENSE .
 builds:
   - env:
       - CGO_ENABLED=0
@@ -29,8 +31,8 @@ archives:
       format: zip
   files:
     - templates/**/*
-    - ../CHANGELOG.md
-    - ../LICENSE
+    - CHANGELOG.md
+    - LICENSE
     - openCmdHere.bat
 checksum:
   name_template: 'checksums.txt'
