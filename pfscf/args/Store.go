@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/Blesmol/pfscf/pfscf/csv"
+	"github.com/Blesmol/pfscf/pfscf/encode"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
@@ -52,6 +53,10 @@ func NewStore(init StoreInit) (s *Store, err error) {
 		key, value, err := splitArgument(arg)
 		if err != nil {
 			return nil, err
+		}
+
+		if value, err = encode.ConvertStringToUtf8(value); err != nil {
+			return nil, fmt.Errorf("Error converting value for key '%v' to UTF-8: %v", key, err)
 		}
 
 		if !localStore.hasKey(key) {
@@ -238,6 +243,9 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 			if csvRecordHasValue(value) {
 				if !utils.IsSet(key) {
 					return nil, fmt.Errorf("CSV Line has content value '%v', but is missing content ID in first column", value)
+				}
+				if value, err = encode.ConvertStringToUtf8(value); err != nil {
+					return nil, fmt.Errorf("Error converting value for key '%v' to UTF-8: %v", key, err)
 				}
 				s.Set(key, value)
 			}
