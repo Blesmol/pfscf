@@ -15,7 +15,8 @@ const (
 
 // Stamp is a wraper for a PDF page
 type Stamp struct {
-	pdf         *gofpdf.Fpdf
+	pdf *gofpdf.Fpdf
+
 	dimX        float64
 	dimY        float64
 	cellBorder  string
@@ -23,6 +24,8 @@ type Stamp struct {
 	pageCanvas  canvas
 	offsetX     float64
 	offsetY     float64
+
+	tr func(string) string // translator function from UTF-8 to specific codepage
 }
 
 // NewStamp creates a new Stamp object.
@@ -47,6 +50,8 @@ func NewStamp(dimX, dimY, offsetX, offsetY float64) (s *Stamp) {
 	s.pdf.SetMargins(0, 0, 0)
 	s.pdf.SetAutoPageBreak(false, 0)
 	s.pdf.AddPage() // 0,0 is top-left. To change use AddPageFormat() instead
+
+	s.tr = s.pdf.UnicodeTranslatorFromDescriptor("") // default codepage here is cp1252
 
 	return s
 }
@@ -167,7 +172,8 @@ func (s *Stamp) AddTextCell(canvasID string, x1Pct, y1Pct, x2Pct, y2Pct float64,
 	if s.shouldDrawCellBorder() {
 		s.pdf.SetDrawColor(0, 0, 0)
 	}
-	s.pdf.CellFormat(wPt, hPt, text, s.cellBorder, 0, align, false, 0, "")
+
+	s.pdf.CellFormat(wPt, hPt, s.tr(text), s.cellBorder, 0, align, false, 0, "")
 }
 
 // AddMultilineTextCell adds a text cell to the stamp.
@@ -309,7 +315,7 @@ func (s *Stamp) DrawCanvases() {
 		// name/ID
 		s.pdf.SetXY(xPt, yPt+hPt-fontsize)
 		s.pdf.SetTextColor(r, g, b)
-		s.pdf.CellFormat(wPt, fontsize, canvasID, "0", 0, "RM", false, 0, "")
+		s.pdf.CellFormat(wPt, fontsize, s.tr(canvasID), "0", 0, "RM", false, 0, "")
 	}
 }
 
