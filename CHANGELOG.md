@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 ### Removed
 
 ### Fixed
+
+## v0.15.1 - 2020-11-11
+
+### Fixed
 - Release artifacts contained relative paths beginning with `.../`. Only the `CHANGELOG.md` and `LICENSE` files were affected, but this still caused errors during unpacking.
 - Input from command line and csv file that is UTF8-encoded should now be correctly displayed. So officially now UTF8 and ISO 8859-1 / CP1252 are now supported as input encodings. However, only those UTF8 values are supported that can be displayed by the selected PDF font. So most likely no poo emoji on chronicle sheets.
 
