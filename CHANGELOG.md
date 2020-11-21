@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 ### Changed
+- The `eventinfo` section will now appear at the top in CSV files generated for PFS 2e.
 
 ### Removed
 
