@@ -1,5 +1,5 @@
-id: pfs2.s2
-description: "PFS2 Season 2: Year of Corruption's Reach"
+id: pfs2.s2.oldLayout
+description: "PFS2 Season 2: Year of Corruption's Reach (Old Layout)"
 inherit: pfs2.layout1
 
 presets:
