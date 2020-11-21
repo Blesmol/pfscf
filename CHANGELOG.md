@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - The `eventinfo` section will now appear at the top in CSV files generated for PFS 2e.
+- Renamed `pfs2.s2` to `pfs2.s2.oldLayout`, as the scenarios switched layout beginning with `pfs2.s05`.
 
 ### Removed
 
