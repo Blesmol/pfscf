@@ -7,6 +7,32 @@ flags:
 aspectratio: 603:783 # dimensions of chronicle page in original pdf
 
 parameters:
+  "Event Info":
+    event:
+      type: text
+      description: Event name
+      example: PaizoCon
+
+    eventcode:
+      type: text
+      description: Event code
+      example: 1234
+
+    date:
+      type: text
+      description: The date on which the game session took place
+      example: 27.06.2020
+
+    gm:
+      type: text
+      description: Gamemasters name
+      example: J. Doe
+
+    gmid:
+      type: text
+      description: Gamemasters PFS ID
+      example: 654321
+
   "Player Info":
     player:
       type: text
@@ -209,32 +235,6 @@ parameters:
       description: "Downtime Activities"
       example: "All work and no play makes Jack a dull boy"
       lines: 6
-
-  "Event Info":
-    event:
-      type: text
-      description: Event name
-      example: PaizoCon
-
-    eventcode:
-      type: text
-      description: Event code
-      example: 1234
-
-    date:
-      type: text
-      description: The date on which the game session took place
-      example: 27.06.2020
-
-    gm:
-      type: text
-      description: Gamemasters name
-      example: J. Doe
-
-    gmid:
-      type: text
-      description: Gamemasters PFS ID
-      example: 654321
 
 canvas:
   page:
