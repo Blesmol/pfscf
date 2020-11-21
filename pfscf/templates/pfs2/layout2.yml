@@ -1,0 +1,470 @@
+id: pfs2.layout2
+description: "PFS2 Chronicle Sheet Format v2: Used from within Season 02 onwards"
+inherit: pfs2
+flags:
+  - hidden
+
+aspectratio: 603:783 # dimensions of chronicle page in original pdf
+
+parameters:
+  "Event Info":
+    event:
+      type: text
+      description: Event name
+      example: PaizoCon
+
+    eventcode:
+      type: text
+      description: Event code
+      example: 1234
+
+    date:
+      type: text
+      description: The date on which the game session took place
+      example: 27.06.2020
+
+    gmid:
+      type: text
+      description: Gamemasters PFS ID
+      example: 654321
+
+  "Player Info":
+    char:
+      type: text
+      description: Players character name
+      example: Stormageddon
+
+    societyid:
+      type: societyid
+      description: Pathfinder Society ID
+      example: 123456-2001
+
+  "Rewards":
+    xp:
+      type: text
+      description: XP Gained
+      example: 4
+
+    gp:
+      type: text
+      description: GP Gained
+      example: 4gp 2sp
+
+  "Checkboxes, Reputation and Items":
+    summary_checkbox:
+      type: choice
+      description: "Checkboxes in the adventure summary that should be selected"
+      choices: [1, 2, 3, 4, 5]
+      #example: 1,3
+      example: 1,2,3,4,5
+
+    reputation:
+      type: multiline
+      description: "Reputation Gained"
+      example: "Grand Archive: +4"
+      lines: 4
+
+    strikeout_item_lines:
+      type: choice
+      description: "Item line numbers that should be striked out"
+      choices: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      #example: 1,3,4
+      example: 1,2,3,4,5,6,7,8,9
+
+  "Items Sold / Conditions Gained":
+    list_items_sold:
+      type: multiline
+      description: "Items Sold / Conditions Gained"
+      example: "Rusty armor, smells a little bit"
+      lines: 6
+    list_items_sold_price:
+      type: multiline
+      description: "Price for sold items"
+      example: "3cp"
+      lines: 6
+    items_sold_total_value:
+      type: text
+      description: "Total value of items sold"
+      example: "21cp"
+
+  "Items Bought / Conditions Cleared":
+    list_items_bought:
+      type: multiline
+      description: "Items Bought / Conditions Cleared"
+      example: "Shiny armor, only used once"
+      lines: 6
+    list_items_bought_price:
+      type: multiline
+      description: "Price for bought items"
+      example: "2gp"
+      lines: 6
+    items_bought_total_cost:
+      type: text
+      description: "Total cost of items bought"
+      example: "14gp"
+
+  "Notes":
+    notes:
+      type: multiline
+      description: "Notes on the chronicle sheet"
+      example: "Player was caught stealing a purse"
+      lines: 6
+
+  "Downtime":
+    downtime:
+      type: multiline
+      description: "Downtime Activities"
+      example: "All work and no play makes Jack a dull boy"
+      lines: 6
+
+canvas:
+  page:
+    x:    0.0
+    y:    0.0
+    x2: 100.0
+    y2: 100.0
+
+  main:
+    # this should be a canvas matching the "main" content box,
+    # only excluding the title, chronicle nr and herolab code.
+    # Having this allows an easy visual check on whether the
+    # page is aligned or has extra margins
+    parent: page
+    x:   6.20
+    y:  11.40
+    x2: 94.00
+    y2: 95.40
+
+  rightbar:
+    parent: main
+    x:   82.2
+    y:   23.0
+    x2:  99.8
+    y2:  46.6
+
+  items_sold:
+    parent: main
+    x:   52.0
+    y:   48.6
+    x2:  99.8
+    y2:  65.8
+
+  items_bought:
+    parent: main
+    x:   52.0
+    y:   66.1
+    x2:  99.8
+    y2:  82.8
+
+  commentbox:
+    parent: main
+    x:   0.2
+    y:  84.8
+    x2: 99.8
+    y2: 94.6
+
+presets:
+  defaultfont:
+    font: Helvetica
+    fontsize: 14
+
+  player.infoline:
+    presets: [defaultfont]
+    canvas: main
+    y:  3.2
+    align: CB
+
+  rightbar:
+    presets: [defaultfont]
+    canvas: rightbar
+    fontsize: 18
+    x:    0.0
+    x2: 100.0
+    align: CM
+
+  event.infoline:
+    presets: [defaultfont]
+    canvas: main
+    y:  98.2
+    align: CB
+
+  max_area:
+    x: 0.0
+    y: 0.0
+    x2: 100.0
+    y2: 100.0
+
+  checkbox:
+    canvas: main
+    linewidth: 0.5
+    size: 5.0
+
+  checkbox.1:
+    dummy: 0
+
+  checkbox.2:
+    dummy: 0
+
+  checkbox.3:
+    dummy: 0
+
+  checkbox.4:
+    dummy: 0
+
+  checkbox.5:
+    dummy: 0
+
+  strikeout_item:
+    canvas: main
+    color: black
+    linewidth: 2.0
+    x:   0.5
+    x2: 51.0
+
+  item.line.1:
+    y:  51.7
+    y2: 51.7
+
+  item.line.2:
+    y:  53.5
+    y2: 53.5
+
+  item.line.3:
+    y:  55.4
+    y2: 55.4
+
+  item.line.4:
+    y:  57.2
+    y2: 57.2
+
+  item.line.5:
+    y:  59.1
+    y2: 59.1
+
+  item.line.6:
+    y:  61.0
+    y2: 61.0
+
+  item.line.7:
+    y:  62.9
+    y2: 62.9
+
+  item.line.8:
+    y:  64.8
+    y2: 64.8
+
+  item.line.9:
+    y:  66.7
+    y2: 66.7
+
+  commentbox:
+    presets: [defaultfont, max_area]
+    canvas: commentbox
+    align: LM
+    lines: 6
+
+  items_purchased_left_col:
+    presets: [defaultfont]
+    x:   3.0
+    x2: 68.5
+    align: LM
+
+  items_purchased_right_col:
+    presets: [defaultfont]
+    x:  71.3
+    x2: 95.2
+    align: CM
+
+  items_sold_line:
+    presets: [defaultfont]
+    canvas: items_sold
+    lines: 6
+    y: 14.0
+    y2: 78.0
+
+  items_bought_line:
+    presets: [defaultfont]
+    canvas: items_bought
+    lines: 6
+    y: 12.5
+    y2: 78.0
+
+content:
+  - value: param:char
+    type: text
+    presets: [player.infoline]
+    x:   1.5
+    x2: 63.5
+
+  - type: trigger
+    trigger: param:societyid
+    content:
+      #- type: rectangle
+      #  presets: [player.infoline]
+      #  color: white
+      #  x:  57.5
+      #  y:   3.4
+      #  x2: 60.5
+      #  y2:  5.2
+      - value: param:societyid.player
+        type: text
+        presets: [player.infoline]
+        x:  67.2
+        x2: 87.3
+        align: RB
+      - value: "-"
+        type: text
+        presets: [player.infoline]
+        x:  87.3
+        x2: 89.2
+        align: CB
+      - value: param:societyid.char_without_first_digit
+        type: text
+        presets: [player.infoline]
+        fontsize: 9
+        x:  90.1
+        y: 3.0
+        #x:  90.5
+        x2: 97.8
+        align: LB
+
+  - value: param:xp
+    type: text
+    presets: [rightbar]
+    y:   6.3
+    y2: 47.4
+
+  - value: param:gp
+    type: text
+    presets: [rightbar]
+    y:  55.0
+    y2: 99.8
+
+  - value: param:event
+    type: text
+    presets: [event.infoline]
+    x:   2.3
+    x2: 50.1
+
+  - value: param:eventcode
+    type: text
+    presets: [event.infoline]
+    x:  52.2
+    x2: 62.4
+
+  - value: param:date
+    type: text
+    presets: [event.infoline]
+    x:  64.0
+    x2: 78.6
+
+  - value: param:gmid
+    type: text
+    presets: [event.infoline]
+    x:  80.1
+    x2: 99.4
+
+  - type: choice
+    choices: param:summary_checkbox
+    content:
+      1:
+        - type: strikeout
+          presets: [checkbox, checkbox.1]
+      2:
+        - type: strikeout
+          presets: [checkbox, checkbox.2]
+      3:
+        - type: strikeout
+          presets: [checkbox, checkbox.3]
+      4:
+        - type: strikeout
+          presets: [checkbox, checkbox.4]
+      5:
+        - type: strikeout
+          presets: [checkbox, checkbox.5]
+
+  - value: param:reputation
+    type: multiline
+    presets: [defaultfont]
+    canvas: main
+    align: LM
+    lines: 4
+    x:   0.2
+    y:  40.0
+    x2: 79.8
+    y2: 47.0
+            
+  - type: choice
+    choices: param:strikeout_item_lines
+    content:
+      1:
+        - type: line
+          presets: [strikeout_item, item.line.1]
+      2:
+        - type: line
+          presets: [strikeout_item, item.line.2]
+      3:
+        - type: line
+          presets: [strikeout_item, item.line.3]
+      4:
+        - type: line
+          presets: [strikeout_item, item.line.4]
+      5:
+        - type: line
+          presets: [strikeout_item, item.line.5]
+      6:
+        - type: line
+          presets: [strikeout_item, item.line.6]
+      7:
+        - type: line
+          presets: [strikeout_item, item.line.7]
+      8:
+        - type: line
+          presets: [strikeout_item, item.line.8]
+      9:
+        - type: line
+          presets: [strikeout_item, item.line.9]
+
+  - value: param:list_items_sold
+    type: multiline
+    presets: [items_purchased_left_col, items_sold_line]
+
+  - value: param:list_items_sold_price
+    type: multiline
+    presets: [items_purchased_right_col, items_sold_line]
+
+  - value: param:items_sold_total_value
+    type: text
+    presets: [items_purchased_right_col, items_sold_line]
+    x:  62.5
+    y:  84.0
+    x2: 96.3
+    y2: 99.5
+    align: CM
+
+  - value: param:list_items_bought
+    type: multiline
+    presets: [items_purchased_left_col, items_bought_line]
+
+  - value: param:list_items_bought_price
+    type: multiline
+    presets: [items_purchased_right_col, items_bought_line]
+
+  - value: param:items_bought_total_cost
+    type: text
+    presets: [items_purchased_right_col, items_bought_line]
+    x:  62.5
+    y:  83.0
+    x2: 96.3
+    y2: 99.5
+    align: CM
+
+  - value: param:notes
+    type: multiline
+    presets: [commentbox]
+    x2: 51.5
+
+  - value: param:downtime
+    type: multiline
+    presets: [commentbox]
+    x: 52.1

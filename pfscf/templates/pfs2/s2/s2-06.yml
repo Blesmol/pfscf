@@ -1,0 +1,16 @@
+id: pfs2.s2-06
+description: "#2-06: The Crashing Wave"
+inherit: pfs2.s2
+
+presets:
+  checkbox.1:
+    x:  2.7
+    y: 11.5
+
+  checkbox.2:
+    x: 31.9
+    y: 11.5
+
+  checkbox.3:
+    x: 66.7
+    y: 11.5
