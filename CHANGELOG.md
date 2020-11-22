@@ -5,15 +5,21 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
+## v0.15.2 - 2020-11-22
+
+### Added
 - Added new layout for recent scenarios in PFS 2e season 02
 
 ### Changed
 - The `eventinfo` section will now appear at the top in CSV files generated for PFS 2e.
 - Renamed `pfs2.s2` to `pfs2.s2.oldLayout`, as the scenarios switched layout beginning with `pfs2.s05`.
-
-### Removed
-
-### Fixed
 
 ## v0.15.1 - 2020-11-11
 
