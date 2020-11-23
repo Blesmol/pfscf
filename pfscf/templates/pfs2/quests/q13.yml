@@ -1,3 +1,7 @@
 id: pfs2.q13
 description: "Quest #13: Falcons' Descent"
 inherit: pfs2.quests
+
+canvas:
+  rightbar:
+    y: 27.4

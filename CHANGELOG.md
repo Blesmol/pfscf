@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- PFS2 Quests 11-13
 
 ### Changed
 
