@@ -1,3 +1,22 @@
 id: pfs2.q10
 description: "Quest #10: The Broken Scales"
 inherit: pfs2.quests
+
+canvas:
+  rightbar:
+    y: 27.4
+
+presets:
+  checkbox.1:
+    x:  6.0
+    y: 17.0
+
+  checkbox.2:
+    x: 35.1
+    y: 17.0
+
+  boon.1:
+    x:   0.1
+    y:  27.0
+    x2: 79.5
+    y2: 41.5
