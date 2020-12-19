@@ -22,7 +22,7 @@ var (
 
 // GetBatchCommand returns the cobra command for the "batch" action.
 func GetBatchCommand() (cmd *cobra.Command) {
-	batchCmd := &cobra.Command{
+	cmdBatch := &cobra.Command{
 		Use:     "batch",
 		Aliases: []string{"b"},
 
@@ -32,7 +32,7 @@ func GetBatchCommand() (cmd *cobra.Command) {
 		Args: cobra.ExactArgs(0),
 	}
 
-	batchCreateCmd := &cobra.Command{
+	cmdCreate := &cobra.Command{
 		Use:     "create <template> <output> [<content_id>=<value> ...]",
 		Aliases: []string{"c"},
 
@@ -43,13 +43,13 @@ func GetBatchCommand() (cmd *cobra.Command) {
 
 		Run: executeBatchCreate,
 	}
-	batchCreateCmd.Flags().BoolVarP(&actionBatchCreateUseExampleValues, "examples", "e", false, "Use example values to fill out the chronicle")
-	batchCreateCmd.Flags().StringVarP(&actionBatchCreateSeparator, "separator", "s", ";", "Field separator character for resulting CSV file")
-	batchCreateCmd.Flags().BoolVarP(&actionBatchCreateSuppressOpenOutfile, "no-auto-open", "n", false, "Suppress auto-opening the created CSV file")
+	cmdCreate.Flags().BoolVarP(&actionBatchCreateUseExampleValues, "examples", "e", false, "Use example values to fill out the chronicle")
+	cmdCreate.Flags().StringVarP(&actionBatchCreateSeparator, "separator", "s", ";", "Field separator character for resulting CSV file")
+	cmdCreate.Flags().BoolVarP(&actionBatchCreateSuppressOpenOutfile, "no-auto-open", "n", false, "Suppress auto-opening the created CSV file")
 
-	batchCmd.AddCommand(batchCreateCmd)
+	cmdBatch.AddCommand(cmdCreate)
 
-	batchFillCmd := &cobra.Command{
+	cmdFill := &cobra.Command{
 		Use:     "fill <template> <csv_file> <input_pdf> <output_dir> [<param_id>=<value> ...]",
 		Aliases: []string{"f"},
 
@@ -60,12 +60,12 @@ func GetBatchCommand() (cmd *cobra.Command) {
 
 		Run: executeBatchFill,
 	}
-	batchFillCmd.Flags().Float64VarP(&cfg.Global.OffsetX, "offset-x", "x", 0, "Assume an additional offset for the X axis of the chronicle")
-	batchFillCmd.Flags().Float64VarP(&cfg.Global.OffsetY, "offset-y", "y", 0, "Assume an additional offset for the Y axis of the chronicle")
+	cmdFill.Flags().Float64VarP(&cfg.Global.OffsetX, "offset-x", "x", 0, "Assume an additional offset for the X axis of the chronicle")
+	cmdFill.Flags().Float64VarP(&cfg.Global.OffsetY, "offset-y", "y", 0, "Assume an additional offset for the Y axis of the chronicle")
 
-	batchCmd.AddCommand(batchFillCmd)
+	cmdBatch.AddCommand(cmdFill)
 
-	return batchCmd
+	return cmdBatch
 }
 
 func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
