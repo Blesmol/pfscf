@@ -9,6 +9,7 @@ import (
 
 	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/cfg"
+	"github.com/Blesmol/pfscf/pfscf/csv"
 	"github.com/Blesmol/pfscf/pfscf/pdf"
 	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
@@ -131,7 +132,9 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitWithMessage("Template '%v' not found", tmplName)
 	}
 
-	batchArgStores, err := args.GetArgStoresFromCsvFile(inCsv)
+	csvRecords, err := csv.ReadCsvFile(inCsv)
+	utils.ExitOnError(err, "Cannot read CSV file")
+	batchArgStores, err := args.GetArgStoresFromCsvRecords(csvRecords)
 	utils.ExitOnError(err, "Error reading csv file")
 	if len(batchArgStores) == 0 {
 		utils.ExitWithMessage("No output files were created as CSV file '%v' does not contain any player values", inCsv)

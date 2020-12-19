@@ -7,7 +7,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Blesmol/pfscf/pfscf/csv"
 	"github.com/Blesmol/pfscf/pfscf/encode"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
@@ -212,14 +211,9 @@ func (s *Store) GetKeys() (keyList []string) {
 	return keyList
 }
 
-// GetArgStoresFromCsvFile reads a csv file and returns a list of ArgStores that
-// contain the required arguments to fill out a chronicle.
-func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
-	records, err := csv.ReadCsvFile(filename)
-	if err != nil {
-		return nil, err
-	}
-
+// GetArgStoresFromCsvRecords gets a list of records from a CSV file and returns a list
+//  of ArgStores that contain the required arguments to fill out a chronicle.
+func GetArgStoresFromCsvRecords(records [][]string) (argStores []*Store, err error) {
 	argStores = make([]*Store, 0)
 
 	if len(records) == 0 {
@@ -229,17 +223,18 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 	numPlayers := len(records[0]) - 1
 
 	for idx := 1; idx <= numPlayers; idx++ {
-		s, err := NewStore(StoreInit{InitCapacity: len(records)})
+		store, err := NewStore(StoreInit{InitCapacity: len(records)})
 		utils.AssertNoError(err)
 
 		for _, record := range records {
 			key := record[0]
 			value := record[idx]
-			if s.hasKey(key) {
-				return nil, fmt.Errorf("File '%v' contains multiple lines for content ID '%v'", filename, key)
+
+			if store.hasKey(key) {
+				return nil, fmt.Errorf("Input data contains multiple lines for content ID '%v'", key)
 			}
 
-			// only store if there is an actual value
+			// only add to store if there is an actual value
 			if csvRecordHasValue(value) {
 				if !utils.IsSet(key) {
 					return nil, fmt.Errorf("CSV Line has content value '%v', but is missing content ID in first column", value)
@@ -247,13 +242,13 @@ func GetArgStoresFromCsvFile(filename string) (argStores []*Store, err error) {
 				if value, err = encode.ConvertStringToUtf8(value); err != nil {
 					return nil, fmt.Errorf("Error converting value for key '%v' to UTF-8: %v", key, err)
 				}
-				s.Set(key, value)
+				store.Set(key, value)
 			}
 		}
 
-		// only add if we have at least one entry here
-		if s.numEntries() >= 1 {
-			argStores = append(argStores, s)
+		// only add store if it is not empty
+		if store.numEntries() >= 1 {
+			argStores = append(argStores, store)
 		}
 	}
 
