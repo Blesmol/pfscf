@@ -55,7 +55,7 @@ func ExitOnError(err error, errMsg string, v ...interface{}) {
 // ExitWithMessage prints out a message on StdErr and then exits the
 // program with rc=1
 func ExitWithMessage(errMsg string, v ...interface{}) {
-	fmt.Fprintf(os.Stderr, "Error: "+errMsg, v...)
+	fmt.Fprintf(os.Stderr, "Error: "+errMsg+"\n", v...)
 	os.Exit(1)
 }
 
@@ -222,7 +222,7 @@ func copyValueIfUnset(vSrc, vDst reflect.Value) {
 		case reflect.Float64:
 			dstElem.Set(srcElem)
 		default:
-			panic(fmt.Sprintf("Unsupported datat type '%v' in struct, update function 'AddMissingValuesFrom()'", dstElem.Kind()))
+			panic(fmt.Sprintf("Unsupported data type '%v' in struct, update function 'AddMissingValuesFrom()'", dstElem.Kind()))
 		}
 	}
 
