@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/pdfcpu/pdfcpu/pkg/api"
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
@@ -87,7 +86,7 @@ func (f *File) ExtractPage(pageNumber int, outDir string) (extractedPage *File, 
 
 	// Write context to file
 	outFile := filepath.Join(outDir, "extracted.pdf")
-	if err := api.WriteContextFile(ctxNew, outFile); err != nil {
+	if err := pdfcpuapi.WriteContextFile(ctxNew, outFile); err != nil {
 		return nil, fmt.Errorf("Error extracting page %v from file %v: %v", realPageNumber, f.filename, err)
 	}
 
