@@ -134,8 +134,12 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 
 	csvRecords, err := csv.ReadCsvFile(inCsv)
 	utils.ExitOnError(err, "Cannot read CSV file")
+
+	err = setFlagsFromRecords(cmd, csvRecords)
+	utils.ExitOnError(err, "Error parsing CSV file '%v'", inCsv)
+
 	batchArgStores, err := args.GetArgStoresFromCsvRecords(csvRecords)
-	utils.ExitOnError(err, "Error reading csv file")
+	utils.ExitOnError(err, "Error parsing CSV file")
 	if len(batchArgStores) == 0 {
 		utils.ExitWithMessage("No output files were created as CSV file '%v' does not contain any player values", inCsv)
 	}

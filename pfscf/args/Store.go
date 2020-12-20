@@ -230,6 +230,12 @@ func GetArgStoresFromCsvRecords(records [][]string) (argStores []*Store, err err
 			key := record[0]
 			value := record[idx]
 
+			// skip command line arguments
+			if csvRecordIsCommandLineArg(key) {
+				continue
+			}
+
+			// handle duplicate keys
 			if store.hasKey(key) {
 				return nil, fmt.Errorf("Input data contains multiple lines for content ID '%v'", key)
 			}
@@ -259,4 +265,8 @@ func GetArgStoresFromCsvRecords(records [][]string) (argStores []*Store, err err
 // with the comment character '#'.
 func csvRecordHasValue(value string) bool {
 	return utils.IsSet(value) && len(value) > 0 && value[0] != '#'
+}
+
+func csvRecordIsCommandLineArg(value string) bool {
+	return utils.IsSet(value) && len(value) >= 2 && value[:2] == "--"
 }
