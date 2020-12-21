@@ -133,7 +133,7 @@ func (ct *Chronicle) resolve() (err error) {
 
 // GenerateCsvFile creates a CSV file out of the current chronicle template than can be used
 // as input for the "batch fill" command
-func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *args.Store) (err error) {
+func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *args.Store, cmdFlags [][]string) (err error) {
 	const numPlayers = 7
 	const numChronicles = numPlayers + 1     // GM also wants a chronicle
 	const numColumns = 1 + numChronicles + 1 // identifiers + chronicles + example column
@@ -143,10 +143,18 @@ func (ct *Chronicle) GenerateCsvFile(filename string, separator rune, argStore *
 		{"# ID", ct.ID},
 		{"# Description", ct.Description},
 		{""},
-		{"# Players"}, // will be filled below with labels
 	}
 
-	// Add "Player <x>" labels to the "#Players" line
+	// add command line flags
+	records = append(records, []string{"# Command line arguments"})
+	for _, entry := range cmdFlags {
+		utils.Assert(len(entry) == 2, "Number of entries is wrong")
+		records = append(records, []string{entry[0], entry[1]})
+	}
+	records = append(records, []string{""})
+
+	// Add players section with "Player <nr>" labels
+	records = append(records, []string{"# Players"})
 	outerIdx := len(records) - 1
 	for idx := 1; idx <= numPlayers; idx++ {
 		records[outerIdx] = append(records[outerIdx], fmt.Sprintf("Player %d", idx))

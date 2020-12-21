@@ -268,5 +268,5 @@ func csvRecordHasValue(value string) bool {
 }
 
 func csvRecordIsCommandLineArg(value string) bool {
-	return utils.IsSet(value) && len(value) >= 2 && value[:2] == "--"
+	return strings.HasPrefix(value, "flag:--")
 }

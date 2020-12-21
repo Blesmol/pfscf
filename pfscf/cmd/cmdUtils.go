@@ -28,12 +28,13 @@ func setFlagsFromRecords(cmd *cobra.Command, records [][]string) error {
 
 	for _, record := range records {
 		flagCandidate := record[0]
-		if len(flagCandidate) > 2 && flagCandidate[:2] == "--" {
-			flagName := flagCandidate[2:]
+		marker := "flag:--"
+		if strings.HasPrefix(flagCandidate, marker) {
+			flagName := flagCandidate[len(marker):]
 			flagValue := record[1]
 
 			if err := cmd.Flags().Set(flagName, flagValue); err != nil {
-				return fmt.Errorf("Error setting flag '%v' with value '%v': %v", flagCandidate, flagValue, err)
+				return fmt.Errorf("Error setting flag '%v' with value '%v': %v", flagName, flagValue, err)
 			}
 		}
 	}

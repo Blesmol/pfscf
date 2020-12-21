@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/cfg"
@@ -15,10 +17,18 @@ import (
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
+const (
+	namingPlaceholderPattern = `<(\w+)>`
+)
+
 var (
-	actionBatchCreateUseExampleValues    bool
+	actionBatchCreateUsageExampleValues  bool
 	actionBatchCreateSeparator           string
 	actionBatchCreateSuppressOpenOutfile bool
+
+	actionBatchOutfilePattern string
+
+	regexNamingPlaceholder = regexp.MustCompile(namingPlaceholderPattern)
 )
 
 // GetBatchCommand returns the cobra command for the "batch" action.
@@ -33,6 +43,8 @@ func GetBatchCommand() (cmd *cobra.Command) {
 		Args: cobra.ExactArgs(0),
 	}
 
+	cmdBatch.PersistentFlags().StringVar(&actionBatchOutfilePattern, "outfile-pattern", "Chronicle_<char>_<societyid>.pdf", "Naming pattern for the generated chronicle files")
+
 	cmdCreate := &cobra.Command{
 		Use:     "create <template> <output> [<content_id>=<value> ...]",
 		Aliases: []string{"c"},
@@ -44,7 +56,7 @@ func GetBatchCommand() (cmd *cobra.Command) {
 
 		Run: executeBatchCreate,
 	}
-	cmdCreate.Flags().BoolVarP(&actionBatchCreateUseExampleValues, "examples", "e", false, "Use example values to fill out the chronicle")
+	cmdCreate.Flags().BoolVarP(&actionBatchCreateUsageExampleValues, "examples", "e", false, "Use example values to fill out the chronicle")
 	cmdCreate.Flags().StringVarP(&actionBatchCreateSeparator, "separator", "s", ";", "Field separator character for resulting CSV file")
 	cmdCreate.Flags().BoolVarP(&actionBatchCreateSuppressOpenOutfile, "no-auto-open", "n", false, "Suppress auto-opening the created CSV file")
 
@@ -97,14 +109,29 @@ func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
 
 	// parse remaining arguments
 	var argStore *args.Store
-	if !actionBatchCreateUseExampleValues {
+	if !actionBatchCreateUsageExampleValues {
 		argStore, err = args.NewStore(args.StoreInit{Args: cmdArgs[2:]})
 	} else {
 		argStore, err = args.NewStore(args.StoreInit{Args: cTmpl.GetExampleArguments()})
 	}
 	utils.ExitOnError(err, "Error processing command line arguments")
 
-	err = cTmpl.GenerateCsvFile(outFile, separator, argStore)
+	// prepare cmd line flags to be included in csv file.
+	// we only check flags which were defined on the parent command to not have to keep
+	// flags synchronous between different subcommands
+	cmdFlags := make([][]string, 0)
+	cmd.InheritedFlags().VisitAll(func(f *pflag.Flag) {
+		if f.Value.Type() == "string" {
+			fName := fmt.Sprintf("flag:--%v", f.Name)
+			fVal := f.Value.String()
+			if !utils.IsSet(fVal) {
+				fName = "#" + fName
+			}
+			cmdFlags = append(cmdFlags, []string{fName, fVal})
+		}
+	})
+
+	err = cTmpl.GenerateCsvFile(outFile, separator, argStore, cmdFlags)
 	utils.ExitOnError(err, "Error writing CSV file for template %v", tmplName)
 
 	if !actionBatchCreateSuppressOpenOutfile {
@@ -159,12 +186,36 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitOnError(err, "Error opening input file '%v'", inPdf)
 
 		playerNumber := idx + 1
-		baseOutfile := fmt.Sprintf("Chronicle_Player_%d.pdf", playerNumber)
+		baseOutfile, err := getOutputFilenameForPlayer(actionBatchOutfilePattern, cmdLineArgStore)
+		utils.ExitOnError(err, "Error getting output filename")
 		outfile := filepath.Join(outDir, baseOutfile)
 
 		fmt.Printf("Creating file %v\n", outfile)
 		err = pdf.Fill(cmdLineArgStore, cTmpl, outfile)
 		utils.ExitOnError(err, "Error when filling out chronicle for player %d", playerNumber)
 	}
+}
 
+func getOutputFilenameForPlayer(pattern string, as *args.Store) (outfile string, err error) {
+	if !utils.IsSet(pattern) {
+		return "", fmt.Errorf("No naming pattern for output file provided")
+	}
+	outfile = pattern
+
+	matches := regexNamingPlaceholder.FindAllStringSubmatch(pattern, -1)
+	for _, match := range matches {
+		utils.Assert(len(match) == 2, "Should have exactly 2 elements: the complete matching string and the subgroup")
+
+		// lookup requested key in argStore
+		resolvedValue, exists := as.Get(match[1])
+		if !exists {
+			return "", fmt.Errorf("Cannot find value for filename placeholder %v", match[0])
+		}
+
+		// replace key in filename with key from argStore
+		re := regexp.MustCompile(match[0])
+		outfile = re.ReplaceAllString(outfile, resolvedValue)
+	}
+
+	return outfile, nil
 }
