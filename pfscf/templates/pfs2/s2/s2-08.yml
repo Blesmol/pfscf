@@ -1,0 +1,16 @@
+id: pfs2.s2-08
+description: "#2-08: A Frosty Mug"
+inherit: pfs2.s2
+
+presets:
+  checkbox.1:
+    x: 16.1
+    y: 15.1
+
+  checkbox.2:
+    x: 62.2
+    y: 15.1
+
+  checkbox.3:
+    x:  2.1
+    y: 17.0
