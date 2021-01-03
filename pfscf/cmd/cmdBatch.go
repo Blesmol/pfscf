@@ -4,25 +4,39 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/cfg"
+	"github.com/Blesmol/pfscf/pfscf/csv"
 	"github.com/Blesmol/pfscf/pfscf/pdf"
 	"github.com/Blesmol/pfscf/pfscf/template"
 	"github.com/Blesmol/pfscf/pfscf/utils"
 )
 
+const (
+	namingPlaceholderPattern = `<(\w+)>`
+)
+
 var (
-	actionBatchCreateUseExampleValues    bool
+	actionBatchCreateUsageExampleValues  bool
 	actionBatchCreateSeparator           string
 	actionBatchCreateSuppressOpenOutfile bool
+
+	actionBatchOutputPattern  string
+	actionBatchTemplate       string
+	actionBatchInputChronicle string
+	actionBatchOutputDir      string
+
+	regexNamingPlaceholder = regexp.MustCompile(namingPlaceholderPattern)
 )
 
 // GetBatchCommand returns the cobra command for the "batch" action.
 func GetBatchCommand() (cmd *cobra.Command) {
-	batchCmd := &cobra.Command{
+	cmdBatch := &cobra.Command{
 		Use:     "batch",
 		Aliases: []string{"b"},
 
@@ -32,47 +46,53 @@ func GetBatchCommand() (cmd *cobra.Command) {
 		Args: cobra.ExactArgs(0),
 	}
 
-	batchCreateCmd := &cobra.Command{
-		Use:     "create <template> <output> [<content_id>=<value> ...]",
+	cmdBatch.PersistentFlags().StringVarP(&actionBatchOutputPattern, "output-pattern", "p", "Chronicle_<char>_<societyid>.pdf", "Naming pattern for the generated chronicle files")
+	cmdBatch.PersistentFlags().StringVarP(&actionBatchTemplate, "template", "t", "", "Name of the template to use, e.g. pfs2-s1.22")
+	cmdBatch.PersistentFlags().StringVarP(&actionBatchInputChronicle, "input-chronicle", "i", "", "Filename of the empty input scenario chronicle")
+	cmdBatch.PersistentFlags().StringVarP(&actionBatchOutputDir, "output-dir", "o", "", "Directory in which the generated chronicles should be stored")
+
+	cmdCreate := &cobra.Command{
+		Use:     "create <output> [<content_id>=<value> ...]",
 		Aliases: []string{"c"},
 
 		Short: "Create ready-to-fill csv file based on selected template",
 		//Long:  "TBD",
 
-		Args: cobra.MinimumNArgs(2),
+		Args: cobra.MinimumNArgs(1),
 
 		Run: executeBatchCreate,
 	}
-	batchCreateCmd.Flags().BoolVarP(&actionBatchCreateUseExampleValues, "examples", "e", false, "Use example values to fill out the chronicle")
-	batchCreateCmd.Flags().StringVarP(&actionBatchCreateSeparator, "separator", "s", ";", "Field separator character for resulting CSV file")
-	batchCreateCmd.Flags().BoolVarP(&actionBatchCreateSuppressOpenOutfile, "no-auto-open", "n", false, "Suppress auto-opening the created CSV file")
+	cmdCreate.Flags().BoolVarP(&actionBatchCreateUsageExampleValues, "examples", "e", false, "Use example values to fill out the chronicle")
+	cmdCreate.Flags().StringVarP(&actionBatchCreateSeparator, "separator", "s", ";", "Field separator character for resulting CSV file")
+	cmdCreate.Flags().BoolVarP(&actionBatchCreateSuppressOpenOutfile, "no-auto-open", "n", false, "Suppress auto-opening the created CSV file")
 
-	batchCmd.AddCommand(batchCreateCmd)
+	cmdBatch.AddCommand(cmdCreate)
 
-	batchFillCmd := &cobra.Command{
-		Use:     "fill <template> <csv_file> <input_pdf> <output_dir> [<param_id>=<value> ...]",
+	cmdFill := &cobra.Command{
+		Use:     "fill <csv_file> [<param_id>=<value> ...]",
 		Aliases: []string{"f"},
 
 		Short: "Fill multiple templates with values read from a csv file",
-		//Long:  "TBD",
 
-		Args: cobra.ExactArgs(4),
+		Args: cobra.ExactArgs(1),
 
 		Run: executeBatchFill,
 	}
-	batchFillCmd.Flags().Float64VarP(&cfg.Global.OffsetX, "offset-x", "x", 0, "Assume an additional offset for the X axis of the chronicle")
-	batchFillCmd.Flags().Float64VarP(&cfg.Global.OffsetY, "offset-y", "y", 0, "Assume an additional offset for the Y axis of the chronicle")
+	cmdFill.Flags().Float64VarP(&cfg.Global.OffsetX, "offset-x", "x", 0, "Assume an additional offset for the X axis of the chronicle")
+	cmdFill.Flags().Float64VarP(&cfg.Global.OffsetY, "offset-y", "y", 0, "Assume an additional offset for the Y axis of the chronicle")
 
-	batchCmd.AddCommand(batchFillCmd)
+	cmdBatch.AddCommand(cmdFill)
 
-	return batchCmd
+	return cmdBatch
 }
 
 func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
-	utils.Assert(len(cmdArgs) >= 2, "Number of arguments should be guaranteed by cobra settings")
+	utils.Assert(len(cmdArgs) >= 1, "Number of arguments should be guaranteed by cobra settings")
 
-	tmplName := cmdArgs[0]
-	outFile := cmdArgs[1]
+	outFile := cmdArgs[0]
+	remainingArgs := cmdArgs[1:]
+
+	tmplName := getFlagOrExit(cmd, "template")
 
 	warnOnWrongFileExtension(outFile, "csv")
 
@@ -96,14 +116,29 @@ func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
 
 	// parse remaining arguments
 	var argStore *args.Store
-	if !actionBatchCreateUseExampleValues {
-		argStore, err = args.NewStore(args.StoreInit{Args: cmdArgs[2:]})
+	if !actionBatchCreateUsageExampleValues {
+		argStore, err = args.NewStore(args.StoreInit{Args: remainingArgs})
 	} else {
 		argStore, err = args.NewStore(args.StoreInit{Args: cTmpl.GetExampleArguments()})
 	}
 	utils.ExitOnError(err, "Error processing command line arguments")
 
-	err = cTmpl.GenerateCsvFile(outFile, separator, argStore)
+	// prepare cmd line flags to be included in csv file.
+	// we only check flags which were defined on the parent command to not have to keep
+	// flags synchronous between different subcommands
+	cmdFlags := make([][]string, 0)
+	cmd.InheritedFlags().VisitAll(func(f *pflag.Flag) {
+		if f.Value.Type() == "string" {
+			fName := fmt.Sprintf("flag:--%v", f.Name)
+			fVal := f.Value.String()
+			if !utils.IsSet(fVal) {
+				fName = "#" + fName
+			}
+			cmdFlags = append(cmdFlags, []string{fName, fVal})
+		}
+	})
+
+	err = cTmpl.GenerateCsvFile(outFile, separator, argStore, cmdFlags)
 	utils.ExitOnError(err, "Error writing CSV file for template %v", tmplName)
 
 	if !actionBatchCreateSuppressOpenOutfile {
@@ -114,14 +149,21 @@ func executeBatchCreate(cmd *cobra.Command, cmdArgs []string) {
 }
 
 func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
-	utils.Assert(len(cmdArgs) >= 4, "Number of arguments should be guaranteed by cobra settings")
+	utils.Assert(len(cmdArgs) >= 1, "Number of arguments should be guaranteed by cobra settings")
 
-	tmplName := cmdArgs[0]
-	inCsv := cmdArgs[1]
-	inPdf := cmdArgs[2]
-	outDir := cmdArgs[3]
-
+	inCsv := cmdArgs[0]
+	remainingArgs := cmdArgs[1:]
 	warnOnWrongFileExtension(inCsv, "csv")
+
+	csvRecords, err := csv.ReadCsvFile(inCsv)
+	utils.ExitOnError(err, "Cannot read CSV file")
+
+	err = setFlagsFromRecords(cmd, csvRecords)
+	utils.ExitOnError(err, "Error parsing CSV file '%v'", inCsv)
+
+	tmplName := getFlagOrExit(cmd, "template")
+	outDir := getFlagOrExit(cmd, "output-dir")
+	inPdf := getFlagOrExit(cmd, "input-chronicle")
 	warnOnWrongFileExtension(inPdf, "pdf")
 
 	ts, err := template.GetStore()
@@ -131,14 +173,14 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitWithMessage("Template '%v' not found", tmplName)
 	}
 
-	batchArgStores, err := args.GetArgStoresFromCsvFile(inCsv)
-	utils.ExitOnError(err, "Error reading csv file")
+	batchArgStores, err := args.GetArgStoresFromCsvRecords(csvRecords)
+	utils.ExitOnError(err, "Error parsing CSV file")
 	if len(batchArgStores) == 0 {
 		utils.ExitWithMessage("No output files were created as CSV file '%v' does not contain any player values", inCsv)
 	}
 
 	// parse remaining arguments
-	cmdLineArgStore, err := args.NewStore(args.StoreInit{Args: cmdArgs[4:]})
+	cmdLineArgStore, err := args.NewStore(args.StoreInit{Args: remainingArgs})
 	utils.ExitOnError(err, "Error processing command line arguments")
 
 	// ensure output directory exists
@@ -152,12 +194,45 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitOnError(err, "Error opening input file '%v'", inPdf)
 
 		playerNumber := idx + 1
-		baseOutfile := fmt.Sprintf("Chronicle_Player_%d.pdf", playerNumber)
+		baseOutfile, err := getOutputFilenameForPlayer(actionBatchOutputPattern, cmdLineArgStore)
+		utils.ExitOnError(err, "Error getting output filename")
 		outfile := filepath.Join(outDir, baseOutfile)
 
 		fmt.Printf("Creating file %v\n", outfile)
 		err = pdf.Fill(cmdLineArgStore, cTmpl, outfile)
 		utils.ExitOnError(err, "Error when filling out chronicle for player %d", playerNumber)
 	}
+}
 
+func getOutputFilenameForPlayer(pattern string, as *args.Store) (outfile string, err error) {
+	if !utils.IsSet(pattern) {
+		return "", fmt.Errorf("No naming pattern for output file provided")
+	}
+	outfile = pattern
+
+	matches := regexNamingPlaceholder.FindAllStringSubmatch(pattern, -1)
+	for _, match := range matches {
+		utils.Assert(len(match) == 2, "Should have exactly 2 elements: the complete matching string and the subgroup")
+
+		// lookup requested key in argStore
+		resolvedValue, exists := as.Get(match[1])
+		if !exists {
+			return "", fmt.Errorf("Cannot find value for filename placeholder %v", match[0])
+		}
+
+		// replace key in filename with key from argStore
+		re := regexp.MustCompile(match[0])
+		outfile = re.ReplaceAllString(outfile, resolvedValue)
+	}
+
+	return outfile, nil
+}
+
+func getFlagOrExit(cmd *cobra.Command, flagName string) string {
+	flag := cmd.Flags().Lookup(flagName)
+	if flag == nil || !utils.IsSet(flag.Value.String()) {
+		fmt.Fprintf(os.Stderr, "Error: required flag \"%v\" not set\n%v", flagName, cmd.UsageString())
+		os.Exit(1)
+	}
+	return flag.Value.String()
 }

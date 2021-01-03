@@ -18,6 +18,7 @@ func ReadCsvFile(filename string) (records [][]string, err error) {
 	}
 
 	r := csv.NewReader(bytes.NewReader(fileData))
+	r.FieldsPerRecord = -1 // avoid errors due to lines with different number of records
 	r.Comma = detectSeparator(fileData)
 	r.Comment = '#'
 
