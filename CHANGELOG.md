@@ -6,10 +6,11 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Batch mode: Allow to set values for command line parameters from within CSV file
-- Batch mode: Allow to set pattern for chronicle output filenames to include things like, e.g. character name or society ID.
+- Batch mode: Allow to set pattern for generated chronicle output filenames to include things like, e.g. character name or society ID.
 - PFS2: Scenarios 2-07,2-08; Quests 10-13
 
 ### Changed
+- Batch mode: Convert most mandatory arguments so that they can be stored within the CSV file now.
 
 ### Removed
 
