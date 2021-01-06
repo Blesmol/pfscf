@@ -49,7 +49,7 @@ func GetBatchCommand() (cmd *cobra.Command) {
 	cmdBatch.PersistentFlags().StringVarP(&actionBatchOutputPattern, "output-pattern", "p", "Chronicle_<char>_<societyid>.pdf", "Naming pattern for the generated chronicle files")
 	cmdBatch.PersistentFlags().StringVarP(&actionBatchTemplate, "template", "t", "", "Name of the template to use, e.g. pfs2-s1.22")
 	cmdBatch.PersistentFlags().StringVarP(&actionBatchInputChronicle, "input-chronicle", "i", "", "Filename of the empty input scenario chronicle")
-	cmdBatch.PersistentFlags().StringVarP(&actionBatchOutputDir, "output-dir", "o", "", "Directory in which the generated chronicles should be stored")
+	cmdBatch.PersistentFlags().StringVarP(&actionBatchOutputDir, "output-dir", "o", ".", "Directory in which the generated chronicles should be stored")
 
 	cmdCreate := &cobra.Command{
 		Use:     "create <output> [<content_id>=<value> ...]",
