@@ -1,0 +1,3 @@
+id: pfs2.bb
+description: "Pathfinder 2e Beginner Box"
+inherit: pfs2.layout2

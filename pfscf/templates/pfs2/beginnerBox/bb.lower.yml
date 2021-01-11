@@ -1,0 +1,30 @@
+id: pfs2.bb.lower
+description: "Menace Under Otari (Lower Dungeon Level)"
+inherit: pfs2.bb
+
+canvas:
+  main:
+    parent: page
+    x:   6.0
+    x2: 93.8
+
+presets:
+  item.line.1:
+    y:  49.7
+    y2: 49.7
+
+  item.line.2:
+    y:  51.6
+    y2: 51.6
+
+  item.line.3:
+    y:  53.4
+    y2: 53.4
+
+  item.line.4:
+    y:  55.4
+    y2: 55.4
+
+  item.line.5:
+    y:  57.2
+    y2: 57.2
