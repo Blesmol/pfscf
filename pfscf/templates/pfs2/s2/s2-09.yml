@@ -1,0 +1,24 @@
+id: pfs2.s2-09
+description: "#2-09: The Seven Secrets of Dacilance Academy"
+inherit: pfs2.s2
+
+presets:
+  checkbox.1:
+    x: 66.25
+    y: 13.3
+
+  checkbox.2:
+    x: 75.65
+    y: 13.3
+
+  checkbox.3:
+    x: 10.8
+    y: 16.95
+
+  checkbox.4:
+    x: 44.05
+    y: 16.95
+
+  checkbox.5:
+    x: 80.3
+    y: 16.95

@@ -1,0 +1,24 @@
+id: pfs2.s2-10
+description: "#2-10: In Burning Dawn"
+inherit: pfs2.s2
+
+presets:
+  checkbox.1:
+    x: 18.35
+    y: 11.5
+
+  checkbox.2:
+    x: 41.1
+    y: 11.5
+
+  checkbox.3:
+    x: 53.0
+    y: 13.35
+
+  checkbox.4:
+    x: 94.3
+    y: 13.35
+
+  checkbox.5:
+    x: 57.95
+    y: 15.15
