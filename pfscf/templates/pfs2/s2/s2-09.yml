@@ -22,3 +22,19 @@ presets:
   checkbox.5:
     x: 80.3
     y: 16.95
+
+  item.line.1:
+    y:  49.9
+    y2: 49.9
+
+  item.line.2:
+    y:  51.7
+    y2: 51.7
+
+  item.line.3:
+    y:  53.5
+    y2: 53.5
+
+  item.line.4:
+    y:  55.4
+    y2: 55.4
