@@ -1,6 +1,6 @@
 id: pfs2.s1-09
 description: "#1-09: Star-Crossed Voyages"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 presets:
   boon.1:

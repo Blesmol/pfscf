@@ -1,6 +1,6 @@
 id: pfs2.s1-15
 description: "#1-15: The Blooming Catastrophe"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 canvas:
   rightbar:

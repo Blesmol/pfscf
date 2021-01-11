@@ -1,6 +1,6 @@
 id: pfs2.troublesInOtari
 description: "Troubles in Otari"
-inherit: pfs2.adventures
+parent: pfs2.adventures
 
 canvas:
   main:

@@ -1,6 +1,6 @@
 id: pfs2.s1-25
 description: "#1-25: Grim Symphony"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 canvas:
   rightbar:

@@ -1,6 +1,6 @@
 id: pfs2.s2-08
 description: "#2-08: A Frosty Mug"
-inherit: pfs2.s2
+parent: pfs2.s2
 
 presets:
   checkbox.1:

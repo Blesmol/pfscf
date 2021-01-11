@@ -1,6 +1,6 @@
 id: pfs2.q05
 description: "Quest #05: The Dragon Who Stole Evoking Day"
-inherit: pfs2.quests
+parent: pfs2.quests
 
 canvas:
   rightbar:

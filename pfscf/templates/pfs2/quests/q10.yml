@@ -1,6 +1,6 @@
 id: pfs2.q10
 description: "Quest #10: The Broken Scales"
-inherit: pfs2.quests
+parent: pfs2.quests
 
 canvas:
   rightbar:

@@ -1,6 +1,6 @@
 id: pfs2.bb.lower
 description: "Menace Under Otari (Lower Dungeon Level)"
-inherit: pfs2.bb
+parent: pfs2.bb
 
 canvas:
   main:

@@ -1,6 +1,6 @@
 id: pfs2.s1-14
 description: "#1-14: Lions of Katapesh"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 presets:
   checkbox.1:

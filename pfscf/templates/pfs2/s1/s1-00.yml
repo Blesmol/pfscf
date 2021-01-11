@@ -1,6 +1,6 @@
 id: pfs2.s1-00
 description: "#1-00: Origin of the Open Road"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 presets:
   boon.1:

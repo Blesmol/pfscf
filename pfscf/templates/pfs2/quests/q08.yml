@@ -1,6 +1,6 @@
 id: pfs2.q08
 description: "Quest #08: Shadows of the Black Sovereign"
-inherit: pfs2.quests
+parent: pfs2.quests
 
 presets:
   checkbox.1:

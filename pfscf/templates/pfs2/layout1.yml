@@ -1,6 +1,6 @@
 id: pfs2.layout1
 description: "PFS2 Chronicle Sheet Format v1: Used in Season 01"
-inherit: pfs2
+parent: pfs2
 flags:
   - hidden
 

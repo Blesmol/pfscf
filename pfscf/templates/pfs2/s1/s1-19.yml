@@ -1,6 +1,6 @@
 id: pfs2.s1-19
 description: "#1-19: Iolite Squad Alpha"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 canvas:
   rightbar:

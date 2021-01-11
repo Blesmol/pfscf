@@ -1,6 +1,6 @@
 id: pfs2.s1-04
 description: "#1-04: Bandits of Immenwood"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 canvas:
   # by the way, paizo provided a faulty sheet where

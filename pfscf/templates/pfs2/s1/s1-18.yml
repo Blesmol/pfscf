@@ -1,6 +1,6 @@
 id: pfs2.s1-18
 description: "#1-18: Lodge of the Living God"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 canvas:
   rightbar:
