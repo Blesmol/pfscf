@@ -12,6 +12,11 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## v0.16.1 - 2021-01-11
+
+### Added
+- Various PFS2e templates
+
 ## v0.16.0 - 2021-01-03
 
 ### Added
