@@ -1,6 +1,6 @@
 id: pfs2.q11
 description: "Quest #11: A Parchment Tree"
-inherit: pfs2.quests
+parent: pfs2.quests
 
 canvas:
   rightbar:

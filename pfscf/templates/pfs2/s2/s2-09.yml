@@ -1,6 +1,6 @@
 id: pfs2.s2-09
 description: "#2-09: The Seven Secrets of Dacilance Academy"
-inherit: pfs2.s2
+parent: pfs2.s2
 
 presets:
   checkbox.1:

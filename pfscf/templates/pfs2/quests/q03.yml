@@ -1,6 +1,6 @@
 id: pfs2.q03
 description: "Quest #03: Grehunde's Gorget"
-inherit: pfs2.quests
+parent: pfs2.quests
 
 presets:
   boon.1:

@@ -1,6 +1,6 @@
 id: pfs2.s1-08
 description: "#1-08: Revolution on the Riverside"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 presets:
   boon.1:

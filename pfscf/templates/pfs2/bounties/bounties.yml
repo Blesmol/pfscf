@@ -1,6 +1,6 @@
 id: pfs2.bounties
 description: "PFS2 Bounties"
-inherit: pfs2
+parent: pfs2
 
 aspectratio: 603:783 # dimensions of chronicle page in original pdf
 

@@ -1,6 +1,6 @@
 id: pfs2.q04
 description: "Quest #04: Port Peril Pub Crawl"
-inherit: pfs2.quests
+parent: pfs2.quests
 
 presets:
   boon.1:

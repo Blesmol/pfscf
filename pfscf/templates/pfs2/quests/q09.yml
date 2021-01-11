@@ -1,6 +1,6 @@
 id: pfs2.q09
 description: "Quest #09: Wayfinder Origins"
-inherit: pfs2.quests
+parent: pfs2.quests
 
 presets:
   boon.1:

@@ -1,6 +1,6 @@
 id: pfs2.s2-10
 description: "#2-10: In Burning Dawn"
-inherit: pfs2.s2
+parent: pfs2.s2
 
 presets:
   checkbox.1:

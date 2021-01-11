@@ -1,6 +1,6 @@
 id: pfs2.s1-11
 description: "#1-11: Flames of Rebellion"
-inherit: pfs2.s1
+parent: pfs2.s1
 
 presets:
   checkbox.1:

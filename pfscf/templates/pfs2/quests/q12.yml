@@ -1,6 +1,6 @@
 id: pfs2.q12
 description: "Quest #12: Putrid Seeds"
-inherit: pfs2.quests
+parent: pfs2.quests
 
 canvas:
   rightbar:

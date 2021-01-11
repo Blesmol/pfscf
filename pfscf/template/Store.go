@@ -74,11 +74,11 @@ func getStoreForDir(dir string) (store *Store, err error) {
 func (s *Store) resolve() (err error) {
 	// resolve references between templates
 	for _, ct := range *s {
-		if utils.IsSet(ct.Inherit) {
+		if utils.IsSet(ct.Parent) {
 			// check if parent actually exists, and if so, add chronicle reference
-			parentCt, exists := s.Get(ct.Inherit)
+			parentCt, exists := s.Get(ct.Parent)
 			if !exists {
-				return fmt.Errorf("Template '%v' inherits from template '%v', but that template cannot be found", ct.ID, ct.Inherit)
+				return fmt.Errorf("Template '%v' inherits from template '%v', but that template cannot be found", ct.ID, ct.Parent)
 			}
 
 			if err = parentCt.addChild(ct); err != nil {
@@ -162,8 +162,8 @@ func (s *Store) getTemplatesInheritingFrom(parentID string) (childIDs []string) 
 	childIDs = make([]string, 0)
 
 	for key, template := range *s {
-		if (!utils.IsSet(parentID) && !utils.IsSet(template.Inherit)) ||
-			(template.Inherit == parentID) {
+		if (!utils.IsSet(parentID) && !utils.IsSet(template.Parent)) ||
+			(template.Parent == parentID) {
 			childIDs = append(childIDs, key)
 		}
 	}

@@ -1,6 +1,6 @@
 id: pfs2.bb.upper
 description: "Menace Under Otari (Upper Dungeon Level)"
-inherit: pfs2.bb
+parent: pfs2.bb
 
 canvas:
   main:

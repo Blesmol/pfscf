@@ -1,6 +1,6 @@
 id: pfs2.s2-07
 description: "#2-07: The Blakros Deception"
-inherit: pfs2.s2
+parent: pfs2.s2
 
 presets:
   checkbox.1:

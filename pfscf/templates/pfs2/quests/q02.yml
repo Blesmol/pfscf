@@ -1,6 +1,6 @@
 id: pfs2.q02
 description: "Quest #02: Unforgiving Fire"
-inherit: pfs2.quests
+parent: pfs2.quests
 
 presets:
   boon.1:

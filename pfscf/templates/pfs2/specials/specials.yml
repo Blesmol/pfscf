@@ -1,3 +1,3 @@
 id: pfs2.specials
 description: "Specials"
-inherit: pfs2.layout1
+parent: pfs2.layout1

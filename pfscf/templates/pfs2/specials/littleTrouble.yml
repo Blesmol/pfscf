@@ -1,6 +1,6 @@
 id: pfs2.littleTrouble
 description: "Little Trouble in Big Absalom"
-inherit: pfs2.specials
+parent: pfs2.specials
 
 canvas:
   rightbar:

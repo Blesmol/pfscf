@@ -1,6 +1,6 @@
 id: pfs2.s2-04
 description: "#2-04: Path of Kings"
-inherit: pfs2.s2.oldLayout
+parent: pfs2.s2.oldLayout
 
 presets:
   checkbox.1:

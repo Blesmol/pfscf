@@ -1,6 +1,6 @@
 id: pfs2.b01
 description: "Bounty #01: The Whytefang Wyrm"
-inherit: pfs2.bounties
+parent: pfs2.bounties
 
 presets:
   checkbox.1:

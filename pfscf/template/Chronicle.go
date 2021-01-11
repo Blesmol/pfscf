@@ -31,7 +31,7 @@ var (
 type Chronicle struct {
 	ID          string
 	Description string
-	Inherit     string
+	Parent      string
 	Aspectratio string
 	Flags       []string
 	Parameters  param.Store
