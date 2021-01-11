@@ -71,6 +71,12 @@ parameters:
       #example: 1,3,4
       example: 1,2,3,4,5,6,7,8,9
 
+    strikeout_keepsake_lines:
+      type: choice
+      description: "Keepsake line numbers that should be striked out"
+      choices: [1]
+      example: 1
+
   "Items Sold / Conditions Gained":
     list_items_sold:
       type: multiline
@@ -257,6 +263,13 @@ presets:
     y:  66.7
     y2: 66.7
 
+  strikeout_keepsake:
+    presets: [strikeout_item]
+
+  keepsake.line.1:
+    y:  80.0
+    y2: 80.0
+
   commentbox:
     presets: [defaultfont, max_area]
     canvas: commentbox
@@ -393,7 +406,7 @@ content:
     y:  40.0
     x2: 79.8
     y2: 47.0
-            
+
   - type: choice
     choices: param:strikeout_item_lines
     content:
@@ -424,6 +437,13 @@ content:
       9:
         - type: line
           presets: [strikeout_item, item.line.9]
+
+  - type: choice
+    choices: param:strikeout_keepsake_lines
+    content:
+      1:
+        - type: line
+          presets: [strikeout_keepsake, keepsake.line.1]
 
   - value: param:list_items_sold
     type: multiline

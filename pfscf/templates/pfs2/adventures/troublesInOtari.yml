@@ -1,0 +1,26 @@
+id: pfs2.troublesInOtari
+description: "Troubles in Otari"
+inherit: pfs2.adventures
+
+canvas:
+  main:
+    parent: page
+    x:   6.0
+    x2: 93.8
+
+presets:
+  item.line.1:
+    y:  49.7
+    y2: 49.7
+
+  item.line.2:
+    y:  51.6
+    y2: 51.6
+
+  item.line.3:
+    y:  53.4
+    y2: 53.4
+
+  keepsake.line.1:
+    y:  60.4
+    y2: 60.4

@@ -1,0 +1,3 @@
+id: pfs2.adventures
+description: "Pathfinder Adventures"
+inherit: pfs2.layout2
