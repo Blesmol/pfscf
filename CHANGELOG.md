@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Removed
 
 ### Fixed
+- If a command line flag was set in a CSV file, then it was not possible to overwrite this with a command line argument in the following `batch fill` call 
 
 ## v0.16.1 - 2021-01-11
 

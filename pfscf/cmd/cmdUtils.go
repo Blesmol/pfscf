@@ -18,6 +18,7 @@ func warnOnWrongFileExtension(filename, expectedExt string) {
 
 // setFlagsFromRecords searches for records that begin with "--", interprets anything behind that as
 // command line flag name, and tries to set it to the value provided in the next record.
+// This will not overwrite any values that were explicitly set on the command line in the current run.
 func setFlagsFromRecords(cmd *cobra.Command, records [][]string) error {
 	// check whether there is any content at all
 	if len(records) == 0 || len(records[0]) < 2 {
@@ -32,8 +33,18 @@ func setFlagsFromRecords(cmd *cobra.Command, records [][]string) error {
 		if strings.HasPrefix(flagCandidate, marker) {
 			flagName := flagCandidate[len(marker):]
 			flagValue := record[1]
+			flags := cmd.Flags()
 
-			if err := cmd.Flags().Set(flagName, flagValue); err != nil {
+			if flags.Lookup(flagName) == nil {
+				return fmt.Errorf("Unknown flag in CSV: %v", flagCandidate)
+			}
+
+			// check if flag was explicitly set on command line, which takes precedence
+			if flags.Changed(flagName) {
+				continue
+			}
+
+			if err := flags.Set(flagName, flagValue); err != nil {
 				return fmt.Errorf("Error setting flag '%v' with value '%v': %v", flagName, flagValue, err)
 			}
 		}
