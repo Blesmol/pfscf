@@ -166,6 +166,7 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 	inPdf := getFlagOrExit(cmd, "input-chronicle")
 	warnOnWrongFileExtension(inPdf, "pdf")
 
+	// get templates
 	ts, err := template.GetStore()
 	utils.ExitOnError(err, "Error retrieving templates")
 	cTmpl, exists := ts.Get(tmplName)
@@ -173,13 +174,14 @@ func executeBatchFill(cmd *cobra.Command, cmdArgs []string) {
 		utils.ExitWithMessage("Template '%v' not found", tmplName)
 	}
 
+	// get arg value stores from CSV data
 	batchArgStores, err := args.GetArgStoresFromCsvRecords(csvRecords)
 	utils.ExitOnError(err, "Error parsing CSV file")
 	if len(batchArgStores) == 0 {
 		utils.ExitWithMessage("No output files were created as CSV file '%v' does not contain any player values", inCsv)
 	}
 
-	// parse remaining arguments
+	// parse remaining command line arguments
 	cmdLineArgStore, err := args.NewStore(args.StoreInit{Args: remainingArgs})
 	utils.ExitOnError(err, "Error processing command line arguments")
 
