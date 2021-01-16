@@ -1,6 +1,9 @@
 id: pfs2.s2.oldLayout
 description: "PFS2 Season 2: Year of Corruption's Reach (Old Layout)"
 parent: pfs2.layout1
+displayparent: pfs2.s2
+flags:
+  - hidden
 
 presets:
   items.low.area:

@@ -29,20 +29,24 @@ var (
 
 // Chronicle is the new approach for the Chronicle Template
 type Chronicle struct {
-	ID          string
-	Description string
-	Parent      string
-	Aspectratio string
-	Flags       []string
-	Parameters  param.Store
-	Presets     preset.Store
-	Canvas      canvas.Store
-	Content     content.ListStore
+	ID            string
+	Description   string
+	Parent        string
+	DisplayParent string
+	Aspectratio   string
+	Flags         []string
+	Parameters    param.Store
+	Presets       preset.Store
+	Canvas        canvas.Store
+	Content       content.ListStore
 
 	filename string // filename of the originating yaml file
 
-	parent   *Chronicle
-	children []*Chronicle
+	layoutParent   *Chronicle
+	layoutChildren []*Chronicle
+
+	displayParent   *Chronicle
+	displayChildren []*Chronicle
 }
 
 // NewChronicleTemplate returns a new ChronicleTemplate object.
@@ -77,9 +81,11 @@ func (ct *Chronicle) ensureStoresAreInitialized() {
 	if ct.Content == nil {
 		ct.Content = content.NewListStore()
 	}
-
-	if ct.children == nil {
-		ct.children = make([]*Chronicle, 0)
+	if ct.layoutChildren == nil {
+		ct.layoutChildren = make([]*Chronicle, 0)
+	}
+	if ct.displayChildren == nil {
+		ct.displayChildren = make([]*Chronicle, 0)
 	}
 }
 
@@ -357,22 +363,35 @@ func (ct *Chronicle) guessMarginsFromAspectRatio(stamp *stamp.Stamp) (xMarginPct
 		f := arx * sy / ary
 		g := (100.0 * f) / sx
 		marginPct := 100.0 - g
-		//fmt.Printf("f: %.6f, g: %.6f, h: %.6f, test: %.6f\n", f, g, h, 100.0*609.9/612.0)
 		return marginPct, 0.0, nil
 	}
 
 	return 0.0, 0.0, nil // no margins, fits perfect
 }
 
-func (ct *Chronicle) addChild(childCt *Chronicle) (err error) {
-	// add references to chronicle templates
-	utils.Assert(childCt.parent == nil, "Chronicle can only have one 'inherit' entry, thus can only have one parent")
-	childCt.parent = ct
-	ct.children = append(ct.children, childCt)
+func (ct *Chronicle) addLayoutChild(childCt *Chronicle) error {
+	getParentPtr := func(ct *Chronicle) **Chronicle { return &ct.layoutParent }
+	getChildrenPtr := func(ct *Chronicle) *[]*Chronicle { return &ct.layoutChildren }
+	return ct.addChildGeneric(childCt, true, getParentPtr, getChildrenPtr)
+}
+
+func (ct *Chronicle) addDisplayChild(childCt *Chronicle) error {
+	getParentPtr := func(ct *Chronicle) **Chronicle { return &ct.displayParent }
+	getChildrenPtr := func(ct *Chronicle) *[]*Chronicle { return &ct.displayChildren }
+	return ct.addChildGeneric(childCt, false, getParentPtr, getChildrenPtr)
+}
+
+func (ct *Chronicle) addChildGeneric(childCt *Chronicle, enforceParentNil bool, getParentPtr func(*Chronicle) **Chronicle, getChildrenPtr func(*Chronicle) *[]*Chronicle) (err error) {
+	if enforceParentNil {
+		utils.Assert(*getParentPtr(childCt) == nil, "Chronicle can only inherit from one parent")
+	}
+
+	*getParentPtr(childCt) = ct
+	*getChildrenPtr(ct) = append(*getChildrenPtr(ct), childCt)
 
 	// check for cyclic dependencies
 	depList := make([]string, 0)
-	for curCt := ct; curCt.parent != nil; curCt = curCt.parent {
+	for curCt := ct; *getParentPtr(curCt) != nil; curCt = *getParentPtr(curCt) {
 		if utils.Contains(depList, curCt.ID) {
 			depList = append(depList, curCt.ID) // add entry before printing to have complete cycle in output
 			return templateErrf(curCt, "Found cyclic inheritance dependencies. Inheritance chain is %v", depList)
@@ -381,14 +400,14 @@ func (ct *Chronicle) addChild(childCt *Chronicle) (err error) {
 	}
 
 	// ensure that list of children is sorted lexically
-	sortChronicleList(ct.children)
+	sortChronicleList(*getChildrenPtr(ct))
 
 	return nil
 }
 
-func (ct *Chronicle) getHierarchieLevel(excludeHidden bool) (level uint) {
-	for curCt := ct.parent; curCt != nil; curCt = curCt.parent {
-		if !curCt.hasFlag("hidden") {
+func (ct *Chronicle) getDisplayLevel(excludeHidden bool) (level uint) {
+	for curCt := ct.displayParent; curCt != nil; curCt = curCt.displayParent {
+		if !curCt.isHidden() {
 			level++
 		}
 	}
@@ -406,4 +425,24 @@ func (ct *Chronicle) hasValidFlags() (err error) {
 
 func (ct *Chronicle) hasFlag(flag string) bool {
 	return utils.Contains(ct.Flags, flag)
+}
+
+func (ct *Chronicle) isHidden() bool {
+	return ct.hasFlag("hidden")
+}
+
+// performPreOrder interates over a tree structure in a preorder way,
+// i.e. first resolves the current node, then child subtrees from left to right.
+func (ct *Chronicle) performPreOrder(workerFct func(*Chronicle) error, getChildrenFct func(ct *Chronicle) []*Chronicle) (err error) {
+	if err = workerFct(ct); err != nil {
+		return err
+	}
+
+	for _, child := range getChildrenFct(ct) {
+		if err = child.performPreOrder(workerFct, getChildrenFct); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
