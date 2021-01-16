@@ -74,22 +74,35 @@ func getStoreForDir(dir string) (store *Store, err error) {
 func (s *Store) resolve() (err error) {
 	// resolve references between templates
 	for _, ct := range *s {
+		// DisplayParent is equal to Parent if not set explicitly
+		if utils.IsSet(ct.Parent) && !utils.IsSet(ct.DisplayParent) {
+			ct.DisplayParent = ct.Parent
+		}
+
 		if utils.IsSet(ct.Parent) {
 			// check if parent actually exists, and if so, add chronicle reference
 			parentCt, exists := s.Get(ct.Parent)
 			if !exists {
-				return fmt.Errorf("Template '%v' inherits from template '%v', but that template cannot be found", ct.ID, ct.Parent)
+				return fmt.Errorf("Template '%v' has a dependency to template '%v', but that template cannot be found", ct.ID, ct.Parent)
 			}
 
-			if err = parentCt.addChild(ct); err != nil {
+			if err = parentCt.addLayoutChild(ct); err != nil {
 				return err
 			}
+		}
+
+		if utils.IsSet(ct.DisplayParent) {
+			parentCt, exists := s.Get(ct.DisplayParent)
+			if !exists {
+				return fmt.Errorf("Template '%v' has a dependency to template '%v', but that template cannot be found", ct.ID, ct.Parent)
+			}
+			ct.displayParent = parentCt
 		}
 	}
 
 	// inherit and resolve, starting at root nodes
-	if err = s.performPreOrder(func(ct *Chronicle) error {
-		for _, childCt := range ct.children {
+	err = s.performPreOrderLayout(func(ct *Chronicle) error {
+		for _, childCt := range ct.layoutChildren {
 			// ensure that children inherit before the current chronicle is resolved
 			if err = childCt.inheritFrom(ct); err != nil {
 				return err
@@ -101,8 +114,35 @@ func (s *Store) resolve() (err error) {
 			return err
 		}
 		return nil
-	}); err != nil {
+	})
+	if err != nil {
 		return err
+	}
+
+	// now every node has its display parent set, but including hidden nodes.
+	// iterate over all nodes and cut hidden nodes out
+	for _, ct := range *s {
+		parentNode := ct.displayParent
+		for parentNode != nil && parentNode.isHidden() {
+			parentNode = parentNode.displayParent
+		}
+		ct.displayParent = parentNode
+	}
+
+	// now fill the display children list of all nodes.
+	// ignore hidden nodes, as they should be cut out of the hierarchie and we want to avoid
+	// that they appear in any children lists
+	for _, ct := range *s {
+		if ct.isHidden() {
+			continue
+		}
+
+		parentNode := ct.displayParent
+		if parentNode != nil {
+			if err = parentNode.addDisplayChild(ct); err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil
@@ -115,7 +155,7 @@ func (s *Store) isValid() (err error) {
 	// Basically this function guarantees that parent templates are validated before their
 	// child templates.
 
-	if err = s.performPreOrder(func(ct *Chronicle) error {
+	if err = s.performPreOrderLayout(func(ct *Chronicle) error {
 		if err = ct.IsValid(); err != nil {
 			return err
 		}
@@ -128,19 +168,21 @@ func (s *Store) isValid() (err error) {
 	return nil
 }
 
-// performPreOrder traverses the hierarchie structure in a preorder way,
-// i.e. first resolves the current node, then child subtrees from left to right.
-func (s *Store) performPreOrder(workerFct func(*Chronicle) error) error {
-	worklist := s.getRootTemplates()
-	for len(worklist) > 0 {
-		ct := worklist[0]
+func (s *Store) performPreOrderLayout(workerFct func(*Chronicle) error) error {
+	return s.performPreOrderGeneric(workerFct, func(ct *Chronicle) []*Chronicle { return ct.layoutChildren })
+}
 
-		if err := workerFct(ct); err != nil {
+func (s *Store) performPreOrderDisplay(workerFct func(*Chronicle) error) error {
+	return s.performPreOrderGeneric(workerFct, func(ct *Chronicle) []*Chronicle { return ct.displayChildren })
+}
+
+// performPreOrderGeneric traverses the hierarchie structure in a preorder way,
+// i.e. first resolves the current node, then child subtrees from left to right.
+func (s *Store) performPreOrderGeneric(workerFct func(*Chronicle) error, getChildrenFct func(*Chronicle) []*Chronicle) (err error) {
+	for _, rootTemplate := range s.getRootTemplates() {
+		if err = rootTemplate.performPreOrder(workerFct, getChildrenFct); err != nil {
 			return err
 		}
-
-		// add new nodes at beginning for preorder traversal
-		worklist = append(ct.children, worklist[1:]...)
 	}
 	return nil
 }
@@ -149,7 +191,7 @@ func (s *Store) getRootTemplates() (result []*Chronicle) {
 	result = make([]*Chronicle, 0)
 
 	for _, ct := range *s {
-		if ct.parent == nil {
+		if ct.layoutParent == nil {
 			result = append(result, ct)
 		}
 	}
@@ -176,14 +218,12 @@ func (s *Store) getTemplatesInheritingFrom(parentID string) (childIDs []string) 
 func (s *Store) ListTemplates() (result string) {
 	var sb strings.Builder
 
-	s.performPreOrder(func(ct *Chronicle) error {
-		if !ct.hasFlag("hidden") {
-			// print hierarchie indentation
-			for level := ct.getHierarchieLevel(true); level > 0; level-- {
-				fmt.Fprint(&sb, "  ")
-			}
-			fmt.Fprintf(&sb, "- %v: %v\n", ct.ID, ct.Description)
+	s.performPreOrderDisplay(func(ct *Chronicle) error {
+		// print hierarchie indentation
+		for level := ct.getDisplayLevel(true); level > 0; level-- {
+			fmt.Fprint(&sb, "  ")
 		}
+		fmt.Fprintf(&sb, "- %v: %v\n", ct.ID, ct.Description)
 		return nil
 	})
 
