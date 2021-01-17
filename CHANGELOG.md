@@ -8,11 +8,12 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Templates now distinguish between layout parents and display hierarchie parents. Finally a properly sorted list without having two separate entries for PFS2 season 2 with old and new layout
+- Command line arguments provided within the CSV file now automatically remove enclosing quotation marks
 
 ### Removed
 
 ### Fixed
-- If a command line flag was set in a CSV file, then it was not possible to overwrite this with a command line argument in the following `batch fill` call 
+- If a command line parameter was set in a CSV file, then it was not possible to overwrite this from the command line in the following `batch fill` call 
 
 ## v0.16.1 - 2021-01-11
 

@@ -145,6 +145,20 @@ func QuoteStringIfRequired(s string) string {
 	return s
 }
 
+// UnquoteStringIfRequired takes a string as input. If the string is enclosed in
+// quotation marks, then these are removed in the returned string
+func UnquoteStringIfRequired(s string) string {
+	if len(s) > 1 {
+		first := s[:1]
+		last := s[len(s)-1:]
+		if first == last && Contains([]string{"\"", "'"}, first) {
+			return s[1 : len(s)-1]
+		}
+	}
+
+	return s
+}
+
 // IsExported takes a reflection value and checks whether that is an exported field in
 // a struct. Well, we cannot check here whether this is a struct field, but under the
 // assumption that it was one, we can check whether it is exported then. Yay!

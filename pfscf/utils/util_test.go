@@ -9,6 +9,33 @@ func helperCopyValueIfUnset(t *testing.T) {
 
 }
 
+func TestUnquoteIfRequired(t *testing.T) {
+	testdata := []struct {
+		input, exp string
+	}{
+		{"", ""},
+		{"foo", "foo"},
+		{"\"foo\"", "foo"},
+		{"'foo'", "foo"},
+		{"\"foo'", "\"foo'"},
+		{"'foo\"", "'foo\""},
+		{"\"'foo'\"", "'foo'"},
+		{"'\"foo\"'", "\"foo\""},
+		{"\"\"", ""},
+		{"''", ""},
+		{"\"", "\""},
+		{"'", "'"},
+	}
+
+	for _, tt := range testdata {
+		output := UnquoteStringIfRequired(tt.input)
+
+		if output != tt.exp {
+			t.Errorf("Error unquoting string '%v': Expected '%v', got '%v'", tt.input, tt.exp, output)
+		}
+	}
+}
+
 func TestCopyValueIfUnset(t *testing.T) {
 	zero := 0.0
 	one := 1.0

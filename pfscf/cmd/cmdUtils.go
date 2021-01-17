@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Blesmol/pfscf/pfscf/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +33,7 @@ func setFlagsFromRecords(cmd *cobra.Command, records [][]string) error {
 		marker := "flag:--"
 		if strings.HasPrefix(flagCandidate, marker) {
 			flagName := flagCandidate[len(marker):]
-			flagValue := record[1]
+			flagValue := utils.UnquoteStringIfRequired(record[1])
 			flags := cmd.Flags()
 
 			if flags.Lookup(flagName) == nil {
