@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 ### Changed
+- Templates now distinguish between layout parents and display hierarchie parents. Finally a properly sorted list without having two separate entries for PFS2 season 2 with old and new layout
 
 ### Removed
 
