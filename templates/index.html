@@ -1,0 +1,1286 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.5">
+    
+    
+      
+        <title>Creating Template Files for Pfscf (Outdated) - The Pathfinder Society Chronicle Filler</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.15aa0b43.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.75751829.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#creating-template-files-for-pfscf-outdated" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="The Pathfinder Society Chronicle Filler" class="md-header-nav__button md-logo" aria-label="The Pathfinder Society Chronicle Filler">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            The Pathfinder Society Chronicle Filler
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Creating Template Files for Pfscf (Outdated)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="The Pathfinder Society Chronicle Filler" class="md-nav__button md-logo" aria-label="The Pathfinder Society Chronicle Filler">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    The Pathfinder Society Chronicle Filler
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Overview
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quickstart/" class="md-nav__link">
+        Quickstart
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        Installation & Updates
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
+        Filling Out Chronicles
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../extraction/" class="md-nav__link">
+        Getting Blank Chronicle Sheets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Creating Template Files for Pfscf (Outdated)
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Creating Template Files for Pfscf (Outdated)
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#template-structure-on-disk" class="md-nav__link">
+    Template Structure on Disk
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#template-file-format" class="md-nav__link">
+    Template File Format
+  </a>
+  
+    <nav class="md-nav" aria-label="Template File Format">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#yaml-format" class="md-nav__link">
+    YAML Format
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-layout" class="md-nav__link">
+    File Layout
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#content-types" class="md-nav__link">
+    Content Types
+  </a>
+  
+    <nav class="md-nav" aria-label="Content Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generic-content-entry-structure" class="md-nav__link">
+    Generic Content Entry Structure
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-textcell" class="md-nav__link">
+    Type textCell
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-societyid" class="md-nav__link">
+    Type societyId
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#presets-mechanism" class="md-nav__link">
+    Presets Mechanism
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#template-inheritance" class="md-nav__link">
+    Template Inheritance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-the-correct-coordinates" class="md-nav__link">
+    Finding the Correct Coordinates
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-formatting-options" class="md-nav__link">
+    Other Formatting Options
+  </a>
+  
+    <nav class="md-nav" aria-label="Other Formatting Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#text-alignment" class="md-nav__link">
+    Text Alignment
+  </a>
+  
+    <nav class="md-nav" aria-label="Text Alignment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#horizontal-alignment" class="md-nav__link">
+    Horizontal Alignment
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vertical-alignment" class="md-nav__link">
+    Vertical Alignment
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fonts" class="md-nav__link">
+    Fonts
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        Frequently Asked Questions
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        Troubleshooting
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../legal/" class="md-nav__link">
+        Legal disclaimer
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#template-structure-on-disk" class="md-nav__link">
+    Template Structure on Disk
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#template-file-format" class="md-nav__link">
+    Template File Format
+  </a>
+  
+    <nav class="md-nav" aria-label="Template File Format">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#yaml-format" class="md-nav__link">
+    YAML Format
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-layout" class="md-nav__link">
+    File Layout
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#content-types" class="md-nav__link">
+    Content Types
+  </a>
+  
+    <nav class="md-nav" aria-label="Content Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generic-content-entry-structure" class="md-nav__link">
+    Generic Content Entry Structure
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-textcell" class="md-nav__link">
+    Type textCell
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#type-societyid" class="md-nav__link">
+    Type societyId
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#presets-mechanism" class="md-nav__link">
+    Presets Mechanism
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#template-inheritance" class="md-nav__link">
+    Template Inheritance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-the-correct-coordinates" class="md-nav__link">
+    Finding the Correct Coordinates
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-formatting-options" class="md-nav__link">
+    Other Formatting Options
+  </a>
+  
+    <nav class="md-nav" aria-label="Other Formatting Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#text-alignment" class="md-nav__link">
+    Text Alignment
+  </a>
+  
+    <nav class="md-nav" aria-label="Text Alignment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#horizontal-alignment" class="md-nav__link">
+    Horizontal Alignment
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vertical-alignment" class="md-nav__link">
+    Vertical Alignment
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fonts" class="md-nav__link">
+    Fonts
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="creating-template-files-for-pfscf-outdated">Creating Template Files for Pfscf (Outdated)</h1>
+<div class="admonition warning">
+<p class="admonition-title">Outdated</p>
+<p>The contents of this page are quite outdated. I will see that I update this page in the near future.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Format bound to change</p>
+<p>This is still quite a new project.
+And already the file format for the chronicle templates has changed various times.
+Most likely this will happen again in the near future, multiple times.
+So please keep that in mind when writing new files: They will most likely need to be updated again soon.</p>
+</div>
+<p>After some time of using pfscf, you might be tempted to create your own templates or modify existing ones.
+Or you are just curious on what is currently supported by pfscf.
+Besides, it's always useful to provide proper documentation.
+Even if perhaps only for the reason to show that the weird behavior for something might be actually intended!</p>
+<h2 id="template-structure-on-disk">Template Structure on Disk</h2>
+<p>The template files are stored in a folder <code>templates</code> that is located in the same folder as the pfscf executable file.
+Within this folder, each template is stored in a single file with file extension <code>.yml</code>.
+It is also possible to create subfolder within the <code>templates</code> folder to organize the template files.
+For example, this could be used to have separate folders for each supported game system, e.g. one folder for Pathfinder, one for Starfinder.</p>
+<p>The filenames of the template files are irrelevant.
+They should provide a hint to what is included, but besides from that they are not used anywhere.
+This especially means that they are not used for the unique identifier which each template must have; this is done by the <code>id</code> field within the template file.
+See also the <a href="#template-file-format"><code>Template file format</code></a> section below on this.</p>
+<h2 id="template-file-format">Template File Format</h2>
+<h3 id="yaml-format">YAML Format</h3>
+<p>Template files are stored in YAML format, one template per file.
+The official spec of this format is maintained at <a href="https://yaml.org/">yaml.org</a>, and if you search the web you will find lots of examples, introductions and explanations to the format.
+In this document, however, I will try to spare you the irrelevant parts and only include a very basic overview over what you might need.</p>
+<p>A YAML file is a plain text file and can be opened with any text editor, if need be with the Windows Notepad application.
+What is not possible is to use MS Word, LibreOffice and the like to modify such files.
+Many modern text editors even bringt support for writing/modifying YAML files.
+One such editor that I can recommend is <a href="https://notepad-plus-plus.org">Notepad++</a> (not to be mixed up with the already mentioned MS Notepad).</p>
+<p>YAML is intended to be a human-readable format.
+Most lines in these files follow the format <code>&lt;some identifier&gt;: &lt;some value&gt;</code>, e.g. <code>description: This is a template for PFS</code>.
+And until I have more time to write a proper YAML introduction, I would suggest you take a look at the existing files in the <code>templates</code> folder or search the web.</p>
+<h3 id="file-layout">File Layout</h3>
+<p>Template files have the following structure:
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;unique template identifier&gt;</span>
+<span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;short description on what this template contains&gt;</span>
+<span class="nt">inherit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;id of template that should be inherited&gt;</span>
+
+<span class="nt">presets</span><span class="p">:</span>
+  <span class="nt">&lt;presetId&gt;</span><span class="p">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">&lt;content&gt;</span>
+  <span class="nt">&lt;presetId&gt;</span><span class="p">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">&lt;content&gt;</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+
+<span class="nt">content</span><span class="p">:</span>
+  <span class="nt">&lt;contentId&gt;</span><span class="p">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">&lt;content&gt;</span>
+  <span class="nt">&lt;contentId&gt;</span><span class="p">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">&lt;content&gt;</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+</code></pre></div></p>
+<details>
+  <summary>Example</summary>
+
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">myId</span>
+<span class="nt">description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">This is an example template</span>
+<span class="nt">inherit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">idOfMyOtherCoolTemplate</span>
+
+<span class="nt">presets</span><span class="p">:</span>
+  <span class="nt">topline</span><span class="p">:</span>
+    <span class="nt">y</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">y2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+  <span class="nt">bottomline</span><span class="p">:</span>
+    <span class="nt">y</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">40</span>
+    <span class="nt">y2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+
+<span class="nt">content</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">topline</span> <span class="p p-Indicator">]</span>
+    <span class="nt">x</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+    <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">15</span>
+  <span class="nt">date</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">bottomline</span> <span class="p p-Indicator">]</span>
+    <span class="nt">x</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">23</span>
+</code></pre></div>
+</details>
+
+<p>The only mandatory top-level fields in such a template are the <code>id</code> and the <code>description</code>, all other top-level fields (<code>inherit</code>, <code>presets</code>, <code>content</code>) in this basic structure are optional.
+Of course, a template that only consists of an <code>id</code> and a <code>description</code> does not make much sense.
+But who am I to judge?</p>
+<p>Each entry below <code>content</code> and <code>presets</code> must have an ID that is unique within that section.
+That means, no two entries in the <code>content</code> section may have the same ID, and no two entries in the <code>presets</code> section may have the same ID.
+The description on what may be included in a <code>content</code> or <code>presets</code> entry is described below.</p>
+<h2 id="content-types">Content Types</h2>
+<p>The pfsct app supports different types of content entries.
+Each content entry requires a mandatory field <code>type</code> where the type of the content entry must be added.</p>
+<h3 id="generic-content-entry-structure">Generic Content Entry Structure</h3>
+<p>A content entry has a specific structure and set of fields.
+The different types listed below use only a subset of these fields.</p>
+<p>The available fields are as follows:</p>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="left">Description</th>
+<th align="center">Input type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>type</code></td>
+<td align="left">The name of the type of this content entry. The currently supported types are described below</td>
+<td align="center">Text</td>
+</tr>
+<tr>
+<td align="left"><code>desc</code></td>
+<td align="left">Short description of what this content entry is or does</td>
+<td align="center">Text</td>
+</tr>
+<tr>
+<td align="left"><code>x</code></td>
+<td align="left">First coordinate on the X axis for the current content</td>
+<td align="center">Number</td>
+</tr>
+<tr>
+<td align="left"><code>y</code></td>
+<td align="left">First coordinate on the Y axis for the current content</td>
+<td align="center">Number</td>
+</tr>
+<tr>
+<td align="left"><code>x2</code></td>
+<td align="left">Second coordinate on the X axis for the current content</td>
+<td align="center">Number</td>
+</tr>
+<tr>
+<td align="left"><code>y2</code></td>
+<td align="left">Second coordinate on the Y axis for the current content</td>
+<td align="center">Number</td>
+</tr>
+<tr>
+<td align="left"><code>xpivot</code></td>
+<td align="left">Pivot point on the X axis for the current content</td>
+<td align="center">Number</td>
+</tr>
+<tr>
+<td align="left"><code>font</code></td>
+<td align="left">Name of the font to use. See <a href="#fonts">the list of supported fonts</a></td>
+<td align="center">Text</td>
+</tr>
+<tr>
+<td align="left"><code>fontsize</code></td>
+<td align="left">Fontsize in points</td>
+<td align="center">Number</td>
+</tr>
+<tr>
+<td align="left"><code>align</code></td>
+<td align="left">Text alignment inside the rectangle. See <a href="#text-alignment">the list of supported alignments</a>.</td>
+<td align="center">Text</td>
+</tr>
+<tr>
+<td align="left"><code>example</code></td>
+<td align="left">An example input value for the current content</td>
+<td align="center">Text</td>
+</tr>
+<tr>
+<td align="left"><code>presets</code></td>
+<td align="left">A list of preset IDs to apply to this content entry. See the <a href="#presets-mechanism">section about presets</a></td>
+<td align="center">List</td>
+</tr>
+</tbody>
+</table>
+<h3 id="type-textcell">Type <code>textCell</code></h3>
+<p>A <code>textCell</code> describes a rectangular cell on the PDF file where user-provided text is added.</p>
+<p>It has a couple of mandatory and some optional fields.
+All fields that are not listed in the table below are currently not used and simply ignored.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="center">Required?</th>
+<th align="left">Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>desc</code></td>
+<td align="center">Optional</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>x</code>, <code>y</code></td>
+<td align="center">Mandatory</td>
+<td align="left">Set of coordinates for one of the cell corners</td>
+</tr>
+<tr>
+<td align="left"><code>x2</code>, <code>y2</code></td>
+<td align="center">Mandatory</td>
+<td align="left">Set of coordinates for the cell corner opposite of the first corner</td>
+</tr>
+<tr>
+<td align="left"><code>font</code></td>
+<td align="center">Mandatory</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>fontsize</code></td>
+<td align="center">Mandatory</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>align</code></td>
+<td align="center">Mandatory   .</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>example</code></td>
+<td align="center">Optional</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>presets</code></td>
+<td align="center">Optional</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<p>Regarding the coordinates: It does not matter whether <code>x</code> is smaller than <code>x2</code> or vice versa.
+Same goes for <code>y</code> and <code>y2</code>.</p>
+<details>
+  <summary>TextCell Example</summary>
+
+<div class="highlight"><pre><span></span><code><span class="nt">playername</span><span class="p">:</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+  <span class="nt">desc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Player name</span>
+  <span class="nt">x</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">40</span>
+  <span class="nt">y</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">75</span>
+  <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+  <span class="nt">y2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+  <span class="nt">font</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Helvetica</span>
+  <span class="nt">fontsize</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">14</span>
+  <span class="nt">align</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CB</span>
+  <span class="nt">example</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Bob</span>
+</code></pre></div>
+</details>
+
+<h3 id="type-societyid">Type <code>societyId</code></h3>
+<p>A <code>societyId</code> is a special type of content whose sole purpose is to bring a society ID to a chronicle with some special formatting.
+A society ID should follow the pattern <code>&lt;player_id&gt;-&lt;char_id&gt;</code>, e.g. 123456-789.</p>
+<p>So why not simply use one or multiple <code>textCell</code> entries for this?
+Well, the <code>societyId</code> does a little bit more than that.
+One special thing is that it blanks out (some of) the background underneath it.
+For PFS2, there is already the "- 2" part of the society ID preprinted on the chronicles.
+I can understand the motivation behind that, but for the automatically filled out chronicles I want to have everything using the same font and size.</p>
+<p>Second reason for an own content type is the positioning.
+With a text cell you always have to make assumptions on where exactly to put the text.
+Should it be left-aligned?
+But what if the player id is longer for some players as it has more digits?
+Long story short: The <code>societyId</code> type takes one extra parameter <code>xpivot</code> that basically says on where exactly the dash should be located on the x axis.
+Left of that we have the player id, right of that we have the char id.</p>
+<p>This content type has a couple of mandatory and some optional fields.
+All fields that are not listed in the table below are currently not used and simply ignored.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Field</th>
+<th align="center">Required?</th>
+<th align="left">Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>desc</code></td>
+<td align="center">Optional</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>x</code>, <code>y</code></td>
+<td align="center">Mandatory</td>
+<td align="left">Set of coordinates for one of the cell corners</td>
+</tr>
+<tr>
+<td align="left"><code>x2</code>, <code>y2</code></td>
+<td align="center">Mandatory</td>
+<td align="left">Set of coordinates for the cell corner opposite of the first corner</td>
+</tr>
+<tr>
+<td align="left"><code>xpivot</code></td>
+<td align="center">Mandatory</td>
+<td align="left">Location of the (center of the) dash on the x axis. Must lie between <code>x</code> and <code>x2</code></td>
+</tr>
+<tr>
+<td align="left"><code>font</code></td>
+<td align="center">Mandatory</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>fontsize</code></td>
+<td align="center">Mandatory</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>example</code></td>
+<td align="center">Optional</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><code>presets</code></td>
+<td align="center">Optional</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<details>
+  <summary>SocietyId Example</summary>
+
+<div class="highlight"><pre><span></span><code><span class="nt">societyid</span><span class="p">:</span>
+  <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">societyId</span>
+  <span class="nt">desc</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">The players society id</span>
+  <span class="nt">x</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">40</span>
+  <span class="nt">y</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">75</span>
+  <span class="nt">xpivot</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">52</span>
+  <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+  <span class="nt">y2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+  <span class="nt">font</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Helvetica</span>
+  <span class="nt">fontsize</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">14</span>
+  <span class="nt">example</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">123456-789</span>
+</code></pre></div>
+</details>
+
+<h2 id="presets-mechanism">Presets Mechanism</h2>
+<p>Presets are a way to reuse things like coordinates that appear in multiple content entries.
+For example, you might want to use the same font everywhere.
+You can either write down the same font in each and every content entry.
+Or you create a preset that contains the font name and use that in all entries.</p>
+<p>Another useful example is if you have multiple content entries that should appear on the same line in the final PDF, i.e. they are using the same coordinates for the Y axis, and don't want to repeat the coordinates in each entry here.
+You can then manage, e.g. the Y coordinates in a single preset that is used by all entries on the same line.</p>
+<p>Presets are structured in a more or less similar way as "regular" content entries, i.e. the list of supported fields is a subset of what is presented in section <a href="#generic-content-entry-structure">Generic Content Entry Structure</a>.
+Presets can be used by content entries or by other presets.
+To use a preset, it has to be listed in the <code>presets</code> section of a content entry or another preset entry.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">content</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span>
+    <span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">topline</span> <span class="p p-Indicator">]</span>
+</code></pre></div>
+<details>
+  <summary>Presets Example</summary>
+
+Example structure:
+<div class="highlight"><pre><span></span><code><span class="nt">presets</span><span class="p">:</span>
+  <span class="nt">defaultfont</span><span class="p">:</span>
+    <span class="nt">font</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Helvetica</span>
+    <span class="nt">fontsize</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">14</span>
+  <span class="nt">topline</span><span class="p">:</span>
+    <span class="nt">y</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">y2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">defaultfont</span> <span class="p p-Indicator">]</span>
+<span class="nt">contents</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">x</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">27.5</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">topline</span> <span class="p p-Indicator">]</span>
+</code></pre></div>
+
+Resulting content:
+<div class="highlight"><pre><span></span><code><span class="nt">contents</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">x</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">y</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">10</span> <span class="c1"># from preset &#39;topline&#39;</span>
+    <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">27.5</span>
+    <span class="nt">y2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span> <span class="c1"># from preset &#39;topline&#39;</span>
+    <span class="nt">font</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Helvetica</span>  <span class="c1"># from template &#39;defaultfont&#39;, indirectly inherited via &#39;topline&#39;</span>
+    <span class="nt">fontsize</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">14</span>     <span class="c1"># from template &#39;defaultfont&#39;, indirectly inherited via &#39;topline&#39;</span>
+</code></pre></div>
+</details>
+
+<p>It is possible to use multiple presets at the same time.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">content</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span>
+    <span class="p p-Indicator">[</span><span class="nv">...</span><span class="p p-Indicator">]</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">topline</span><span class="p p-Indicator">,</span> <span class="nv">boldfont</span> <span class="p p-Indicator">]</span>
+</code></pre></div>
+<p>But this will only work as long as the presets are "compatible" to each other, i.e. as long as they do not contain any conflicting information.
+So it is not possible to use two presets in the same content entry where one of them says that, e.g., the <code>y2</code> coordinate has a value of 100, and the other presets states that <code>y2</code> should be 105.</p>
+<details>
+  <summary>Presets Conflict Example</summary>
+
+Example structure:
+<div class="highlight"><pre><span></span><code><span class="nt">presets</span><span class="p">:</span>
+  <span class="nt">presetX</span><span class="p">:</span>
+    <span class="nt">x</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+
+  <span class="nt">presetCoords_1</span><span class="p">:</span>
+    <span class="nt">y</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">presetX</span> <span class="p p-Indicator">]</span>
+
+  <span class="nt">presetCoords_2</span><span class="p">:</span>
+    <span class="nt">y</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">presetX</span> <span class="p p-Indicator">]</span>
+
+<span class="nt">contents</span><span class="p">:</span>
+  <span class="nt">someEntry_1</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">x</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">presetCoords_1</span> <span class="p p-Indicator">]</span>  <span class="c1"># Only one preset used; original &#39;x&#39; takes precedence, everything ok</span>
+
+  <span class="nt">someEntry_2</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">presetCoords_1</span><span class="p p-Indicator">,</span> <span class="nv">presetCoords_2</span> <span class="p p-Indicator">]</span> <span class="c1"># Conflict! Both presets have different values for &#39;x&#39;</span>
+</code></pre></div>
+</details>
+
+<h2 id="template-inheritance">Template Inheritance</h2>
+<p>Templates can inherit other templates.
+This means that all the content and presets from the original template will also be available in the new template.
+The inheritance mechanism works tranistively.
+So if template A inherits from template B, and template B inherits from template C, then all presets and content from both templates B and C will be available in template A.</p>
+<p>In case of conflicting IDs, i.e. when an ID for a preset or content entry appears in both template, the entry from the inheriting template takes precedence.</p>
+<p>Presets are only resolved after everything was inherited.
+This means you can also change the appearance of inherited content by replacing presets that are used by this inherited content.</p>
+<details>
+  <summary>Inheritance Example</summary>
+
+File 1 (will be inherited by file 2 below):
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+<span class="nt">presets</span><span class="p">:</span>
+  <span class="nt">defaultfont</span><span class="p">:</span>
+    <span class="nt">font</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Helvetica</span>
+    <span class="nt">fontsize</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">14</span>
+
+  <span class="nt">topline</span><span class="p">:</span>
+    <span class="nt">y</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">y2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">defaultfont</span> <span class="p p-Indicator">]</span>
+
+<span class="nt">content</span><span class="p">:</span>
+  <span class="nt">charname</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">x</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">topline</span> <span class="p p-Indicator">]</span>
+
+  <span class="nt">xp</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">x</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+    <span class="nt">y</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+</code></pre></div>
+
+File 2 (inherits file 1 from above):
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foobar</span>
+<span class="nt">inherit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foo</span>
+<span class="nt">presets</span><span class="p">:</span>
+  <span class="nt">defaultfont</span><span class="p">:</span>
+    <span class="nt">font</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Arial</span>
+    <span class="nt">fontsize</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="nt">content</span><span class="p">:</span>
+  <span class="nt">playername</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">x</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">30</span>
+    <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">topline</span> <span class="p p-Indicator">]</span>
+
+  <span class="nt">xp</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">x</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">45</span>
+    <span class="nt">y</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">45</span>
+</code></pre></div>
+
+Result after inheritance was resolved:
+<div class="highlight"><pre><span></span><code><span class="nt">id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">foobar</span>
+<span class="nt">presets</span><span class="p">:</span>
+  <span class="nt">defaultfont</span><span class="p">:</span>  <span class="c1"># &lt;= this comes from file 2</span>
+    <span class="nt">font</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Arial</span>
+    <span class="nt">fontsize</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+
+  <span class="nt">topline</span><span class="p">:</span>      <span class="c1"># &lt;= this comes from file 1</span>
+    <span class="nt">y</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">y2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">defaultfont</span> <span class="p p-Indicator">]</span>
+
+<span class="nt">content</span><span class="p">:</span>
+  <span class="nt">charname</span><span class="p">:</span>     <span class="c1"># &lt;= this comes from file 1</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">x</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">10</span>
+    <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">topline</span> <span class="p p-Indicator">]</span>
+
+  <span class="nt">playername</span><span class="p">:</span>   <span class="c1"># &lt;= this comes from file 2</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">textCell</span>
+    <span class="nt">x</span><span class="p">:</span>  <span class="l l-Scalar l-Scalar-Plain">30</span>
+    <span class="nt">x2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
+    <span class="nt">presets</span><span class="p">:</span> <span class="p p-Indicator">[</span> <span class="nv">topline</span> <span class="p p-Indicator">]</span>
+
+  <span class="nt">xp</span><span class="p">:</span>           <span class="c1"># &lt;= this comes from file 2</span>
+    <span class="nt">x</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">45</span>
+    <span class="nt">y</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">45</span>
+</code></pre></div>
+
+</details>
+
+<h2 id="finding-the-correct-coordinates">Finding the Correct Coordinates</h2>
+<p>Let's be honest from the beginning: Finding the correct coordinates for adding own content is always fiddly and a lot of try-and-error.
+However, there are a few ways to make life easier here.
+There are currently three options for the <code>pfscf fill</code> command to support finding the correct coordinates:</p>
+<ul>
+<li><code>--cellBorder</code> (short: <code>-c</code>)</li>
+<li><code>--exampleValues</code> (short: <code>-e</code>)</li>
+<li><code>--grid</code> (short: <code>-g</code>)</li>
+</ul>
+<p>The <code>grid</code> option is probably the most useful.
+It will draw a grid over the chronicle PDF file and print the x/y coordinates at the borders of the page.
+The grid consists of major lines every 5 percent and minor lines every percent.
+This should allow to get at least the rough coordinates for whatever you want to add, although normally some fine-tuning is required afterwards.</p>
+<p>Next is the <code>cellBorder</code> option.
+When this is selected, <code>pfscf</code> will draw borders around the cells that it is printing on the page.
+This allows to see the exact boundaries and locations of what you provided via coordinates.
+At the moment, this is only done for content that is actually printed to the page.
+So if you have some new content, but do not print it on the page, there won't be any borders displayed as well.</p>
+<p>And finally the <code>exampleValues</code> option.
+If you select this, normal input values like, e.g. <code>player=Bob</code> will be ignored.
+Instead, every content that has an <code>example</code> value provided will be printed to the chronicle using exactly this value.</p>
+<p>So from experience I would suggest to start with the <code>grid</code> option, get rough initial coordinates, and then switch to using both the <code>cellBorder</code> option and the <code>exampleValues</code> option to fine-tune everything.</p>
+<h2 id="other-formatting-options">Other Formatting Options</h2>
+<h3 id="text-alignment">Text Alignment</h3>
+<p>Some content types, e.g. <code>textCell</code>, allow to choose an alignment.
+This normally consists of a horizontal and a vertical alignment.
+For example, selecting an alignment of <code>RT</code> for a <code>textCell</code> would indicate that the text should be aligned in the <strong>top</strong> <strong>right</strong> corner of the cell.
+The possible values for horizontal and vertical alignment can be found below.
+If you choose more than one horizontal or vertical alignment, no error will be thrown yet, but only one of the chosen alignments will be used.
+The order of the alignment values does not matter, e.g. both <code>RT</code> and <code>TR</code> will have the same result.</p>
+<h4 id="horizontal-alignment">Horizontal Alignment</h4>
+<ul>
+<li><code>L</code>: Left-bound</li>
+<li><code>C</code>: Centered</li>
+<li><code>R</code>: Right-bound</li>
+</ul>
+<h4 id="vertical-alignment">Vertical Alignment</h4>
+<ul>
+<li><code>T</code>: Top</li>
+<li><code>M</code>: Middle</li>
+<li><code>B</code>: Bottom</li>
+<li><code>A</code>: Baseline</li>
+</ul>
+<h3 id="fonts">Fonts</h3>
+<p>The list of fonts that can currently be used is as follows:</p>
+<ul>
+<li>Arial</li>
+<li>Courier</li>
+<li>Helvetica</li>
+<li>Times</li>
+<li>Symbol</li>
+<li>ZapfDingbats</li>
+</ul>
+<p>Support for other fonts will probably never come.
+What might come later is support for formatting options like bold, italics, underscores.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../extraction/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Getting Blank Chronicle Sheets
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../faq/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Frequently Asked Questions
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.93c04032.min.js"></script>
+      <script src="../assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.8c7e0a7e.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
