@@ -19,7 +19,7 @@ Therefore, please find below some guidance on how to extract chronicle sheets in
 3. Open print dialog
 4. Select printer "Microsoft Print to PDF"
 5. Select "Print pages: Current"
-6. Select "Fit"
+6. Select "Fit". Do NOT select "Actual Size". Yes, this is counter-intuitive, I know.
 7. Print
 
 ![Sheet extraction using Adobe Acrobat on Windows](assets/images/extract_chronicle_windows_acrobat.png)
