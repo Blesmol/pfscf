@@ -52,7 +52,7 @@ func GetBatchCommand() (cmd *cobra.Command) {
 	cmdBatch.PersistentFlags().StringVarP(&actionBatchOutputDir, "output-dir", "o", ".", "Directory in which the generated chronicles should be stored")
 
 	cmdCreate := &cobra.Command{
-		Use:     "create <output> [<content_id>=<value> ...]",
+		Use:     "create <csv_file> [<content_id>=<value> ...]",
 		Aliases: []string{"c"},
 
 		Short: "Create ready-to-fill csv file based on selected template",
