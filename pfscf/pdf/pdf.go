@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	pdfcpuapi "github.com/pdfcpu/pdfcpu/pkg/api"
+	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 
 	"github.com/Blesmol/pfscf/pfscf/args"
 	"github.com/Blesmol/pfscf/pfscf/cfg"
@@ -152,7 +153,7 @@ func (f *File) StampIt(stampFile string, outFile string) (err error) {
 	onTop := true     // stamps go on top, watermarks do not
 	updateWM := false // should the new watermark be added or an existing one updated?
 
-	wm, err := pdfcpuapi.PDFWatermark(stampFile, "rot:0, sc:1", onTop, updateWM)
+	wm, err := pdfcpuapi.PDFWatermark(stampFile, "rot:0, sc:1", onTop, updateWM, pdfcpu.POINTS)
 	if err != nil {
 		return err
 	}
