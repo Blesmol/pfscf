@@ -12,6 +12,15 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+## v0.16.3 - 2021-02-17
+
+### Added
+- Templates: Added pfs2.s2-11
+
+### Changed
+- Updated external dependencies
+- Minor improvements of help texts
+
 ## v0.16.2 - 2021-01-17
 
 ### Changed
