@@ -1,0 +1,18 @@
+id: pfs2.ashes6
+description: "Age of Ashes #150: Broken Promises"
+parent: pfs2.ashes
+
+presets:
+  checkbox.1:
+    x:  2.6
+    y: 15.6
+
+  checkbox.2:
+    x: 15.2
+    y: 15.6
+
+  boon.1:
+    x:   0.0
+    y:  21.5
+    x2: 79.5
+    y2: 31.0

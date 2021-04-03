@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Templates: Added pfs2-12,13,14
+- Templates: Added Age of Ashes adventure path
 
 ### Changed
 

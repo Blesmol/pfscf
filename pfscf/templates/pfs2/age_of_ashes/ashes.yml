@@ -1,0 +1,8 @@
+id: pfs2.ashes
+description: "Age of Ashes"
+parent: pfs2.layout1
+
+canvas:
+  rightbar:
+    y: 21.2
+

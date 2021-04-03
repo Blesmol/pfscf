@@ -1,0 +1,14 @@
+id: pfs2.ashes2
+description: "Age of Ashes #146: Cult of Cinders"
+parent: pfs2.ashes
+
+presets:
+  boon.1:
+    x:   0.0
+    y:  21.5
+    x2: 79.5
+    y2: 27.0
+
+  item.low.1:
+    y:  45.6
+    y2: 45.6

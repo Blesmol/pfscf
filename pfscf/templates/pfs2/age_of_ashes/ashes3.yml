@@ -1,0 +1,30 @@
+id: pfs2.ashes3
+description: "Age of Ashes #147: Tomorrow Must Burn"
+parent: pfs2.ashes
+
+presets:
+  boon.1:
+    x:   0.0
+    y:  21.5
+    x2: 79.5
+    y2: 38.0
+
+  checkbox.1:
+    x:  3.8
+    y: 26.0
+
+  checkbox.2:
+    x:  3.8
+    y: 31.5
+
+  item.low.1:
+    y:  45.6
+    y2: 45.6
+
+  item.low.2:
+    y:  47.0
+    y2: 47.0
+
+  item.low.3:
+    y:  48.5
+    y2: 48.5

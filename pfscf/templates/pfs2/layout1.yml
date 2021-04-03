@@ -125,9 +125,9 @@ parameters:
     strikeout_item_lines:
       type: choice
       description: "Item lines in the chosen subtier that should be striked out"
-      choices: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      choices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
       #example: 1,3,4
-      example: 1,2,3,4,5,6,7,8,9
+      example: 1,2,3,4,5,6,7,8,9,10,11,12
 
   "Rewards":
     starting_xp:
@@ -453,6 +453,18 @@ presets:
     y2: 59.1
 
   item.low.9:
+    y:  61.0
+    y2: 61.0
+
+  item.low.10:
+    y:  61.0
+    y2: 61.0
+
+  item.low.11:
+    y:  61.0
+    y2: 61.0
+
+  item.low.12:
     y:  61.0
     y2: 61.0
 
@@ -789,6 +801,15 @@ content:
             9:
               - type: line
                 presets: [strikeout_item, item.low.9]
+            10:
+              - type: line
+                presets: [strikeout_item, item.low.10]
+            11:
+              - type: line
+                presets: [strikeout_item, item.low.11]
+            12:
+              - type: line
+                presets: [strikeout_item, item.low.12]
 
       high:
         - type: strikeout

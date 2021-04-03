@@ -1,0 +1,66 @@
+id: pfs2.ashes5
+description: "Age of Ashes #149: Against the Scarlet Triad"
+parent: pfs2.ashes
+
+presets:
+  boon.1:
+    x:   0.0
+    y:  21.5
+    x2: 79.5
+    y2: 32.5
+
+  checkbox.1:
+    x:  3.8
+    y: 26.0
+
+  checkbox.2:
+    x:  3.8
+    y: 29.6
+
+  item.low.1:
+    y:  45.6
+    y2: 45.6
+
+  item.low.2:
+    y:  47.0
+    y2: 47.0
+
+  item.low.3:
+    y:  48.4
+    y2: 48.4
+
+  item.low.4:
+    y:  49.8
+    y2: 49.8
+
+  item.low.5:
+    y:  51.0
+    y2: 51.0
+
+  item.low.6:
+    y:  52.4
+    y2: 52.4
+
+  item.low.7:
+    y:  53.7
+    y2: 53.7
+
+  item.low.8:
+    y:  55.2
+    y2: 55.2
+
+  item.low.9:
+    y:  56.6
+    y2: 56.6
+
+  item.low.10:
+    y:  57.9
+    y2: 57.9
+
+  item.low.11:
+    y:  59.3
+    y2: 59.3
+
+  item.low.12:
+    y:  60.6
+    y2: 60.6
