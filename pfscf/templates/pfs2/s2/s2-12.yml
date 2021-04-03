@@ -1,0 +1,16 @@
+id: pfs2.s2-12
+description: "#2-12: Snakes in the Grass"
+parent: pfs2.s2
+
+presets:
+  checkbox.1:
+    x: 35.8
+    y: 13.4
+
+  checkbox.2:
+    x: 10.3
+    y: 15.2
+
+  checkbox.3:
+    x: 65.9
+    y: 15.2

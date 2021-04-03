@@ -1,0 +1,16 @@
+id: pfs2.s2-13
+description: "#2-13: A Gilded Test"
+parent: pfs2.s2
+
+presets:
+  checkbox.1:
+    x: 23.7
+    y: 17.0
+
+  checkbox.2:
+    x: 45.5
+    y: 17.0
+
+  checkbox.3:
+    x: 60.2
+    y: 17.0

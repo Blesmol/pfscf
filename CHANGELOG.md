@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Templates: Added pfs2-12,13,14
 
 ### Changed
 
