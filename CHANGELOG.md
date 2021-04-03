@@ -5,14 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- Templates: Added pfs2-12,13,14
-- Templates: Added Age of Ashes adventure path
 
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+## v0.16.4 - 2021-04-03
+
+### Added
+- Templates: Added pfs2-12,13,14
+- Templates: Added Age of Ashes adventure path
 
 ## v0.16.3 - 2021-02-17
 
